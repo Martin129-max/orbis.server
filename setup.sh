@@ -80,7 +80,7 @@ pnpm run prisma:generate
 # 6. Prisma migrate
 # -----------------------------------------
 echo "🧱 Running Prisma migrations..."
-pnpm run prisma:migrate -- init
+pnpm run prisma:migrate init
 
 # -----------------------------------------
 # 7. Seed database
