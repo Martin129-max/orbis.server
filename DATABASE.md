@@ -145,7 +145,7 @@ pnpm run dev
 Use `curl` to quickly test if your server and database are working:
 
 ```bash
-curl -s -X POST http://localhost:3000/users/signup \
+curl -s -X POST http://localhost:4000/users/signup \
   -H "Content-Type: application/json" \
   -d '{"email":"john@doe.com","name":"John Doe"}'
 ```
@@ -157,7 +157,7 @@ You should see a JSON response with the created user.
 Check that your SQL Server is returning users:
 
 ```bash
-curl -s http://localhost:3000/users
+curl -s http://localhost:4000/users
 ```
 
 You should see a JSON array of all registered users.

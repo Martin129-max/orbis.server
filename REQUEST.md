@@ -5,7 +5,7 @@ This project uses JWT-based authentication with NestJS, Prisma, and Passport.
 ---
 
 ## 🚀 Base URL
-[http://localhost:3000](http://localhost:3000)
+[http://localhost:4000](http://localhost:4000)
 
 ---
 
@@ -24,7 +24,7 @@ Create a new user account.
 ### Request
 
 ```bash
-curl -X POST http://localhost:3000/auth/signup \
+curl -X POST http://localhost:4000/auth/signup \
   -H "Content-Type: application/json" \
   -d '{
     "email": "test@test.com",
@@ -49,7 +49,7 @@ Authenticate existing user and receive JWT token.
 ### Request
 
 ```bash
-curl -X POST http://localhost:3000/auth/login \
+curl -X POST http://localhost:4000/auth/login \
   -H "Content-Type: application/json" \
   -d '{
     "email": "test@test.com",
@@ -74,7 +74,7 @@ Fetch the authenticated user's profile.
 ### Request
 
 ```bash
-curl -X GET http://localhost:3000/users \
+curl -X GET http://localhost:4000/users \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
 ```
 
