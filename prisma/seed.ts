@@ -1,5 +1,6 @@
 import { PrismaClient } from './generated/client';
 import { PrismaPg } from '@prisma/adapter-pg';
+import * as bcrypt from 'bcrypt';
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
 const prisma = new PrismaClient({ adapter });
@@ -12,14 +13,14 @@ async function main() {
   const bos_user = await prisma.user.create({
     data: {
       email: "bos@eriko.ph",
-      password: "boseriko",
+      password: await bcrypt.hash("boseriko", 10),
     },
   });
 
   const twis_user = await prisma.user.create({
     data: {
       email: "twis@wua.ph",
-      password: "twiswua",
+      password: await bcrypt.hash("twiswua", 10),
     },
   });
 

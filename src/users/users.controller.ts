@@ -9,7 +9,7 @@ import {
   UseGuards,
   Req,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
+import { PublicUser, UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User as UserModel } from '../../prisma/generated/client';
@@ -26,12 +26,12 @@ export class UsersController {
   }
 
   @Post('signup')
-  async create(@Body() createUserDto: CreateUserDto): Promise<UserModel> {
+  async create(@Body() createUserDto: CreateUserDto): Promise<PublicUser> {
     return this.usersService.create(createUserDto);
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<UserModel | null> {
+  async findOne(@Param('id') id: string): Promise<PublicUser | null> {
     return this.usersService.findOne(Number(id));
   }
 
@@ -39,12 +39,12 @@ export class UsersController {
   async update(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
-  ): Promise<UserModel> {
+  ): Promise<PublicUser> {
     return this.usersService.update(Number(id), updateUserDto);
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string): Promise<UserModel> {
+  async remove(@Param('id') id: string): Promise<PublicUser> {
     return this.usersService.remove(Number(id));
   }
 }

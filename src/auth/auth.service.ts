@@ -19,12 +19,7 @@ export class AuthService {
       throw new ConflictException('Email is already registered');
     }
 
-    const hashed = await bcrypt.hash(password, 10);
-
-    const user = await this.usersService.create({
-      email,
-      password: hashed,
-    });
+    const user = await this.usersService.create({ email, password });
 
     return this.generateToken(user.id, user.email);
   }
