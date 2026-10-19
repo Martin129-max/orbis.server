@@ -1,6 +1,6 @@
 generator client {
-  provider   = "prisma-client"
-  output     = "./generated"
+  provider = "prisma-client"
+  output   = "./generated"
 }
 
 datasource db {
@@ -8,9 +8,73 @@ datasource db {
 }
 
 model User {
-  id        Int     @id @default(autoincrement())
-  email     String  @unique
-  name      String?
-  password  String
-  createdAt DateTime @default(now())
+  id               Int          @id @default(autoincrement())
+  email            String       @unique
+  name             String?
+  password         String
+  createdAt        DateTime     @default(now())
+  ownedCommunities Community[]
+  memberships      Membership[]
+  posts            Post[]
+}
+
+model Community {
+  id          Int          @id @default(autoincrement())
+  name        String
+  ownerId     Int
+  createdAt   DateTime     @default(now())
+  owner       User         @relation(fields: [ownerId], references: [id])
+  memberships Membership[]
+  roles       Role[]
+  posts       Post[]
+
+  @@index([ownerId])
+}
+
+model Membership {
+  userId      Int
+  communityId Int
+  nickname    String?
+  joinedAt    DateTime         @default(now())
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  community   Community        @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  roles       MembershipRole[]
+
+  @@id([userId, communityId])
+  @@index([communityId])
+}
+
+model Role {
+  id          Int              @id @default(autoincrement())
+  communityId Int
+  name        String
+  permissions BigInt           @default(0)
+  community   Community        @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  members     MembershipRole[]
+
+  @@unique([id, communityId])
+  @@index([communityId])
+}
+
+model MembershipRole {
+  userId      Int
+  communityId Int
+  roleId      Int
+  membership  Membership @relation(fields: [userId, communityId], references: [userId, communityId], onDelete: Cascade)
+  role        Role       @relation(fields: [roleId, communityId], references: [id, communityId], onDelete: Cascade)
+
+  @@id([userId, communityId, roleId])
+  @@index([roleId])
+}
+
+model Post {
+  id          Int       @id @default(autoincrement())
+  communityId Int
+  authorId    Int
+  content     String
+  createdAt   DateTime  @default(now())
+  community   Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  author      User      @relation(fields: [authorId], references: [id])
+
+  @@index([communityId, createdAt(sort: Desc)])
 }

@@ -42,3 +42,28 @@ export { Prisma }
  * 
  */
 export type User = Prisma.UserModel
+/**
+ * Model Community
+ * 
+ */
+export type Community = Prisma.CommunityModel
+/**
+ * Model Membership
+ * 
+ */
+export type Membership = Prisma.MembershipModel
+/**
+ * Model Role
+ * 
+ */
+export type Role = Prisma.RoleModel
+/**
+ * Model MembershipRole
+ * 
+ */
+export type MembershipRole = Prisma.MembershipRoleModel
+/**
+ * Model Post
+ * 
+ */
+export type Post = Prisma.PostModel
