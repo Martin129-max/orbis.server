@@ -35,6 +35,7 @@ model Membership {
   userId      Int
   communityId Int
   nickname    String?
+  position    Int              @default(0)
   joinedAt    DateTime         @default(now())
   user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   community   Community        @relation(fields: [communityId], references: [id], onDelete: Cascade)
