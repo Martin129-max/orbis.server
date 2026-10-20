@@ -9,7 +9,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { CommunitiesService } from './communities.service';
+import { CommunitiesService, CommunityMember } from './communities.service';
 import { CreateCommunityDto } from './dto/create-community.dto';
 import { ReorderCommunitiesDto } from './dto/reorder-communities.dto';
 import { CommunityMemberGuard } from './community-member.guard';
@@ -43,6 +43,14 @@ export class CommunitiesController {
       req.user.userId,
       reorderCommunitiesDto,
     );
+  }
+
+  @Get(':communityId/members')
+  @UseGuards(CommunityMemberGuard)
+  findMembers(
+    @Param('communityId', ParseIntPipe) communityId: number,
+  ): Promise<CommunityMember[]> {
+    return this.communitiesService.findMembers(communityId);
   }
 
   @Get(':communityId')

@@ -4,6 +4,15 @@ import { CreateCommunityDto } from './dto/create-community.dto';
 import { ReorderCommunitiesDto } from './dto/reorder-communities.dto';
 import { Community as CommunityModel } from '../../prisma/generated/client';
 
+export type CommunityMember = {
+  userId: number;
+  email: string;
+  name: string | null;
+  nickname: string | null;
+  joinedAt: Date;
+  isOwner: boolean;
+};
+
 @Injectable()
 export class CommunitiesService {
   constructor(private prisma: PrismaService) {}
@@ -65,6 +74,36 @@ export class CommunitiesService {
     );
 
     return this.findForMember(userId);
+  }
+
+  async findMembers(communityId: number): Promise<CommunityMember[]> {
+    const community = await this.prisma.community.findUnique({
+      where: { id: communityId },
+      select: {
+        ownerId: true,
+        memberships: {
+          orderBy: { joinedAt: 'asc' },
+          select: {
+            nickname: true,
+            joinedAt: true,
+            user: { select: { id: true, email: true, name: true } },
+          },
+        },
+      },
+    });
+
+    if (!community) return [];
+
+    return community.memberships
+      .map(({ nickname, joinedAt, user }) => ({
+        userId: user.id,
+        email: user.email,
+        name: user.name,
+        nickname,
+        joinedAt,
+        isOwner: user.id === community.ownerId,
+      }))
+      .sort((a, b) => Number(b.isOwner) - Number(a.isOwner));
   }
 
   findOne(id: number): Promise<CommunityModel | null> {
