@@ -39,6 +39,7 @@ export type UserMinAggregateOutputType = {
   email: string | null
   name: string | null
   password: string | null
+  theme: $Enums.Theme | null
   createdAt: Date | null
 }
 
@@ -47,6 +48,7 @@ export type UserMaxAggregateOutputType = {
   email: string | null
   name: string | null
   password: string | null
+  theme: $Enums.Theme | null
   createdAt: Date | null
 }
 
@@ -55,6 +57,7 @@ export type UserCountAggregateOutputType = {
   email: number
   name: number
   password: number
+  theme: number
   createdAt: number
   _all: number
 }
@@ -73,6 +76,7 @@ export type UserMinAggregateInputType = {
   email?: true
   name?: true
   password?: true
+  theme?: true
   createdAt?: true
 }
 
@@ -81,6 +85,7 @@ export type UserMaxAggregateInputType = {
   email?: true
   name?: true
   password?: true
+  theme?: true
   createdAt?: true
 }
 
@@ -89,6 +94,7 @@ export type UserCountAggregateInputType = {
   email?: true
   name?: true
   password?: true
+  theme?: true
   createdAt?: true
   _all?: true
 }
@@ -184,6 +190,7 @@ export type UserGroupByOutputType = {
   email: string
   name: string | null
   password: string
+  theme: $Enums.Theme
   createdAt: Date
   _count: UserCountAggregateOutputType | null
   _avg: UserAvgAggregateOutputType | null
@@ -215,6 +222,7 @@ export type UserWhereInput = {
   email?: Prisma.StringFilter<"User"> | string
   name?: Prisma.StringNullableFilter<"User"> | string | null
   password?: Prisma.StringFilter<"User"> | string
+  theme?: Prisma.EnumThemeFilter<"User"> | $Enums.Theme
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   ownedCommunities?: Prisma.CommunityListRelationFilter
   memberships?: Prisma.MembershipListRelationFilter
@@ -226,6 +234,7 @@ export type UserOrderByWithRelationInput = {
   email?: Prisma.SortOrder
   name?: Prisma.SortOrderInput | Prisma.SortOrder
   password?: Prisma.SortOrder
+  theme?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   ownedCommunities?: Prisma.CommunityOrderByRelationAggregateInput
   memberships?: Prisma.MembershipOrderByRelationAggregateInput
@@ -240,6 +249,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   name?: Prisma.StringNullableFilter<"User"> | string | null
   password?: Prisma.StringFilter<"User"> | string
+  theme?: Prisma.EnumThemeFilter<"User"> | $Enums.Theme
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   ownedCommunities?: Prisma.CommunityListRelationFilter
   memberships?: Prisma.MembershipListRelationFilter
@@ -251,6 +261,7 @@ export type UserOrderByWithAggregationInput = {
   email?: Prisma.SortOrder
   name?: Prisma.SortOrderInput | Prisma.SortOrder
   password?: Prisma.SortOrder
+  theme?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _avg?: Prisma.UserAvgOrderByAggregateInput
@@ -267,6 +278,7 @@ export type UserScalarWhereWithAggregatesInput = {
   email?: Prisma.StringWithAggregatesFilter<"User"> | string
   name?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   password?: Prisma.StringWithAggregatesFilter<"User"> | string
+  theme?: Prisma.EnumThemeWithAggregatesFilter<"User"> | $Enums.Theme
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
 
@@ -274,6 +286,7 @@ export type UserCreateInput = {
   email: string
   name?: string | null
   password: string
+  theme?: $Enums.Theme
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
@@ -285,6 +298,7 @@ export type UserUncheckedCreateInput = {
   email: string
   name?: string | null
   password: string
+  theme?: $Enums.Theme
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
@@ -295,6 +309,7 @@ export type UserUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
@@ -306,6 +321,7 @@ export type UserUncheckedUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
@@ -317,6 +333,7 @@ export type UserCreateManyInput = {
   email: string
   name?: string | null
   password: string
+  theme?: $Enums.Theme
   createdAt?: Date | string
 }
 
@@ -324,6 +341,7 @@ export type UserUpdateManyMutationInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -332,6 +350,7 @@ export type UserUncheckedUpdateManyInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -340,6 +359,7 @@ export type UserCountOrderByAggregateInput = {
   email?: Prisma.SortOrder
   name?: Prisma.SortOrder
   password?: Prisma.SortOrder
+  theme?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -352,6 +372,7 @@ export type UserMaxOrderByAggregateInput = {
   email?: Prisma.SortOrder
   name?: Prisma.SortOrder
   password?: Prisma.SortOrder
+  theme?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -360,6 +381,7 @@ export type UserMinOrderByAggregateInput = {
   email?: Prisma.SortOrder
   name?: Prisma.SortOrder
   password?: Prisma.SortOrder
+  theme?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -378,6 +400,10 @@ export type StringFieldUpdateOperationsInput = {
 
 export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null
+}
+
+export type EnumThemeFieldUpdateOperationsInput = {
+  set?: $Enums.Theme
 }
 
 export type DateTimeFieldUpdateOperationsInput = {
@@ -438,6 +464,7 @@ export type UserCreateWithoutOwnedCommunitiesInput = {
   email: string
   name?: string | null
   password: string
+  theme?: $Enums.Theme
   createdAt?: Date | string
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
   posts?: Prisma.PostCreateNestedManyWithoutAuthorInput
@@ -448,6 +475,7 @@ export type UserUncheckedCreateWithoutOwnedCommunitiesInput = {
   email: string
   name?: string | null
   password: string
+  theme?: $Enums.Theme
   createdAt?: Date | string
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
@@ -473,6 +501,7 @@ export type UserUpdateWithoutOwnedCommunitiesInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
   posts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
@@ -483,6 +512,7 @@ export type UserUncheckedUpdateWithoutOwnedCommunitiesInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
   posts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
@@ -492,6 +522,7 @@ export type UserCreateWithoutMembershipsInput = {
   email: string
   name?: string | null
   password: string
+  theme?: $Enums.Theme
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityCreateNestedManyWithoutOwnerInput
   posts?: Prisma.PostCreateNestedManyWithoutAuthorInput
@@ -502,6 +533,7 @@ export type UserUncheckedCreateWithoutMembershipsInput = {
   email: string
   name?: string | null
   password: string
+  theme?: $Enums.Theme
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutOwnerInput
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
@@ -527,6 +559,7 @@ export type UserUpdateWithoutMembershipsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUpdateManyWithoutOwnerNestedInput
   posts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
@@ -537,6 +570,7 @@ export type UserUncheckedUpdateWithoutMembershipsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutOwnerNestedInput
   posts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
@@ -546,6 +580,7 @@ export type UserCreateWithoutPostsInput = {
   email: string
   name?: string | null
   password: string
+  theme?: $Enums.Theme
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
@@ -556,6 +591,7 @@ export type UserUncheckedCreateWithoutPostsInput = {
   email: string
   name?: string | null
   password: string
+  theme?: $Enums.Theme
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
@@ -581,6 +617,7 @@ export type UserUpdateWithoutPostsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
@@ -591,6 +628,7 @@ export type UserUncheckedUpdateWithoutPostsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
@@ -650,6 +688,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   email?: boolean
   name?: boolean
   password?: boolean
+  theme?: boolean
   createdAt?: boolean
   ownedCommunities?: boolean | Prisma.User$ownedCommunitiesArgs<ExtArgs>
   memberships?: boolean | Prisma.User$membershipsArgs<ExtArgs>
@@ -662,6 +701,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   email?: boolean
   name?: boolean
   password?: boolean
+  theme?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["user"]>
 
@@ -670,6 +710,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   email?: boolean
   name?: boolean
   password?: boolean
+  theme?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["user"]>
 
@@ -678,10 +719,11 @@ export type UserSelectScalar = {
   email?: boolean
   name?: boolean
   password?: boolean
+  theme?: boolean
   createdAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "password" | "createdAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "password" | "theme" | "createdAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   ownedCommunities?: boolean | Prisma.User$ownedCommunitiesArgs<ExtArgs>
   memberships?: boolean | Prisma.User$membershipsArgs<ExtArgs>
@@ -703,6 +745,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     email: string
     name: string | null
     password: string
+    theme: $Enums.Theme
     createdAt: Date
   }, ExtArgs["result"]["user"]>
   composites: {}
@@ -1134,6 +1177,7 @@ export interface UserFieldRefs {
   readonly email: Prisma.FieldRef<"User", 'String'>
   readonly name: Prisma.FieldRef<"User", 'String'>
   readonly password: Prisma.FieldRef<"User", 'String'>
+  readonly theme: Prisma.FieldRef<"User", 'Theme'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
 }
     

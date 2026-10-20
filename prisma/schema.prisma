@@ -7,11 +7,18 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Theme {
+  system
+  light
+  dark
+}
+
 model User {
   id               Int          @id @default(autoincrement())
   email            String       @unique
   name             String?
   password         String
+  theme            Theme        @default(system)
   createdAt        DateTime     @default(now())
   ownedCommunities Community[]
   memberships      Membership[]

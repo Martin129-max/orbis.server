@@ -8,11 +8,12 @@ import {
   Delete,
   UseGuards,
   Req,
+  UnauthorizedException,
 } from '@nestjs/common';
-import { PublicUser, UsersService } from './users.service';
+import { Profile, PublicUser, UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User as UserModel } from '../../prisma/generated/client';
+import { UpdatePreferencesDto } from './dto/update-preferences.dto';
 import { JwtAuthGuard } from '../auth/jwt.guard';
 
 @Controller('users')
@@ -21,8 +22,22 @@ export class UsersController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  async findProfile(@Req() req): Promise<UserModel> {
-    return req.user;
+  async findProfile(@Req() req): Promise<Profile> {
+    const profile = await this.usersService.findProfile(req.user.userId);
+    if (!profile) throw new UnauthorizedException();
+    return profile;
+  }
+
+  @Patch('me/preferences')
+  @UseGuards(JwtAuthGuard)
+  updatePreferences(
+    @Req() req,
+    @Body() updatePreferencesDto: UpdatePreferencesDto,
+  ): Promise<Profile> {
+    return this.usersService.updatePreferences(
+      req.user.userId,
+      updatePreferencesDto,
+    );
   }
 
   @Post('signup')
