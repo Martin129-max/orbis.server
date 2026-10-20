@@ -27,6 +27,26 @@ async function main() {
 
   console.log("👤 Users created:", [bos_user.email, twis_user.email]);
 
+  const communities = [];
+  for (const [position, name] of ["BosEriko", "TwisWua"].entries()) {
+    communities.push(
+      await prisma.community.create({
+        data: {
+          name,
+          ownerId: bos_user.id,
+          memberships: {
+            create: [
+              { userId: bos_user.id, position },
+              { userId: twis_user.id, position },
+            ],
+          },
+        },
+      }),
+    );
+  }
+
+  console.log("🏘️ Communities created:", communities.map(({ name }) => name));
+
   console.log("✅ Seeding complete!");
 }
 
