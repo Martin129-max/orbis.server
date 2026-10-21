@@ -19,8 +19,16 @@
     "db:status": "./database.sh status",
     "db:logs": "./database.sh logs",
     "db:remove": "./database.sh remove",
+    "storage:setup": "./storage.sh setup",
+    "storage:start": "./storage.sh start",
+    "storage:stop": "./storage.sh stop",
+    "storage:restart": "./storage.sh restart",
+    "storage:status": "./storage.sh status",
+    "storage:logs": "./storage.sh logs",
+    "storage:remove": "./storage.sh remove",
+    "storage:bucket": "ts-node -r dotenv/config scripts/create-bucket.ts",
     "dev": "nest start --watch",
-    "develop": "pnpm run db:restart && sleep 10 && pnpm run dev",
+    "develop": "pnpm run db:restart && pnpm run storage:restart && sleep 10 && pnpm run dev",
     "prisma:migrate": "npx prisma migrate dev --name",
     "prisma:generate": "npx prisma generate",
     "prisma:seed": "ts-node -r dotenv/config prisma/seed.ts",
@@ -53,6 +61,7 @@
     }
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1154.0",
     "@nestjs/common": "10.4.22",
     "@nestjs/core": "10.4.22",
     "@nestjs/jwt": "^11.0.2",
@@ -73,6 +82,7 @@
     "rimraf": "6.0.1",
     "rxjs": "7.8.2",
     "sanitize-html": "2.18.0",
+    "sharp": "^0.34.5",
     "socket.io": "4.8.1"
   },
   "devDependencies": {
