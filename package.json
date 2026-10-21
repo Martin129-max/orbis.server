@@ -24,6 +24,7 @@
     "prisma:migrate": "npx prisma migrate dev --name",
     "prisma:generate": "npx prisma generate",
     "prisma:seed": "ts-node -r dotenv/config prisma/seed.ts",
+    "prisma:reset": "npx prisma migrate reset --force && pnpm run prisma:seed",
     "prisma:studio": "npx prisma studio",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/src/main",
