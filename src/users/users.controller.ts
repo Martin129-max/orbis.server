@@ -1,18 +1,13 @@
 import {
   Controller,
   Get,
-  Post,
   Body,
   Patch,
-  Param,
-  Delete,
   UseGuards,
   Req,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Profile, PublicUser, UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { Profile, UsersService } from './users.service';
 import { UpdatePreferencesDto } from './dto/update-preferences.dto';
 import { JwtAuthGuard } from '../auth/jwt.guard';
 import { PresenceGateway } from '../friends/presence.gateway';
@@ -48,28 +43,5 @@ export class UsersController {
     }
 
     return profile;
-  }
-
-  @Post('signup')
-  async create(@Body() createUserDto: CreateUserDto): Promise<PublicUser> {
-    return this.usersService.create(createUserDto);
-  }
-
-  @Get(':id')
-  async findOne(@Param('id') id: string): Promise<PublicUser | null> {
-    return this.usersService.findOne(Number(id));
-  }
-
-  @Patch(':id')
-  async update(
-    @Param('id') id: string,
-    @Body() updateUserDto: UpdateUserDto,
-  ): Promise<PublicUser> {
-    return this.usersService.update(Number(id), updateUserDto);
-  }
-
-  @Delete(':id')
-  async remove(@Param('id') id: string): Promise<PublicUser> {
-    return this.usersService.remove(Number(id));
   }
 }

@@ -813,8 +813,9 @@ async function main() {
   const admin = await prisma.user.create({
     data: {
       email: 'admin@user.com',
+      username: 'admin',
       name: 'Admin',
-      password: await bcrypt.hash('1234', 10),
+      password: await bcrypt.hash('123456', 10),
       createdAt: minutesAgo(days(30)),
     },
   });
@@ -824,6 +825,7 @@ async function main() {
     const user = await prisma.user.create({
       data: {
         email: `${key}@anime.test`,
+        username: key,
         name,
         password: characterPassword,
         createdAt: minutesAgo(days(30)),
@@ -957,9 +959,9 @@ async function main() {
   console.log('🤝 Friendships created:', friendships.length);
 
   console.log('✅ Seeding complete!');
-  console.log('🔑 admin@user.com / 1234');
+  console.log('🔑 admin (or admin@user.com) / 123456');
   console.log(
-    `🔑 <character>@anime.test / ${CHARACTER_PASSWORD} (e.g. naruto@anime.test)`,
+    `🔑 <character> (or <character>@anime.test) / ${CHARACTER_PASSWORD} (e.g. naruto)`,
   );
 }
 

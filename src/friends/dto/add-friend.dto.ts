@@ -1,13 +1,22 @@
-import { IsEmail, IsInt, Max, Min, ValidateIf } from 'class-validator';
+import {
+  IsInt,
+  IsString,
+  Matches,
+  Max,
+  Min,
+  ValidateIf,
+} from 'class-validator';
+import { USERNAME_MESSAGE, USERNAME_PATTERN } from '../../users/username';
 
 export class AddFriendDto {
-  @ValidateIf((dto: AddFriendDto) => dto.email === undefined)
+  @ValidateIf((dto: AddFriendDto) => dto.username === undefined)
   @IsInt()
   @Min(1)
   @Max(2147483647)
   userId?: number;
 
   @ValidateIf((dto: AddFriendDto) => dto.userId === undefined)
-  @IsEmail()
-  email?: string;
+  @IsString()
+  @Matches(USERNAME_PATTERN, { message: USERNAME_MESSAGE })
+  username?: string;
 }

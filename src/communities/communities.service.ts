@@ -15,7 +15,7 @@ import { Community as CommunityModel } from '../../prisma/generated/client';
 
 export type CommunityMember = {
   userId: number;
-  email: string;
+  username: string;
   name: string | null;
   nickname: string | null;
   joinedAt: Date;
@@ -162,7 +162,7 @@ export class CommunitiesService {
           select: {
             nickname: true,
             joinedAt: true,
-            user: { select: { id: true, email: true, name: true } },
+            user: { select: { id: true, username: true, name: true } },
             roles: { select: { role: { select: { permissions: true } } } },
           },
         },
@@ -176,7 +176,7 @@ export class CommunitiesService {
         const isOwner = user.id === community.ownerId;
         return {
           userId: user.id,
-          email: user.email,
+          username: user.username,
           name: user.name,
           nickname,
           joinedAt,

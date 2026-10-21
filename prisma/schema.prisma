@@ -31,6 +31,7 @@ enum FriendshipStatus {
 model User {
   id                  Int          @id @default(autoincrement())
   email               String       @unique
+  username            String       @unique
   name                String?
   password            String
   theme               Theme        @default(system)

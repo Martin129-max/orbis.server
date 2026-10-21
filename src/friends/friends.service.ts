@@ -7,10 +7,15 @@ import {
 import { PrismaService } from '../prisma.service';
 import { AddFriendDto } from './dto/add-friend.dto';
 import { PresenceGateway } from './presence.gateway';
+import { normalizeUsername } from '../users/username';
 
 const MAX_INT = 2147483647;
 
-export type FriendUser = { userId: number; email: string; name: string | null };
+export type FriendUser = {
+  userId: number;
+  username: string;
+  name: string | null;
+};
 
 export type Friend = FriendUser & { online: boolean };
 
@@ -21,7 +26,7 @@ export type FriendList = {
 };
 
 const person = {
-  select: { id: true, email: true, name: true, appearOffline: true },
+  select: { id: true, username: true, name: true, appearOffline: true },
 } as const;
 
 function between(userId: number, otherId: number) {
@@ -53,7 +58,11 @@ export class FriendsService {
         friendship.requesterId === userId
           ? friendship.addressee
           : friendship.requester;
-      const user = { userId: other.id, email: other.email, name: other.name };
+      const user = {
+        userId: other.id,
+        username: other.username,
+        name: other.name,
+      };
 
       if (friendship.status === 'accepted') {
         list.friends.push({
@@ -68,14 +77,17 @@ export class FriendsService {
     }
 
     list.friends.sort((a, b) =>
-      (a.name ?? a.email).localeCompare(b.name ?? b.email),
+      (a.name ?? a.username).localeCompare(b.name ?? b.username),
     );
     return list;
   }
 
-  async add(userId: number, { userId: targetId, email }: AddFriendDto) {
+  async add(userId: number, { userId: targetId, username }: AddFriendDto) {
     const target = await this.prisma.user.findUnique({
-      where: targetId !== undefined ? { id: targetId } : { email },
+      where:
+        targetId !== undefined
+          ? { id: targetId }
+          : { username: normalizeUsername(username!) },
       select: { id: true },
     });
 
