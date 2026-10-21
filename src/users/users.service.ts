@@ -10,7 +10,7 @@ export type PublicUser = Omit<UserModel, 'password'>;
 
 export type Profile = Pick<
   UserModel,
-  'email' | 'username' | 'theme' | 'appearOffline'
+  'email' | 'username' | 'theme' | 'appearOffline' | 'createdAt'
 > & {
   userId: number;
 };
@@ -23,6 +23,7 @@ const profile = {
   username: true,
   theme: true,
   appearOffline: true,
+  createdAt: true,
 } as const;
 
 function toProfile({

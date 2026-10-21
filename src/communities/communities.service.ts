@@ -23,7 +23,10 @@ export type CommunityMember = {
   isAdmin: boolean;
 };
 
-export type CommunityWithRole = CommunityModel & { role: CommunityRole };
+export type CommunityWithRole = CommunityModel & {
+  role: CommunityRole;
+  memberCount?: number;
+};
 
 const roleRank: Record<CommunityRole, number> = {
   owner: 0,
@@ -195,11 +198,16 @@ export class CommunitiesService {
 
   async findOne(userId: number, id: number): Promise<CommunityWithRole | null> {
     const [community, role] = await Promise.all([
-      this.prisma.community.findUnique({ where: { id } }),
+      this.prisma.community.findUnique({
+        where: { id },
+        include: { _count: { select: { memberships: true } } },
+      }),
       this.roleOf(userId, id),
     ]);
+    if (!community || !role) return null;
 
-    return community && role && { ...community, role };
+    const { _count, ...rest } = community;
+    return { ...rest, role, memberCount: _count.memberships };
   }
 
   async roleOf(
