@@ -44,6 +44,15 @@ export class PostsService {
     });
   }
 
+  findForMember(userId: number) {
+    return this.prisma.post.findMany({
+      where: { community: { memberships: { some: { userId } } } },
+      orderBy: { createdAt: 'desc' },
+      take: 50,
+      include: { author, community: { select: { id: true, name: true } } },
+    });
+  }
+
   create(communityId: number, authorId: number, { content }: CreatePostDto) {
     const html = sanitizeHtml(content, sanitizeOptions).replace(
       /(<p>\s*(<br\s*\/?>)?\s*<\/p>\s*)+$/,
