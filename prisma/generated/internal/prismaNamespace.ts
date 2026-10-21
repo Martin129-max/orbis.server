@@ -984,6 +984,7 @@ export const CommunityScalarFieldEnum = {
   id: 'id',
   name: 'name',
   ownerId: 'ownerId',
+  isPublic: 'isPublic',
   createdAt: 'createdAt'
 } as const
 

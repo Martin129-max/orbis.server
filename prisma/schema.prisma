@@ -37,6 +37,7 @@ model Community {
   id          Int          @id @default(autoincrement())
   name        String
   ownerId     Int
+  isPublic    Boolean      @default(false)
   createdAt   DateTime     @default(now())
   owner       User         @relation(fields: [ownerId], references: [id])
   memberships Membership[]

@@ -6,12 +6,18 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { CommunitiesService, CommunityMember } from './communities.service';
+import {
+  CommunitiesService,
+  CommunityMember,
+  CommunitySearchResult,
+} from './communities.service';
 import { CreateCommunityDto } from './dto/create-community.dto';
 import { ReorderCommunitiesDto } from './dto/reorder-communities.dto';
+import { SearchCommunitiesDto } from './dto/search-communities.dto';
 import { CommunityMemberGuard } from './community-member.guard';
 import { JwtAuthGuard } from '../auth/jwt.guard';
 import { Community as CommunityModel } from '../../prisma/generated/client';
@@ -32,6 +38,25 @@ export class CommunitiesController {
   @Get()
   findMine(@Req() req): Promise<CommunityModel[]> {
     return this.communitiesService.findForMember(req.user.userId);
+  }
+
+  @Get('search')
+  search(
+    @Req() req,
+    @Query() searchCommunitiesDto: SearchCommunitiesDto,
+  ): Promise<CommunitySearchResult[]> {
+    return this.communitiesService.search(
+      req.user.userId,
+      searchCommunitiesDto,
+    );
+  }
+
+  @Post(':communityId/join')
+  join(
+    @Req() req,
+    @Param('communityId', ParseIntPipe) communityId: number,
+  ): Promise<CommunityModel> {
+    return this.communitiesService.join(req.user.userId, communityId);
   }
 
   @Put('order')

@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 
-const MAX_INT = 2147483647;
+export const MAX_INT = 2147483647;
 
 @Injectable()
 export class CommunityMemberGuard implements CanActivate {

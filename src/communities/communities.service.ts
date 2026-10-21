@@ -1,7 +1,13 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { CreateCommunityDto } from './dto/create-community.dto';
 import { ReorderCommunitiesDto } from './dto/reorder-communities.dto';
+import { SearchCommunitiesDto } from './dto/search-communities.dto';
+import { MAX_INT } from './community-member.guard';
 import { Community as CommunityModel } from '../../prisma/generated/client';
 
 export type CommunityMember = {
@@ -11,6 +17,13 @@ export type CommunityMember = {
   nickname: string | null;
   joinedAt: Date;
   isOwner: boolean;
+};
+
+export type CommunitySearchResult = {
+  id: number;
+  name: string;
+  memberCount: number;
+  joined: boolean;
 };
 
 @Injectable()
@@ -28,10 +41,61 @@ export class CommunitiesService {
     return this.prisma.community.create({
       data: {
         name: createCommunityDto.name.trim(),
+        isPublic: createCommunityDto.isPublic ?? false,
         ownerId,
         memberships: { create: { userId: ownerId, position } },
       },
     });
+  }
+
+  async search(
+    userId: number,
+    { q }: SearchCommunitiesDto,
+  ): Promise<CommunitySearchResult[]> {
+    const query = q?.trim();
+    const communities = await this.prisma.community.findMany({
+      where: {
+        isPublic: true,
+        ...(query && { name: { contains: query, mode: 'insensitive' } }),
+      },
+      orderBy: [{ memberships: { _count: 'desc' } }, { createdAt: 'desc' }],
+      take: 20,
+      select: {
+        id: true,
+        name: true,
+        _count: { select: { memberships: true } },
+        memberships: { where: { userId }, select: { userId: true } },
+      },
+    });
+
+    return communities.map(({ id, name, _count, memberships }) => ({
+      id,
+      name,
+      memberCount: _count.memberships,
+      joined: memberships.length > 0,
+    }));
+  }
+
+  async join(userId: number, communityId: number): Promise<CommunityModel> {
+    const community =
+      communityId >= 1 && communityId <= MAX_INT
+        ? await this.prisma.community.findUnique({ where: { id: communityId } })
+        : null;
+
+    if (!community?.isPublic) {
+      throw new NotFoundException('Community not found');
+    }
+
+    const position = await this.prisma.membership.count({
+      where: { userId },
+    });
+    await this.prisma.membership.upsert({
+      where: { userId_communityId: { userId, communityId } },
+      create: { userId, communityId, position },
+      update: {},
+    });
+
+    return community;
   }
 
   async findForMember(userId: number): Promise<CommunityModel[]> {
