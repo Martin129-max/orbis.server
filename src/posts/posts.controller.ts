@@ -5,6 +5,7 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -19,8 +20,11 @@ export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Get()
-  findAll(@Param('communityId', ParseIntPipe) communityId: number) {
-    return this.postsService.findForCommunity(communityId);
+  findAll(
+    @Param('communityId', ParseIntPipe) communityId: number,
+    @Query('cursor', new ParseIntPipe({ optional: true })) cursor?: number,
+  ) {
+    return this.postsService.findForCommunity(communityId, cursor);
   }
 
   @Post()

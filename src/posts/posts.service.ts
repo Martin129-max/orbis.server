@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { MAX_INT } from '../communities/community-member.guard';
 import * as sanitizeHtml from 'sanitize-html';
 import { PrismaService } from '../prisma.service';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -31,24 +32,36 @@ const sanitizeOptions: sanitizeHtml.IOptions = {
 
 const author = { select: { id: true, email: true, name: true } } as const;
 
+const PAGE_SIZE = 10;
+
+function page(cursor?: number) {
+  if (cursor !== undefined && (cursor < 1 || cursor > MAX_INT)) {
+    throw new BadRequestException('Invalid cursor');
+  }
+
+  return {
+    orderBy: [{ createdAt: 'desc' as const }, { id: 'desc' as const }],
+    take: PAGE_SIZE,
+    ...(cursor !== undefined && { cursor: { id: cursor }, skip: 1 }),
+  };
+}
+
 @Injectable()
 export class PostsService {
   constructor(private prisma: PrismaService) {}
 
-  findForCommunity(communityId: number) {
+  findForCommunity(communityId: number, cursor?: number) {
     return this.prisma.post.findMany({
       where: { communityId },
-      orderBy: { createdAt: 'desc' },
-      take: 50,
+      ...page(cursor),
       include: { author },
     });
   }
 
-  findForMember(userId: number) {
+  findForMember(userId: number, cursor?: number) {
     return this.prisma.post.findMany({
       where: { community: { memberships: { some: { userId } } } },
-      orderBy: { createdAt: 'desc' },
-      take: 50,
+      ...page(cursor),
       include: { author, community: { select: { id: true, name: true } } },
     });
   }
