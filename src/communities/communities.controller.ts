@@ -1,9 +1,12 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  HttpCode,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Put,
   Query,
@@ -14,10 +17,12 @@ import {
   CommunitiesService,
   CommunityMember,
   CommunitySearchResult,
+  CommunityWithRole,
 } from './communities.service';
 import { CreateCommunityDto } from './dto/create-community.dto';
 import { ReorderCommunitiesDto } from './dto/reorder-communities.dto';
 import { SearchCommunitiesDto } from './dto/search-communities.dto';
+import { UpdateCommunityDto } from './dto/update-community.dto';
 import { CommunityMemberGuard } from './community-member.guard';
 import { JwtAuthGuard } from '../auth/jwt.guard';
 import { Community as CommunityModel } from '../../prisma/generated/client';
@@ -78,11 +83,66 @@ export class CommunitiesController {
     return this.communitiesService.findMembers(communityId);
   }
 
+  @Put(':communityId/admins/:userId')
+  @UseGuards(CommunityMemberGuard)
+  addAdmin(
+    @Req() req,
+    @Param('communityId', ParseIntPipe) communityId: number,
+    @Param('userId', ParseIntPipe) userId: number,
+  ): Promise<CommunityMember[]> {
+    return this.communitiesService.setAdmin(
+      req.user.userId,
+      communityId,
+      userId,
+      true,
+    );
+  }
+
+  @Delete(':communityId/admins/:userId')
+  @UseGuards(CommunityMemberGuard)
+  removeAdmin(
+    @Req() req,
+    @Param('communityId', ParseIntPipe) communityId: number,
+    @Param('userId', ParseIntPipe) userId: number,
+  ): Promise<CommunityMember[]> {
+    return this.communitiesService.setAdmin(
+      req.user.userId,
+      communityId,
+      userId,
+      false,
+    );
+  }
+
   @Get(':communityId')
   @UseGuards(CommunityMemberGuard)
   findOne(
+    @Req() req,
     @Param('communityId', ParseIntPipe) communityId: number,
-  ): Promise<CommunityModel | null> {
-    return this.communitiesService.findOne(communityId);
+  ): Promise<CommunityWithRole | null> {
+    return this.communitiesService.findOne(req.user.userId, communityId);
+  }
+
+  @Patch(':communityId')
+  @UseGuards(CommunityMemberGuard)
+  update(
+    @Req() req,
+    @Param('communityId', ParseIntPipe) communityId: number,
+    @Body() updateCommunityDto: UpdateCommunityDto,
+  ): Promise<CommunityWithRole> {
+    return this.communitiesService.update(
+      req.user.userId,
+      communityId,
+      updateCommunityDto,
+    );
+  }
+
+  @Delete(':communityId')
+  @UseGuards(CommunityMemberGuard)
+  @HttpCode(204)
+  remove(
+    @Req() req,
+    @Param('communityId', ParseIntPipe) communityId: number,
+  ): Promise<void> {
+    return this.communitiesService.remove(req.user.userId, communityId);
   }
 }

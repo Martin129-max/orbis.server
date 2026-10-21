@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -7,6 +8,8 @@ import { PrismaService } from '../prisma.service';
 import { CreateCommunityDto } from './dto/create-community.dto';
 import { ReorderCommunitiesDto } from './dto/reorder-communities.dto';
 import { SearchCommunitiesDto } from './dto/search-communities.dto';
+import { UpdateCommunityDto } from './dto/update-community.dto';
+import { ADMINISTRATOR, CommunityRole, isAdministrator } from './permissions';
 import { MAX_INT } from './community-member.guard';
 import { Community as CommunityModel } from '../../prisma/generated/client';
 
@@ -17,6 +20,15 @@ export type CommunityMember = {
   nickname: string | null;
   joinedAt: Date;
   isOwner: boolean;
+  isAdmin: boolean;
+};
+
+export type CommunityWithRole = CommunityModel & { role: CommunityRole };
+
+const roleRank: Record<CommunityRole, number> = {
+  owner: 0,
+  admin: 1,
+  member: 2,
 };
 
 export type CommunitySearchResult = {
@@ -151,6 +163,7 @@ export class CommunitiesService {
             nickname: true,
             joinedAt: true,
             user: { select: { id: true, email: true, name: true } },
+            roles: { select: { role: { select: { permissions: true } } } },
           },
         },
       },
@@ -159,18 +172,139 @@ export class CommunitiesService {
     if (!community) return [];
 
     return community.memberships
-      .map(({ nickname, joinedAt, user }) => ({
-        userId: user.id,
-        email: user.email,
-        name: user.name,
-        nickname,
-        joinedAt,
-        isOwner: user.id === community.ownerId,
-      }))
-      .sort((a, b) => Number(b.isOwner) - Number(a.isOwner));
+      .map(({ nickname, joinedAt, user, roles }) => {
+        const isOwner = user.id === community.ownerId;
+        return {
+          userId: user.id,
+          email: user.email,
+          name: user.name,
+          nickname,
+          joinedAt,
+          isOwner,
+          isAdmin:
+            !isOwner &&
+            roles.some(({ role }) => isAdministrator(role.permissions)),
+        };
+      })
+      .sort(
+        (a, b) =>
+          roleRank[a.isOwner ? 'owner' : a.isAdmin ? 'admin' : 'member'] -
+          roleRank[b.isOwner ? 'owner' : b.isAdmin ? 'admin' : 'member'],
+      );
   }
 
-  findOne(id: number): Promise<CommunityModel | null> {
-    return this.prisma.community.findUnique({ where: { id } });
+  async findOne(userId: number, id: number): Promise<CommunityWithRole | null> {
+    const [community, role] = await Promise.all([
+      this.prisma.community.findUnique({ where: { id } }),
+      this.roleOf(userId, id),
+    ]);
+
+    return community && role && { ...community, role };
+  }
+
+  async roleOf(
+    userId: number,
+    communityId: number,
+  ): Promise<CommunityRole | null> {
+    const membership = await this.prisma.membership.findUnique({
+      where: { userId_communityId: { userId, communityId } },
+      select: {
+        community: { select: { ownerId: true } },
+        roles: { select: { role: { select: { permissions: true } } } },
+      },
+    });
+
+    if (!membership) return null;
+    if (membership.community.ownerId === userId) return 'owner';
+    return membership.roles.some(({ role }) =>
+      isAdministrator(role.permissions),
+    )
+      ? 'admin'
+      : 'member';
+  }
+
+  private async requireRole(
+    userId: number,
+    communityId: number,
+    required: 'owner' | 'admin',
+  ) {
+    const role = await this.roleOf(userId, communityId);
+    if (!role || roleRank[role] > roleRank[required]) {
+      throw new ForbiddenException(
+        required === 'owner'
+          ? 'Only the owner can do this'
+          : 'Only admins can do this',
+      );
+    }
+    return role;
+  }
+
+  async update(
+    userId: number,
+    communityId: number,
+    { name, isPublic }: UpdateCommunityDto,
+  ): Promise<CommunityWithRole> {
+    const role = await this.requireRole(userId, communityId, 'admin');
+    const community = await this.prisma.community.update({
+      where: { id: communityId },
+      data: { name: name?.trim(), isPublic },
+    });
+
+    return { ...community, role };
+  }
+
+  async remove(userId: number, communityId: number): Promise<void> {
+    await this.requireRole(userId, communityId, 'owner');
+    await this.prisma.community.delete({ where: { id: communityId } });
+  }
+
+  async setAdmin(
+    userId: number,
+    communityId: number,
+    targetId: number,
+    isAdmin: boolean,
+  ): Promise<CommunityMember[]> {
+    await this.requireRole(userId, communityId, 'owner');
+
+    const targetRole =
+      targetId >= 1 && targetId <= MAX_INT
+        ? await this.roleOf(targetId, communityId)
+        : null;
+    if (!targetRole) throw new NotFoundException('Member not found');
+    if (targetRole === 'owner') {
+      throw new BadRequestException('The owner is always an admin');
+    }
+
+    const adminRoleIds = (
+      await this.prisma.role.findMany({
+        where: { communityId },
+        select: { id: true, permissions: true },
+      })
+    )
+      .filter(({ permissions }) => isAdministrator(permissions))
+      .map(({ id }) => id);
+
+    if (isAdmin) {
+      const roleId =
+        adminRoleIds[0] ??
+        (
+          await this.prisma.role.create({
+            data: { communityId, name: 'Admin', permissions: ADMINISTRATOR },
+          })
+        ).id;
+      await this.prisma.membershipRole.upsert({
+        where: {
+          userId_communityId_roleId: { userId: targetId, communityId, roleId },
+        },
+        create: { userId: targetId, communityId, roleId },
+        update: {},
+      });
+    } else {
+      await this.prisma.membershipRole.deleteMany({
+        where: { userId: targetId, communityId, roleId: { in: adminRoleIds } },
+      });
+    }
+
+    return this.findMembers(communityId);
   }
 }

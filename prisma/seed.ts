@@ -1,6 +1,7 @@
 import { PrismaClient } from './generated/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import * as bcrypt from 'bcrypt';
+import { ADMINISTRATOR } from '../src/communities/permissions';
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
 const prisma = new PrismaClient({ adapter });
@@ -34,6 +35,7 @@ type SeedCommunity = {
   owner: UserKey;
   isPublic: boolean;
   members: [UserKey, string?][];
+  admins?: UserKey[];
   posts: [UserKey, number, string][];
 };
 
@@ -91,6 +93,7 @@ const communities: SeedCommunity[] = [
     name: 'Hidden Leaf Village',
     owner: 'naruto',
     isPublic: true,
+    admins: ['admin', 'sakura'],
     members: [
       ['naruto', 'Future Hokage'],
       ['sasuke'],
@@ -131,6 +134,7 @@ const communities: SeedCommunity[] = [
     name: 'Straw Hat Pirates',
     owner: 'luffy',
     isPublic: true,
+    admins: ['zoro'],
     members: [
       ['luffy', 'Captain'],
       ['zoro', 'Pirate Hunter'],
@@ -200,6 +204,7 @@ const communities: SeedCommunity[] = [
     name: 'Demon Slayer Corps',
     owner: 'tanjiro',
     isPublic: true,
+    admins: ['admin'],
     members: [['tanjiro'], ['nezuko'], ['admin'], ['mikasa']],
     posts: [
       [
@@ -359,14 +364,16 @@ async function main() {
 
   for (const community of communities) {
     const memberKeys = new Set(community.members.map(([key]) => key));
-    const unknownAuthor = community.posts.find(([key]) => !memberKeys.has(key));
-    if (!memberKeys.has(community.owner) || unknownAuthor) {
-      throw new Error(
-        `"${community.name}" has a post or owner who isn't a member`,
-      );
+    const outsider = [
+      community.owner,
+      ...(community.admins ?? []),
+      ...community.posts.map(([key]) => key),
+    ].find((key) => !memberKeys.has(key));
+    if (outsider) {
+      throw new Error(`"${community.name}": ${outsider} isn't a member`);
     }
 
-    await prisma.community.create({
+    const created = await prisma.community.create({
       data: {
         name: community.name,
         ownerId: userIds[community.owner],
@@ -393,6 +400,23 @@ async function main() {
         },
       },
     });
+
+    if (community.admins?.length) {
+      const role = await prisma.role.create({
+        data: {
+          communityId: created.id,
+          name: 'Admin',
+          permissions: ADMINISTRATOR,
+        },
+      });
+      await prisma.membershipRole.createMany({
+        data: community.admins.map((key) => ({
+          userId: userIds[key],
+          communityId: created.id,
+          roleId: role.id,
+        })),
+      });
+    }
   }
 
   console.log(
