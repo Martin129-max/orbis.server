@@ -798,6 +798,10 @@ async function createComments(
 
 const userIds = {} as Record<UserKey, number>;
 
+function communityIcon(name: string) {
+  return `/images/communities/${name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.webp`;
+}
+
 function minutesAgo(minutes: number) {
   return new Date(Date.now() - minutes * 60 * 1000);
 }
@@ -815,6 +819,7 @@ async function main() {
       email: 'admin@user.com',
       username: 'admin',
       name: 'Admin',
+      avatarUrl: '/images/avatars/admin.webp',
       password: await bcrypt.hash('123456', 10),
       createdAt: minutesAgo(days(30)),
     },
@@ -827,6 +832,7 @@ async function main() {
         email: `${key}@anime.test`,
         username: key,
         name,
+        avatarUrl: `/images/avatars/${key}.webp`,
         password: characterPassword,
         createdAt: minutesAgo(days(30)),
       },
@@ -862,6 +868,7 @@ async function main() {
     const created = await prisma.community.create({
       data: {
         name: community.name,
+        iconUrl: communityIcon(community.name),
         ownerId: userIds[community.owner],
         isPublic: community.isPublic,
         createdAt: minutesAgo(days(14)),

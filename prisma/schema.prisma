@@ -33,6 +33,7 @@ model User {
   email               String       @unique
   username            String       @unique
   name                String?
+  avatarUrl           String?
   password            String
   theme               Theme        @default(system)
   appearOffline       Boolean      @default(false)
@@ -50,6 +51,7 @@ model User {
 model Community {
   id          Int          @id @default(autoincrement())
   name        String
+  iconUrl     String?
   ownerId     Int
   isPublic    Boolean      @default(false)
   createdAt   DateTime     @default(now())

@@ -15,6 +15,7 @@ export type FriendUser = {
   userId: number;
   username: string;
   name: string | null;
+  avatarUrl: string | null;
 };
 
 export type Friend = FriendUser & { online: boolean };
@@ -26,7 +27,13 @@ export type FriendList = {
 };
 
 const person = {
-  select: { id: true, username: true, name: true, appearOffline: true },
+  select: {
+    id: true,
+    username: true,
+    name: true,
+    avatarUrl: true,
+    appearOffline: true,
+  },
 } as const;
 
 function between(userId: number, otherId: number) {
@@ -62,6 +69,7 @@ export class FriendsService {
         userId: other.id,
         username: other.username,
         name: other.name,
+        avatarUrl: other.avatarUrl,
       };
 
       if (friendship.status === 'accepted') {

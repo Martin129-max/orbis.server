@@ -39,6 +39,7 @@ export type UserMinAggregateOutputType = {
   email: string | null
   username: string | null
   name: string | null
+  avatarUrl: string | null
   password: string | null
   theme: $Enums.Theme | null
   appearOffline: boolean | null
@@ -50,6 +51,7 @@ export type UserMaxAggregateOutputType = {
   email: string | null
   username: string | null
   name: string | null
+  avatarUrl: string | null
   password: string | null
   theme: $Enums.Theme | null
   appearOffline: boolean | null
@@ -61,6 +63,7 @@ export type UserCountAggregateOutputType = {
   email: number
   username: number
   name: number
+  avatarUrl: number
   password: number
   theme: number
   appearOffline: number
@@ -82,6 +85,7 @@ export type UserMinAggregateInputType = {
   email?: true
   username?: true
   name?: true
+  avatarUrl?: true
   password?: true
   theme?: true
   appearOffline?: true
@@ -93,6 +97,7 @@ export type UserMaxAggregateInputType = {
   email?: true
   username?: true
   name?: true
+  avatarUrl?: true
   password?: true
   theme?: true
   appearOffline?: true
@@ -104,6 +109,7 @@ export type UserCountAggregateInputType = {
   email?: true
   username?: true
   name?: true
+  avatarUrl?: true
   password?: true
   theme?: true
   appearOffline?: true
@@ -202,6 +208,7 @@ export type UserGroupByOutputType = {
   email: string
   username: string
   name: string | null
+  avatarUrl: string | null
   password: string
   theme: $Enums.Theme
   appearOffline: boolean
@@ -236,6 +243,7 @@ export type UserWhereInput = {
   email?: Prisma.StringFilter<"User"> | string
   username?: Prisma.StringFilter<"User"> | string
   name?: Prisma.StringNullableFilter<"User"> | string | null
+  avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
   password?: Prisma.StringFilter<"User"> | string
   theme?: Prisma.EnumThemeFilter<"User"> | $Enums.Theme
   appearOffline?: Prisma.BoolFilter<"User"> | boolean
@@ -255,6 +263,7 @@ export type UserOrderByWithRelationInput = {
   email?: Prisma.SortOrder
   username?: Prisma.SortOrder
   name?: Prisma.SortOrderInput | Prisma.SortOrder
+  avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   password?: Prisma.SortOrder
   theme?: Prisma.SortOrder
   appearOffline?: Prisma.SortOrder
@@ -277,6 +286,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.UserWhereInput[]
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   name?: Prisma.StringNullableFilter<"User"> | string | null
+  avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
   password?: Prisma.StringFilter<"User"> | string
   theme?: Prisma.EnumThemeFilter<"User"> | $Enums.Theme
   appearOffline?: Prisma.BoolFilter<"User"> | boolean
@@ -296,6 +306,7 @@ export type UserOrderByWithAggregationInput = {
   email?: Prisma.SortOrder
   username?: Prisma.SortOrder
   name?: Prisma.SortOrderInput | Prisma.SortOrder
+  avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   password?: Prisma.SortOrder
   theme?: Prisma.SortOrder
   appearOffline?: Prisma.SortOrder
@@ -315,6 +326,7 @@ export type UserScalarWhereWithAggregatesInput = {
   email?: Prisma.StringWithAggregatesFilter<"User"> | string
   username?: Prisma.StringWithAggregatesFilter<"User"> | string
   name?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  avatarUrl?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   password?: Prisma.StringWithAggregatesFilter<"User"> | string
   theme?: Prisma.EnumThemeWithAggregatesFilter<"User"> | $Enums.Theme
   appearOffline?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
@@ -325,6 +337,7 @@ export type UserCreateInput = {
   email: string
   username: string
   name?: string | null
+  avatarUrl?: string | null
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
@@ -344,6 +357,7 @@ export type UserUncheckedCreateInput = {
   email: string
   username: string
   name?: string | null
+  avatarUrl?: string | null
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
@@ -362,6 +376,7 @@ export type UserUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -381,6 +396,7 @@ export type UserUncheckedUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -400,6 +416,7 @@ export type UserCreateManyInput = {
   email: string
   username: string
   name?: string | null
+  avatarUrl?: string | null
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
@@ -410,6 +427,7 @@ export type UserUpdateManyMutationInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -421,6 +439,7 @@ export type UserUncheckedUpdateManyInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -432,6 +451,7 @@ export type UserCountOrderByAggregateInput = {
   email?: Prisma.SortOrder
   username?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  avatarUrl?: Prisma.SortOrder
   password?: Prisma.SortOrder
   theme?: Prisma.SortOrder
   appearOffline?: Prisma.SortOrder
@@ -447,6 +467,7 @@ export type UserMaxOrderByAggregateInput = {
   email?: Prisma.SortOrder
   username?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  avatarUrl?: Prisma.SortOrder
   password?: Prisma.SortOrder
   theme?: Prisma.SortOrder
   appearOffline?: Prisma.SortOrder
@@ -458,6 +479,7 @@ export type UserMinOrderByAggregateInput = {
   email?: Prisma.SortOrder
   username?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  avatarUrl?: Prisma.SortOrder
   password?: Prisma.SortOrder
   theme?: Prisma.SortOrder
   appearOffline?: Prisma.SortOrder
@@ -617,6 +639,7 @@ export type UserCreateWithoutOwnedCommunitiesInput = {
   email: string
   username: string
   name?: string | null
+  avatarUrl?: string | null
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
@@ -635,6 +658,7 @@ export type UserUncheckedCreateWithoutOwnedCommunitiesInput = {
   email: string
   username: string
   name?: string | null
+  avatarUrl?: string | null
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
@@ -668,6 +692,7 @@ export type UserUpdateWithoutOwnedCommunitiesInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -686,6 +711,7 @@ export type UserUncheckedUpdateWithoutOwnedCommunitiesInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -703,6 +729,7 @@ export type UserCreateWithoutMembershipsInput = {
   email: string
   username: string
   name?: string | null
+  avatarUrl?: string | null
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
@@ -721,6 +748,7 @@ export type UserUncheckedCreateWithoutMembershipsInput = {
   email: string
   username: string
   name?: string | null
+  avatarUrl?: string | null
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
@@ -754,6 +782,7 @@ export type UserUpdateWithoutMembershipsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -772,6 +801,7 @@ export type UserUncheckedUpdateWithoutMembershipsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -789,6 +819,7 @@ export type UserCreateWithoutPostsInput = {
   email: string
   username: string
   name?: string | null
+  avatarUrl?: string | null
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
@@ -807,6 +838,7 @@ export type UserUncheckedCreateWithoutPostsInput = {
   email: string
   username: string
   name?: string | null
+  avatarUrl?: string | null
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
@@ -840,6 +872,7 @@ export type UserUpdateWithoutPostsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -858,6 +891,7 @@ export type UserUncheckedUpdateWithoutPostsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -875,6 +909,7 @@ export type UserCreateWithoutSentFriendshipsInput = {
   email: string
   username: string
   name?: string | null
+  avatarUrl?: string | null
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
@@ -893,6 +928,7 @@ export type UserUncheckedCreateWithoutSentFriendshipsInput = {
   email: string
   username: string
   name?: string | null
+  avatarUrl?: string | null
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
@@ -915,6 +951,7 @@ export type UserCreateWithoutReceivedFriendshipsInput = {
   email: string
   username: string
   name?: string | null
+  avatarUrl?: string | null
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
@@ -933,6 +970,7 @@ export type UserUncheckedCreateWithoutReceivedFriendshipsInput = {
   email: string
   username: string
   name?: string | null
+  avatarUrl?: string | null
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
@@ -966,6 +1004,7 @@ export type UserUpdateWithoutSentFriendshipsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -984,6 +1023,7 @@ export type UserUncheckedUpdateWithoutSentFriendshipsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1012,6 +1052,7 @@ export type UserUpdateWithoutReceivedFriendshipsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1030,6 +1071,7 @@ export type UserUncheckedUpdateWithoutReceivedFriendshipsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1047,6 +1089,7 @@ export type UserCreateWithoutThreadsInput = {
   email: string
   username: string
   name?: string | null
+  avatarUrl?: string | null
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
@@ -1065,6 +1108,7 @@ export type UserUncheckedCreateWithoutThreadsInput = {
   email: string
   username: string
   name?: string | null
+  avatarUrl?: string | null
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
@@ -1098,6 +1142,7 @@ export type UserUpdateWithoutThreadsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1116,6 +1161,7 @@ export type UserUncheckedUpdateWithoutThreadsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1133,6 +1179,7 @@ export type UserCreateWithoutCommentsInput = {
   email: string
   username: string
   name?: string | null
+  avatarUrl?: string | null
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
@@ -1151,6 +1198,7 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   email: string
   username: string
   name?: string | null
+  avatarUrl?: string | null
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
@@ -1184,6 +1232,7 @@ export type UserUpdateWithoutCommentsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1202,6 +1251,7 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1219,6 +1269,7 @@ export type UserCreateWithoutVotesInput = {
   email: string
   username: string
   name?: string | null
+  avatarUrl?: string | null
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
@@ -1237,6 +1288,7 @@ export type UserUncheckedCreateWithoutVotesInput = {
   email: string
   username: string
   name?: string | null
+  avatarUrl?: string | null
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
@@ -1270,6 +1322,7 @@ export type UserUpdateWithoutVotesInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1288,6 +1341,7 @@ export type UserUncheckedUpdateWithoutVotesInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1400,6 +1454,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   email?: boolean
   username?: boolean
   name?: boolean
+  avatarUrl?: boolean
   password?: boolean
   theme?: boolean
   appearOffline?: boolean
@@ -1420,6 +1475,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   email?: boolean
   username?: boolean
   name?: boolean
+  avatarUrl?: boolean
   password?: boolean
   theme?: boolean
   appearOffline?: boolean
@@ -1431,6 +1487,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   email?: boolean
   username?: boolean
   name?: boolean
+  avatarUrl?: boolean
   password?: boolean
   theme?: boolean
   appearOffline?: boolean
@@ -1442,13 +1499,14 @@ export type UserSelectScalar = {
   email?: boolean
   username?: boolean
   name?: boolean
+  avatarUrl?: boolean
   password?: boolean
   theme?: boolean
   appearOffline?: boolean
   createdAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "username" | "name" | "password" | "theme" | "appearOffline" | "createdAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "username" | "name" | "avatarUrl" | "password" | "theme" | "appearOffline" | "createdAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   ownedCommunities?: boolean | Prisma.User$ownedCommunitiesArgs<ExtArgs>
   memberships?: boolean | Prisma.User$membershipsArgs<ExtArgs>
@@ -1480,6 +1538,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     email: string
     username: string
     name: string | null
+    avatarUrl: string | null
     password: string
     theme: $Enums.Theme
     appearOffline: boolean
@@ -1919,6 +1978,7 @@ export interface UserFieldRefs {
   readonly email: Prisma.FieldRef<"User", 'String'>
   readonly username: Prisma.FieldRef<"User", 'String'>
   readonly name: Prisma.FieldRef<"User", 'String'>
+  readonly avatarUrl: Prisma.FieldRef<"User", 'String'>
   readonly password: Prisma.FieldRef<"User", 'String'>
   readonly theme: Prisma.FieldRef<"User", 'Theme'>
   readonly appearOffline: Prisma.FieldRef<"User", 'Boolean'>

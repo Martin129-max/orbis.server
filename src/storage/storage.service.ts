@@ -52,6 +52,11 @@ export class StorageService {
     return `${this.publicUrl}/${key}`;
   }
 
+  keyFor(url: string): string | null {
+    const prefix = `${this.publicUrl}/`;
+    return url.startsWith(prefix) ? url.slice(prefix.length) : null;
+  }
+
   private async toWebp(file: Buffer, maxSize: number): Promise<Buffer> {
     try {
       return await sharp(file)

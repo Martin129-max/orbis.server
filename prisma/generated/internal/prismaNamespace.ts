@@ -1197,6 +1197,7 @@ export const UserScalarFieldEnum = {
   email: 'email',
   username: 'username',
   name: 'name',
+  avatarUrl: 'avatarUrl',
   password: 'password',
   theme: 'theme',
   appearOffline: 'appearOffline',
@@ -1209,6 +1210,7 @@ export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof User
 export const CommunityScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  iconUrl: 'iconUrl',
   ownerId: 'ownerId',
   isPublic: 'isPublic',
   createdAt: 'createdAt'

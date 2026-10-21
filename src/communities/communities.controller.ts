@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -11,8 +12,11 @@ import {
   Put,
   Query,
   Req,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import {
   CommunitiesService,
   CommunityMember,
@@ -26,6 +30,7 @@ import { UpdateCommunityDto } from './dto/update-community.dto';
 import { CommunityMemberGuard } from './community-member.guard';
 import { JwtAuthGuard } from '../auth/jwt.guard';
 import { Community as CommunityModel } from '../../prisma/generated/client';
+import { IMAGE_MAX_BYTES } from '../storage/storage.service';
 
 @Controller('communities')
 @UseGuards(JwtAuthGuard)
@@ -134,6 +139,33 @@ export class CommunitiesController {
       communityId,
       updateCommunityDto,
     );
+  }
+
+  @Post(':communityId/icon')
+  @UseGuards(CommunityMemberGuard)
+  @UseInterceptors(
+    FileInterceptor('file', { limits: { fileSize: IMAGE_MAX_BYTES } }),
+  )
+  uploadIcon(
+    @Req() req,
+    @Param('communityId', ParseIntPipe) communityId: number,
+    @UploadedFile() file?: Express.Multer.File,
+  ): Promise<CommunityWithRole> {
+    if (!file) throw new BadRequestException('Choose an image to upload');
+    return this.communitiesService.updateIcon(
+      req.user.userId,
+      communityId,
+      file.buffer,
+    );
+  }
+
+  @Delete(':communityId/icon')
+  @UseGuards(CommunityMemberGuard)
+  removeIcon(
+    @Req() req,
+    @Param('communityId', ParseIntPipe) communityId: number,
+  ): Promise<CommunityWithRole> {
+    return this.communitiesService.removeIcon(req.user.userId, communityId);
   }
 
   @Delete(':communityId')

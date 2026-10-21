@@ -44,6 +44,13 @@ describe('StorageService', () => {
     expect(send).not.toHaveBeenCalled();
   });
 
+  it('finds the key of a url in this storage only', () => {
+    expect(service.keyFor('https://cdn.test/avatars/a.webp')).toBe(
+      'avatars/a.webp',
+    );
+    expect(service.keyFor('https://elsewhere.test/avatars/a.webp')).toBeNull();
+  });
+
   it('rejects images over the size limit', async () => {
     await expect(
       service.uploadImage(Buffer.alloc(IMAGE_MAX_BYTES + 1), 'avatars'),

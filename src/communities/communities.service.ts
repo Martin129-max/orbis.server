@@ -12,11 +12,13 @@ import { UpdateCommunityDto } from './dto/update-community.dto';
 import { ADMINISTRATOR, CommunityRole, isAdministrator } from './permissions';
 import { MAX_INT } from './community-member.guard';
 import { Community as CommunityModel } from '../../prisma/generated/client';
+import { StorageService } from '../storage/storage.service';
 
 export type CommunityMember = {
   userId: number;
   username: string;
   name: string | null;
+  avatarUrl: string | null;
   nickname: string | null;
   joinedAt: Date;
   isOwner: boolean;
@@ -37,13 +39,17 @@ const roleRank: Record<CommunityRole, number> = {
 export type CommunitySearchResult = {
   id: number;
   name: string;
+  iconUrl: string | null;
   memberCount: number;
   joined: boolean;
 };
 
 @Injectable()
 export class CommunitiesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private storage: StorageService,
+  ) {}
 
   async create(
     ownerId: number,
@@ -78,14 +84,16 @@ export class CommunitiesService {
       select: {
         id: true,
         name: true,
+        iconUrl: true,
         _count: { select: { memberships: true } },
         memberships: { where: { userId }, select: { userId: true } },
       },
     });
 
-    return communities.map(({ id, name, _count, memberships }) => ({
+    return communities.map(({ id, name, iconUrl, _count, memberships }) => ({
       id,
       name,
+      iconUrl,
       memberCount: _count.memberships,
       joined: memberships.length > 0,
     }));
@@ -165,7 +173,9 @@ export class CommunitiesService {
           select: {
             nickname: true,
             joinedAt: true,
-            user: { select: { id: true, username: true, name: true } },
+            user: {
+              select: { id: true, username: true, name: true, avatarUrl: true },
+            },
             roles: { select: { role: { select: { permissions: true } } } },
           },
         },
@@ -181,6 +191,7 @@ export class CommunitiesService {
           userId: user.id,
           username: user.username,
           name: user.name,
+          avatarUrl: user.avatarUrl,
           nickname,
           joinedAt,
           isOwner,
@@ -261,9 +272,53 @@ export class CommunitiesService {
     return { ...community, role };
   }
 
+  async updateIcon(
+    userId: number,
+    communityId: number,
+    file: Buffer,
+  ): Promise<CommunityWithRole> {
+    await this.requireRole(userId, communityId, 'admin');
+    const { url } = await this.storage.uploadImage(file, 'communities', 512);
+    return this.replaceIcon(userId, communityId, url);
+  }
+
+  async removeIcon(
+    userId: number,
+    communityId: number,
+  ): Promise<CommunityWithRole> {
+    await this.requireRole(userId, communityId, 'admin');
+    return this.replaceIcon(userId, communityId, null);
+  }
+
   async remove(userId: number, communityId: number): Promise<void> {
     await this.requireRole(userId, communityId, 'owner');
-    await this.prisma.community.delete({ where: { id: communityId } });
+    const community = await this.prisma.community.delete({
+      where: { id: communityId },
+    });
+    await this.deleteStoredIcon(community.iconUrl);
+  }
+
+  private async replaceIcon(
+    userId: number,
+    communityId: number,
+    iconUrl: string | null,
+  ): Promise<CommunityWithRole> {
+    const previous = await this.prisma.community.findUnique({
+      where: { id: communityId },
+      select: { iconUrl: true },
+    });
+    await this.prisma.community.update({
+      where: { id: communityId },
+      data: { iconUrl },
+    });
+    await this.deleteStoredIcon(previous?.iconUrl ?? null);
+
+    return (await this.findOne(userId, communityId))!;
+  }
+
+  private async deleteStoredIcon(iconUrl: string | null) {
+    const key = iconUrl && this.storage.keyFor(iconUrl);
+    if (key) await this.storage.delete(key).catch(() => {});
   }
 
   async setAdmin(
