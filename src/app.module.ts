@@ -7,6 +7,7 @@ import { FriendsModule } from './friends/friends.module';
 import { ThreadsModule } from './threads/threads.module';
 import { CommentsModule } from './comments/comments.module';
 import { VotesModule } from './votes/votes.module';
+import { StatsModule } from './stats/stats.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaService } from './prisma.service';
@@ -21,6 +22,7 @@ import { PrismaService } from './prisma.service';
     ThreadsModule,
     CommentsModule,
     VotesModule,
+    StatsModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
