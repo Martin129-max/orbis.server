@@ -224,6 +224,9 @@ export type CommunityWhereInput = {
   memberships?: Prisma.MembershipListRelationFilter
   roles?: Prisma.RoleListRelationFilter
   posts?: Prisma.PostListRelationFilter
+  threads?: Prisma.ThreadListRelationFilter
+  comments?: Prisma.CommentListRelationFilter
+  votes?: Prisma.VoteListRelationFilter
 }
 
 export type CommunityOrderByWithRelationInput = {
@@ -236,6 +239,9 @@ export type CommunityOrderByWithRelationInput = {
   memberships?: Prisma.MembershipOrderByRelationAggregateInput
   roles?: Prisma.RoleOrderByRelationAggregateInput
   posts?: Prisma.PostOrderByRelationAggregateInput
+  threads?: Prisma.ThreadOrderByRelationAggregateInput
+  comments?: Prisma.CommentOrderByRelationAggregateInput
+  votes?: Prisma.VoteOrderByRelationAggregateInput
 }
 
 export type CommunityWhereUniqueInput = Prisma.AtLeast<{
@@ -251,6 +257,9 @@ export type CommunityWhereUniqueInput = Prisma.AtLeast<{
   memberships?: Prisma.MembershipListRelationFilter
   roles?: Prisma.RoleListRelationFilter
   posts?: Prisma.PostListRelationFilter
+  threads?: Prisma.ThreadListRelationFilter
+  comments?: Prisma.CommentListRelationFilter
+  votes?: Prisma.VoteListRelationFilter
 }, "id">
 
 export type CommunityOrderByWithAggregationInput = {
@@ -285,6 +294,9 @@ export type CommunityCreateInput = {
   memberships?: Prisma.MembershipCreateNestedManyWithoutCommunityInput
   roles?: Prisma.RoleCreateNestedManyWithoutCommunityInput
   posts?: Prisma.PostCreateNestedManyWithoutCommunityInput
+  threads?: Prisma.ThreadCreateNestedManyWithoutCommunityInput
+  comments?: Prisma.CommentCreateNestedManyWithoutCommunityInput
+  votes?: Prisma.VoteCreateNestedManyWithoutCommunityInput
 }
 
 export type CommunityUncheckedCreateInput = {
@@ -296,6 +308,9 @@ export type CommunityUncheckedCreateInput = {
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutCommunityInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutCommunityInput
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutCommunityInput
+  threads?: Prisma.ThreadUncheckedCreateNestedManyWithoutCommunityInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutCommunityInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutCommunityInput
 }
 
 export type CommunityUpdateInput = {
@@ -306,6 +321,9 @@ export type CommunityUpdateInput = {
   memberships?: Prisma.MembershipUpdateManyWithoutCommunityNestedInput
   roles?: Prisma.RoleUpdateManyWithoutCommunityNestedInput
   posts?: Prisma.PostUpdateManyWithoutCommunityNestedInput
+  threads?: Prisma.ThreadUpdateManyWithoutCommunityNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutCommunityNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutCommunityNestedInput
 }
 
 export type CommunityUncheckedUpdateInput = {
@@ -317,6 +335,9 @@ export type CommunityUncheckedUpdateInput = {
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutCommunityNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutCommunityNestedInput
   posts?: Prisma.PostUncheckedUpdateManyWithoutCommunityNestedInput
+  threads?: Prisma.ThreadUncheckedUpdateManyWithoutCommunityNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutCommunityNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutCommunityNestedInput
 }
 
 export type CommunityCreateManyInput = {
@@ -474,6 +495,48 @@ export type CommunityUpdateOneRequiredWithoutPostsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.CommunityUpdateToOneWithWhereWithoutPostsInput, Prisma.CommunityUpdateWithoutPostsInput>, Prisma.CommunityUncheckedUpdateWithoutPostsInput>
 }
 
+export type CommunityCreateNestedOneWithoutThreadsInput = {
+  create?: Prisma.XOR<Prisma.CommunityCreateWithoutThreadsInput, Prisma.CommunityUncheckedCreateWithoutThreadsInput>
+  connectOrCreate?: Prisma.CommunityCreateOrConnectWithoutThreadsInput
+  connect?: Prisma.CommunityWhereUniqueInput
+}
+
+export type CommunityUpdateOneRequiredWithoutThreadsNestedInput = {
+  create?: Prisma.XOR<Prisma.CommunityCreateWithoutThreadsInput, Prisma.CommunityUncheckedCreateWithoutThreadsInput>
+  connectOrCreate?: Prisma.CommunityCreateOrConnectWithoutThreadsInput
+  upsert?: Prisma.CommunityUpsertWithoutThreadsInput
+  connect?: Prisma.CommunityWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CommunityUpdateToOneWithWhereWithoutThreadsInput, Prisma.CommunityUpdateWithoutThreadsInput>, Prisma.CommunityUncheckedUpdateWithoutThreadsInput>
+}
+
+export type CommunityCreateNestedOneWithoutCommentsInput = {
+  create?: Prisma.XOR<Prisma.CommunityCreateWithoutCommentsInput, Prisma.CommunityUncheckedCreateWithoutCommentsInput>
+  connectOrCreate?: Prisma.CommunityCreateOrConnectWithoutCommentsInput
+  connect?: Prisma.CommunityWhereUniqueInput
+}
+
+export type CommunityUpdateOneRequiredWithoutCommentsNestedInput = {
+  create?: Prisma.XOR<Prisma.CommunityCreateWithoutCommentsInput, Prisma.CommunityUncheckedCreateWithoutCommentsInput>
+  connectOrCreate?: Prisma.CommunityCreateOrConnectWithoutCommentsInput
+  upsert?: Prisma.CommunityUpsertWithoutCommentsInput
+  connect?: Prisma.CommunityWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CommunityUpdateToOneWithWhereWithoutCommentsInput, Prisma.CommunityUpdateWithoutCommentsInput>, Prisma.CommunityUncheckedUpdateWithoutCommentsInput>
+}
+
+export type CommunityCreateNestedOneWithoutVotesInput = {
+  create?: Prisma.XOR<Prisma.CommunityCreateWithoutVotesInput, Prisma.CommunityUncheckedCreateWithoutVotesInput>
+  connectOrCreate?: Prisma.CommunityCreateOrConnectWithoutVotesInput
+  connect?: Prisma.CommunityWhereUniqueInput
+}
+
+export type CommunityUpdateOneRequiredWithoutVotesNestedInput = {
+  create?: Prisma.XOR<Prisma.CommunityCreateWithoutVotesInput, Prisma.CommunityUncheckedCreateWithoutVotesInput>
+  connectOrCreate?: Prisma.CommunityCreateOrConnectWithoutVotesInput
+  upsert?: Prisma.CommunityUpsertWithoutVotesInput
+  connect?: Prisma.CommunityWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CommunityUpdateToOneWithWhereWithoutVotesInput, Prisma.CommunityUpdateWithoutVotesInput>, Prisma.CommunityUncheckedUpdateWithoutVotesInput>
+}
+
 export type CommunityCreateWithoutOwnerInput = {
   name: string
   isPublic?: boolean
@@ -481,6 +544,9 @@ export type CommunityCreateWithoutOwnerInput = {
   memberships?: Prisma.MembershipCreateNestedManyWithoutCommunityInput
   roles?: Prisma.RoleCreateNestedManyWithoutCommunityInput
   posts?: Prisma.PostCreateNestedManyWithoutCommunityInput
+  threads?: Prisma.ThreadCreateNestedManyWithoutCommunityInput
+  comments?: Prisma.CommentCreateNestedManyWithoutCommunityInput
+  votes?: Prisma.VoteCreateNestedManyWithoutCommunityInput
 }
 
 export type CommunityUncheckedCreateWithoutOwnerInput = {
@@ -491,6 +557,9 @@ export type CommunityUncheckedCreateWithoutOwnerInput = {
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutCommunityInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutCommunityInput
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutCommunityInput
+  threads?: Prisma.ThreadUncheckedCreateNestedManyWithoutCommunityInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutCommunityInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutCommunityInput
 }
 
 export type CommunityCreateOrConnectWithoutOwnerInput = {
@@ -537,6 +606,9 @@ export type CommunityCreateWithoutMembershipsInput = {
   owner: Prisma.UserCreateNestedOneWithoutOwnedCommunitiesInput
   roles?: Prisma.RoleCreateNestedManyWithoutCommunityInput
   posts?: Prisma.PostCreateNestedManyWithoutCommunityInput
+  threads?: Prisma.ThreadCreateNestedManyWithoutCommunityInput
+  comments?: Prisma.CommentCreateNestedManyWithoutCommunityInput
+  votes?: Prisma.VoteCreateNestedManyWithoutCommunityInput
 }
 
 export type CommunityUncheckedCreateWithoutMembershipsInput = {
@@ -547,6 +619,9 @@ export type CommunityUncheckedCreateWithoutMembershipsInput = {
   createdAt?: Date | string
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutCommunityInput
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutCommunityInput
+  threads?: Prisma.ThreadUncheckedCreateNestedManyWithoutCommunityInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutCommunityInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutCommunityInput
 }
 
 export type CommunityCreateOrConnectWithoutMembershipsInput = {
@@ -572,6 +647,9 @@ export type CommunityUpdateWithoutMembershipsInput = {
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedCommunitiesNestedInput
   roles?: Prisma.RoleUpdateManyWithoutCommunityNestedInput
   posts?: Prisma.PostUpdateManyWithoutCommunityNestedInput
+  threads?: Prisma.ThreadUpdateManyWithoutCommunityNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutCommunityNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutCommunityNestedInput
 }
 
 export type CommunityUncheckedUpdateWithoutMembershipsInput = {
@@ -582,6 +660,9 @@ export type CommunityUncheckedUpdateWithoutMembershipsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roles?: Prisma.RoleUncheckedUpdateManyWithoutCommunityNestedInput
   posts?: Prisma.PostUncheckedUpdateManyWithoutCommunityNestedInput
+  threads?: Prisma.ThreadUncheckedUpdateManyWithoutCommunityNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutCommunityNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutCommunityNestedInput
 }
 
 export type CommunityCreateWithoutRolesInput = {
@@ -591,6 +672,9 @@ export type CommunityCreateWithoutRolesInput = {
   owner: Prisma.UserCreateNestedOneWithoutOwnedCommunitiesInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutCommunityInput
   posts?: Prisma.PostCreateNestedManyWithoutCommunityInput
+  threads?: Prisma.ThreadCreateNestedManyWithoutCommunityInput
+  comments?: Prisma.CommentCreateNestedManyWithoutCommunityInput
+  votes?: Prisma.VoteCreateNestedManyWithoutCommunityInput
 }
 
 export type CommunityUncheckedCreateWithoutRolesInput = {
@@ -601,6 +685,9 @@ export type CommunityUncheckedCreateWithoutRolesInput = {
   createdAt?: Date | string
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutCommunityInput
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutCommunityInput
+  threads?: Prisma.ThreadUncheckedCreateNestedManyWithoutCommunityInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutCommunityInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutCommunityInput
 }
 
 export type CommunityCreateOrConnectWithoutRolesInput = {
@@ -626,6 +713,9 @@ export type CommunityUpdateWithoutRolesInput = {
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedCommunitiesNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutCommunityNestedInput
   posts?: Prisma.PostUpdateManyWithoutCommunityNestedInput
+  threads?: Prisma.ThreadUpdateManyWithoutCommunityNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutCommunityNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutCommunityNestedInput
 }
 
 export type CommunityUncheckedUpdateWithoutRolesInput = {
@@ -636,6 +726,9 @@ export type CommunityUncheckedUpdateWithoutRolesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutCommunityNestedInput
   posts?: Prisma.PostUncheckedUpdateManyWithoutCommunityNestedInput
+  threads?: Prisma.ThreadUncheckedUpdateManyWithoutCommunityNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutCommunityNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutCommunityNestedInput
 }
 
 export type CommunityCreateWithoutPostsInput = {
@@ -645,6 +738,9 @@ export type CommunityCreateWithoutPostsInput = {
   owner: Prisma.UserCreateNestedOneWithoutOwnedCommunitiesInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutCommunityInput
   roles?: Prisma.RoleCreateNestedManyWithoutCommunityInput
+  threads?: Prisma.ThreadCreateNestedManyWithoutCommunityInput
+  comments?: Prisma.CommentCreateNestedManyWithoutCommunityInput
+  votes?: Prisma.VoteCreateNestedManyWithoutCommunityInput
 }
 
 export type CommunityUncheckedCreateWithoutPostsInput = {
@@ -655,6 +751,9 @@ export type CommunityUncheckedCreateWithoutPostsInput = {
   createdAt?: Date | string
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutCommunityInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutCommunityInput
+  threads?: Prisma.ThreadUncheckedCreateNestedManyWithoutCommunityInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutCommunityInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutCommunityInput
 }
 
 export type CommunityCreateOrConnectWithoutPostsInput = {
@@ -680,6 +779,9 @@ export type CommunityUpdateWithoutPostsInput = {
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedCommunitiesNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutCommunityNestedInput
   roles?: Prisma.RoleUpdateManyWithoutCommunityNestedInput
+  threads?: Prisma.ThreadUpdateManyWithoutCommunityNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutCommunityNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutCommunityNestedInput
 }
 
 export type CommunityUncheckedUpdateWithoutPostsInput = {
@@ -690,6 +792,207 @@ export type CommunityUncheckedUpdateWithoutPostsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutCommunityNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutCommunityNestedInput
+  threads?: Prisma.ThreadUncheckedUpdateManyWithoutCommunityNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutCommunityNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutCommunityNestedInput
+}
+
+export type CommunityCreateWithoutThreadsInput = {
+  name: string
+  isPublic?: boolean
+  createdAt?: Date | string
+  owner: Prisma.UserCreateNestedOneWithoutOwnedCommunitiesInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutCommunityInput
+  roles?: Prisma.RoleCreateNestedManyWithoutCommunityInput
+  posts?: Prisma.PostCreateNestedManyWithoutCommunityInput
+  comments?: Prisma.CommentCreateNestedManyWithoutCommunityInput
+  votes?: Prisma.VoteCreateNestedManyWithoutCommunityInput
+}
+
+export type CommunityUncheckedCreateWithoutThreadsInput = {
+  id?: number
+  name: string
+  ownerId: number
+  isPublic?: boolean
+  createdAt?: Date | string
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutCommunityInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutCommunityInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutCommunityInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutCommunityInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutCommunityInput
+}
+
+export type CommunityCreateOrConnectWithoutThreadsInput = {
+  where: Prisma.CommunityWhereUniqueInput
+  create: Prisma.XOR<Prisma.CommunityCreateWithoutThreadsInput, Prisma.CommunityUncheckedCreateWithoutThreadsInput>
+}
+
+export type CommunityUpsertWithoutThreadsInput = {
+  update: Prisma.XOR<Prisma.CommunityUpdateWithoutThreadsInput, Prisma.CommunityUncheckedUpdateWithoutThreadsInput>
+  create: Prisma.XOR<Prisma.CommunityCreateWithoutThreadsInput, Prisma.CommunityUncheckedCreateWithoutThreadsInput>
+  where?: Prisma.CommunityWhereInput
+}
+
+export type CommunityUpdateToOneWithWhereWithoutThreadsInput = {
+  where?: Prisma.CommunityWhereInput
+  data: Prisma.XOR<Prisma.CommunityUpdateWithoutThreadsInput, Prisma.CommunityUncheckedUpdateWithoutThreadsInput>
+}
+
+export type CommunityUpdateWithoutThreadsInput = {
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneRequiredWithoutOwnedCommunitiesNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutCommunityNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutCommunityNestedInput
+  posts?: Prisma.PostUpdateManyWithoutCommunityNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutCommunityNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutCommunityNestedInput
+}
+
+export type CommunityUncheckedUpdateWithoutThreadsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerId?: Prisma.IntFieldUpdateOperationsInput | number
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutCommunityNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutCommunityNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutCommunityNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutCommunityNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutCommunityNestedInput
+}
+
+export type CommunityCreateWithoutCommentsInput = {
+  name: string
+  isPublic?: boolean
+  createdAt?: Date | string
+  owner: Prisma.UserCreateNestedOneWithoutOwnedCommunitiesInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutCommunityInput
+  roles?: Prisma.RoleCreateNestedManyWithoutCommunityInput
+  posts?: Prisma.PostCreateNestedManyWithoutCommunityInput
+  threads?: Prisma.ThreadCreateNestedManyWithoutCommunityInput
+  votes?: Prisma.VoteCreateNestedManyWithoutCommunityInput
+}
+
+export type CommunityUncheckedCreateWithoutCommentsInput = {
+  id?: number
+  name: string
+  ownerId: number
+  isPublic?: boolean
+  createdAt?: Date | string
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutCommunityInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutCommunityInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutCommunityInput
+  threads?: Prisma.ThreadUncheckedCreateNestedManyWithoutCommunityInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutCommunityInput
+}
+
+export type CommunityCreateOrConnectWithoutCommentsInput = {
+  where: Prisma.CommunityWhereUniqueInput
+  create: Prisma.XOR<Prisma.CommunityCreateWithoutCommentsInput, Prisma.CommunityUncheckedCreateWithoutCommentsInput>
+}
+
+export type CommunityUpsertWithoutCommentsInput = {
+  update: Prisma.XOR<Prisma.CommunityUpdateWithoutCommentsInput, Prisma.CommunityUncheckedUpdateWithoutCommentsInput>
+  create: Prisma.XOR<Prisma.CommunityCreateWithoutCommentsInput, Prisma.CommunityUncheckedCreateWithoutCommentsInput>
+  where?: Prisma.CommunityWhereInput
+}
+
+export type CommunityUpdateToOneWithWhereWithoutCommentsInput = {
+  where?: Prisma.CommunityWhereInput
+  data: Prisma.XOR<Prisma.CommunityUpdateWithoutCommentsInput, Prisma.CommunityUncheckedUpdateWithoutCommentsInput>
+}
+
+export type CommunityUpdateWithoutCommentsInput = {
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneRequiredWithoutOwnedCommunitiesNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutCommunityNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutCommunityNestedInput
+  posts?: Prisma.PostUpdateManyWithoutCommunityNestedInput
+  threads?: Prisma.ThreadUpdateManyWithoutCommunityNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutCommunityNestedInput
+}
+
+export type CommunityUncheckedUpdateWithoutCommentsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerId?: Prisma.IntFieldUpdateOperationsInput | number
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutCommunityNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutCommunityNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutCommunityNestedInput
+  threads?: Prisma.ThreadUncheckedUpdateManyWithoutCommunityNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutCommunityNestedInput
+}
+
+export type CommunityCreateWithoutVotesInput = {
+  name: string
+  isPublic?: boolean
+  createdAt?: Date | string
+  owner: Prisma.UserCreateNestedOneWithoutOwnedCommunitiesInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutCommunityInput
+  roles?: Prisma.RoleCreateNestedManyWithoutCommunityInput
+  posts?: Prisma.PostCreateNestedManyWithoutCommunityInput
+  threads?: Prisma.ThreadCreateNestedManyWithoutCommunityInput
+  comments?: Prisma.CommentCreateNestedManyWithoutCommunityInput
+}
+
+export type CommunityUncheckedCreateWithoutVotesInput = {
+  id?: number
+  name: string
+  ownerId: number
+  isPublic?: boolean
+  createdAt?: Date | string
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutCommunityInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutCommunityInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutCommunityInput
+  threads?: Prisma.ThreadUncheckedCreateNestedManyWithoutCommunityInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutCommunityInput
+}
+
+export type CommunityCreateOrConnectWithoutVotesInput = {
+  where: Prisma.CommunityWhereUniqueInput
+  create: Prisma.XOR<Prisma.CommunityCreateWithoutVotesInput, Prisma.CommunityUncheckedCreateWithoutVotesInput>
+}
+
+export type CommunityUpsertWithoutVotesInput = {
+  update: Prisma.XOR<Prisma.CommunityUpdateWithoutVotesInput, Prisma.CommunityUncheckedUpdateWithoutVotesInput>
+  create: Prisma.XOR<Prisma.CommunityCreateWithoutVotesInput, Prisma.CommunityUncheckedCreateWithoutVotesInput>
+  where?: Prisma.CommunityWhereInput
+}
+
+export type CommunityUpdateToOneWithWhereWithoutVotesInput = {
+  where?: Prisma.CommunityWhereInput
+  data: Prisma.XOR<Prisma.CommunityUpdateWithoutVotesInput, Prisma.CommunityUncheckedUpdateWithoutVotesInput>
+}
+
+export type CommunityUpdateWithoutVotesInput = {
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneRequiredWithoutOwnedCommunitiesNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutCommunityNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutCommunityNestedInput
+  posts?: Prisma.PostUpdateManyWithoutCommunityNestedInput
+  threads?: Prisma.ThreadUpdateManyWithoutCommunityNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutCommunityNestedInput
+}
+
+export type CommunityUncheckedUpdateWithoutVotesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerId?: Prisma.IntFieldUpdateOperationsInput | number
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutCommunityNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutCommunityNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutCommunityNestedInput
+  threads?: Prisma.ThreadUncheckedUpdateManyWithoutCommunityNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutCommunityNestedInput
 }
 
 export type CommunityCreateManyOwnerInput = {
@@ -706,6 +1009,9 @@ export type CommunityUpdateWithoutOwnerInput = {
   memberships?: Prisma.MembershipUpdateManyWithoutCommunityNestedInput
   roles?: Prisma.RoleUpdateManyWithoutCommunityNestedInput
   posts?: Prisma.PostUpdateManyWithoutCommunityNestedInput
+  threads?: Prisma.ThreadUpdateManyWithoutCommunityNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutCommunityNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutCommunityNestedInput
 }
 
 export type CommunityUncheckedUpdateWithoutOwnerInput = {
@@ -716,6 +1022,9 @@ export type CommunityUncheckedUpdateWithoutOwnerInput = {
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutCommunityNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutCommunityNestedInput
   posts?: Prisma.PostUncheckedUpdateManyWithoutCommunityNestedInput
+  threads?: Prisma.ThreadUncheckedUpdateManyWithoutCommunityNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutCommunityNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutCommunityNestedInput
 }
 
 export type CommunityUncheckedUpdateManyWithoutOwnerInput = {
@@ -734,12 +1043,18 @@ export type CommunityCountOutputType = {
   memberships: number
   roles: number
   posts: number
+  threads: number
+  comments: number
+  votes: number
 }
 
 export type CommunityCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   memberships?: boolean | CommunityCountOutputTypeCountMembershipsArgs
   roles?: boolean | CommunityCountOutputTypeCountRolesArgs
   posts?: boolean | CommunityCountOutputTypeCountPostsArgs
+  threads?: boolean | CommunityCountOutputTypeCountThreadsArgs
+  comments?: boolean | CommunityCountOutputTypeCountCommentsArgs
+  votes?: boolean | CommunityCountOutputTypeCountVotesArgs
 }
 
 /**
@@ -773,6 +1088,27 @@ export type CommunityCountOutputTypeCountPostsArgs<ExtArgs extends runtime.Types
   where?: Prisma.PostWhereInput
 }
 
+/**
+ * CommunityCountOutputType without action
+ */
+export type CommunityCountOutputTypeCountThreadsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ThreadWhereInput
+}
+
+/**
+ * CommunityCountOutputType without action
+ */
+export type CommunityCountOutputTypeCountCommentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CommentWhereInput
+}
+
+/**
+ * CommunityCountOutputType without action
+ */
+export type CommunityCountOutputTypeCountVotesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VoteWhereInput
+}
+
 
 export type CommunitySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -784,6 +1120,9 @@ export type CommunitySelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   memberships?: boolean | Prisma.Community$membershipsArgs<ExtArgs>
   roles?: boolean | Prisma.Community$rolesArgs<ExtArgs>
   posts?: boolean | Prisma.Community$postsArgs<ExtArgs>
+  threads?: boolean | Prisma.Community$threadsArgs<ExtArgs>
+  comments?: boolean | Prisma.Community$commentsArgs<ExtArgs>
+  votes?: boolean | Prisma.Community$votesArgs<ExtArgs>
   _count?: boolean | Prisma.CommunityCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["community"]>
 
@@ -819,6 +1158,9 @@ export type CommunityInclude<ExtArgs extends runtime.Types.Extensions.InternalAr
   memberships?: boolean | Prisma.Community$membershipsArgs<ExtArgs>
   roles?: boolean | Prisma.Community$rolesArgs<ExtArgs>
   posts?: boolean | Prisma.Community$postsArgs<ExtArgs>
+  threads?: boolean | Prisma.Community$threadsArgs<ExtArgs>
+  comments?: boolean | Prisma.Community$commentsArgs<ExtArgs>
+  votes?: boolean | Prisma.Community$votesArgs<ExtArgs>
   _count?: boolean | Prisma.CommunityCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type CommunityIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -835,6 +1177,9 @@ export type $CommunityPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     memberships: Prisma.$MembershipPayload<ExtArgs>[]
     roles: Prisma.$RolePayload<ExtArgs>[]
     posts: Prisma.$PostPayload<ExtArgs>[]
+    threads: Prisma.$ThreadPayload<ExtArgs>[]
+    comments: Prisma.$CommentPayload<ExtArgs>[]
+    votes: Prisma.$VotePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1240,6 +1585,9 @@ export interface Prisma__CommunityClient<T, Null = never, ExtArgs extends runtim
   memberships<T extends Prisma.Community$membershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Community$membershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MembershipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   roles<T extends Prisma.Community$rolesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Community$rolesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   posts<T extends Prisma.Community$postsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Community$postsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  threads<T extends Prisma.Community$threadsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Community$threadsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ThreadPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  comments<T extends Prisma.Community$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Community$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  votes<T extends Prisma.Community$votesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Community$votesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1739,6 +2087,78 @@ export type Community$postsArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.PostScalarFieldEnum | Prisma.PostScalarFieldEnum[]
+}
+
+/**
+ * Community.threads
+ */
+export type Community$threadsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Thread
+   */
+  select?: Prisma.ThreadSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Thread
+   */
+  omit?: Prisma.ThreadOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ThreadInclude<ExtArgs> | null
+  where?: Prisma.ThreadWhereInput
+  orderBy?: Prisma.ThreadOrderByWithRelationInput | Prisma.ThreadOrderByWithRelationInput[]
+  cursor?: Prisma.ThreadWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ThreadScalarFieldEnum | Prisma.ThreadScalarFieldEnum[]
+}
+
+/**
+ * Community.comments
+ */
+export type Community$commentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Comment
+   */
+  select?: Prisma.CommentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Comment
+   */
+  omit?: Prisma.CommentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CommentInclude<ExtArgs> | null
+  where?: Prisma.CommentWhereInput
+  orderBy?: Prisma.CommentOrderByWithRelationInput | Prisma.CommentOrderByWithRelationInput[]
+  cursor?: Prisma.CommentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CommentScalarFieldEnum | Prisma.CommentScalarFieldEnum[]
+}
+
+/**
+ * Community.votes
+ */
+export type Community$votesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Vote
+   */
+  select?: Prisma.VoteSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Vote
+   */
+  omit?: Prisma.VoteOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VoteInclude<ExtArgs> | null
+  where?: Prisma.VoteWhereInput
+  orderBy?: Prisma.VoteOrderByWithRelationInput | Prisma.VoteOrderByWithRelationInput[]
+  cursor?: Prisma.VoteWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VoteScalarFieldEnum | Prisma.VoteScalarFieldEnum[]
 }
 
 /**

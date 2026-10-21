@@ -4,6 +4,9 @@ import { AuthModule } from './auth/auth.module';
 import { CommunitiesModule } from './communities/communities.module';
 import { PostsModule } from './posts/posts.module';
 import { FriendsModule } from './friends/friends.module';
+import { ThreadsModule } from './threads/threads.module';
+import { CommentsModule } from './comments/comments.module';
+import { VotesModule } from './votes/votes.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaService } from './prisma.service';
@@ -15,6 +18,9 @@ import { PrismaService } from './prisma.service';
     CommunitiesModule,
     PostsModule,
     FriendsModule,
+    ThreadsModule,
+    CommentsModule,
+    VotesModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

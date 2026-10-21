@@ -57,7 +57,10 @@ export const ModelName = {
   Role: 'Role',
   MembershipRole: 'MembershipRole',
   Post: 'Post',
-  Friendship: 'Friendship'
+  Friendship: 'Friendship',
+  Thread: 'Thread',
+  Comment: 'Comment',
+  Vote: 'Vote'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -135,6 +138,7 @@ export const PostScalarFieldEnum = {
   communityId: 'communityId',
   authorId: 'authorId',
   content: 'content',
+  commentCount: 'commentCount',
   createdAt: 'createdAt'
 } as const
 
@@ -149,6 +153,46 @@ export const FriendshipScalarFieldEnum = {
 } as const
 
 export type FriendshipScalarFieldEnum = (typeof FriendshipScalarFieldEnum)[keyof typeof FriendshipScalarFieldEnum]
+
+
+export const ThreadScalarFieldEnum = {
+  id: 'id',
+  communityId: 'communityId',
+  authorId: 'authorId',
+  title: 'title',
+  content: 'content',
+  score: 'score',
+  commentCount: 'commentCount',
+  createdAt: 'createdAt'
+} as const
+
+export type ThreadScalarFieldEnum = (typeof ThreadScalarFieldEnum)[keyof typeof ThreadScalarFieldEnum]
+
+
+export const CommentScalarFieldEnum = {
+  id: 'id',
+  communityId: 'communityId',
+  commentableType: 'commentableType',
+  commentableId: 'commentableId',
+  parentId: 'parentId',
+  authorId: 'authorId',
+  content: 'content',
+  score: 'score',
+  createdAt: 'createdAt'
+} as const
+
+export type CommentScalarFieldEnum = (typeof CommentScalarFieldEnum)[keyof typeof CommentScalarFieldEnum]
+
+
+export const VoteScalarFieldEnum = {
+  userId: 'userId',
+  votableType: 'votableType',
+  votableId: 'votableId',
+  communityId: 'communityId',
+  value: 'value'
+} as const
+
+export type VoteScalarFieldEnum = (typeof VoteScalarFieldEnum)[keyof typeof VoteScalarFieldEnum]
 
 
 export const SortOrder = {

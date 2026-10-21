@@ -52,3 +52,18 @@ export type Post = Prisma.PostModel
  * 
  */
 export type Friendship = Prisma.FriendshipModel
+/**
+ * Model Thread
+ * 
+ */
+export type Thread = Prisma.ThreadModel
+/**
+ * Model Comment
+ * 
+ */
+export type Comment = Prisma.CommentModel
+/**
+ * Model Vote
+ * 
+ */
+export type Vote = Prisma.VoteModel

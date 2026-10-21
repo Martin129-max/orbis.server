@@ -18,6 +18,22 @@ export const Theme = {
 export type Theme = (typeof Theme)[keyof typeof Theme]
 
 
+export const CommentableType = {
+  post: 'post',
+  thread: 'thread'
+} as const
+
+export type CommentableType = (typeof CommentableType)[keyof typeof CommentableType]
+
+
+export const VotableType = {
+  thread: 'thread',
+  comment: 'comment'
+} as const
+
+export type VotableType = (typeof VotableType)[keyof typeof VotableType]
+
+
 export const FriendshipStatus = {
   pending: 'pending',
   accepted: 'accepted'
