@@ -56,7 +56,8 @@ export const ModelName = {
   Membership: 'Membership',
   Role: 'Role',
   MembershipRole: 'MembershipRole',
-  Post: 'Post'
+  Post: 'Post',
+  Friendship: 'Friendship'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -81,6 +82,7 @@ export const UserScalarFieldEnum = {
   name: 'name',
   password: 'password',
   theme: 'theme',
+  appearOffline: 'appearOffline',
   createdAt: 'createdAt'
 } as const
 
@@ -136,6 +138,16 @@ export const PostScalarFieldEnum = {
 } as const
 
 export type PostScalarFieldEnum = (typeof PostScalarFieldEnum)[keyof typeof PostScalarFieldEnum]
+
+
+export const FriendshipScalarFieldEnum = {
+  requesterId: 'requesterId',
+  addresseeId: 'addresseeId',
+  status: 'status',
+  createdAt: 'createdAt'
+} as const
+
+export type FriendshipScalarFieldEnum = (typeof FriendshipScalarFieldEnum)[keyof typeof FriendshipScalarFieldEnum]
 
 
 export const SortOrder = {

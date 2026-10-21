@@ -13,16 +13,24 @@ enum Theme {
   dark
 }
 
+enum FriendshipStatus {
+  pending
+  accepted
+}
+
 model User {
-  id               Int          @id @default(autoincrement())
-  email            String       @unique
-  name             String?
-  password         String
-  theme            Theme        @default(system)
-  createdAt        DateTime     @default(now())
-  ownedCommunities Community[]
-  memberships      Membership[]
-  posts            Post[]
+  id                  Int          @id @default(autoincrement())
+  email               String       @unique
+  name                String?
+  password            String
+  theme               Theme        @default(system)
+  appearOffline       Boolean      @default(false)
+  createdAt           DateTime     @default(now())
+  ownedCommunities    Community[]
+  memberships         Membership[]
+  posts               Post[]
+  sentFriendships     Friendship[] @relation("FriendshipRequester")
+  receivedFriendships Friendship[] @relation("FriendshipAddressee")
 }
 
 model Community {
@@ -85,4 +93,16 @@ model Post {
   author      User      @relation(fields: [authorId], references: [id])
 
   @@index([communityId, createdAt(sort: Desc)])
+}
+
+model Friendship {
+  requesterId Int
+  addresseeId Int
+  status      FriendshipStatus @default(pending)
+  createdAt   DateTime         @default(now())
+  requester   User             @relation("FriendshipRequester", fields: [requesterId], references: [id], onDelete: Cascade)
+  addressee   User             @relation("FriendshipAddressee", fields: [addresseeId], references: [id], onDelete: Cascade)
+
+  @@id([requesterId, addresseeId])
+  @@index([addresseeId])
 }

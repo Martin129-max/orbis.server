@@ -16,3 +16,11 @@ export const Theme = {
 } as const
 
 export type Theme = (typeof Theme)[keyof typeof Theme]
+
+
+export const FriendshipStatus = {
+  pending: 'pending',
+  accepted: 'accepted'
+} as const
+
+export type FriendshipStatus = (typeof FriendshipStatus)[keyof typeof FriendshipStatus]

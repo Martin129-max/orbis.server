@@ -8,9 +8,25 @@ import { User as UserModel } from '../../prisma/generated/client';
 
 export type PublicUser = Omit<UserModel, 'password'>;
 
-export type Profile = Pick<UserModel, 'email' | 'theme'> & { userId: number };
+export type Profile = Pick<UserModel, 'email' | 'theme' | 'appearOffline'> & {
+  userId: number;
+};
 
 const omitPassword = { password: true } as const;
+
+const profile = {
+  id: true,
+  email: true,
+  theme: true,
+  appearOffline: true,
+} as const;
+
+function toProfile({
+  id,
+  ...user
+}: Pick<UserModel, keyof typeof profile>): Profile {
+  return { userId: id, ...user };
+}
 
 @Injectable()
 export class UsersService {
@@ -40,23 +56,23 @@ export class UsersService {
   async findProfile(id: number): Promise<Profile | null> {
     const user = await this.prisma.user.findUnique({
       where: { id },
-      select: { id: true, email: true, theme: true },
+      select: profile,
     });
 
-    return user && { userId: user.id, email: user.email, theme: user.theme };
+    return user && toProfile(user);
   }
 
   async updatePreferences(
     id: number,
-    { theme }: UpdatePreferencesDto,
+    { theme, appearOffline }: UpdatePreferencesDto,
   ): Promise<Profile> {
     const user = await this.prisma.user.update({
       where: { id },
-      data: { theme },
-      select: { id: true, email: true, theme: true },
+      data: { theme, appearOffline },
+      select: profile,
     });
 
-    return { userId: user.id, email: user.email, theme: user.theme };
+    return toProfile(user);
   }
 
   findByEmail(email: string): Promise<UserModel | null> {

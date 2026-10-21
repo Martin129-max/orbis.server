@@ -40,6 +40,7 @@ export type UserMinAggregateOutputType = {
   name: string | null
   password: string | null
   theme: $Enums.Theme | null
+  appearOffline: boolean | null
   createdAt: Date | null
 }
 
@@ -49,6 +50,7 @@ export type UserMaxAggregateOutputType = {
   name: string | null
   password: string | null
   theme: $Enums.Theme | null
+  appearOffline: boolean | null
   createdAt: Date | null
 }
 
@@ -58,6 +60,7 @@ export type UserCountAggregateOutputType = {
   name: number
   password: number
   theme: number
+  appearOffline: number
   createdAt: number
   _all: number
 }
@@ -77,6 +80,7 @@ export type UserMinAggregateInputType = {
   name?: true
   password?: true
   theme?: true
+  appearOffline?: true
   createdAt?: true
 }
 
@@ -86,6 +90,7 @@ export type UserMaxAggregateInputType = {
   name?: true
   password?: true
   theme?: true
+  appearOffline?: true
   createdAt?: true
 }
 
@@ -95,6 +100,7 @@ export type UserCountAggregateInputType = {
   name?: true
   password?: true
   theme?: true
+  appearOffline?: true
   createdAt?: true
   _all?: true
 }
@@ -191,6 +197,7 @@ export type UserGroupByOutputType = {
   name: string | null
   password: string
   theme: $Enums.Theme
+  appearOffline: boolean
   createdAt: Date
   _count: UserCountAggregateOutputType | null
   _avg: UserAvgAggregateOutputType | null
@@ -223,10 +230,13 @@ export type UserWhereInput = {
   name?: Prisma.StringNullableFilter<"User"> | string | null
   password?: Prisma.StringFilter<"User"> | string
   theme?: Prisma.EnumThemeFilter<"User"> | $Enums.Theme
+  appearOffline?: Prisma.BoolFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   ownedCommunities?: Prisma.CommunityListRelationFilter
   memberships?: Prisma.MembershipListRelationFilter
   posts?: Prisma.PostListRelationFilter
+  sentFriendships?: Prisma.FriendshipListRelationFilter
+  receivedFriendships?: Prisma.FriendshipListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -235,10 +245,13 @@ export type UserOrderByWithRelationInput = {
   name?: Prisma.SortOrderInput | Prisma.SortOrder
   password?: Prisma.SortOrder
   theme?: Prisma.SortOrder
+  appearOffline?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   ownedCommunities?: Prisma.CommunityOrderByRelationAggregateInput
   memberships?: Prisma.MembershipOrderByRelationAggregateInput
   posts?: Prisma.PostOrderByRelationAggregateInput
+  sentFriendships?: Prisma.FriendshipOrderByRelationAggregateInput
+  receivedFriendships?: Prisma.FriendshipOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -250,10 +263,13 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringNullableFilter<"User"> | string | null
   password?: Prisma.StringFilter<"User"> | string
   theme?: Prisma.EnumThemeFilter<"User"> | $Enums.Theme
+  appearOffline?: Prisma.BoolFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   ownedCommunities?: Prisma.CommunityListRelationFilter
   memberships?: Prisma.MembershipListRelationFilter
   posts?: Prisma.PostListRelationFilter
+  sentFriendships?: Prisma.FriendshipListRelationFilter
+  receivedFriendships?: Prisma.FriendshipListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -262,6 +278,7 @@ export type UserOrderByWithAggregationInput = {
   name?: Prisma.SortOrderInput | Prisma.SortOrder
   password?: Prisma.SortOrder
   theme?: Prisma.SortOrder
+  appearOffline?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _avg?: Prisma.UserAvgOrderByAggregateInput
@@ -279,6 +296,7 @@ export type UserScalarWhereWithAggregatesInput = {
   name?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   password?: Prisma.StringWithAggregatesFilter<"User"> | string
   theme?: Prisma.EnumThemeWithAggregatesFilter<"User"> | $Enums.Theme
+  appearOffline?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
 
@@ -287,10 +305,13 @@ export type UserCreateInput = {
   name?: string | null
   password: string
   theme?: $Enums.Theme
+  appearOffline?: boolean
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
   posts?: Prisma.PostCreateNestedManyWithoutAuthorInput
+  sentFriendships?: Prisma.FriendshipCreateNestedManyWithoutRequesterInput
+  receivedFriendships?: Prisma.FriendshipCreateNestedManyWithoutAddresseeInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -299,10 +320,13 @@ export type UserUncheckedCreateInput = {
   name?: string | null
   password: string
   theme?: $Enums.Theme
+  appearOffline?: boolean
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
+  sentFriendships?: Prisma.FriendshipUncheckedCreateNestedManyWithoutRequesterInput
+  receivedFriendships?: Prisma.FriendshipUncheckedCreateNestedManyWithoutAddresseeInput
 }
 
 export type UserUpdateInput = {
@@ -310,10 +334,13 @@ export type UserUpdateInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
+  appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
   posts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
+  sentFriendships?: Prisma.FriendshipUpdateManyWithoutRequesterNestedInput
+  receivedFriendships?: Prisma.FriendshipUpdateManyWithoutAddresseeNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -322,10 +349,13 @@ export type UserUncheckedUpdateInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
+  appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
   posts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
+  sentFriendships?: Prisma.FriendshipUncheckedUpdateManyWithoutRequesterNestedInput
+  receivedFriendships?: Prisma.FriendshipUncheckedUpdateManyWithoutAddresseeNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -334,6 +364,7 @@ export type UserCreateManyInput = {
   name?: string | null
   password: string
   theme?: $Enums.Theme
+  appearOffline?: boolean
   createdAt?: Date | string
 }
 
@@ -342,6 +373,7 @@ export type UserUpdateManyMutationInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
+  appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -351,6 +383,7 @@ export type UserUncheckedUpdateManyInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
+  appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -360,6 +393,7 @@ export type UserCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   password?: Prisma.SortOrder
   theme?: Prisma.SortOrder
+  appearOffline?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -373,6 +407,7 @@ export type UserMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   password?: Prisma.SortOrder
   theme?: Prisma.SortOrder
+  appearOffline?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -382,6 +417,7 @@ export type UserMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   password?: Prisma.SortOrder
   theme?: Prisma.SortOrder
+  appearOffline?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -404,6 +440,10 @@ export type NullableStringFieldUpdateOperationsInput = {
 
 export type EnumThemeFieldUpdateOperationsInput = {
   set?: $Enums.Theme
+}
+
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
 }
 
 export type DateTimeFieldUpdateOperationsInput = {
@@ -460,14 +500,45 @@ export type UserUpdateOneRequiredWithoutPostsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPostsInput, Prisma.UserUpdateWithoutPostsInput>, Prisma.UserUncheckedUpdateWithoutPostsInput>
 }
 
+export type UserCreateNestedOneWithoutSentFriendshipsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSentFriendshipsInput, Prisma.UserUncheckedCreateWithoutSentFriendshipsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSentFriendshipsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutReceivedFriendshipsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReceivedFriendshipsInput, Prisma.UserUncheckedCreateWithoutReceivedFriendshipsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReceivedFriendshipsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutSentFriendshipsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSentFriendshipsInput, Prisma.UserUncheckedCreateWithoutSentFriendshipsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSentFriendshipsInput
+  upsert?: Prisma.UserUpsertWithoutSentFriendshipsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSentFriendshipsInput, Prisma.UserUpdateWithoutSentFriendshipsInput>, Prisma.UserUncheckedUpdateWithoutSentFriendshipsInput>
+}
+
+export type UserUpdateOneRequiredWithoutReceivedFriendshipsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReceivedFriendshipsInput, Prisma.UserUncheckedCreateWithoutReceivedFriendshipsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReceivedFriendshipsInput
+  upsert?: Prisma.UserUpsertWithoutReceivedFriendshipsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutReceivedFriendshipsInput, Prisma.UserUpdateWithoutReceivedFriendshipsInput>, Prisma.UserUncheckedUpdateWithoutReceivedFriendshipsInput>
+}
+
 export type UserCreateWithoutOwnedCommunitiesInput = {
   email: string
   name?: string | null
   password: string
   theme?: $Enums.Theme
+  appearOffline?: boolean
   createdAt?: Date | string
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
   posts?: Prisma.PostCreateNestedManyWithoutAuthorInput
+  sentFriendships?: Prisma.FriendshipCreateNestedManyWithoutRequesterInput
+  receivedFriendships?: Prisma.FriendshipCreateNestedManyWithoutAddresseeInput
 }
 
 export type UserUncheckedCreateWithoutOwnedCommunitiesInput = {
@@ -476,9 +547,12 @@ export type UserUncheckedCreateWithoutOwnedCommunitiesInput = {
   name?: string | null
   password: string
   theme?: $Enums.Theme
+  appearOffline?: boolean
   createdAt?: Date | string
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
+  sentFriendships?: Prisma.FriendshipUncheckedCreateNestedManyWithoutRequesterInput
+  receivedFriendships?: Prisma.FriendshipUncheckedCreateNestedManyWithoutAddresseeInput
 }
 
 export type UserCreateOrConnectWithoutOwnedCommunitiesInput = {
@@ -502,9 +576,12 @@ export type UserUpdateWithoutOwnedCommunitiesInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
+  appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
   posts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
+  sentFriendships?: Prisma.FriendshipUpdateManyWithoutRequesterNestedInput
+  receivedFriendships?: Prisma.FriendshipUpdateManyWithoutAddresseeNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOwnedCommunitiesInput = {
@@ -513,9 +590,12 @@ export type UserUncheckedUpdateWithoutOwnedCommunitiesInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
+  appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
   posts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
+  sentFriendships?: Prisma.FriendshipUncheckedUpdateManyWithoutRequesterNestedInput
+  receivedFriendships?: Prisma.FriendshipUncheckedUpdateManyWithoutAddresseeNestedInput
 }
 
 export type UserCreateWithoutMembershipsInput = {
@@ -523,9 +603,12 @@ export type UserCreateWithoutMembershipsInput = {
   name?: string | null
   password: string
   theme?: $Enums.Theme
+  appearOffline?: boolean
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityCreateNestedManyWithoutOwnerInput
   posts?: Prisma.PostCreateNestedManyWithoutAuthorInput
+  sentFriendships?: Prisma.FriendshipCreateNestedManyWithoutRequesterInput
+  receivedFriendships?: Prisma.FriendshipCreateNestedManyWithoutAddresseeInput
 }
 
 export type UserUncheckedCreateWithoutMembershipsInput = {
@@ -534,9 +617,12 @@ export type UserUncheckedCreateWithoutMembershipsInput = {
   name?: string | null
   password: string
   theme?: $Enums.Theme
+  appearOffline?: boolean
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutOwnerInput
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
+  sentFriendships?: Prisma.FriendshipUncheckedCreateNestedManyWithoutRequesterInput
+  receivedFriendships?: Prisma.FriendshipUncheckedCreateNestedManyWithoutAddresseeInput
 }
 
 export type UserCreateOrConnectWithoutMembershipsInput = {
@@ -560,9 +646,12 @@ export type UserUpdateWithoutMembershipsInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
+  appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUpdateManyWithoutOwnerNestedInput
   posts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
+  sentFriendships?: Prisma.FriendshipUpdateManyWithoutRequesterNestedInput
+  receivedFriendships?: Prisma.FriendshipUpdateManyWithoutAddresseeNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMembershipsInput = {
@@ -571,9 +660,12 @@ export type UserUncheckedUpdateWithoutMembershipsInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
+  appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutOwnerNestedInput
   posts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
+  sentFriendships?: Prisma.FriendshipUncheckedUpdateManyWithoutRequesterNestedInput
+  receivedFriendships?: Prisma.FriendshipUncheckedUpdateManyWithoutAddresseeNestedInput
 }
 
 export type UserCreateWithoutPostsInput = {
@@ -581,9 +673,12 @@ export type UserCreateWithoutPostsInput = {
   name?: string | null
   password: string
   theme?: $Enums.Theme
+  appearOffline?: boolean
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
+  sentFriendships?: Prisma.FriendshipCreateNestedManyWithoutRequesterInput
+  receivedFriendships?: Prisma.FriendshipCreateNestedManyWithoutAddresseeInput
 }
 
 export type UserUncheckedCreateWithoutPostsInput = {
@@ -592,9 +687,12 @@ export type UserUncheckedCreateWithoutPostsInput = {
   name?: string | null
   password: string
   theme?: $Enums.Theme
+  appearOffline?: boolean
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
+  sentFriendships?: Prisma.FriendshipUncheckedCreateNestedManyWithoutRequesterInput
+  receivedFriendships?: Prisma.FriendshipUncheckedCreateNestedManyWithoutAddresseeInput
 }
 
 export type UserCreateOrConnectWithoutPostsInput = {
@@ -618,9 +716,12 @@ export type UserUpdateWithoutPostsInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
+  appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
+  sentFriendships?: Prisma.FriendshipUpdateManyWithoutRequesterNestedInput
+  receivedFriendships?: Prisma.FriendshipUpdateManyWithoutAddresseeNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPostsInput = {
@@ -629,9 +730,152 @@ export type UserUncheckedUpdateWithoutPostsInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
+  appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
+  sentFriendships?: Prisma.FriendshipUncheckedUpdateManyWithoutRequesterNestedInput
+  receivedFriendships?: Prisma.FriendshipUncheckedUpdateManyWithoutAddresseeNestedInput
+}
+
+export type UserCreateWithoutSentFriendshipsInput = {
+  email: string
+  name?: string | null
+  password: string
+  theme?: $Enums.Theme
+  appearOffline?: boolean
+  createdAt?: Date | string
+  ownedCommunities?: Prisma.CommunityCreateNestedManyWithoutOwnerInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
+  posts?: Prisma.PostCreateNestedManyWithoutAuthorInput
+  receivedFriendships?: Prisma.FriendshipCreateNestedManyWithoutAddresseeInput
+}
+
+export type UserUncheckedCreateWithoutSentFriendshipsInput = {
+  id?: number
+  email: string
+  name?: string | null
+  password: string
+  theme?: $Enums.Theme
+  appearOffline?: boolean
+  createdAt?: Date | string
+  ownedCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutOwnerInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
+  receivedFriendships?: Prisma.FriendshipUncheckedCreateNestedManyWithoutAddresseeInput
+}
+
+export type UserCreateOrConnectWithoutSentFriendshipsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutSentFriendshipsInput, Prisma.UserUncheckedCreateWithoutSentFriendshipsInput>
+}
+
+export type UserCreateWithoutReceivedFriendshipsInput = {
+  email: string
+  name?: string | null
+  password: string
+  theme?: $Enums.Theme
+  appearOffline?: boolean
+  createdAt?: Date | string
+  ownedCommunities?: Prisma.CommunityCreateNestedManyWithoutOwnerInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
+  posts?: Prisma.PostCreateNestedManyWithoutAuthorInput
+  sentFriendships?: Prisma.FriendshipCreateNestedManyWithoutRequesterInput
+}
+
+export type UserUncheckedCreateWithoutReceivedFriendshipsInput = {
+  id?: number
+  email: string
+  name?: string | null
+  password: string
+  theme?: $Enums.Theme
+  appearOffline?: boolean
+  createdAt?: Date | string
+  ownedCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutOwnerInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
+  sentFriendships?: Prisma.FriendshipUncheckedCreateNestedManyWithoutRequesterInput
+}
+
+export type UserCreateOrConnectWithoutReceivedFriendshipsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutReceivedFriendshipsInput, Prisma.UserUncheckedCreateWithoutReceivedFriendshipsInput>
+}
+
+export type UserUpsertWithoutSentFriendshipsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutSentFriendshipsInput, Prisma.UserUncheckedUpdateWithoutSentFriendshipsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutSentFriendshipsInput, Prisma.UserUncheckedCreateWithoutSentFriendshipsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutSentFriendshipsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutSentFriendshipsInput, Prisma.UserUncheckedUpdateWithoutSentFriendshipsInput>
+}
+
+export type UserUpdateWithoutSentFriendshipsInput = {
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
+  appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedCommunities?: Prisma.CommunityUpdateManyWithoutOwnerNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
+  posts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
+  receivedFriendships?: Prisma.FriendshipUpdateManyWithoutAddresseeNestedInput
+}
+
+export type UserUncheckedUpdateWithoutSentFriendshipsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
+  appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutOwnerNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
+  receivedFriendships?: Prisma.FriendshipUncheckedUpdateManyWithoutAddresseeNestedInput
+}
+
+export type UserUpsertWithoutReceivedFriendshipsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutReceivedFriendshipsInput, Prisma.UserUncheckedUpdateWithoutReceivedFriendshipsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutReceivedFriendshipsInput, Prisma.UserUncheckedCreateWithoutReceivedFriendshipsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutReceivedFriendshipsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutReceivedFriendshipsInput, Prisma.UserUncheckedUpdateWithoutReceivedFriendshipsInput>
+}
+
+export type UserUpdateWithoutReceivedFriendshipsInput = {
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
+  appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedCommunities?: Prisma.CommunityUpdateManyWithoutOwnerNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
+  posts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
+  sentFriendships?: Prisma.FriendshipUpdateManyWithoutRequesterNestedInput
+}
+
+export type UserUncheckedUpdateWithoutReceivedFriendshipsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
+  appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutOwnerNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
+  sentFriendships?: Prisma.FriendshipUncheckedUpdateManyWithoutRequesterNestedInput
 }
 
 
@@ -643,12 +887,16 @@ export type UserCountOutputType = {
   ownedCommunities: number
   memberships: number
   posts: number
+  sentFriendships: number
+  receivedFriendships: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   ownedCommunities?: boolean | UserCountOutputTypeCountOwnedCommunitiesArgs
   memberships?: boolean | UserCountOutputTypeCountMembershipsArgs
   posts?: boolean | UserCountOutputTypeCountPostsArgs
+  sentFriendships?: boolean | UserCountOutputTypeCountSentFriendshipsArgs
+  receivedFriendships?: boolean | UserCountOutputTypeCountReceivedFriendshipsArgs
 }
 
 /**
@@ -682,6 +930,20 @@ export type UserCountOutputTypeCountPostsArgs<ExtArgs extends runtime.Types.Exte
   where?: Prisma.PostWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountSentFriendshipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.FriendshipWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountReceivedFriendshipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.FriendshipWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -689,10 +951,13 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   name?: boolean
   password?: boolean
   theme?: boolean
+  appearOffline?: boolean
   createdAt?: boolean
   ownedCommunities?: boolean | Prisma.User$ownedCommunitiesArgs<ExtArgs>
   memberships?: boolean | Prisma.User$membershipsArgs<ExtArgs>
   posts?: boolean | Prisma.User$postsArgs<ExtArgs>
+  sentFriendships?: boolean | Prisma.User$sentFriendshipsArgs<ExtArgs>
+  receivedFriendships?: boolean | Prisma.User$receivedFriendshipsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -702,6 +967,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   name?: boolean
   password?: boolean
   theme?: boolean
+  appearOffline?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["user"]>
 
@@ -711,6 +977,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   name?: boolean
   password?: boolean
   theme?: boolean
+  appearOffline?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["user"]>
 
@@ -720,14 +987,17 @@ export type UserSelectScalar = {
   name?: boolean
   password?: boolean
   theme?: boolean
+  appearOffline?: boolean
   createdAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "password" | "theme" | "createdAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "password" | "theme" | "appearOffline" | "createdAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   ownedCommunities?: boolean | Prisma.User$ownedCommunitiesArgs<ExtArgs>
   memberships?: boolean | Prisma.User$membershipsArgs<ExtArgs>
   posts?: boolean | Prisma.User$postsArgs<ExtArgs>
+  sentFriendships?: boolean | Prisma.User$sentFriendshipsArgs<ExtArgs>
+  receivedFriendships?: boolean | Prisma.User$receivedFriendshipsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -739,6 +1009,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     ownedCommunities: Prisma.$CommunityPayload<ExtArgs>[]
     memberships: Prisma.$MembershipPayload<ExtArgs>[]
     posts: Prisma.$PostPayload<ExtArgs>[]
+    sentFriendships: Prisma.$FriendshipPayload<ExtArgs>[]
+    receivedFriendships: Prisma.$FriendshipPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -746,6 +1018,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     name: string | null
     password: string
     theme: $Enums.Theme
+    appearOffline: boolean
     createdAt: Date
   }, ExtArgs["result"]["user"]>
   composites: {}
@@ -1144,6 +1417,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   ownedCommunities<T extends Prisma.User$ownedCommunitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ownedCommunitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommunityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   memberships<T extends Prisma.User$membershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$membershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MembershipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   posts<T extends Prisma.User$postsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$postsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  sentFriendships<T extends Prisma.User$sentFriendshipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sentFriendshipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FriendshipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  receivedFriendships<T extends Prisma.User$receivedFriendshipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$receivedFriendshipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FriendshipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1178,6 +1453,7 @@ export interface UserFieldRefs {
   readonly name: Prisma.FieldRef<"User", 'String'>
   readonly password: Prisma.FieldRef<"User", 'String'>
   readonly theme: Prisma.FieldRef<"User", 'Theme'>
+  readonly appearOffline: Prisma.FieldRef<"User", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
 }
     
@@ -1636,6 +1912,54 @@ export type User$postsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
   take?: number
   skip?: number
   distinct?: Prisma.PostScalarFieldEnum | Prisma.PostScalarFieldEnum[]
+}
+
+/**
+ * User.sentFriendships
+ */
+export type User$sentFriendshipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Friendship
+   */
+  select?: Prisma.FriendshipSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Friendship
+   */
+  omit?: Prisma.FriendshipOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FriendshipInclude<ExtArgs> | null
+  where?: Prisma.FriendshipWhereInput
+  orderBy?: Prisma.FriendshipOrderByWithRelationInput | Prisma.FriendshipOrderByWithRelationInput[]
+  cursor?: Prisma.FriendshipWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.FriendshipScalarFieldEnum | Prisma.FriendshipScalarFieldEnum[]
+}
+
+/**
+ * User.receivedFriendships
+ */
+export type User$receivedFriendshipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Friendship
+   */
+  select?: Prisma.FriendshipSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Friendship
+   */
+  omit?: Prisma.FriendshipOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FriendshipInclude<ExtArgs> | null
+  where?: Prisma.FriendshipWhereInput
+  orderBy?: Prisma.FriendshipOrderByWithRelationInput | Prisma.FriendshipOrderByWithRelationInput[]
+  cursor?: Prisma.FriendshipWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.FriendshipScalarFieldEnum | Prisma.FriendshipScalarFieldEnum[]
 }
 
 /**

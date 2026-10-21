@@ -15,10 +15,14 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdatePreferencesDto } from './dto/update-preferences.dto';
 import { JwtAuthGuard } from '../auth/jwt.guard';
+import { PresenceGateway } from '../friends/presence.gateway';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly presence: PresenceGateway,
+  ) {}
 
   @Get()
   @UseGuards(JwtAuthGuard)
@@ -30,14 +34,20 @@ export class UsersController {
 
   @Patch('me/preferences')
   @UseGuards(JwtAuthGuard)
-  updatePreferences(
+  async updatePreferences(
     @Req() req,
     @Body() updatePreferencesDto: UpdatePreferencesDto,
   ): Promise<Profile> {
-    return this.usersService.updatePreferences(
+    const profile = await this.usersService.updatePreferences(
       req.user.userId,
       updatePreferencesDto,
     );
+
+    if (updatePreferencesDto.appearOffline !== undefined) {
+      await this.presence.broadcastPresence(req.user.userId);
+    }
+
+    return profile;
   }
 
   @Post('signup')

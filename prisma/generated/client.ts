@@ -67,3 +67,8 @@ export type MembershipRole = Prisma.MembershipRoleModel
  * 
  */
 export type Post = Prisma.PostModel
+/**
+ * Model Friendship
+ * 
+ */
+export type Friendship = Prisma.FriendshipModel
