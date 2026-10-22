@@ -34,7 +34,7 @@ const characters = {
 };
 
 type Character = keyof typeof characters;
-type UserKey = Character | 'admin';
+type UserKey = Character | 'admin' | 'user';
 
 type SeedCommunity = {
   name: string;
@@ -78,6 +78,7 @@ const communities: SeedCommunity[] = [
       ['nami'],
       ['tanjiro'],
       ['naruto'],
+      ['user'],
     ],
     posts: [
       [
@@ -123,6 +124,7 @@ const communities: SeedCommunity[] = [
       ['sakura'],
       ['admin'],
       ['itadori'],
+      ['user'],
     ],
     posts: [
       [
@@ -727,6 +729,7 @@ const friendships: [UserKey, UserKey, 'accepted' | 'pending'][] = [
   ['tanjiro', 'nezuko', 'accepted'],
   ['gojo', 'itadori', 'accepted'],
   ['levi', 'mikasa', 'accepted'],
+  ['naruto', 'user', 'pending'],
 ];
 
 function voters({ up = [], down = [] }: Votes) {
@@ -999,11 +1002,24 @@ async function main() {
       name: 'Admin',
       avatarUrl: '/images/avatars/admin.webp',
       isAdmin: true,
+      tourCompletedAt: minutesAgo(days(30)),
       password: await bcrypt.hash('123456', 10),
       createdAt: minutesAgo(days(30)),
     },
   });
   userIds.admin = admin.id;
+
+  const user = await prisma.user.create({
+    data: {
+      email: 'user@user.com',
+      username: 'user',
+      name: 'User',
+      avatarUrl: '/images/avatars/user.webp',
+      password: await bcrypt.hash('123456', 10),
+      createdAt: minutesAgo(days(2)),
+    },
+  });
+  userIds.user = user.id;
 
   for (const [key, name] of Object.entries(characters)) {
     const user = await prisma.user.create({
@@ -1012,6 +1028,8 @@ async function main() {
         username: key,
         name,
         avatarUrl: `/images/avatars/${key}.webp`,
+        tourCompletedAt: minutesAgo(days(30)),
+        checklistDismissedAt: minutesAgo(days(29)),
         password: characterPassword,
         createdAt: minutesAgo(days(30)),
       },
@@ -1163,6 +1181,7 @@ async function main() {
 
   console.log('✅ Seeding complete!');
   console.log('🔑 admin (or admin@user.com) / 123456');
+  console.log('🔑 user (or user@user.com) / 123456');
   console.log(
     `🔑 <character> (or <character>@anime.test) / ${CHARACTER_PASSWORD} (e.g. naruto)`,
   );

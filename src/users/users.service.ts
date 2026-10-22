@@ -3,11 +3,25 @@ import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePreferencesDto } from './dto/update-preferences.dto';
+import { UpdateOnboardingDto } from './dto/update-onboarding.dto';
 import { User as UserModel } from '../../prisma/generated/client';
 import { normalizeUsername } from './username';
 import { StorageService } from '../storage/storage.service';
 
 export type PublicUser = Omit<UserModel, 'password'>;
+
+export type Onboarding = {
+  tourCompleted: boolean;
+  checklistDismissed: boolean;
+  steps: {
+    avatar: boolean;
+    community: boolean;
+    post: boolean;
+    comment: boolean;
+    friend: boolean;
+    feedback: boolean;
+  };
+};
 
 export type Profile = Pick<
   UserModel,
@@ -110,6 +124,60 @@ export class UsersService {
     if (previousKey) await this.storage.delete(previousKey).catch(() => {});
 
     return toProfile(user);
+  }
+
+  async onboarding(id: number): Promise<Onboarding> {
+    const [user, memberships, posts, threads, comments, friendships, reports] =
+      await Promise.all([
+        this.prisma.user.findUniqueOrThrow({
+          where: { id },
+          select: {
+            avatarUrl: true,
+            tourCompletedAt: true,
+            checklistDismissedAt: true,
+          },
+        }),
+        this.prisma.membership.count({ where: { userId: id } }),
+        this.prisma.post.count({ where: { authorId: id } }),
+        this.prisma.thread.count({ where: { authorId: id } }),
+        this.prisma.comment.count({ where: { authorId: id } }),
+        this.prisma.friendship.count({
+          where: {
+            OR: [{ requesterId: id }, { addresseeId: id, status: 'accepted' }],
+          },
+        }),
+        this.prisma.report.count({ where: { authorId: id } }),
+      ]);
+
+    return {
+      tourCompleted: user.tourCompletedAt !== null,
+      checklistDismissed: user.checklistDismissedAt !== null,
+      steps: {
+        avatar: user.avatarUrl !== null,
+        community: memberships > 0,
+        post: posts + threads > 0,
+        comment: comments > 0,
+        friend: friendships > 0,
+        feedback: reports > 0,
+      },
+    };
+  }
+
+  async updateOnboarding(
+    id: number,
+    { tourCompleted, checklistDismissed }: UpdateOnboardingDto,
+  ): Promise<Onboarding> {
+    const at = (value?: boolean) =>
+      value === undefined ? undefined : value ? new Date() : null;
+
+    await this.prisma.user.update({
+      where: { id },
+      data: {
+        tourCompletedAt: at(tourCompleted),
+        checklistDismissedAt: at(checklistDismissed),
+      },
+    });
+    return this.onboarding(id);
   }
 
   findByEmail(email: string): Promise<UserModel | null> {

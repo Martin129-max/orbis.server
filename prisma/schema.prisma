@@ -50,27 +50,29 @@ enum FriendshipStatus {
 }
 
 model User {
-  id                  Int            @id @default(autoincrement())
-  email               String         @unique
-  username            String         @unique
-  name                String?
-  avatarUrl           String?
-  password            String
-  theme               Theme          @default(system)
-  appearOffline       Boolean        @default(false)
-  isAdmin             Boolean        @default(false)
-  createdAt           DateTime       @default(now())
-  ownedCommunities    Community[]
-  memberships         Membership[]
-  posts               Post[]
-  sentFriendships     Friendship[]   @relation("FriendshipRequester")
-  receivedFriendships Friendship[]   @relation("FriendshipAddressee")
-  threads             Thread[]
-  comments            Comment[]
-  votes               Vote[]
-  reports             Report[]
-  notifications       Notification[] @relation("NotificationRecipient")
-  causedNotifications Notification[] @relation("NotificationActor")
+  id                   Int            @id @default(autoincrement())
+  email                String         @unique
+  username             String         @unique
+  name                 String?
+  avatarUrl            String?
+  password             String
+  theme                Theme          @default(system)
+  appearOffline        Boolean        @default(false)
+  isAdmin              Boolean        @default(false)
+  tourCompletedAt      DateTime?
+  checklistDismissedAt DateTime?
+  createdAt            DateTime       @default(now())
+  ownedCommunities     Community[]
+  memberships          Membership[]
+  posts                Post[]
+  sentFriendships      Friendship[]   @relation("FriendshipRequester")
+  receivedFriendships  Friendship[]   @relation("FriendshipAddressee")
+  threads              Thread[]
+  comments             Comment[]
+  votes                Vote[]
+  reports              Report[]
+  notifications        Notification[] @relation("NotificationRecipient")
+  causedNotifications  Notification[] @relation("NotificationActor")
 }
 
 model Community {

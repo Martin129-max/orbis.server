@@ -13,7 +13,8 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Profile, UsersService } from './users.service';
+import { Onboarding, Profile, UsersService } from './users.service';
+import { UpdateOnboardingDto } from './dto/update-onboarding.dto';
 import { UpdatePreferencesDto } from './dto/update-preferences.dto';
 import { JwtAuthGuard } from '../auth/jwt.guard';
 import { PresenceGateway } from '../friends/presence.gateway';
@@ -69,5 +70,23 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   removeAvatar(@Req() req): Promise<Profile> {
     return this.usersService.removeAvatar(req.user.userId);
+  }
+
+  @Get('me/onboarding')
+  @UseGuards(JwtAuthGuard)
+  onboarding(@Req() req): Promise<Onboarding> {
+    return this.usersService.onboarding(req.user.userId);
+  }
+
+  @Patch('me/onboarding')
+  @UseGuards(JwtAuthGuard)
+  updateOnboarding(
+    @Req() req,
+    @Body() updateOnboardingDto: UpdateOnboardingDto,
+  ): Promise<Onboarding> {
+    return this.usersService.updateOnboarding(
+      req.user.userId,
+      updateOnboardingDto,
+    );
   }
 }
