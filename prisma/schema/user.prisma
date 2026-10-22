@@ -10,6 +10,7 @@ model User {
   username             String         @unique
   name                 String?
   avatarUrl            String?
+  coverUrl             String?
   password             String
   theme                Theme          @default(system)
   appearOffline        Boolean        @default(false)

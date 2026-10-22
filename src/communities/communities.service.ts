@@ -20,6 +20,7 @@ export type CommunityMember = {
   username: string;
   name: string | null;
   avatarUrl: string | null;
+  coverUrl: string | null;
   online: boolean;
   nickname: string | null;
   joinedAt: Date;
@@ -195,6 +196,7 @@ export class CommunitiesService {
                 username: true,
                 name: true,
                 avatarUrl: true,
+                coverUrl: true,
                 appearOffline: true,
               },
             },
@@ -214,6 +216,7 @@ export class CommunitiesService {
           username: user.username,
           name: user.name,
           avatarUrl: user.avatarUrl,
+          coverUrl: user.coverUrl,
           online: !user.appearOffline && this.presence.isOnline(user.id),
           nickname,
           joinedAt,

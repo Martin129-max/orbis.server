@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Body,
+  Param,
   Patch,
   Post,
   Delete,
@@ -13,7 +14,12 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Onboarding, Profile, UsersService } from './users.service';
+import {
+  Onboarding,
+  Profile,
+  PublicProfile,
+  UsersService,
+} from './users.service';
 import { UpdateOnboardingDto } from './dto/update-onboarding.dto';
 import { UpdatePreferencesDto } from './dto/update-preferences.dto';
 import { JwtAuthGuard } from '../auth/jwt.guard';
@@ -72,6 +78,25 @@ export class UsersController {
     return this.usersService.removeAvatar(req.user.userId);
   }
 
+  @Post('me/cover')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(
+    FileInterceptor('file', { limits: { fileSize: IMAGE_MAX_BYTES } }),
+  )
+  uploadCover(
+    @Req() req,
+    @UploadedFile() file?: Express.Multer.File,
+  ): Promise<Profile> {
+    if (!file) throw new BadRequestException('Choose an image to upload');
+    return this.usersService.updateCover(req.user.userId, file.buffer);
+  }
+
+  @Delete('me/cover')
+  @UseGuards(JwtAuthGuard)
+  removeCover(@Req() req): Promise<Profile> {
+    return this.usersService.removeCover(req.user.userId);
+  }
+
   @Get('me/onboarding')
   @UseGuards(JwtAuthGuard)
   onboarding(@Req() req): Promise<Onboarding> {
@@ -88,5 +113,21 @@ export class UsersController {
       req.user.userId,
       updateOnboardingDto,
     );
+  }
+
+  @Get(':username')
+  @UseGuards(JwtAuthGuard)
+  async publicProfile(
+    @Req() req,
+    @Param('username') username: string,
+  ): Promise<PublicProfile> {
+    const { appearOffline, ...profile } = await this.usersService.publicProfile(
+      req.user.userId,
+      username,
+    );
+    return {
+      ...profile,
+      online: !appearOffline && this.presence.isOnline(profile.userId),
+    };
   }
 }

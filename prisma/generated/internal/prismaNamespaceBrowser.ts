@@ -220,6 +220,7 @@ export const UserScalarFieldEnum = {
   username: 'username',
   name: 'name',
   avatarUrl: 'avatarUrl',
+  coverUrl: 'coverUrl',
   password: 'password',
   theme: 'theme',
   appearOffline: 'appearOffline',

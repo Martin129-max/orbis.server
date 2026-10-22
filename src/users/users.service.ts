@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -9,6 +9,26 @@ import { normalizeUsername } from './username';
 import { StorageService } from '../storage/storage.service';
 
 export type PublicUser = Omit<UserModel, 'password'>;
+
+export type PublicProfile = {
+  userId: number;
+  username: string;
+  name: string | null;
+  avatarUrl: string | null;
+  coverUrl: string | null;
+  isAdmin: boolean;
+  createdAt: Date;
+  online: boolean;
+  friendCount: number;
+  postCount: number;
+  communityCount: number;
+  communities: {
+    id: number;
+    name: string;
+    iconUrl: string | null;
+    isOwner: boolean;
+  }[];
+};
 
 export type Onboarding = {
   tourCompleted: boolean;
@@ -28,6 +48,7 @@ export type Profile = Pick<
   | 'email'
   | 'username'
   | 'avatarUrl'
+  | 'coverUrl'
   | 'theme'
   | 'appearOffline'
   | 'isAdmin'
@@ -43,6 +64,7 @@ const profile = {
   email: true,
   username: true,
   avatarUrl: true,
+  coverUrl: true,
   theme: true,
   appearOffline: true,
   isAdmin: true,
@@ -98,32 +120,111 @@ export class UsersService {
 
   async updateAvatar(id: number, file: Buffer): Promise<Profile> {
     const { url } = await this.storage.uploadImage(file, 'avatars', 512);
-    return this.replaceAvatar(id, url);
+    return this.replaceImage(id, 'avatarUrl', url);
   }
 
   removeAvatar(id: number): Promise<Profile> {
-    return this.replaceAvatar(id, null);
+    return this.replaceImage(id, 'avatarUrl', null);
   }
 
-  private async replaceAvatar(
+  async updateCover(id: number, file: Buffer): Promise<Profile> {
+    const { url } = await this.storage.uploadImage(file, 'user-covers', 1600);
+    return this.replaceImage(id, 'coverUrl', url);
+  }
+
+  removeCover(id: number): Promise<Profile> {
+    return this.replaceImage(id, 'coverUrl', null);
+  }
+
+  private async replaceImage(
     id: number,
-    avatarUrl: string | null,
+    field: 'avatarUrl' | 'coverUrl',
+    url: string | null,
   ): Promise<Profile> {
     const previous = await this.prisma.user.findUnique({
       where: { id },
-      select: { avatarUrl: true },
+      select: { avatarUrl: true, coverUrl: true },
     });
     const user = await this.prisma.user.update({
       where: { id },
-      data: { avatarUrl },
+      data: { [field]: url },
       select: profile,
     });
 
     const previousKey =
-      previous?.avatarUrl && this.storage.keyFor(previous.avatarUrl);
+      previous?.[field] && this.storage.keyFor(previous[field]);
     if (previousKey) await this.storage.delete(previousKey).catch(() => {});
 
     return toProfile(user);
+  }
+
+  async publicProfile(
+    viewerId: number,
+    username: string,
+  ): Promise<Omit<PublicProfile, 'online'> & { appearOffline: boolean }> {
+    const user = await this.prisma.user.findUnique({
+      where: { username: normalizeUsername(username) },
+      select: {
+        id: true,
+        username: true,
+        name: true,
+        avatarUrl: true,
+        coverUrl: true,
+        isAdmin: true,
+        appearOffline: true,
+        createdAt: true,
+        memberships: {
+          orderBy: { joinedAt: 'asc' },
+          select: {
+            community: {
+              select: {
+                id: true,
+                name: true,
+                iconUrl: true,
+                ownerId: true,
+                isPublic: true,
+                memberships: {
+                  where: { userId: viewerId },
+                  select: { userId: true },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    if (!user) throw new NotFoundException('User not found');
+
+    const [friendCount, posts, threads] = await Promise.all([
+      this.prisma.friendship.count({
+        where: {
+          status: 'accepted',
+          OR: [{ requesterId: user.id }, { addresseeId: user.id }],
+        },
+      }),
+      this.prisma.post.count({ where: { authorId: user.id } }),
+      this.prisma.thread.count({ where: { authorId: user.id } }),
+    ]);
+
+    const { memberships, id, ...rest } = user;
+    return {
+      ...rest,
+      userId: id,
+      friendCount,
+      postCount: posts + threads,
+      communityCount: memberships.length,
+      communities: memberships
+        .map(({ community }) => community)
+        .filter(
+          (community) => community.isPublic || community.memberships.length > 0,
+        )
+        .map((community) => ({
+          id: community.id,
+          name: community.name,
+          iconUrl: community.iconUrl,
+          isOwner: community.ownerId === id,
+        })),
+    };
   }
 
   async onboarding(id: number): Promise<Onboarding> {
