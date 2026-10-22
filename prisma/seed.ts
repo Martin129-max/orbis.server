@@ -798,8 +798,8 @@ async function createComments(
 
 const userIds = {} as Record<UserKey, number>;
 
-function communityIcon(name: string) {
-  return `/images/communities/${name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.webp`;
+function communityImage(folder: string, name: string) {
+  return `/images/${folder}/${name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.webp`;
 }
 
 function minutesAgo(minutes: number) {
@@ -868,7 +868,8 @@ async function main() {
     const created = await prisma.community.create({
       data: {
         name: community.name,
-        iconUrl: communityIcon(community.name),
+        iconUrl: communityImage('communities', community.name),
+        coverUrl: communityImage('covers', community.name),
         ownerId: userIds[community.owner],
         isPublic: community.isPublic,
         createdAt: minutesAgo(days(14)),

@@ -40,6 +40,7 @@ export type CommunityMinAggregateOutputType = {
   id: number | null
   name: string | null
   iconUrl: string | null
+  coverUrl: string | null
   ownerId: number | null
   isPublic: boolean | null
   createdAt: Date | null
@@ -49,6 +50,7 @@ export type CommunityMaxAggregateOutputType = {
   id: number | null
   name: string | null
   iconUrl: string | null
+  coverUrl: string | null
   ownerId: number | null
   isPublic: boolean | null
   createdAt: Date | null
@@ -58,6 +60,7 @@ export type CommunityCountAggregateOutputType = {
   id: number
   name: number
   iconUrl: number
+  coverUrl: number
   ownerId: number
   isPublic: number
   createdAt: number
@@ -79,6 +82,7 @@ export type CommunityMinAggregateInputType = {
   id?: true
   name?: true
   iconUrl?: true
+  coverUrl?: true
   ownerId?: true
   isPublic?: true
   createdAt?: true
@@ -88,6 +92,7 @@ export type CommunityMaxAggregateInputType = {
   id?: true
   name?: true
   iconUrl?: true
+  coverUrl?: true
   ownerId?: true
   isPublic?: true
   createdAt?: true
@@ -97,6 +102,7 @@ export type CommunityCountAggregateInputType = {
   id?: true
   name?: true
   iconUrl?: true
+  coverUrl?: true
   ownerId?: true
   isPublic?: true
   createdAt?: true
@@ -193,6 +199,7 @@ export type CommunityGroupByOutputType = {
   id: number
   name: string
   iconUrl: string | null
+  coverUrl: string | null
   ownerId: number
   isPublic: boolean
   createdAt: Date
@@ -225,6 +232,7 @@ export type CommunityWhereInput = {
   id?: Prisma.IntFilter<"Community"> | number
   name?: Prisma.StringFilter<"Community"> | string
   iconUrl?: Prisma.StringNullableFilter<"Community"> | string | null
+  coverUrl?: Prisma.StringNullableFilter<"Community"> | string | null
   ownerId?: Prisma.IntFilter<"Community"> | number
   isPublic?: Prisma.BoolFilter<"Community"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Community"> | Date | string
@@ -241,6 +249,7 @@ export type CommunityOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   iconUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  coverUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -260,6 +269,7 @@ export type CommunityWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.CommunityWhereInput | Prisma.CommunityWhereInput[]
   name?: Prisma.StringFilter<"Community"> | string
   iconUrl?: Prisma.StringNullableFilter<"Community"> | string | null
+  coverUrl?: Prisma.StringNullableFilter<"Community"> | string | null
   ownerId?: Prisma.IntFilter<"Community"> | number
   isPublic?: Prisma.BoolFilter<"Community"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Community"> | Date | string
@@ -276,6 +286,7 @@ export type CommunityOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   iconUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  coverUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -293,6 +304,7 @@ export type CommunityScalarWhereWithAggregatesInput = {
   id?: Prisma.IntWithAggregatesFilter<"Community"> | number
   name?: Prisma.StringWithAggregatesFilter<"Community"> | string
   iconUrl?: Prisma.StringNullableWithAggregatesFilter<"Community"> | string | null
+  coverUrl?: Prisma.StringNullableWithAggregatesFilter<"Community"> | string | null
   ownerId?: Prisma.IntWithAggregatesFilter<"Community"> | number
   isPublic?: Prisma.BoolWithAggregatesFilter<"Community"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Community"> | Date | string
@@ -301,6 +313,7 @@ export type CommunityScalarWhereWithAggregatesInput = {
 export type CommunityCreateInput = {
   name: string
   iconUrl?: string | null
+  coverUrl?: string | null
   isPublic?: boolean
   createdAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedCommunitiesInput
@@ -316,6 +329,7 @@ export type CommunityUncheckedCreateInput = {
   id?: number
   name: string
   iconUrl?: string | null
+  coverUrl?: string | null
   ownerId: number
   isPublic?: boolean
   createdAt?: Date | string
@@ -330,6 +344,7 @@ export type CommunityUncheckedCreateInput = {
 export type CommunityUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedCommunitiesNestedInput
@@ -345,6 +360,7 @@ export type CommunityUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerId?: Prisma.IntFieldUpdateOperationsInput | number
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -360,6 +376,7 @@ export type CommunityCreateManyInput = {
   id?: number
   name: string
   iconUrl?: string | null
+  coverUrl?: string | null
   ownerId: number
   isPublic?: boolean
   createdAt?: Date | string
@@ -368,6 +385,7 @@ export type CommunityCreateManyInput = {
 export type CommunityUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -376,6 +394,7 @@ export type CommunityUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerId?: Prisma.IntFieldUpdateOperationsInput | number
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -395,6 +414,7 @@ export type CommunityCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   iconUrl?: Prisma.SortOrder
+  coverUrl?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -409,6 +429,7 @@ export type CommunityMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   iconUrl?: Prisma.SortOrder
+  coverUrl?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -418,6 +439,7 @@ export type CommunityMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   iconUrl?: Prisma.SortOrder
+  coverUrl?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -562,6 +584,7 @@ export type CommunityUpdateOneRequiredWithoutVotesNestedInput = {
 export type CommunityCreateWithoutOwnerInput = {
   name: string
   iconUrl?: string | null
+  coverUrl?: string | null
   isPublic?: boolean
   createdAt?: Date | string
   memberships?: Prisma.MembershipCreateNestedManyWithoutCommunityInput
@@ -576,6 +599,7 @@ export type CommunityUncheckedCreateWithoutOwnerInput = {
   id?: number
   name: string
   iconUrl?: string | null
+  coverUrl?: string | null
   isPublic?: boolean
   createdAt?: Date | string
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutCommunityInput
@@ -619,6 +643,7 @@ export type CommunityScalarWhereInput = {
   id?: Prisma.IntFilter<"Community"> | number
   name?: Prisma.StringFilter<"Community"> | string
   iconUrl?: Prisma.StringNullableFilter<"Community"> | string | null
+  coverUrl?: Prisma.StringNullableFilter<"Community"> | string | null
   ownerId?: Prisma.IntFilter<"Community"> | number
   isPublic?: Prisma.BoolFilter<"Community"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Community"> | Date | string
@@ -627,6 +652,7 @@ export type CommunityScalarWhereInput = {
 export type CommunityCreateWithoutMembershipsInput = {
   name: string
   iconUrl?: string | null
+  coverUrl?: string | null
   isPublic?: boolean
   createdAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedCommunitiesInput
@@ -641,6 +667,7 @@ export type CommunityUncheckedCreateWithoutMembershipsInput = {
   id?: number
   name: string
   iconUrl?: string | null
+  coverUrl?: string | null
   ownerId: number
   isPublic?: boolean
   createdAt?: Date | string
@@ -670,6 +697,7 @@ export type CommunityUpdateToOneWithWhereWithoutMembershipsInput = {
 export type CommunityUpdateWithoutMembershipsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedCommunitiesNestedInput
@@ -684,6 +712,7 @@ export type CommunityUncheckedUpdateWithoutMembershipsInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerId?: Prisma.IntFieldUpdateOperationsInput | number
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -697,6 +726,7 @@ export type CommunityUncheckedUpdateWithoutMembershipsInput = {
 export type CommunityCreateWithoutRolesInput = {
   name: string
   iconUrl?: string | null
+  coverUrl?: string | null
   isPublic?: boolean
   createdAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedCommunitiesInput
@@ -711,6 +741,7 @@ export type CommunityUncheckedCreateWithoutRolesInput = {
   id?: number
   name: string
   iconUrl?: string | null
+  coverUrl?: string | null
   ownerId: number
   isPublic?: boolean
   createdAt?: Date | string
@@ -740,6 +771,7 @@ export type CommunityUpdateToOneWithWhereWithoutRolesInput = {
 export type CommunityUpdateWithoutRolesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedCommunitiesNestedInput
@@ -754,6 +786,7 @@ export type CommunityUncheckedUpdateWithoutRolesInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerId?: Prisma.IntFieldUpdateOperationsInput | number
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -767,6 +800,7 @@ export type CommunityUncheckedUpdateWithoutRolesInput = {
 export type CommunityCreateWithoutPostsInput = {
   name: string
   iconUrl?: string | null
+  coverUrl?: string | null
   isPublic?: boolean
   createdAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedCommunitiesInput
@@ -781,6 +815,7 @@ export type CommunityUncheckedCreateWithoutPostsInput = {
   id?: number
   name: string
   iconUrl?: string | null
+  coverUrl?: string | null
   ownerId: number
   isPublic?: boolean
   createdAt?: Date | string
@@ -810,6 +845,7 @@ export type CommunityUpdateToOneWithWhereWithoutPostsInput = {
 export type CommunityUpdateWithoutPostsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedCommunitiesNestedInput
@@ -824,6 +860,7 @@ export type CommunityUncheckedUpdateWithoutPostsInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerId?: Prisma.IntFieldUpdateOperationsInput | number
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -837,6 +874,7 @@ export type CommunityUncheckedUpdateWithoutPostsInput = {
 export type CommunityCreateWithoutThreadsInput = {
   name: string
   iconUrl?: string | null
+  coverUrl?: string | null
   isPublic?: boolean
   createdAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedCommunitiesInput
@@ -851,6 +889,7 @@ export type CommunityUncheckedCreateWithoutThreadsInput = {
   id?: number
   name: string
   iconUrl?: string | null
+  coverUrl?: string | null
   ownerId: number
   isPublic?: boolean
   createdAt?: Date | string
@@ -880,6 +919,7 @@ export type CommunityUpdateToOneWithWhereWithoutThreadsInput = {
 export type CommunityUpdateWithoutThreadsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedCommunitiesNestedInput
@@ -894,6 +934,7 @@ export type CommunityUncheckedUpdateWithoutThreadsInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerId?: Prisma.IntFieldUpdateOperationsInput | number
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -907,6 +948,7 @@ export type CommunityUncheckedUpdateWithoutThreadsInput = {
 export type CommunityCreateWithoutCommentsInput = {
   name: string
   iconUrl?: string | null
+  coverUrl?: string | null
   isPublic?: boolean
   createdAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedCommunitiesInput
@@ -921,6 +963,7 @@ export type CommunityUncheckedCreateWithoutCommentsInput = {
   id?: number
   name: string
   iconUrl?: string | null
+  coverUrl?: string | null
   ownerId: number
   isPublic?: boolean
   createdAt?: Date | string
@@ -950,6 +993,7 @@ export type CommunityUpdateToOneWithWhereWithoutCommentsInput = {
 export type CommunityUpdateWithoutCommentsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedCommunitiesNestedInput
@@ -964,6 +1008,7 @@ export type CommunityUncheckedUpdateWithoutCommentsInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerId?: Prisma.IntFieldUpdateOperationsInput | number
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -977,6 +1022,7 @@ export type CommunityUncheckedUpdateWithoutCommentsInput = {
 export type CommunityCreateWithoutVotesInput = {
   name: string
   iconUrl?: string | null
+  coverUrl?: string | null
   isPublic?: boolean
   createdAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedCommunitiesInput
@@ -991,6 +1037,7 @@ export type CommunityUncheckedCreateWithoutVotesInput = {
   id?: number
   name: string
   iconUrl?: string | null
+  coverUrl?: string | null
   ownerId: number
   isPublic?: boolean
   createdAt?: Date | string
@@ -1020,6 +1067,7 @@ export type CommunityUpdateToOneWithWhereWithoutVotesInput = {
 export type CommunityUpdateWithoutVotesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedCommunitiesNestedInput
@@ -1034,6 +1082,7 @@ export type CommunityUncheckedUpdateWithoutVotesInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerId?: Prisma.IntFieldUpdateOperationsInput | number
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1048,6 +1097,7 @@ export type CommunityCreateManyOwnerInput = {
   id?: number
   name: string
   iconUrl?: string | null
+  coverUrl?: string | null
   isPublic?: boolean
   createdAt?: Date | string
 }
@@ -1055,6 +1105,7 @@ export type CommunityCreateManyOwnerInput = {
 export type CommunityUpdateWithoutOwnerInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   memberships?: Prisma.MembershipUpdateManyWithoutCommunityNestedInput
@@ -1069,6 +1120,7 @@ export type CommunityUncheckedUpdateWithoutOwnerInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutCommunityNestedInput
@@ -1083,6 +1135,7 @@ export type CommunityUncheckedUpdateManyWithoutOwnerInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1167,6 +1220,7 @@ export type CommunitySelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   id?: boolean
   name?: boolean
   iconUrl?: boolean
+  coverUrl?: boolean
   ownerId?: boolean
   isPublic?: boolean
   createdAt?: boolean
@@ -1184,6 +1238,7 @@ export type CommunitySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   id?: boolean
   name?: boolean
   iconUrl?: boolean
+  coverUrl?: boolean
   ownerId?: boolean
   isPublic?: boolean
   createdAt?: boolean
@@ -1194,6 +1249,7 @@ export type CommunitySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   id?: boolean
   name?: boolean
   iconUrl?: boolean
+  coverUrl?: boolean
   ownerId?: boolean
   isPublic?: boolean
   createdAt?: boolean
@@ -1204,12 +1260,13 @@ export type CommunitySelectScalar = {
   id?: boolean
   name?: boolean
   iconUrl?: boolean
+  coverUrl?: boolean
   ownerId?: boolean
   isPublic?: boolean
   createdAt?: boolean
 }
 
-export type CommunityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "iconUrl" | "ownerId" | "isPublic" | "createdAt", ExtArgs["result"]["community"]>
+export type CommunityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "iconUrl" | "coverUrl" | "ownerId" | "isPublic" | "createdAt", ExtArgs["result"]["community"]>
 export type CommunityInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   memberships?: boolean | Prisma.Community$membershipsArgs<ExtArgs>
@@ -1242,6 +1299,7 @@ export type $CommunityPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     id: number
     name: string
     iconUrl: string | null
+    coverUrl: string | null
     ownerId: number
     isPublic: boolean
     createdAt: Date
@@ -1678,6 +1736,7 @@ export interface CommunityFieldRefs {
   readonly id: Prisma.FieldRef<"Community", 'Int'>
   readonly name: Prisma.FieldRef<"Community", 'String'>
   readonly iconUrl: Prisma.FieldRef<"Community", 'String'>
+  readonly coverUrl: Prisma.FieldRef<"Community", 'String'>
   readonly ownerId: Prisma.FieldRef<"Community", 'Int'>
   readonly isPublic: Prisma.FieldRef<"Community", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Community", 'DateTime'>

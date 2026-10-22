@@ -36,6 +36,13 @@ const roleRank: Record<CommunityRole, number> = {
   member: 2,
 };
 
+const communityImages = {
+  icon: { field: 'iconUrl', folder: 'communities', maxSize: 512 },
+  cover: { field: 'coverUrl', folder: 'covers', maxSize: 1600 },
+} as const;
+
+export type CommunityImage = keyof typeof communityImages;
+
 export type CommunitySearchResult = {
   id: number;
   name: string;
@@ -272,22 +279,25 @@ export class CommunitiesService {
     return { ...community, role };
   }
 
-  async updateIcon(
+  async updateImage(
     userId: number,
     communityId: number,
+    image: CommunityImage,
     file: Buffer,
   ): Promise<CommunityWithRole> {
     await this.requireRole(userId, communityId, 'admin');
-    const { url } = await this.storage.uploadImage(file, 'communities', 512);
-    return this.replaceIcon(userId, communityId, url);
+    const { folder, maxSize } = communityImages[image];
+    const { url } = await this.storage.uploadImage(file, folder, maxSize);
+    return this.replaceImage(userId, communityId, image, url);
   }
 
-  async removeIcon(
+  async removeImage(
     userId: number,
     communityId: number,
+    image: CommunityImage,
   ): Promise<CommunityWithRole> {
     await this.requireRole(userId, communityId, 'admin');
-    return this.replaceIcon(userId, communityId, null);
+    return this.replaceImage(userId, communityId, image, null);
   }
 
   async remove(userId: number, communityId: number): Promise<void> {
@@ -295,29 +305,32 @@ export class CommunitiesService {
     const community = await this.prisma.community.delete({
       where: { id: communityId },
     });
-    await this.deleteStoredIcon(community.iconUrl);
+    await this.deleteStoredImage(community.iconUrl);
+    await this.deleteStoredImage(community.coverUrl);
   }
 
-  private async replaceIcon(
+  private async replaceImage(
     userId: number,
     communityId: number,
-    iconUrl: string | null,
+    image: CommunityImage,
+    url: string | null,
   ): Promise<CommunityWithRole> {
+    const { field } = communityImages[image];
     const previous = await this.prisma.community.findUnique({
       where: { id: communityId },
-      select: { iconUrl: true },
+      select: { iconUrl: true, coverUrl: true },
     });
     await this.prisma.community.update({
       where: { id: communityId },
-      data: { iconUrl },
+      data: { [field]: url },
     });
-    await this.deleteStoredIcon(previous?.iconUrl ?? null);
+    await this.deleteStoredImage(previous?.[field] ?? null);
 
     return (await this.findOne(userId, communityId))!;
   }
 
-  private async deleteStoredIcon(iconUrl: string | null) {
-    const key = iconUrl && this.storage.keyFor(iconUrl);
+  private async deleteStoredImage(url: string | null) {
+    const key = url && this.storage.keyFor(url);
     if (key) await this.storage.delete(key).catch(() => {});
   }
 

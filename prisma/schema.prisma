@@ -52,6 +52,7 @@ model Community {
   id          Int          @id @default(autoincrement())
   name        String
   iconUrl     String?
+  coverUrl    String?
   ownerId     Int
   isPublic    Boolean      @default(false)
   createdAt   DateTime     @default(now())
