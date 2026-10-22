@@ -10,6 +10,7 @@ import { CreateReportDto } from './dto/create-report.dto';
 import { UpdateReportDto } from './dto/update-report.dto';
 import { NotificationsService } from '../notifications/notifications.service';
 import { ticketNumber } from './ticket';
+import { isHeadAdmin } from '../users/head-admin';
 import { ReportStatus } from '../../prisma/generated/client';
 
 const statusLabels: Record<ReportStatus, string> = {
@@ -98,9 +99,9 @@ export class ReportsService {
   private async requireAdmin(userId: number) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
-      select: { isAdmin: true },
+      select: { isAdmin: true, email: true },
     });
-    if (!user?.isAdmin) {
+    if (!user || !(user.isAdmin || isHeadAdmin(user.email))) {
       throw new ForbiddenException('Only site admins can see reports');
     }
   }

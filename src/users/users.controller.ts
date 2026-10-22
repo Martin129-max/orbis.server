@@ -6,6 +6,7 @@ import {
   Patch,
   Post,
   Delete,
+  Put,
   UseGuards,
   UseInterceptors,
   UploadedFile,
@@ -132,6 +133,24 @@ export class UsersController {
       req.user.userId,
       updateOnboardingDto,
     );
+  }
+
+  @Put(':username/admin')
+  @UseGuards(JwtAuthGuard)
+  addAdmin(
+    @Req() req,
+    @Param('username') username: string,
+  ): Promise<{ isAdmin: boolean }> {
+    return this.usersService.setAdmin(req.user.userId, username, true);
+  }
+
+  @Delete(':username/admin')
+  @UseGuards(JwtAuthGuard)
+  removeAdmin(
+    @Req() req,
+    @Param('username') username: string,
+  ): Promise<{ isAdmin: boolean }> {
+    return this.usersService.setAdmin(req.user.userId, username, false);
   }
 
   @Get(':username')
