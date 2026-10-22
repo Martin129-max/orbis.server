@@ -13,7 +13,7 @@ model User {
   coverUrl             String?
   backgroundUrl        String?
   password             String
-  theme                Theme          @default(system)
+  theme                Theme          @default(dark)
   appearOffline        Boolean        @default(false)
   isAdmin              Boolean        @default(false)
   tourCompletedAt      DateTime?
