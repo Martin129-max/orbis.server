@@ -56,6 +56,7 @@ export const ModelName = {
   RailFolder: 'RailFolder',
   Role: 'Role',
   MembershipRole: 'MembershipRole',
+  Invite: 'Invite',
   Post: 'Post',
   Thread: 'Thread',
   Comment: 'Comment',
@@ -140,6 +141,20 @@ export const MembershipRoleScalarFieldEnum = {
 } as const
 
 export type MembershipRoleScalarFieldEnum = (typeof MembershipRoleScalarFieldEnum)[keyof typeof MembershipRoleScalarFieldEnum]
+
+
+export const InviteScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  communityId: 'communityId',
+  creatorId: 'creatorId',
+  maxUses: 'maxUses',
+  uses: 'uses',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+} as const
+
+export type InviteScalarFieldEnum = (typeof InviteScalarFieldEnum)[keyof typeof InviteScalarFieldEnum]
 
 
 export const PostScalarFieldEnum = {

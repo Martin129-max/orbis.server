@@ -389,6 +389,7 @@ export const ModelName = {
   RailFolder: 'RailFolder',
   Role: 'Role',
   MembershipRole: 'MembershipRole',
+  Invite: 'Invite',
   Post: 'Post',
   Thread: 'Thread',
   Comment: 'Comment',
@@ -415,7 +416,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "community" | "membership" | "railFolder" | "role" | "membershipRole" | "post" | "thread" | "comment" | "vote" | "like" | "friendship" | "libraryEntry" | "libraryActivity" | "notification" | "report" | "user"
+    modelProps: "community" | "membership" | "railFolder" | "role" | "membershipRole" | "invite" | "post" | "thread" | "comment" | "vote" | "like" | "friendship" | "libraryEntry" | "libraryActivity" | "notification" | "report" | "user"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -786,6 +787,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.MembershipRoleCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.MembershipRoleCountAggregateOutputType> | number
+        }
+      }
+    }
+    Invite: {
+      payload: Prisma.$InvitePayload<ExtArgs>
+      fields: Prisma.InviteFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.InviteFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvitePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.InviteFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvitePayload>
+        }
+        findFirst: {
+          args: Prisma.InviteFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvitePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.InviteFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvitePayload>
+        }
+        findMany: {
+          args: Prisma.InviteFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvitePayload>[]
+        }
+        create: {
+          args: Prisma.InviteCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvitePayload>
+        }
+        createMany: {
+          args: Prisma.InviteCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.InviteCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvitePayload>[]
+        }
+        delete: {
+          args: Prisma.InviteDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvitePayload>
+        }
+        update: {
+          args: Prisma.InviteUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvitePayload>
+        }
+        deleteMany: {
+          args: Prisma.InviteDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.InviteUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.InviteUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvitePayload>[]
+        }
+        upsert: {
+          args: Prisma.InviteUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvitePayload>
+        }
+        aggregate: {
+          args: Prisma.InviteAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateInvite>
+        }
+        groupBy: {
+          args: Prisma.InviteGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.InviteGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.InviteCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.InviteCountAggregateOutputType> | number
         }
       }
     }
@@ -1699,6 +1774,20 @@ export const MembershipRoleScalarFieldEnum = {
 export type MembershipRoleScalarFieldEnum = (typeof MembershipRoleScalarFieldEnum)[keyof typeof MembershipRoleScalarFieldEnum]
 
 
+export const InviteScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  communityId: 'communityId',
+  creatorId: 'creatorId',
+  maxUses: 'maxUses',
+  uses: 'uses',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+} as const
+
+export type InviteScalarFieldEnum = (typeof InviteScalarFieldEnum)[keyof typeof InviteScalarFieldEnum]
+
+
 export const PostScalarFieldEnum = {
   id: 'id',
   communityId: 'communityId',
@@ -2184,6 +2273,7 @@ export type GlobalOmitConfig = {
   railFolder?: Prisma.RailFolderOmit
   role?: Prisma.RoleOmit
   membershipRole?: Prisma.MembershipRoleOmit
+  invite?: Prisma.InviteOmit
   post?: Prisma.PostOmit
   thread?: Prisma.ThreadOmit
   comment?: Prisma.CommentOmit

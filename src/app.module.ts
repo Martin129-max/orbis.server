@@ -12,6 +12,7 @@ import { StatsModule } from './stats/stats.module';
 import { ReportsModule } from './reports/reports.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { LibraryModule } from './library/library.module';
+import { InvitesModule } from './invites/invites.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaService } from './prisma.service';
@@ -31,6 +32,7 @@ import { PrismaService } from './prisma.service';
     ReportsModule,
     NotificationsModule,
     LibraryModule,
+    InvitesModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

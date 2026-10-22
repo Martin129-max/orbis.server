@@ -303,6 +303,7 @@ export type UserWhereInput = {
   libraryEntries?: Prisma.LibraryEntryListRelationFilter
   railFolders?: Prisma.RailFolderListRelationFilter
   likes?: Prisma.LikeListRelationFilter
+  invites?: Prisma.InviteListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -335,6 +336,7 @@ export type UserOrderByWithRelationInput = {
   libraryEntries?: Prisma.LibraryEntryOrderByRelationAggregateInput
   railFolders?: Prisma.RailFolderOrderByRelationAggregateInput
   likes?: Prisma.LikeOrderByRelationAggregateInput
+  invites?: Prisma.InviteOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -370,6 +372,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   libraryEntries?: Prisma.LibraryEntryListRelationFilter
   railFolders?: Prisma.RailFolderListRelationFilter
   likes?: Prisma.LikeListRelationFilter
+  invites?: Prisma.InviteListRelationFilter
 }, "id" | "email" | "username">
 
 export type UserOrderByWithAggregationInput = {
@@ -443,6 +446,7 @@ export type UserCreateInput = {
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
+  invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -475,6 +479,7 @@ export type UserUncheckedCreateInput = {
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
+  invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUpdateInput = {
@@ -506,6 +511,7 @@ export type UserUpdateInput = {
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
+  invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -538,6 +544,7 @@ export type UserUncheckedUpdateInput = {
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
+  invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -699,6 +706,20 @@ export type UserUpdateOneRequiredWithoutRailFoldersNestedInput = {
   upsert?: Prisma.UserUpsertWithoutRailFoldersInput
   connect?: Prisma.UserWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutRailFoldersInput, Prisma.UserUpdateWithoutRailFoldersInput>, Prisma.UserUncheckedUpdateWithoutRailFoldersInput>
+}
+
+export type UserCreateNestedOneWithoutInvitesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutInvitesInput, Prisma.UserUncheckedCreateWithoutInvitesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutInvitesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutInvitesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutInvitesInput, Prisma.UserUncheckedCreateWithoutInvitesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutInvitesInput
+  upsert?: Prisma.UserUpsertWithoutInvitesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutInvitesInput, Prisma.UserUpdateWithoutInvitesInput>, Prisma.UserUncheckedUpdateWithoutInvitesInput>
 }
 
 export type UserCreateNestedOneWithoutWallPostsInput = {
@@ -905,6 +926,7 @@ export type UserCreateWithoutOwnedCommunitiesInput = {
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
+  invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutOwnedCommunitiesInput = {
@@ -936,6 +958,7 @@ export type UserUncheckedCreateWithoutOwnedCommunitiesInput = {
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
+  invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutOwnedCommunitiesInput = {
@@ -982,6 +1005,7 @@ export type UserUpdateWithoutOwnedCommunitiesInput = {
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
+  invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOwnedCommunitiesInput = {
@@ -1013,6 +1037,7 @@ export type UserUncheckedUpdateWithoutOwnedCommunitiesInput = {
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
+  invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateWithoutMembershipsInput = {
@@ -1043,6 +1068,7 @@ export type UserCreateWithoutMembershipsInput = {
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
+  invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutMembershipsInput = {
@@ -1074,6 +1100,7 @@ export type UserUncheckedCreateWithoutMembershipsInput = {
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
+  invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutMembershipsInput = {
@@ -1120,6 +1147,7 @@ export type UserUpdateWithoutMembershipsInput = {
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
+  invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMembershipsInput = {
@@ -1151,6 +1179,7 @@ export type UserUncheckedUpdateWithoutMembershipsInput = {
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
+  invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateWithoutRailFoldersInput = {
@@ -1181,6 +1210,7 @@ export type UserCreateWithoutRailFoldersInput = {
   causedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
+  invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutRailFoldersInput = {
@@ -1212,6 +1242,7 @@ export type UserUncheckedCreateWithoutRailFoldersInput = {
   causedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
+  invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutRailFoldersInput = {
@@ -1258,6 +1289,7 @@ export type UserUpdateWithoutRailFoldersInput = {
   causedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
+  invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRailFoldersInput = {
@@ -1289,6 +1321,149 @@ export type UserUncheckedUpdateWithoutRailFoldersInput = {
   causedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
+  invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
+}
+
+export type UserCreateWithoutInvitesInput = {
+  email: string
+  username: string
+  name?: string | null
+  avatarUrl?: string | null
+  coverUrl?: string | null
+  backgroundUrl?: string | null
+  password: string
+  theme?: $Enums.Theme
+  appearOffline?: boolean
+  isAdmin?: boolean
+  tourCompletedAt?: Date | string | null
+  checklistDismissedAt?: Date | string | null
+  createdAt?: Date | string
+  ownedCommunities?: Prisma.CommunityCreateNestedManyWithoutOwnerInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
+  posts?: Prisma.PostCreateNestedManyWithoutAuthorInput
+  wallPosts?: Prisma.PostCreateNestedManyWithoutWallUserInput
+  sentFriendships?: Prisma.FriendshipCreateNestedManyWithoutRequesterInput
+  receivedFriendships?: Prisma.FriendshipCreateNestedManyWithoutAddresseeInput
+  threads?: Prisma.ThreadCreateNestedManyWithoutAuthorInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  votes?: Prisma.VoteCreateNestedManyWithoutUserInput
+  reports?: Prisma.ReportCreateNestedManyWithoutAuthorInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  causedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
+  libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
+  railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
+  likes?: Prisma.LikeCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutInvitesInput = {
+  id?: number
+  email: string
+  username: string
+  name?: string | null
+  avatarUrl?: string | null
+  coverUrl?: string | null
+  backgroundUrl?: string | null
+  password: string
+  theme?: $Enums.Theme
+  appearOffline?: boolean
+  isAdmin?: boolean
+  tourCompletedAt?: Date | string | null
+  checklistDismissedAt?: Date | string | null
+  createdAt?: Date | string
+  ownedCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutOwnerInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
+  wallPosts?: Prisma.PostUncheckedCreateNestedManyWithoutWallUserInput
+  sentFriendships?: Prisma.FriendshipUncheckedCreateNestedManyWithoutRequesterInput
+  receivedFriendships?: Prisma.FriendshipUncheckedCreateNestedManyWithoutAddresseeInput
+  threads?: Prisma.ThreadUncheckedCreateNestedManyWithoutAuthorInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutUserInput
+  reports?: Prisma.ReportUncheckedCreateNestedManyWithoutAuthorInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  causedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
+  libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
+  railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutInvitesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutInvitesInput, Prisma.UserUncheckedCreateWithoutInvitesInput>
+}
+
+export type UserUpsertWithoutInvitesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutInvitesInput, Prisma.UserUncheckedUpdateWithoutInvitesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutInvitesInput, Prisma.UserUncheckedCreateWithoutInvitesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutInvitesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutInvitesInput, Prisma.UserUncheckedUpdateWithoutInvitesInput>
+}
+
+export type UserUpdateWithoutInvitesInput = {
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
+  appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedCommunities?: Prisma.CommunityUpdateManyWithoutOwnerNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
+  posts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
+  wallPosts?: Prisma.PostUpdateManyWithoutWallUserNestedInput
+  sentFriendships?: Prisma.FriendshipUpdateManyWithoutRequesterNestedInput
+  receivedFriendships?: Prisma.FriendshipUpdateManyWithoutAddresseeNestedInput
+  threads?: Prisma.ThreadUpdateManyWithoutAuthorNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutUserNestedInput
+  reports?: Prisma.ReportUpdateManyWithoutAuthorNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  causedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
+  libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
+  railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutInvitesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
+  appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutOwnerNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
+  wallPosts?: Prisma.PostUncheckedUpdateManyWithoutWallUserNestedInput
+  sentFriendships?: Prisma.FriendshipUncheckedUpdateManyWithoutRequesterNestedInput
+  receivedFriendships?: Prisma.FriendshipUncheckedUpdateManyWithoutAddresseeNestedInput
+  threads?: Prisma.ThreadUncheckedUpdateManyWithoutAuthorNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutUserNestedInput
+  reports?: Prisma.ReportUncheckedUpdateManyWithoutAuthorNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  causedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
+  libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
+  railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutWallPostsInput = {
@@ -1319,6 +1494,7 @@ export type UserCreateWithoutWallPostsInput = {
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
+  invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutWallPostsInput = {
@@ -1350,6 +1526,7 @@ export type UserUncheckedCreateWithoutWallPostsInput = {
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
+  invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutWallPostsInput = {
@@ -1385,6 +1562,7 @@ export type UserCreateWithoutPostsInput = {
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
+  invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutPostsInput = {
@@ -1416,6 +1594,7 @@ export type UserUncheckedCreateWithoutPostsInput = {
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
+  invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutPostsInput = {
@@ -1462,6 +1641,7 @@ export type UserUpdateWithoutWallPostsInput = {
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
+  invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWallPostsInput = {
@@ -1493,6 +1673,7 @@ export type UserUncheckedUpdateWithoutWallPostsInput = {
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
+  invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUpsertWithoutPostsInput = {
@@ -1534,6 +1715,7 @@ export type UserUpdateWithoutPostsInput = {
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
+  invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPostsInput = {
@@ -1565,6 +1747,7 @@ export type UserUncheckedUpdateWithoutPostsInput = {
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
+  invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateWithoutThreadsInput = {
@@ -1595,6 +1778,7 @@ export type UserCreateWithoutThreadsInput = {
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
+  invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutThreadsInput = {
@@ -1626,6 +1810,7 @@ export type UserUncheckedCreateWithoutThreadsInput = {
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
+  invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutThreadsInput = {
@@ -1672,6 +1857,7 @@ export type UserUpdateWithoutThreadsInput = {
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
+  invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutThreadsInput = {
@@ -1703,6 +1889,7 @@ export type UserUncheckedUpdateWithoutThreadsInput = {
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
+  invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateWithoutCommentsInput = {
@@ -1733,6 +1920,7 @@ export type UserCreateWithoutCommentsInput = {
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
+  invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutCommentsInput = {
@@ -1764,6 +1952,7 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
+  invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutCommentsInput = {
@@ -1810,6 +1999,7 @@ export type UserUpdateWithoutCommentsInput = {
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
+  invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCommentsInput = {
@@ -1841,6 +2031,7 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
+  invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateWithoutVotesInput = {
@@ -1871,6 +2062,7 @@ export type UserCreateWithoutVotesInput = {
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
+  invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutVotesInput = {
@@ -1902,6 +2094,7 @@ export type UserUncheckedCreateWithoutVotesInput = {
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
+  invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutVotesInput = {
@@ -1948,6 +2141,7 @@ export type UserUpdateWithoutVotesInput = {
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
+  invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVotesInput = {
@@ -1979,6 +2173,7 @@ export type UserUncheckedUpdateWithoutVotesInput = {
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
+  invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateWithoutLikesInput = {
@@ -2009,6 +2204,7 @@ export type UserCreateWithoutLikesInput = {
   causedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
+  invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutLikesInput = {
@@ -2040,6 +2236,7 @@ export type UserUncheckedCreateWithoutLikesInput = {
   causedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
+  invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutLikesInput = {
@@ -2086,6 +2283,7 @@ export type UserUpdateWithoutLikesInput = {
   causedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
+  invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLikesInput = {
@@ -2117,6 +2315,7 @@ export type UserUncheckedUpdateWithoutLikesInput = {
   causedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
+  invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateWithoutSentFriendshipsInput = {
@@ -2147,6 +2346,7 @@ export type UserCreateWithoutSentFriendshipsInput = {
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
+  invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutSentFriendshipsInput = {
@@ -2178,6 +2378,7 @@ export type UserUncheckedCreateWithoutSentFriendshipsInput = {
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
+  invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutSentFriendshipsInput = {
@@ -2213,6 +2414,7 @@ export type UserCreateWithoutReceivedFriendshipsInput = {
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
+  invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutReceivedFriendshipsInput = {
@@ -2244,6 +2446,7 @@ export type UserUncheckedCreateWithoutReceivedFriendshipsInput = {
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
+  invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutReceivedFriendshipsInput = {
@@ -2290,6 +2493,7 @@ export type UserUpdateWithoutSentFriendshipsInput = {
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
+  invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSentFriendshipsInput = {
@@ -2321,6 +2525,7 @@ export type UserUncheckedUpdateWithoutSentFriendshipsInput = {
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
+  invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUpsertWithoutReceivedFriendshipsInput = {
@@ -2362,6 +2567,7 @@ export type UserUpdateWithoutReceivedFriendshipsInput = {
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
+  invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReceivedFriendshipsInput = {
@@ -2393,6 +2599,7 @@ export type UserUncheckedUpdateWithoutReceivedFriendshipsInput = {
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
+  invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateWithoutLibraryEntriesInput = {
@@ -2423,6 +2630,7 @@ export type UserCreateWithoutLibraryEntriesInput = {
   causedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
+  invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutLibraryEntriesInput = {
@@ -2454,6 +2662,7 @@ export type UserUncheckedCreateWithoutLibraryEntriesInput = {
   causedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
+  invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutLibraryEntriesInput = {
@@ -2500,6 +2709,7 @@ export type UserUpdateWithoutLibraryEntriesInput = {
   causedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
+  invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLibraryEntriesInput = {
@@ -2531,6 +2741,7 @@ export type UserUncheckedUpdateWithoutLibraryEntriesInput = {
   causedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
+  invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -2561,6 +2772,7 @@ export type UserCreateWithoutNotificationsInput = {
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
+  invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -2592,6 +2804,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
+  invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -2627,6 +2840,7 @@ export type UserCreateWithoutCausedNotificationsInput = {
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
+  invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutCausedNotificationsInput = {
@@ -2658,6 +2872,7 @@ export type UserUncheckedCreateWithoutCausedNotificationsInput = {
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
+  invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutCausedNotificationsInput = {
@@ -2704,6 +2919,7 @@ export type UserUpdateWithoutNotificationsInput = {
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
+  invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -2735,6 +2951,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
+  invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUpsertWithoutCausedNotificationsInput = {
@@ -2776,6 +2993,7 @@ export type UserUpdateWithoutCausedNotificationsInput = {
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
+  invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCausedNotificationsInput = {
@@ -2807,6 +3025,7 @@ export type UserUncheckedUpdateWithoutCausedNotificationsInput = {
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
+  invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateWithoutReportsInput = {
@@ -2837,6 +3056,7 @@ export type UserCreateWithoutReportsInput = {
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
+  invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutReportsInput = {
@@ -2868,6 +3088,7 @@ export type UserUncheckedCreateWithoutReportsInput = {
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
+  invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutReportsInput = {
@@ -2914,6 +3135,7 @@ export type UserUpdateWithoutReportsInput = {
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
+  invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReportsInput = {
@@ -2945,6 +3167,7 @@ export type UserUncheckedUpdateWithoutReportsInput = {
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
+  invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 
@@ -2968,6 +3191,7 @@ export type UserCountOutputType = {
   libraryEntries: number
   railFolders: number
   likes: number
+  invites: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2986,6 +3210,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   libraryEntries?: boolean | UserCountOutputTypeCountLibraryEntriesArgs
   railFolders?: boolean | UserCountOutputTypeCountRailFoldersArgs
   likes?: boolean | UserCountOutputTypeCountLikesArgs
+  invites?: boolean | UserCountOutputTypeCountInvitesArgs
 }
 
 /**
@@ -3103,6 +3328,13 @@ export type UserCountOutputTypeCountLikesArgs<ExtArgs extends runtime.Types.Exte
   where?: Prisma.LikeWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountInvitesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.InviteWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -3134,6 +3366,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   libraryEntries?: boolean | Prisma.User$libraryEntriesArgs<ExtArgs>
   railFolders?: boolean | Prisma.User$railFoldersArgs<ExtArgs>
   likes?: boolean | Prisma.User$likesArgs<ExtArgs>
+  invites?: boolean | Prisma.User$invitesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -3205,6 +3438,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   libraryEntries?: boolean | Prisma.User$libraryEntriesArgs<ExtArgs>
   railFolders?: boolean | Prisma.User$railFoldersArgs<ExtArgs>
   likes?: boolean | Prisma.User$likesArgs<ExtArgs>
+  invites?: boolean | Prisma.User$invitesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -3228,6 +3462,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     libraryEntries: Prisma.$LibraryEntryPayload<ExtArgs>[]
     railFolders: Prisma.$RailFolderPayload<ExtArgs>[]
     likes: Prisma.$LikePayload<ExtArgs>[]
+    invites: Prisma.$InvitePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -3653,6 +3888,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   libraryEntries<T extends Prisma.User$libraryEntriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$libraryEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LibraryEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   railFolders<T extends Prisma.User$railFoldersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$railFoldersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RailFolderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   likes<T extends Prisma.User$likesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$likesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  invites<T extends Prisma.User$invitesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$invitesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4441,6 +4677,30 @@ export type User$likesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
   take?: number
   skip?: number
   distinct?: Prisma.LikeScalarFieldEnum | Prisma.LikeScalarFieldEnum[]
+}
+
+/**
+ * User.invites
+ */
+export type User$invitesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Invite
+   */
+  select?: Prisma.InviteSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Invite
+   */
+  omit?: Prisma.InviteOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.InviteInclude<ExtArgs> | null
+  where?: Prisma.InviteWhereInput
+  orderBy?: Prisma.InviteOrderByWithRelationInput | Prisma.InviteOrderByWithRelationInput[]
+  cursor?: Prisma.InviteWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.InviteScalarFieldEnum | Prisma.InviteScalarFieldEnum[]
 }
 
 /**

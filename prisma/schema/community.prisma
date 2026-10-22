@@ -14,6 +14,7 @@ model Community {
   threads       Thread[]
   comments      Comment[]
   votes         Vote[]
+  invites       Invite[]
 
   @@index([ownerId])
 }
@@ -69,4 +70,20 @@ model MembershipRole {
 
   @@id([userId, communityId, roleId])
   @@index([roleId])
+}
+
+model Invite {
+  id          Int       @id @default(autoincrement())
+  code        String    @unique
+  communityId Int
+  creatorId   Int
+  maxUses     Int?
+  uses        Int       @default(0)
+  expiresAt   DateTime?
+  createdAt   DateTime  @default(now())
+  community   Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  creator     User      @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+
+  @@index([communityId])
+  @@index([creatorId])
 }

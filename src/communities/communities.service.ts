@@ -154,7 +154,7 @@ export class CommunitiesService {
     return memberships.map(({ community }) => community);
   }
 
-  private async nextRailPosition(userId: number): Promise<number> {
+  async nextRailPosition(userId: number): Promise<number> {
     const [memberships, folders] = await Promise.all([
       this.prisma.membership.aggregate({
         where: { userId, folderId: null },

@@ -63,6 +63,11 @@ export type Role = Prisma.RoleModel
  */
 export type MembershipRole = Prisma.MembershipRoleModel
 /**
+ * Model Invite
+ * 
+ */
+export type Invite = Prisma.InviteModel
+/**
  * Model Post
  * 
  */

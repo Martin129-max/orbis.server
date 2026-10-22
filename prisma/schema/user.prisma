@@ -34,4 +34,5 @@ model User {
   libraryEntries       LibraryEntry[]
   railFolders          RailFolder[]
   likes                Like[]
+  invites              Invite[]
 }

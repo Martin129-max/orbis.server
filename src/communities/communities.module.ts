@@ -10,5 +10,6 @@ import { FriendsModule } from '../friends/friends.module';
   imports: [StorageModule, FriendsModule],
   controllers: [CommunitiesController],
   providers: [CommunitiesService, CommunityMemberGuard, PrismaService],
+  exports: [CommunitiesService],
 })
 export class CommunitiesModule {}

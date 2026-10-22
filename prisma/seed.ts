@@ -807,6 +807,58 @@ async function createComments(
   return count;
 }
 
+const invites: {
+  code: string;
+  community: string;
+  creator: UserKey;
+  uses: number;
+  maxUses?: number;
+  expiresIn?: number;
+  ago: number;
+}[] = [
+  {
+    code: 'animeclub',
+    community: 'Seasonal Anime Club',
+    creator: 'admin',
+    uses: 12,
+    ago: days(10),
+  },
+  {
+    code: 'bebop',
+    community: 'Bebop Lounge',
+    creator: 'spike',
+    uses: 0,
+    maxUses: 5,
+    expiresIn: days(7),
+    ago: hours(3),
+  },
+  {
+    code: 'survey',
+    community: 'Survey Corps',
+    creator: 'levi',
+    uses: 1,
+    maxUses: 10,
+    expiresIn: days(1),
+    ago: hours(20),
+  },
+  {
+    code: 'konoha',
+    community: 'Hidden Leaf Village',
+    creator: 'sakura',
+    uses: 4,
+    expiresIn: -days(1),
+    ago: days(8),
+  },
+  {
+    code: 'onepiece',
+    community: 'Straw Hat Pirates',
+    creator: 'zoro',
+    uses: 5,
+    maxUses: 5,
+    ago: days(5),
+  },
+];
+
 const userIds = {} as Record<UserKey, number>;
 
 const wallPosts: {
@@ -1706,6 +1758,29 @@ async function main() {
           : { position: inFolder, folderId: folder.id },
     });
   }
+
+  for (const invite of invites) {
+    const { id: communityId } = await prisma.community.findFirstOrThrow({
+      where: { name: invite.community },
+      select: { id: true },
+    });
+    await prisma.invite.create({
+      data: {
+        code: invite.code,
+        communityId,
+        creatorId: userIds[invite.creator],
+        uses: invite.uses,
+        maxUses: invite.maxUses,
+        expiresAt:
+          invite.expiresIn === undefined ? null : minutesAgo(-invite.expiresIn),
+        createdAt: minutesAgo(invite.ago),
+      },
+    });
+  }
+  console.log(
+    '✉️ Invites created:',
+    invites.map(({ code }) => code),
+  );
 
   console.log(
     '🏘️ Communities created:',
