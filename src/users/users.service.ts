@@ -28,6 +28,7 @@ export type PublicProfile = {
   coverUrl: string | null;
   backgroundUrl: string | null;
   isAdmin: boolean;
+  isHeadAdmin: boolean;
   createdAt: Date;
   online: boolean;
   friendCount: number;
@@ -298,9 +299,11 @@ export class UsersService {
     ]);
 
     const { memberships, id, email, ...rest } = user;
+    const headAdmin = isHeadAdmin(email);
     return {
       ...rest,
-      isAdmin: rest.isAdmin || isHeadAdmin(email),
+      isAdmin: rest.isAdmin || headAdmin,
+      isHeadAdmin: headAdmin,
       userId: id,
       friendCount: friendships.length,
       friends: friendships.map(({ requester, addressee }) => {
