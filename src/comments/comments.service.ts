@@ -148,9 +148,11 @@ export class CommentsService {
         where: { id: profileOwner },
         select: { username: true },
       }));
-    const link = profile
-      ? `/users/${profile.username}`
-      : `/communities/${target.communityId}${type === 'thread' ? '?tab=forum' : ''}`;
+    const link = target.mediaType
+      ? `/library/${target.mediaType}/${target.mediaSourceId}`
+      : profile
+        ? `/users/${profile.username}`
+        : `/communities/${target.communityId}${type === 'thread' ? '?tab=forum' : ''}`;
     const notifications: NewNotification[] = [];
 
     if (parentAuthorId !== undefined) {

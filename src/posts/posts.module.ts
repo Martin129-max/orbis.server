@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { FeedController } from './feed.controller';
 import { PostsController } from './posts.controller';
 import { UserPostsController } from './user-posts.controller';
+import { MediaPostsController } from './media-posts.controller';
 import { PostsService } from './posts.service';
 import { CommunityMemberGuard } from '../communities/community-member.guard';
 import { PrismaService } from '../prisma.service';
@@ -11,7 +12,12 @@ import { LikesModule } from '../likes/likes.module';
 
 @Module({
   imports: [ThreadsModule, NotificationsModule, LikesModule],
-  controllers: [PostsController, FeedController, UserPostsController],
+  controllers: [
+    PostsController,
+    FeedController,
+    UserPostsController,
+    MediaPostsController,
+  ],
   providers: [PostsService, CommunityMemberGuard, PrismaService],
 })
 export class PostsModule {}

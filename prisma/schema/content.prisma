@@ -15,20 +15,23 @@ enum VotableType {
 }
 
 model Post {
-  id           Int        @id @default(autoincrement())
-  communityId  Int?
-  wallUserId   Int?
-  authorId     Int
-  content      String
-  commentCount Int        @default(0)
-  likeCount    Int        @default(0)
-  createdAt    DateTime   @default(now())
-  community    Community? @relation(fields: [communityId], references: [id], onDelete: Cascade)
-  wallUser     User?      @relation("WallPosts", fields: [wallUserId], references: [id], onDelete: Cascade)
-  author       User       @relation(fields: [authorId], references: [id])
+  id            Int        @id @default(autoincrement())
+  communityId   Int?
+  wallUserId    Int?
+  mediaType     MediaType?
+  mediaSourceId String?
+  authorId      Int
+  content       String
+  commentCount  Int        @default(0)
+  likeCount     Int        @default(0)
+  createdAt     DateTime   @default(now())
+  community     Community? @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  wallUser      User?      @relation("WallPosts", fields: [wallUserId], references: [id], onDelete: Cascade)
+  author        User       @relation(fields: [authorId], references: [id])
 
   @@index([communityId, createdAt(sort: Desc)])
   @@index([wallUserId, createdAt(sort: Desc)])
+  @@index([mediaType, mediaSourceId, createdAt(sort: Desc)])
 }
 
 model Thread {
