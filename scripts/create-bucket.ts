@@ -6,7 +6,7 @@ import {
 import { createS3Client } from '../src/storage/s3';
 
 const client = createS3Client();
-const bucket = process.env.STORAGE_BUCKET!;
+const bucket = process.env.BUCKET_NAME!;
 
 async function main() {
   try {

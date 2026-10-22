@@ -14,7 +14,7 @@ export type StoredFile = {
 @Injectable()
 export class StorageService {
   private readonly client = createS3Client();
-  private readonly bucket = process.env.STORAGE_BUCKET!;
+  private readonly bucket = process.env.BUCKET_NAME!;
   private readonly publicUrl = process.env.STORAGE_PUBLIC_URL!;
 
   async uploadImage(

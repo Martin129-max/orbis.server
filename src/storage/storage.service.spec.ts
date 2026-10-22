@@ -8,7 +8,7 @@ describe('StorageService', () => {
   let send: jest.Mock;
 
   beforeEach(() => {
-    process.env.STORAGE_BUCKET = 'orbis';
+    process.env.BUCKET_NAME = 'orbis';
     process.env.STORAGE_PUBLIC_URL = 'https://cdn.test';
     service = new StorageService();
     send = jest.fn().mockResolvedValue({});
