@@ -92,6 +92,42 @@ export class FriendsService {
     return list;
   }
 
+  async search(userId: number, query: string): Promise<FriendUser[]> {
+    const q = query.trim().replace(/^@/, '');
+    if (q.length < 2) return [];
+
+    const users = await this.prisma.user.findMany({
+      where: {
+        id: { not: userId },
+        OR: [
+          { username: { contains: q, mode: 'insensitive' } },
+          { name: { contains: q, mode: 'insensitive' } },
+        ],
+      },
+      take: 50,
+      select: { id: true, username: true, name: true, avatarUrl: true },
+    });
+
+    const needle = q.toLowerCase();
+    const rank = ({
+      username,
+      name,
+    }: {
+      username: string;
+      name: string | null;
+    }) =>
+      username === needle
+        ? 0
+        : username.startsWith(needle) || name?.toLowerCase().startsWith(needle)
+          ? 1
+          : 2;
+
+    return users
+      .sort((a, b) => rank(a) - rank(b) || a.username.localeCompare(b.username))
+      .slice(0, 8)
+      .map(({ id, ...user }) => ({ userId: id, ...user }));
+  }
+
   async add(userId: number, { userId: targetId, username }: AddFriendDto) {
     const target = await this.prisma.user.findUnique({
       where:

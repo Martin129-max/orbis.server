@@ -7,11 +7,13 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { FriendList, FriendsService } from './friends.service';
+import { FriendList, FriendUser, FriendsService } from './friends.service';
 import { AddFriendDto } from './dto/add-friend.dto';
+import { SearchPeopleDto } from './dto/search-people.dto';
 import { JwtAuthGuard } from '../auth/jwt.guard';
 
 @Controller('friends')
@@ -22,6 +24,11 @@ export class FriendsController {
   @Get()
   findMine(@Req() req): Promise<FriendList> {
     return this.friendsService.list(req.user.userId);
+  }
+
+  @Get('search')
+  search(@Req() req, @Query() { q }: SearchPeopleDto): Promise<FriendUser[]> {
+    return this.friendsService.search(req.user.userId, q);
   }
 
   @Post()
