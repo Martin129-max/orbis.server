@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { PublicCommunitiesController } from './public-communities.controller';
 import { CommunitiesController } from './communities.controller';
 import { CommunitiesService } from './communities.service';
 import { CommunityMemberGuard } from './community-member.guard';
@@ -8,7 +9,7 @@ import { FriendsModule } from '../friends/friends.module';
 
 @Module({
   imports: [StorageModule, FriendsModule],
-  controllers: [CommunitiesController],
+  controllers: [CommunitiesController, PublicCommunitiesController],
   providers: [CommunitiesService, CommunityMemberGuard, PrismaService],
   exports: [CommunitiesService],
 })

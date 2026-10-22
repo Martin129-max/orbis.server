@@ -90,6 +90,25 @@ export class CommunitiesService {
     });
   }
 
+  async findPublic(): Promise<Omit<CommunitySearchResult, 'joined'>[]> {
+    const communities = await this.prisma.community.findMany({
+      where: { isPublic: true },
+      orderBy: [{ memberships: { _count: 'desc' } }, { id: 'desc' }],
+      take: 6,
+      select: {
+        id: true,
+        name: true,
+        iconUrl: true,
+        coverUrl: true,
+        _count: { select: { memberships: true } },
+      },
+    });
+    return communities.map(({ _count, ...community }) => ({
+      ...community,
+      memberCount: _count.memberships,
+    }));
+  }
+
   async search(
     userId: number,
     { q }: SearchCommunitiesDto,
