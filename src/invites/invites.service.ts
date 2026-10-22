@@ -42,6 +42,7 @@ export type InvitePreview = {
     name: string;
     iconUrl: string | null;
     coverUrl: string | null;
+    backgroundUrl: string | null;
     isPublic: boolean;
     memberCount: number;
   };
@@ -98,9 +99,14 @@ export class InvitesService {
     userId: number,
     communityId: number,
   ): Promise<CommunityInvite[]> {
-    await this.requireAdmin(userId, communityId);
+    const role = await this.communities.roleOf(userId, communityId);
+    const isAdmin = role === 'owner' || role === 'admin';
     return this.prisma.invite.findMany({
-      where: { communityId, ...this.usable() },
+      where: {
+        communityId,
+        ...(isAdmin ? {} : { creatorId: userId }),
+        ...this.usable(),
+      },
       orderBy: { createdAt: 'desc' },
       select: inviteSelect,
     });
@@ -132,6 +138,7 @@ export class InvitesService {
             name: true,
             iconUrl: true,
             coverUrl: true,
+            backgroundUrl: true,
             isPublic: true,
             _count: { select: { memberships: true } },
           },
