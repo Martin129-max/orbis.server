@@ -10,13 +10,8 @@ import { CreateReportDto } from './dto/create-report.dto';
 import { UpdateReportDto } from './dto/update-report.dto';
 import { NotificationsService } from '../notifications/notifications.service';
 import { ticketNumber } from './ticket';
-import { ReportStatus } from '../../prisma/generated/client';
+import { getReporterStatusLabel } from './status-labels';
 
-const statusLabels: Record<ReportStatus, string> = {
-  todo: 'To do',
-  in_progress: 'In progress',
-  done: 'Done',
-};
 
 const reportSelect = {
   id: true,
@@ -70,7 +65,7 @@ export class ReportsService {
 
     const report = await this.prisma.report.findUnique({
       where: { id },
-      select: { status: true, authorId: true },
+      select: { status: true, category: true, authorId: true },
     });
     if (!report) throw new NotFoundException('Report not found');
 
@@ -86,7 +81,7 @@ export class ReportsService {
           userId: report.authorId,
           actorId: userId,
           type: 'report_status',
-          message: `moved your report ${ticketNumber(id)} to ${statusLabels[status]}`,
+          message: `updated your report ${ticketNumber(id)}: ${getReporterStatusLabel(status, report.category)}`,
           link: '/reports',
         },
       ]);
