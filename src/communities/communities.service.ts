@@ -13,12 +13,14 @@ import { ADMINISTRATOR, CommunityRole, isAdministrator } from './permissions';
 import { MAX_INT } from './community-member.guard';
 import { Community as CommunityModel } from '../../prisma/generated/client';
 import { StorageService } from '../storage/storage.service';
+import { PresenceGateway } from '../friends/presence.gateway';
 
 export type CommunityMember = {
   userId: number;
   username: string;
   name: string | null;
   avatarUrl: string | null;
+  online: boolean;
   nickname: string | null;
   joinedAt: Date;
   isOwner: boolean;
@@ -48,6 +50,7 @@ export type CommunitySearchResult = {
   id: number;
   name: string;
   iconUrl: string | null;
+  coverUrl: string | null;
   memberCount: number;
   joined: boolean;
 };
@@ -57,6 +60,7 @@ export class CommunitiesService {
   constructor(
     private prisma: PrismaService,
     private storage: StorageService,
+    private presence: PresenceGateway,
   ) {}
 
   async create(
@@ -93,18 +97,22 @@ export class CommunitiesService {
         id: true,
         name: true,
         iconUrl: true,
+        coverUrl: true,
         _count: { select: { memberships: true } },
         memberships: { where: { userId }, select: { userId: true } },
       },
     });
 
-    return communities.map(({ id, name, iconUrl, _count, memberships }) => ({
-      id,
-      name,
-      iconUrl,
-      memberCount: _count.memberships,
-      joined: memberships.length > 0,
-    }));
+    return communities.map(
+      ({ id, name, iconUrl, coverUrl, _count, memberships }) => ({
+        id,
+        name,
+        iconUrl,
+        coverUrl,
+        memberCount: _count.memberships,
+        joined: memberships.length > 0,
+      }),
+    );
   }
 
   async join(userId: number, communityId: number): Promise<CommunityModel> {
@@ -182,7 +190,13 @@ export class CommunitiesService {
             nickname: true,
             joinedAt: true,
             user: {
-              select: { id: true, username: true, name: true, avatarUrl: true },
+              select: {
+                id: true,
+                username: true,
+                name: true,
+                avatarUrl: true,
+                appearOffline: true,
+              },
             },
             roles: { select: { role: { select: { permissions: true } } } },
           },
@@ -200,6 +214,7 @@ export class CommunitiesService {
           username: user.username,
           name: user.name,
           avatarUrl: user.avatarUrl,
+          online: !user.appearOffline && this.presence.isOnline(user.id),
           nickname,
           joinedAt,
           isOwner,

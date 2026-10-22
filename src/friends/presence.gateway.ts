@@ -68,7 +68,7 @@ export class PresenceGateway
   }
 
   async broadcastPresence(userId: number) {
-    const [user, friendships] = await Promise.all([
+    const [user, friendships, coMembers] = await Promise.all([
       this.prisma.user.findUnique({
         where: { id: userId },
         select: { appearOffline: true },
@@ -80,14 +80,25 @@ export class PresenceGateway
         },
         select: { requesterId: true, addresseeId: true },
       }),
+      this.prisma.membership.findMany({
+        where: {
+          userId: { not: userId },
+          community: { memberships: { some: { userId } } },
+        },
+        distinct: ['userId'],
+        select: { userId: true },
+      }),
     ]);
 
-    if (!user || friendships.length === 0) return;
+    const recipients = new Set([
+      ...friendships.map(({ requesterId, addresseeId }) =>
+        requesterId === userId ? addresseeId : requesterId,
+      ),
+      ...coMembers.map((membership) => membership.userId),
+    ]);
+    if (!user || recipients.size === 0) return;
 
-    const friendIds = friendships.map(({ requesterId, addresseeId }) =>
-      requesterId === userId ? addresseeId : requesterId,
-    );
-    this.server.to(friendIds.map(room)).emit('presence', {
+    this.server.to([...recipients].map(room)).emit('presence', {
       userId,
       online: this.isOnline(userId) && !user.appearOffline,
     });
