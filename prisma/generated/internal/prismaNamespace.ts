@@ -1212,6 +1212,7 @@ export const CommunityScalarFieldEnum = {
   name: 'name',
   iconUrl: 'iconUrl',
   coverUrl: 'coverUrl',
+  backgroundUrl: 'backgroundUrl',
   ownerId: 'ownerId',
   isPublic: 'isPublic',
   createdAt: 'createdAt'

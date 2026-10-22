@@ -870,6 +870,7 @@ async function main() {
         name: community.name,
         iconUrl: communityImage('communities', community.name),
         coverUrl: communityImage('covers', community.name),
+        backgroundUrl: communityImage('backgrounds', community.name),
         ownerId: userIds[community.owner],
         isPublic: community.isPublic,
         createdAt: minutesAgo(days(14)),

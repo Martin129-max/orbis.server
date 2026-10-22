@@ -39,6 +39,7 @@ const roleRank: Record<CommunityRole, number> = {
 const communityImages = {
   icon: { field: 'iconUrl', folder: 'communities', maxSize: 512 },
   cover: { field: 'coverUrl', folder: 'covers', maxSize: 1600 },
+  background: { field: 'backgroundUrl', folder: 'backgrounds', maxSize: 1920 },
 } as const;
 
 export type CommunityImage = keyof typeof communityImages;
@@ -307,6 +308,7 @@ export class CommunitiesService {
     });
     await this.deleteStoredImage(community.iconUrl);
     await this.deleteStoredImage(community.coverUrl);
+    await this.deleteStoredImage(community.backgroundUrl);
   }
 
   private async replaceImage(
@@ -318,7 +320,7 @@ export class CommunitiesService {
     const { field } = communityImages[image];
     const previous = await this.prisma.community.findUnique({
       where: { id: communityId },
-      select: { iconUrl: true, coverUrl: true },
+      select: { iconUrl: true, coverUrl: true, backgroundUrl: true },
     });
     await this.prisma.community.update({
       where: { id: communityId },

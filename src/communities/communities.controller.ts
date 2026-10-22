@@ -19,6 +19,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
   CommunitiesService,
+  CommunityImage,
   CommunityMember,
   CommunitySearchResult,
   CommunityWithRole,
@@ -141,67 +142,37 @@ export class CommunitiesController {
     );
   }
 
-  @Post(':communityId/icon')
+  @Post(':communityId/:image(icon|cover|background)')
   @UseGuards(CommunityMemberGuard)
   @UseInterceptors(
     FileInterceptor('file', { limits: { fileSize: IMAGE_MAX_BYTES } }),
   )
-  uploadIcon(
+  uploadImage(
     @Req() req,
     @Param('communityId', ParseIntPipe) communityId: number,
+    @Param('image') image: CommunityImage,
     @UploadedFile() file?: Express.Multer.File,
   ): Promise<CommunityWithRole> {
     if (!file) throw new BadRequestException('Choose an image to upload');
     return this.communitiesService.updateImage(
       req.user.userId,
       communityId,
-      'icon',
+      image,
       file.buffer,
     );
   }
 
-  @Delete(':communityId/icon')
+  @Delete(':communityId/:image(icon|cover|background)')
   @UseGuards(CommunityMemberGuard)
-  removeIcon(
+  removeImage(
     @Req() req,
     @Param('communityId', ParseIntPipe) communityId: number,
+    @Param('image') image: CommunityImage,
   ): Promise<CommunityWithRole> {
     return this.communitiesService.removeImage(
       req.user.userId,
       communityId,
-      'icon',
-    );
-  }
-
-  @Post(':communityId/cover')
-  @UseGuards(CommunityMemberGuard)
-  @UseInterceptors(
-    FileInterceptor('file', { limits: { fileSize: IMAGE_MAX_BYTES } }),
-  )
-  uploadCover(
-    @Req() req,
-    @Param('communityId', ParseIntPipe) communityId: number,
-    @UploadedFile() file?: Express.Multer.File,
-  ): Promise<CommunityWithRole> {
-    if (!file) throw new BadRequestException('Choose an image to upload');
-    return this.communitiesService.updateImage(
-      req.user.userId,
-      communityId,
-      'cover',
-      file.buffer,
-    );
-  }
-
-  @Delete(':communityId/cover')
-  @UseGuards(CommunityMemberGuard)
-  removeCover(
-    @Req() req,
-    @Param('communityId', ParseIntPipe) communityId: number,
-  ): Promise<CommunityWithRole> {
-    return this.communitiesService.removeImage(
-      req.user.userId,
-      communityId,
-      'cover',
+      image,
     );
   }
 
