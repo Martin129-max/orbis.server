@@ -10,6 +10,7 @@ import { VotesModule } from './votes/votes.module';
 import { StatsModule } from './stats/stats.module';
 import { ReportsModule } from './reports/reports.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { LibraryModule } from './library/library.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaService } from './prisma.service';
@@ -27,6 +28,7 @@ import { PrismaService } from './prisma.service';
     StatsModule,
     ReportsModule,
     NotificationsModule,
+    LibraryModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

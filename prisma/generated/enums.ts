@@ -33,6 +33,26 @@ export const FriendshipStatus = {
 export type FriendshipStatus = (typeof FriendshipStatus)[keyof typeof FriendshipStatus]
 
 
+export const MediaType = {
+  anime: 'anime',
+  manga: 'manga',
+  game: 'game'
+} as const
+
+export type MediaType = (typeof MediaType)[keyof typeof MediaType]
+
+
+export const LibraryStatus = {
+  current: 'current',
+  completed: 'completed',
+  on_hold: 'on_hold',
+  dropped: 'dropped',
+  planned: 'planned'
+} as const
+
+export type LibraryStatus = (typeof LibraryStatus)[keyof typeof LibraryStatus]
+
+
 export const NotificationType = {
   post_comment: 'post_comment',
   thread_comment: 'thread_comment',

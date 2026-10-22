@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { MAX_INT } from '../communities/community-member.guard';
 import { PrismaService } from '../prisma.service';
-import { Prisma } from '../../prisma/generated/client';
+import { LibraryStatus, Prisma } from '../../prisma/generated/client';
 import { author, communitySummary } from '../common/author';
 import { PAGE_SIZE, Page } from '../common/pagination';
 import { sanitizeRichText } from '../common/rich-text';
@@ -18,9 +18,38 @@ export type PostItem = Prisma.PostGetPayload<{
   include: typeof postInclude;
 }> & { type: 'post' };
 
-export type FeedItem = PostItem | ThreadSummary;
+const activityInclude = {
+  entry: {
+    select: {
+      mediaType: true,
+      sourceId: true,
+      title: true,
+      coverImage: true,
+      year: true,
+      user: author,
+    },
+  },
+} as const;
 
-const RANK = { post: 0, thread: 1 } as const;
+export type ActivityItem = {
+  type: 'activity';
+  id: number;
+  createdAt: Date;
+  author: Prisma.UserGetPayload<typeof author>;
+  status: LibraryStatus;
+  progress: { from: number; to: number } | null;
+  media: {
+    type: 'anime' | 'manga' | 'game';
+    sourceId: string;
+    title: string;
+    coverImage: string | null;
+    year: number | null;
+  };
+};
+
+export type FeedItem = PostItem | ThreadSummary | ActivityItem;
+
+const RANK = { post: 0, thread: 1, activity: 2 } as const;
 
 type FeedCursor = { createdAt: Date; rank: number; id: number };
 
@@ -29,7 +58,7 @@ const newestFirst = [{ createdAt: 'desc' as const }, { id: 'desc' as const }];
 function parseFeedCursor(raw?: string): FeedCursor | undefined {
   if (raw === undefined) return undefined;
 
-  const match = /^(\d{1,15})_([01])_(\d{1,10})$/.exec(raw);
+  const match = /^(\d{1,15})_([012])_(\d{1,10})$/.exec(raw);
   const id = Number(match?.[3]);
   if (!match || id < 1 || id > MAX_INT) {
     throw new BadRequestException('Invalid cursor');
@@ -64,6 +93,39 @@ function compareFeedItems(a: Sortable, b: Sortable) {
   );
 }
 
+function toActivity(
+  activity: Prisma.LibraryActivityGetPayload<{
+    include: typeof activityInclude;
+  }>,
+): ActivityItem {
+  const { entry } = activity;
+  return {
+    type: 'activity',
+    id: activity.id,
+    createdAt: activity.createdAt,
+    author: entry.user,
+    status: activity.status,
+    progress:
+      activity.progressTo === null
+        ? null
+        : { from: activity.progressFrom!, to: activity.progressTo },
+    media: {
+      type: entry.mediaType,
+      sourceId: entry.sourceId,
+      title: entry.title,
+      coverImage: entry.coverImage,
+      year: entry.year,
+    },
+  };
+}
+
+function nextCursor<T extends Sortable>(merged: T[], page: T[]) {
+  const last = page[page.length - 1];
+  return merged.length > PAGE_SIZE
+    ? `${last.createdAt.getTime()}_${RANK[last.type]}_${last.id}`
+    : null;
+}
+
 @Injectable()
 export class PostsService {
   constructor(
@@ -73,28 +135,38 @@ export class PostsService {
 
   async findForCommunity(
     communityId: number,
-    cursor?: number,
-  ): Promise<Page<PostItem>> {
-    if (cursor !== undefined && (cursor < 1 || cursor > MAX_INT)) {
-      throw new BadRequestException('Invalid cursor');
-    }
+    rawCursor?: string,
+  ): Promise<Page<PostItem | ActivityItem>> {
+    const cursor = parseFeedCursor(rawCursor);
 
-    const posts = await this.prisma.post.findMany({
-      where: { communityId },
-      orderBy: newestFirst,
-      take: PAGE_SIZE + 1,
-      ...(cursor !== undefined && { cursor: { id: cursor }, skip: 1 }),
-      include: postInclude,
-    });
-    const items = posts
-      .slice(0, PAGE_SIZE)
-      .map((post) => ({ ...post, type: 'post' as const }));
+    const [posts, activities] = await Promise.all([
+      this.prisma.post.findMany({
+        where: { communityId, ...olderThan(cursor, RANK.post) },
+        orderBy: newestFirst,
+        take: PAGE_SIZE + 1,
+        include: postInclude,
+      }),
+      this.prisma.libraryActivity.findMany({
+        where: {
+          entry: {
+            isPublic: true,
+            user: { memberships: { some: { communityId } } },
+          },
+          ...olderThan(cursor, RANK.activity),
+        },
+        orderBy: newestFirst,
+        take: PAGE_SIZE + 1,
+        include: activityInclude,
+      }),
+    ]);
 
-    return {
-      items,
-      nextCursor:
-        posts.length > PAGE_SIZE ? String(items[items.length - 1].id) : null,
-    };
+    const merged = [
+      ...posts.map((post) => ({ ...post, type: 'post' as const })),
+      ...activities.map(toActivity),
+    ].sort(compareFeedItems);
+    const items = merged.slice(0, PAGE_SIZE);
+
+    return { items, nextCursor: nextCursor(merged, items) };
   }
 
   async findForMember(
@@ -104,7 +176,7 @@ export class PostsService {
     const cursor = parseFeedCursor(rawCursor);
     const member = { community: { memberships: { some: { userId } } } };
 
-    const [posts, threads] = await Promise.all([
+    const [posts, threads, activities] = await Promise.all([
       this.prisma.post.findMany({
         where: { ...member, ...olderThan(cursor, RANK.post) },
         orderBy: newestFirst,
@@ -117,11 +189,28 @@ export class PostsService {
         take: PAGE_SIZE + 1,
         include: threadInclude,
       }),
+      this.prisma.libraryActivity.findMany({
+        where: {
+          entry: {
+            isPublic: true,
+            user: {
+              memberships: {
+                some: { community: { memberships: { some: { userId } } } },
+              },
+            },
+          },
+          ...olderThan(cursor, RANK.activity),
+        },
+        orderBy: newestFirst,
+        take: PAGE_SIZE + 1,
+        include: activityInclude,
+      }),
     ]);
 
     const merged = [
       ...posts.map((post) => ({ ...post, type: 'post' as const })),
       ...threads.map((thread) => ({ ...thread, type: 'thread' as const })),
+      ...activities.map(toActivity),
     ].sort(compareFeedItems);
     const page = merged.slice(0, PAGE_SIZE);
     const voted = new Map(
@@ -135,15 +224,8 @@ export class PostsService {
     const items: FeedItem[] = page.map((item) =>
       item.type === 'thread' ? voted.get(item.id)! : item,
     );
-    const last = items[items.length - 1];
 
-    return {
-      items,
-      nextCursor:
-        merged.length > PAGE_SIZE
-          ? `${last.createdAt.getTime()}_${RANK[last.type]}_${last.id}`
-          : null,
-    };
+    return { items, nextCursor: nextCursor(merged, page) };
   }
 
   async create(

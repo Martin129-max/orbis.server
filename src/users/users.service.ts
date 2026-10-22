@@ -40,6 +40,7 @@ export type Onboarding = {
     comment: boolean;
     friend: boolean;
     feedback: boolean;
+    library: boolean;
   };
 };
 
@@ -228,27 +229,36 @@ export class UsersService {
   }
 
   async onboarding(id: number): Promise<Onboarding> {
-    const [user, memberships, posts, threads, comments, friendships, reports] =
-      await Promise.all([
-        this.prisma.user.findUniqueOrThrow({
-          where: { id },
-          select: {
-            avatarUrl: true,
-            tourCompletedAt: true,
-            checklistDismissedAt: true,
-          },
-        }),
-        this.prisma.membership.count({ where: { userId: id } }),
-        this.prisma.post.count({ where: { authorId: id } }),
-        this.prisma.thread.count({ where: { authorId: id } }),
-        this.prisma.comment.count({ where: { authorId: id } }),
-        this.prisma.friendship.count({
-          where: {
-            OR: [{ requesterId: id }, { addresseeId: id, status: 'accepted' }],
-          },
-        }),
-        this.prisma.report.count({ where: { authorId: id } }),
-      ]);
+    const [
+      user,
+      memberships,
+      posts,
+      threads,
+      comments,
+      friendships,
+      reports,
+      libraryEntries,
+    ] = await Promise.all([
+      this.prisma.user.findUniqueOrThrow({
+        where: { id },
+        select: {
+          avatarUrl: true,
+          tourCompletedAt: true,
+          checklistDismissedAt: true,
+        },
+      }),
+      this.prisma.membership.count({ where: { userId: id } }),
+      this.prisma.post.count({ where: { authorId: id } }),
+      this.prisma.thread.count({ where: { authorId: id } }),
+      this.prisma.comment.count({ where: { authorId: id } }),
+      this.prisma.friendship.count({
+        where: {
+          OR: [{ requesterId: id }, { addresseeId: id, status: 'accepted' }],
+        },
+      }),
+      this.prisma.report.count({ where: { authorId: id } }),
+      this.prisma.libraryEntry.count({ where: { userId: id } }),
+    ]);
 
     return {
       tourCompleted: user.tourCompletedAt !== null,
@@ -260,6 +270,7 @@ export class UsersService {
         comment: comments > 0,
         friend: friendships > 0,
         feedback: reports > 0,
+        library: libraryEntries > 0,
       },
     };
   }

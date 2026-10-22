@@ -63,6 +63,16 @@ export type Vote = Prisma.VoteModel
  */
 export type Friendship = Prisma.FriendshipModel
 /**
+ * Model LibraryEntry
+ * 
+ */
+export type LibraryEntry = Prisma.LibraryEntryModel
+/**
+ * Model LibraryActivity
+ * 
+ */
+export type LibraryActivity = Prisma.LibraryActivityModel
+/**
  * Model Notification
  * 
  */

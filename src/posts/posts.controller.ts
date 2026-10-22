@@ -22,7 +22,7 @@ export class PostsController {
   @Get()
   findAll(
     @Param('communityId', ParseIntPipe) communityId: number,
-    @Query('cursor', new ParseIntPipe({ optional: true })) cursor?: number,
+    @Query('cursor') cursor?: string,
   ) {
     return this.postsService.findForCommunity(communityId, cursor);
   }

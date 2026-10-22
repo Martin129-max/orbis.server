@@ -393,6 +393,8 @@ export const ModelName = {
   Comment: 'Comment',
   Vote: 'Vote',
   Friendship: 'Friendship',
+  LibraryEntry: 'LibraryEntry',
+  LibraryActivity: 'LibraryActivity',
   Notification: 'Notification',
   Report: 'Report',
   User: 'User'
@@ -411,7 +413,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "community" | "membership" | "role" | "membershipRole" | "post" | "thread" | "comment" | "vote" | "friendship" | "notification" | "report" | "user"
+    modelProps: "community" | "membership" | "role" | "membershipRole" | "post" | "thread" | "comment" | "vote" | "friendship" | "libraryEntry" | "libraryActivity" | "notification" | "report" | "user"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1081,6 +1083,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    LibraryEntry: {
+      payload: Prisma.$LibraryEntryPayload<ExtArgs>
+      fields: Prisma.LibraryEntryFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LibraryEntryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LibraryEntryPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LibraryEntryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LibraryEntryPayload>
+        }
+        findFirst: {
+          args: Prisma.LibraryEntryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LibraryEntryPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LibraryEntryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LibraryEntryPayload>
+        }
+        findMany: {
+          args: Prisma.LibraryEntryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LibraryEntryPayload>[]
+        }
+        create: {
+          args: Prisma.LibraryEntryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LibraryEntryPayload>
+        }
+        createMany: {
+          args: Prisma.LibraryEntryCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.LibraryEntryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LibraryEntryPayload>[]
+        }
+        delete: {
+          args: Prisma.LibraryEntryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LibraryEntryPayload>
+        }
+        update: {
+          args: Prisma.LibraryEntryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LibraryEntryPayload>
+        }
+        deleteMany: {
+          args: Prisma.LibraryEntryDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LibraryEntryUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.LibraryEntryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LibraryEntryPayload>[]
+        }
+        upsert: {
+          args: Prisma.LibraryEntryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LibraryEntryPayload>
+        }
+        aggregate: {
+          args: Prisma.LibraryEntryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLibraryEntry>
+        }
+        groupBy: {
+          args: Prisma.LibraryEntryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LibraryEntryGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LibraryEntryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LibraryEntryCountAggregateOutputType> | number
+        }
+      }
+    }
+    LibraryActivity: {
+      payload: Prisma.$LibraryActivityPayload<ExtArgs>
+      fields: Prisma.LibraryActivityFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LibraryActivityFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LibraryActivityPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LibraryActivityFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LibraryActivityPayload>
+        }
+        findFirst: {
+          args: Prisma.LibraryActivityFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LibraryActivityPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LibraryActivityFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LibraryActivityPayload>
+        }
+        findMany: {
+          args: Prisma.LibraryActivityFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LibraryActivityPayload>[]
+        }
+        create: {
+          args: Prisma.LibraryActivityCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LibraryActivityPayload>
+        }
+        createMany: {
+          args: Prisma.LibraryActivityCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.LibraryActivityCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LibraryActivityPayload>[]
+        }
+        delete: {
+          args: Prisma.LibraryActivityDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LibraryActivityPayload>
+        }
+        update: {
+          args: Prisma.LibraryActivityUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LibraryActivityPayload>
+        }
+        deleteMany: {
+          args: Prisma.LibraryActivityDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LibraryActivityUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.LibraryActivityUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LibraryActivityPayload>[]
+        }
+        upsert: {
+          args: Prisma.LibraryActivityUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LibraryActivityPayload>
+        }
+        aggregate: {
+          args: Prisma.LibraryActivityAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLibraryActivity>
+        }
+        groupBy: {
+          args: Prisma.LibraryActivityGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LibraryActivityGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LibraryActivityCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LibraryActivityCountAggregateOutputType> | number
+        }
+      }
+    }
     Notification: {
       payload: Prisma.$NotificationPayload<ExtArgs>
       fields: Prisma.NotificationFieldRefs
@@ -1448,6 +1598,38 @@ export const FriendshipScalarFieldEnum = {
 export type FriendshipScalarFieldEnum = (typeof FriendshipScalarFieldEnum)[keyof typeof FriendshipScalarFieldEnum]
 
 
+export const LibraryEntryScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  mediaId: 'mediaId',
+  mediaType: 'mediaType',
+  sourceId: 'sourceId',
+  title: 'title',
+  coverImage: 'coverImage',
+  year: 'year',
+  status: 'status',
+  progress: 'progress',
+  total: 'total',
+  isPublic: 'isPublic',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LibraryEntryScalarFieldEnum = (typeof LibraryEntryScalarFieldEnum)[keyof typeof LibraryEntryScalarFieldEnum]
+
+
+export const LibraryActivityScalarFieldEnum = {
+  id: 'id',
+  entryId: 'entryId',
+  status: 'status',
+  progressFrom: 'progressFrom',
+  progressTo: 'progressTo',
+  createdAt: 'createdAt'
+} as const
+
+export type LibraryActivityScalarFieldEnum = (typeof LibraryActivityScalarFieldEnum)[keyof typeof LibraryActivityScalarFieldEnum]
+
+
 export const NotificationScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -1630,6 +1812,34 @@ export type ListEnumFriendshipStatusFieldRefInput<$PrismaModel> = FieldRefInputT
 
 
 /**
+ * Reference to a field of type 'MediaType'
+ */
+export type EnumMediaTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MediaType'>
+    
+
+
+/**
+ * Reference to a field of type 'MediaType[]'
+ */
+export type ListEnumMediaTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MediaType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'LibraryStatus'
+ */
+export type EnumLibraryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LibraryStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'LibraryStatus[]'
+ */
+export type ListEnumLibraryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LibraryStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'NotificationType'
  */
 export type EnumNotificationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationType'>
@@ -1786,6 +1996,8 @@ export type GlobalOmitConfig = {
   comment?: Prisma.CommentOmit
   vote?: Prisma.VoteOmit
   friendship?: Prisma.FriendshipOmit
+  libraryEntry?: Prisma.LibraryEntryOmit
+  libraryActivity?: Prisma.LibraryActivityOmit
   notification?: Prisma.NotificationOmit
   report?: Prisma.ReportOmit
   user?: Prisma.UserOmit

@@ -1,4 +1,6 @@
 import {
+  LibraryStatus,
+  MediaType,
   NotificationType,
   PrismaClient,
   ReportCategory,
@@ -983,6 +985,154 @@ async function createNotifications() {
   return notifications.length;
 }
 
+const media = {
+  frieren: [
+    'anime',
+    '154587',
+    'Sousou no Frieren',
+    'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx154587-qQTzQnEJJ3oB.jpg',
+    2023,
+    28,
+  ],
+  bebop: [
+    'anime',
+    '1',
+    'Cowboy Bebop',
+    'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx1-GCsPm7waJ4kS.png',
+    1998,
+    26,
+  ],
+  demonSlayer: [
+    'anime',
+    '101922',
+    'Kimetsu no Yaiba',
+    'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx101922-WBsBl0ClmgYL.jpg',
+    2019,
+    26,
+  ],
+  jujutsu: [
+    'anime',
+    '113415',
+    'Jujutsu Kaisen',
+    'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx113415-LHBAeoZDIsnF.jpg',
+    2020,
+    24,
+  ],
+  spyFamily: [
+    'anime',
+    '140960',
+    'SPY×FAMILY',
+    'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx140960-Kb6R5nYQfjmP.jpg',
+    2022,
+    12,
+  ],
+  titan: [
+    'anime',
+    '16498',
+    'Shingeki no Kyojin',
+    'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx16498-buvcRTBx4NSm.jpg',
+    2013,
+    25,
+  ],
+  dbz: [
+    'anime',
+    '813',
+    'Dragon Ball Z',
+    'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx813-ZhnFNOeCU5dQ.png',
+    1989,
+    291,
+  ],
+  onePiece: [
+    'manga',
+    '30013',
+    'ONE PIECE',
+    'https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx30013-BeslEMqiPhlk.jpg',
+    1997,
+    null,
+  ],
+  naruto: [
+    'manga',
+    '30011',
+    'NARUTO',
+    'https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/nx30011-9yUF1dXWgDOx.jpg',
+    1999,
+    700,
+  ],
+  chainsaw: [
+    'manga',
+    '105778',
+    'Chainsaw Man',
+    'https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx105778-euxXZEIfDY2u.png',
+    2018,
+    null,
+  ],
+  persona: [
+    'game',
+    '117731',
+    'Persona 5 Strikers',
+    'https://images.igdb.com/igdb/image/upload/t_cover_big/co2zoq.jpg',
+    2020,
+    null,
+  ],
+  hollowKnight: [
+    'game',
+    '365702',
+    'Hollow Knight',
+    'https://images.igdb.com/igdb/image/upload/t_cover_big/cocpbl.jpg',
+    2023,
+    null,
+  ],
+  stardew: [
+    'game',
+    '17000',
+    'Stardew Valley',
+    'https://images.igdb.com/igdb/image/upload/t_cover_big/coa93h.jpg',
+    2016,
+    null,
+  ],
+  eldenRing: [
+    'game',
+    '325591',
+    'Elden Ring Nightreign',
+    'https://images.igdb.com/igdb/image/upload/t_cover_big/co95gk.jpg',
+    2025,
+    null,
+  ],
+} as const satisfies Record<
+  string,
+  [MediaType, string, string, string, number, number | null]
+>;
+
+const library: [UserKey, keyof typeof media, LibraryStatus, boolean, number][] =
+  [
+    ['admin', 'frieren', 'completed', true, hours(3)],
+    ['admin', 'hollowKnight', 'current', false, days(2)],
+    ['admin', 'stardew', 'on_hold', true, days(5)],
+    ['naruto', 'naruto', 'completed', true, hours(5)],
+    ['naruto', 'demonSlayer', 'current', true, days(3)],
+    ['luffy', 'onePiece', 'current', true, hours(8)],
+    ['spike', 'bebop', 'completed', true, hours(14)],
+    ['tanjiro', 'demonSlayer', 'completed', true, days(1)],
+    ['gojo', 'jujutsu', 'current', true, hours(20)],
+    ['itadori', 'jujutsu', 'planned', true, days(2)],
+    ['itadori', 'chainsaw', 'dropped', false, days(4)],
+    ['anya', 'spyFamily', 'current', true, hours(2)],
+    ['levi', 'titan', 'completed', true, days(6)],
+    ['mikasa', 'titan', 'planned', true, days(3)],
+    ['goku', 'dbz', 'current', true, hours(30)],
+    ['nami', 'stardew', 'planned', true, days(1)],
+    ['vegeta', 'eldenRing', 'dropped', true, hours(12)],
+    ['zoro', 'persona', 'current', false, days(2)],
+  ];
+
+const earlierStatuses: Record<LibraryStatus, LibraryStatus[]> = {
+  planned: [],
+  current: ['planned'],
+  completed: ['planned', 'current'],
+  on_hold: ['current'],
+  dropped: ['current'],
+};
+
 function minutesAgo(minutes: number) {
   return new Date(Date.now() - minutes * 60 * 1000);
 }
@@ -1179,6 +1329,66 @@ async function main() {
   });
 
   console.log('📣 Reports created:', reports.length);
+
+  for (const [user, key, status, isPublic, ago] of library) {
+    const [mediaType, sourceId, title, coverImage, year, total] = media[key];
+    const share = {
+      completed: 1,
+      current: 0.45,
+      on_hold: 0.3,
+      dropped: 0.15,
+      planned: 0,
+    }[status];
+    const progress =
+      mediaType === 'game'
+        ? 0
+        : total
+          ? Math.round(total * share)
+          : status === 'planned'
+            ? 0
+            : { current: 1100, dropped: 40, completed: 1, on_hold: 20 }[status];
+    const history = [...earlierStatuses[status], status];
+    const at = (step: number) =>
+      minutesAgo(ago + (history.length - 1 - step) * days(3));
+
+    await prisma.libraryEntry.create({
+      data: {
+        userId: userIds[user],
+        mediaId: `${mediaType.toUpperCase()}_${sourceId}`,
+        mediaType,
+        sourceId,
+        title,
+        coverImage,
+        year,
+        status,
+        progress,
+        total,
+        isPublic,
+        createdAt: at(0),
+        updatedAt: at(history.length - 1),
+        activities: {
+          create: [
+            ...history.map((step, index) => ({
+              status: step,
+              createdAt: at(index),
+            })),
+            ...(status === 'current' && total && progress > 1
+              ? [
+                  {
+                    status,
+                    progressFrom: Math.max(1, progress - 2),
+                    progressTo: progress,
+                    createdAt: minutesAgo(Math.max(0, ago - 45)),
+                  },
+                ]
+              : []),
+          ],
+        },
+      },
+    });
+  }
+
+  console.log('📚 Library entries created:', library.length);
 
   console.log('🔔 Notifications created:', await createNotifications());
 

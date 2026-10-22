@@ -29,4 +29,5 @@ model User {
   reports              Report[]
   notifications        Notification[] @relation("NotificationRecipient")
   causedNotifications  Notification[] @relation("NotificationActor")
+  libraryEntries       LibraryEntry[]
 }

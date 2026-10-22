@@ -60,6 +60,8 @@ export const ModelName = {
   Comment: 'Comment',
   Vote: 'Vote',
   Friendship: 'Friendship',
+  LibraryEntry: 'LibraryEntry',
+  LibraryActivity: 'LibraryActivity',
   Notification: 'Notification',
   Report: 'Report',
   User: 'User'
@@ -185,6 +187,38 @@ export const FriendshipScalarFieldEnum = {
 } as const
 
 export type FriendshipScalarFieldEnum = (typeof FriendshipScalarFieldEnum)[keyof typeof FriendshipScalarFieldEnum]
+
+
+export const LibraryEntryScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  mediaId: 'mediaId',
+  mediaType: 'mediaType',
+  sourceId: 'sourceId',
+  title: 'title',
+  coverImage: 'coverImage',
+  year: 'year',
+  status: 'status',
+  progress: 'progress',
+  total: 'total',
+  isPublic: 'isPublic',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LibraryEntryScalarFieldEnum = (typeof LibraryEntryScalarFieldEnum)[keyof typeof LibraryEntryScalarFieldEnum]
+
+
+export const LibraryActivityScalarFieldEnum = {
+  id: 'id',
+  entryId: 'entryId',
+  status: 'status',
+  progressFrom: 'progressFrom',
+  progressTo: 'progressTo',
+  createdAt: 'createdAt'
+} as const
+
+export type LibraryActivityScalarFieldEnum = (typeof LibraryActivityScalarFieldEnum)[keyof typeof LibraryActivityScalarFieldEnum]
 
 
 export const NotificationScalarFieldEnum = {

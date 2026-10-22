@@ -1,0 +1,47 @@
+enum MediaType {
+  anime
+  manga
+  game
+}
+
+enum LibraryStatus {
+  current
+  completed
+  on_hold
+  dropped
+  planned
+}
+
+model LibraryEntry {
+  id         Int               @id @default(autoincrement())
+  userId     Int
+  mediaId    String
+  mediaType  MediaType
+  sourceId   String
+  title      String
+  coverImage String?
+  year       Int?
+  status     LibraryStatus     @default(planned)
+  progress   Int               @default(0)
+  total      Int?
+  isPublic   Boolean           @default(true)
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @default(now()) @updatedAt
+  user       User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  activities LibraryActivity[]
+
+  @@unique([userId, mediaId])
+}
+
+model LibraryActivity {
+  id           Int           @id @default(autoincrement())
+  entryId      Int
+  status       LibraryStatus
+  progressFrom Int?
+  progressTo   Int?
+  createdAt    DateTime      @default(now())
+  entry        LibraryEntry  @relation(fields: [entryId], references: [id], onDelete: Cascade)
+
+  @@index([createdAt(sort: Desc)])
+  @@index([entryId])
+}
