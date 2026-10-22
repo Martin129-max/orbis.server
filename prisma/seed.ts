@@ -1,7 +1,13 @@
-import { PrismaClient } from './generated/client';
+import {
+  NotificationType,
+  PrismaClient,
+  ReportCategory,
+  ReportStatus,
+} from './generated/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import * as bcrypt from 'bcrypt';
 import { ADMINISTRATOR } from '../src/communities/permissions';
+import { ticketNumber } from '../src/reports/ticket';
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
 const prisma = new PrismaClient({ adapter });
@@ -802,6 +808,178 @@ function communityImage(folder: string, name: string) {
   return `/images/${folder}/${name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.webp`;
 }
 
+const reports: [
+  UserKey,
+  ReportCategory,
+  ReportStatus,
+  number,
+  string,
+  string,
+][] = [
+  [
+    'naruto',
+    'bug',
+    'todo',
+    25,
+    'The post button stayed greyed out after I pasted a long message. Had to type a letter to wake it up.',
+    '/explore',
+  ],
+  [
+    'anya',
+    'idea',
+    'todo',
+    90,
+    'Anya wants stickers in comments. Peanut sticker. Please.',
+    '/',
+  ],
+  [
+    'levi',
+    'bug',
+    'in_progress',
+    240,
+    'Thread list jumped back to the top after I voted. Clean that up.',
+    '/explore',
+  ],
+  [
+    'nami',
+    'idea',
+    'todo',
+    600,
+    'Let community owners pin a thread so the rules stay at the top of the forum.',
+    '/explore',
+  ],
+  [
+    'spike',
+    'other',
+    'done',
+    1440,
+    'Dark mode is easy on the eyes at 3am. That is all.',
+    '/profile',
+  ],
+  [
+    'gojo',
+    'bug',
+    'in_progress',
+    2880,
+    'Uploaded a new cover and the old one showed for a second before switching.',
+    '/explore',
+  ],
+];
+
+const reportStatusLabels: Record<ReportStatus, string> = {
+  todo: 'To do',
+  in_progress: 'In progress',
+  done: 'Done',
+};
+
+async function createNotifications() {
+  const day = 24 * 60 * 60 * 1000;
+  const readAt = (createdAt: Date) =>
+    Date.now() - createdAt.getTime() > day ? createdAt : null;
+  const notifications: {
+    userId: number;
+    actorId: number;
+    type: NotificationType;
+    message: string;
+    link: string;
+    createdAt: Date;
+    readAt: Date | null;
+  }[] = [];
+
+  const [posts, threads, comments] = await Promise.all([
+    prisma.post.findMany({ select: { id: true, authorId: true } }),
+    prisma.thread.findMany({
+      select: { id: true, authorId: true, title: true },
+    }),
+    prisma.comment.findMany({
+      select: {
+        authorId: true,
+        communityId: true,
+        commentableType: true,
+        commentableId: true,
+        createdAt: true,
+        parent: { select: { authorId: true } },
+      },
+    }),
+  ]);
+  const postAuthors = new Map(posts.map((post) => [post.id, post.authorId]));
+  const threadsById = new Map(threads.map((thread) => [thread.id, thread]));
+
+  for (const comment of comments) {
+    const isThread = comment.commentableType === 'thread';
+    const thread = threadsById.get(comment.commentableId);
+    const ownerId = isThread
+      ? thread?.authorId
+      : postAuthors.get(comment.commentableId);
+    const base = {
+      actorId: comment.authorId,
+      link: `/communities/${comment.communityId}${isThread ? '?tab=forum' : ''}`,
+      createdAt: comment.createdAt,
+      readAt: readAt(comment.createdAt),
+    };
+
+    if (comment.parent && comment.parent.authorId !== comment.authorId) {
+      notifications.push({
+        ...base,
+        userId: comment.parent.authorId,
+        type: 'comment_reply',
+        message: 'replied to your comment',
+      });
+    }
+    if (
+      ownerId !== undefined &&
+      ownerId !== comment.authorId &&
+      ownerId !== comment.parent?.authorId
+    ) {
+      notifications.push({
+        ...base,
+        userId: ownerId,
+        type: isThread ? 'thread_comment' : 'post_comment',
+        message: isThread
+          ? `commented on your thread “${thread!.title}”`
+          : 'commented on your post',
+      });
+    }
+  }
+
+  const friendships = await prisma.friendship.findMany();
+  for (const friendship of friendships) {
+    const pending = friendship.status === 'pending';
+    notifications.push({
+      userId: pending ? friendship.addresseeId : friendship.requesterId,
+      actorId: pending ? friendship.requesterId : friendship.addresseeId,
+      type: pending ? 'friend_request' : 'friend_accepted',
+      message: pending
+        ? 'sent you a friend request'
+        : 'accepted your friend request',
+      link: '/',
+      createdAt: friendship.createdAt,
+      readAt: pending ? null : friendship.createdAt,
+    });
+  }
+
+  const movedReports = await prisma.report.findMany({
+    where: { status: { not: 'todo' } },
+    select: { id: true, authorId: true, status: true, createdAt: true },
+  });
+  for (const report of movedReports) {
+    notifications.push({
+      userId: report.authorId,
+      actorId: userIds.admin,
+      type: 'report_status',
+      message: `moved your report ${ticketNumber(report.id)} to ${reportStatusLabels[report.status]}`,
+      link: '/reports',
+      createdAt: new Date(
+        Math.min(Date.now(), report.createdAt.getTime() + 20 * 60 * 1000),
+      ),
+      readAt: null,
+    });
+  }
+
+  await prisma.notification.createMany({ data: notifications });
+  return notifications.length;
+}
+
 function minutesAgo(minutes: number) {
   return new Date(Date.now() - minutes * 60 * 1000);
 }
@@ -820,6 +998,7 @@ async function main() {
       username: 'admin',
       name: 'Admin',
       avatarUrl: '/images/avatars/admin.webp',
+      isAdmin: true,
       password: await bcrypt.hash('123456', 10),
       createdAt: minutesAgo(days(30)),
     },
@@ -966,6 +1145,21 @@ async function main() {
   });
 
   console.log('🤝 Friendships created:', friendships.length);
+
+  await prisma.report.createMany({
+    data: reports.map(([author, category, status, ago, message, pageUrl]) => ({
+      authorId: userIds[author],
+      category,
+      status,
+      message,
+      pageUrl,
+      createdAt: minutesAgo(ago),
+    })),
+  });
+
+  console.log('📣 Reports created:', reports.length);
+
+  console.log('🔔 Notifications created:', await createNotifications());
 
   console.log('✅ Seeding complete!');
   console.log('🔑 admin (or admin@user.com) / 123456');

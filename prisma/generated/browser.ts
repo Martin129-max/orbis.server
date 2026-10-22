@@ -67,3 +67,13 @@ export type Comment = Prisma.CommentModel
  * 
  */
 export type Vote = Prisma.VoteModel
+/**
+ * Model Report
+ * 
+ */
+export type Report = Prisma.ReportModel
+/**
+ * Model Notification
+ * 
+ */
+export type Notification = Prisma.NotificationModel

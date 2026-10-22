@@ -11,7 +11,13 @@ export type PublicUser = Omit<UserModel, 'password'>;
 
 export type Profile = Pick<
   UserModel,
-  'email' | 'username' | 'avatarUrl' | 'theme' | 'appearOffline' | 'createdAt'
+  | 'email'
+  | 'username'
+  | 'avatarUrl'
+  | 'theme'
+  | 'appearOffline'
+  | 'isAdmin'
+  | 'createdAt'
 > & {
   userId: number;
 };
@@ -25,6 +31,7 @@ const profile = {
   avatarUrl: true,
   theme: true,
   appearOffline: true,
+  isAdmin: true,
   createdAt: true,
 } as const;
 

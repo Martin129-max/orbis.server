@@ -8,6 +8,8 @@ import { ThreadsModule } from './threads/threads.module';
 import { CommentsModule } from './comments/comments.module';
 import { VotesModule } from './votes/votes.module';
 import { StatsModule } from './stats/stats.module';
+import { ReportsModule } from './reports/reports.module';
+import { NotificationsModule } from './notifications/notifications.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaService } from './prisma.service';
@@ -23,6 +25,8 @@ import { PrismaService } from './prisma.service';
     CommentsModule,
     VotesModule,
     StatsModule,
+    ReportsModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

@@ -60,7 +60,9 @@ export const ModelName = {
   Friendship: 'Friendship',
   Thread: 'Thread',
   Comment: 'Comment',
-  Vote: 'Vote'
+  Vote: 'Vote',
+  Report: 'Report',
+  Notification: 'Notification'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -88,6 +90,7 @@ export const UserScalarFieldEnum = {
   password: 'password',
   theme: 'theme',
   appearOffline: 'appearOffline',
+  isAdmin: 'isAdmin',
   createdAt: 'createdAt'
 } as const
 
@@ -198,6 +201,33 @@ export const VoteScalarFieldEnum = {
 } as const
 
 export type VoteScalarFieldEnum = (typeof VoteScalarFieldEnum)[keyof typeof VoteScalarFieldEnum]
+
+
+export const ReportScalarFieldEnum = {
+  id: 'id',
+  authorId: 'authorId',
+  category: 'category',
+  status: 'status',
+  message: 'message',
+  pageUrl: 'pageUrl',
+  createdAt: 'createdAt'
+} as const
+
+export type ReportScalarFieldEnum = (typeof ReportScalarFieldEnum)[keyof typeof ReportScalarFieldEnum]
+
+
+export const NotificationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  actorId: 'actorId',
+  type: 'type',
+  message: 'message',
+  link: 'link',
+  readAt: 'readAt',
+  createdAt: 'createdAt'
+} as const
+
+export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
 
 
 export const SortOrder = {

@@ -34,6 +34,36 @@ export const VotableType = {
 export type VotableType = (typeof VotableType)[keyof typeof VotableType]
 
 
+export const ReportCategory = {
+  bug: 'bug',
+  idea: 'idea',
+  other: 'other'
+} as const
+
+export type ReportCategory = (typeof ReportCategory)[keyof typeof ReportCategory]
+
+
+export const ReportStatus = {
+  todo: 'todo',
+  in_progress: 'in_progress',
+  done: 'done'
+} as const
+
+export type ReportStatus = (typeof ReportStatus)[keyof typeof ReportStatus]
+
+
+export const NotificationType = {
+  post_comment: 'post_comment',
+  thread_comment: 'thread_comment',
+  comment_reply: 'comment_reply',
+  friend_request: 'friend_request',
+  friend_accepted: 'friend_accepted',
+  report_status: 'report_status'
+} as const
+
+export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]
+
+
 export const FriendshipStatus = {
   pending: 'pending',
   accepted: 'accepted'

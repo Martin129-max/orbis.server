@@ -8,6 +8,7 @@ import { PrismaService } from '../prisma.service';
 import { AddFriendDto } from './dto/add-friend.dto';
 import { PresenceGateway } from './presence.gateway';
 import { normalizeUsername } from '../users/username';
+import { NotificationsService } from '../notifications/notifications.service';
 
 const MAX_INT = 2147483647;
 
@@ -50,6 +51,7 @@ export class FriendsService {
   constructor(
     private prisma: PrismaService,
     private presence: PresenceGateway,
+    private notifications: NotificationsService,
   ) {}
 
   async list(userId: number): Promise<FriendList> {
@@ -125,10 +127,28 @@ export class FriendsService {
         },
         data: { status: 'accepted' },
       });
+      await this.notifications.notify([
+        {
+          userId: target.id,
+          actorId: userId,
+          type: 'friend_accepted',
+          message: 'accepted your friend request',
+          link: '/',
+        },
+      ]);
     } else {
       await this.prisma.friendship.create({
         data: { requesterId: userId, addresseeId: target.id },
       });
+      await this.notifications.notify([
+        {
+          userId: target.id,
+          actorId: userId,
+          type: 'friend_request',
+          message: 'sent you a friend request',
+          link: '/',
+        },
+      ]);
     }
 
     this.presence.notify([userId, target.id], 'friends:changed');

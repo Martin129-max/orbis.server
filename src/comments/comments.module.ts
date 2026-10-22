@@ -3,9 +3,10 @@ import { CommentsController } from './comments.controller';
 import { CommentsService } from './comments.service';
 import { PrismaService } from '../prisma.service';
 import { VotesModule } from '../votes/votes.module';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
-  imports: [VotesModule],
+  imports: [VotesModule, NotificationsModule],
   controllers: [CommentsController],
   providers: [CommentsService, PrismaService],
 })
