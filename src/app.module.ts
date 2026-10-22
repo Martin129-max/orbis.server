@@ -13,6 +13,7 @@ import { ReportsModule } from './reports/reports.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { LibraryModule } from './library/library.module';
 import { InvitesModule } from './invites/invites.module';
+import { AdminModule } from './admin/admin.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaService } from './prisma.service';
@@ -33,6 +34,7 @@ import { PrismaService } from './prisma.service';
     NotificationsModule,
     LibraryModule,
     InvitesModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
