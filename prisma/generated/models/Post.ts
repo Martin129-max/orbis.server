@@ -400,48 +400,6 @@ export type PostSumOrderByAggregateInput = {
   commentCount?: Prisma.SortOrder
 }
 
-export type PostCreateNestedManyWithoutAuthorInput = {
-  create?: Prisma.XOR<Prisma.PostCreateWithoutAuthorInput, Prisma.PostUncheckedCreateWithoutAuthorInput> | Prisma.PostCreateWithoutAuthorInput[] | Prisma.PostUncheckedCreateWithoutAuthorInput[]
-  connectOrCreate?: Prisma.PostCreateOrConnectWithoutAuthorInput | Prisma.PostCreateOrConnectWithoutAuthorInput[]
-  createMany?: Prisma.PostCreateManyAuthorInputEnvelope
-  connect?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
-}
-
-export type PostUncheckedCreateNestedManyWithoutAuthorInput = {
-  create?: Prisma.XOR<Prisma.PostCreateWithoutAuthorInput, Prisma.PostUncheckedCreateWithoutAuthorInput> | Prisma.PostCreateWithoutAuthorInput[] | Prisma.PostUncheckedCreateWithoutAuthorInput[]
-  connectOrCreate?: Prisma.PostCreateOrConnectWithoutAuthorInput | Prisma.PostCreateOrConnectWithoutAuthorInput[]
-  createMany?: Prisma.PostCreateManyAuthorInputEnvelope
-  connect?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
-}
-
-export type PostUpdateManyWithoutAuthorNestedInput = {
-  create?: Prisma.XOR<Prisma.PostCreateWithoutAuthorInput, Prisma.PostUncheckedCreateWithoutAuthorInput> | Prisma.PostCreateWithoutAuthorInput[] | Prisma.PostUncheckedCreateWithoutAuthorInput[]
-  connectOrCreate?: Prisma.PostCreateOrConnectWithoutAuthorInput | Prisma.PostCreateOrConnectWithoutAuthorInput[]
-  upsert?: Prisma.PostUpsertWithWhereUniqueWithoutAuthorInput | Prisma.PostUpsertWithWhereUniqueWithoutAuthorInput[]
-  createMany?: Prisma.PostCreateManyAuthorInputEnvelope
-  set?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
-  disconnect?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
-  delete?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
-  connect?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
-  update?: Prisma.PostUpdateWithWhereUniqueWithoutAuthorInput | Prisma.PostUpdateWithWhereUniqueWithoutAuthorInput[]
-  updateMany?: Prisma.PostUpdateManyWithWhereWithoutAuthorInput | Prisma.PostUpdateManyWithWhereWithoutAuthorInput[]
-  deleteMany?: Prisma.PostScalarWhereInput | Prisma.PostScalarWhereInput[]
-}
-
-export type PostUncheckedUpdateManyWithoutAuthorNestedInput = {
-  create?: Prisma.XOR<Prisma.PostCreateWithoutAuthorInput, Prisma.PostUncheckedCreateWithoutAuthorInput> | Prisma.PostCreateWithoutAuthorInput[] | Prisma.PostUncheckedCreateWithoutAuthorInput[]
-  connectOrCreate?: Prisma.PostCreateOrConnectWithoutAuthorInput | Prisma.PostCreateOrConnectWithoutAuthorInput[]
-  upsert?: Prisma.PostUpsertWithWhereUniqueWithoutAuthorInput | Prisma.PostUpsertWithWhereUniqueWithoutAuthorInput[]
-  createMany?: Prisma.PostCreateManyAuthorInputEnvelope
-  set?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
-  disconnect?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
-  delete?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
-  connect?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
-  update?: Prisma.PostUpdateWithWhereUniqueWithoutAuthorInput | Prisma.PostUpdateWithWhereUniqueWithoutAuthorInput[]
-  updateMany?: Prisma.PostUpdateManyWithWhereWithoutAuthorInput | Prisma.PostUpdateManyWithWhereWithoutAuthorInput[]
-  deleteMany?: Prisma.PostScalarWhereInput | Prisma.PostScalarWhereInput[]
-}
-
 export type PostCreateNestedManyWithoutCommunityInput = {
   create?: Prisma.XOR<Prisma.PostCreateWithoutCommunityInput, Prisma.PostUncheckedCreateWithoutCommunityInput> | Prisma.PostCreateWithoutCommunityInput[] | Prisma.PostUncheckedCreateWithoutCommunityInput[]
   connectOrCreate?: Prisma.PostCreateOrConnectWithoutCommunityInput | Prisma.PostCreateOrConnectWithoutCommunityInput[]
@@ -484,57 +442,46 @@ export type PostUncheckedUpdateManyWithoutCommunityNestedInput = {
   deleteMany?: Prisma.PostScalarWhereInput | Prisma.PostScalarWhereInput[]
 }
 
-export type PostCreateWithoutAuthorInput = {
-  content: string
-  commentCount?: number
-  createdAt?: Date | string
-  community: Prisma.CommunityCreateNestedOneWithoutPostsInput
+export type PostCreateNestedManyWithoutAuthorInput = {
+  create?: Prisma.XOR<Prisma.PostCreateWithoutAuthorInput, Prisma.PostUncheckedCreateWithoutAuthorInput> | Prisma.PostCreateWithoutAuthorInput[] | Prisma.PostUncheckedCreateWithoutAuthorInput[]
+  connectOrCreate?: Prisma.PostCreateOrConnectWithoutAuthorInput | Prisma.PostCreateOrConnectWithoutAuthorInput[]
+  createMany?: Prisma.PostCreateManyAuthorInputEnvelope
+  connect?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
 }
 
-export type PostUncheckedCreateWithoutAuthorInput = {
-  id?: number
-  communityId: number
-  content: string
-  commentCount?: number
-  createdAt?: Date | string
+export type PostUncheckedCreateNestedManyWithoutAuthorInput = {
+  create?: Prisma.XOR<Prisma.PostCreateWithoutAuthorInput, Prisma.PostUncheckedCreateWithoutAuthorInput> | Prisma.PostCreateWithoutAuthorInput[] | Prisma.PostUncheckedCreateWithoutAuthorInput[]
+  connectOrCreate?: Prisma.PostCreateOrConnectWithoutAuthorInput | Prisma.PostCreateOrConnectWithoutAuthorInput[]
+  createMany?: Prisma.PostCreateManyAuthorInputEnvelope
+  connect?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
 }
 
-export type PostCreateOrConnectWithoutAuthorInput = {
-  where: Prisma.PostWhereUniqueInput
-  create: Prisma.XOR<Prisma.PostCreateWithoutAuthorInput, Prisma.PostUncheckedCreateWithoutAuthorInput>
+export type PostUpdateManyWithoutAuthorNestedInput = {
+  create?: Prisma.XOR<Prisma.PostCreateWithoutAuthorInput, Prisma.PostUncheckedCreateWithoutAuthorInput> | Prisma.PostCreateWithoutAuthorInput[] | Prisma.PostUncheckedCreateWithoutAuthorInput[]
+  connectOrCreate?: Prisma.PostCreateOrConnectWithoutAuthorInput | Prisma.PostCreateOrConnectWithoutAuthorInput[]
+  upsert?: Prisma.PostUpsertWithWhereUniqueWithoutAuthorInput | Prisma.PostUpsertWithWhereUniqueWithoutAuthorInput[]
+  createMany?: Prisma.PostCreateManyAuthorInputEnvelope
+  set?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
+  disconnect?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
+  delete?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
+  connect?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
+  update?: Prisma.PostUpdateWithWhereUniqueWithoutAuthorInput | Prisma.PostUpdateWithWhereUniqueWithoutAuthorInput[]
+  updateMany?: Prisma.PostUpdateManyWithWhereWithoutAuthorInput | Prisma.PostUpdateManyWithWhereWithoutAuthorInput[]
+  deleteMany?: Prisma.PostScalarWhereInput | Prisma.PostScalarWhereInput[]
 }
 
-export type PostCreateManyAuthorInputEnvelope = {
-  data: Prisma.PostCreateManyAuthorInput | Prisma.PostCreateManyAuthorInput[]
-  skipDuplicates?: boolean
-}
-
-export type PostUpsertWithWhereUniqueWithoutAuthorInput = {
-  where: Prisma.PostWhereUniqueInput
-  update: Prisma.XOR<Prisma.PostUpdateWithoutAuthorInput, Prisma.PostUncheckedUpdateWithoutAuthorInput>
-  create: Prisma.XOR<Prisma.PostCreateWithoutAuthorInput, Prisma.PostUncheckedCreateWithoutAuthorInput>
-}
-
-export type PostUpdateWithWhereUniqueWithoutAuthorInput = {
-  where: Prisma.PostWhereUniqueInput
-  data: Prisma.XOR<Prisma.PostUpdateWithoutAuthorInput, Prisma.PostUncheckedUpdateWithoutAuthorInput>
-}
-
-export type PostUpdateManyWithWhereWithoutAuthorInput = {
-  where: Prisma.PostScalarWhereInput
-  data: Prisma.XOR<Prisma.PostUpdateManyMutationInput, Prisma.PostUncheckedUpdateManyWithoutAuthorInput>
-}
-
-export type PostScalarWhereInput = {
-  AND?: Prisma.PostScalarWhereInput | Prisma.PostScalarWhereInput[]
-  OR?: Prisma.PostScalarWhereInput[]
-  NOT?: Prisma.PostScalarWhereInput | Prisma.PostScalarWhereInput[]
-  id?: Prisma.IntFilter<"Post"> | number
-  communityId?: Prisma.IntFilter<"Post"> | number
-  authorId?: Prisma.IntFilter<"Post"> | number
-  content?: Prisma.StringFilter<"Post"> | string
-  commentCount?: Prisma.IntFilter<"Post"> | number
-  createdAt?: Prisma.DateTimeFilter<"Post"> | Date | string
+export type PostUncheckedUpdateManyWithoutAuthorNestedInput = {
+  create?: Prisma.XOR<Prisma.PostCreateWithoutAuthorInput, Prisma.PostUncheckedCreateWithoutAuthorInput> | Prisma.PostCreateWithoutAuthorInput[] | Prisma.PostUncheckedCreateWithoutAuthorInput[]
+  connectOrCreate?: Prisma.PostCreateOrConnectWithoutAuthorInput | Prisma.PostCreateOrConnectWithoutAuthorInput[]
+  upsert?: Prisma.PostUpsertWithWhereUniqueWithoutAuthorInput | Prisma.PostUpsertWithWhereUniqueWithoutAuthorInput[]
+  createMany?: Prisma.PostCreateManyAuthorInputEnvelope
+  set?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
+  disconnect?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
+  delete?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
+  connect?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
+  update?: Prisma.PostUpdateWithWhereUniqueWithoutAuthorInput | Prisma.PostUpdateWithWhereUniqueWithoutAuthorInput[]
+  updateMany?: Prisma.PostUpdateManyWithWhereWithoutAuthorInput | Prisma.PostUpdateManyWithWhereWithoutAuthorInput[]
+  deleteMany?: Prisma.PostScalarWhereInput | Prisma.PostScalarWhereInput[]
 }
 
 export type PostCreateWithoutCommunityInput = {
@@ -578,7 +525,26 @@ export type PostUpdateManyWithWhereWithoutCommunityInput = {
   data: Prisma.XOR<Prisma.PostUpdateManyMutationInput, Prisma.PostUncheckedUpdateManyWithoutCommunityInput>
 }
 
-export type PostCreateManyAuthorInput = {
+export type PostScalarWhereInput = {
+  AND?: Prisma.PostScalarWhereInput | Prisma.PostScalarWhereInput[]
+  OR?: Prisma.PostScalarWhereInput[]
+  NOT?: Prisma.PostScalarWhereInput | Prisma.PostScalarWhereInput[]
+  id?: Prisma.IntFilter<"Post"> | number
+  communityId?: Prisma.IntFilter<"Post"> | number
+  authorId?: Prisma.IntFilter<"Post"> | number
+  content?: Prisma.StringFilter<"Post"> | string
+  commentCount?: Prisma.IntFilter<"Post"> | number
+  createdAt?: Prisma.DateTimeFilter<"Post"> | Date | string
+}
+
+export type PostCreateWithoutAuthorInput = {
+  content: string
+  commentCount?: number
+  createdAt?: Date | string
+  community: Prisma.CommunityCreateNestedOneWithoutPostsInput
+}
+
+export type PostUncheckedCreateWithoutAuthorInput = {
   id?: number
   communityId: number
   content: string
@@ -586,27 +552,30 @@ export type PostCreateManyAuthorInput = {
   createdAt?: Date | string
 }
 
-export type PostUpdateWithoutAuthorInput = {
-  content?: Prisma.StringFieldUpdateOperationsInput | string
-  commentCount?: Prisma.IntFieldUpdateOperationsInput | number
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  community?: Prisma.CommunityUpdateOneRequiredWithoutPostsNestedInput
+export type PostCreateOrConnectWithoutAuthorInput = {
+  where: Prisma.PostWhereUniqueInput
+  create: Prisma.XOR<Prisma.PostCreateWithoutAuthorInput, Prisma.PostUncheckedCreateWithoutAuthorInput>
 }
 
-export type PostUncheckedUpdateWithoutAuthorInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  communityId?: Prisma.IntFieldUpdateOperationsInput | number
-  content?: Prisma.StringFieldUpdateOperationsInput | string
-  commentCount?: Prisma.IntFieldUpdateOperationsInput | number
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+export type PostCreateManyAuthorInputEnvelope = {
+  data: Prisma.PostCreateManyAuthorInput | Prisma.PostCreateManyAuthorInput[]
+  skipDuplicates?: boolean
 }
 
-export type PostUncheckedUpdateManyWithoutAuthorInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  communityId?: Prisma.IntFieldUpdateOperationsInput | number
-  content?: Prisma.StringFieldUpdateOperationsInput | string
-  commentCount?: Prisma.IntFieldUpdateOperationsInput | number
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+export type PostUpsertWithWhereUniqueWithoutAuthorInput = {
+  where: Prisma.PostWhereUniqueInput
+  update: Prisma.XOR<Prisma.PostUpdateWithoutAuthorInput, Prisma.PostUncheckedUpdateWithoutAuthorInput>
+  create: Prisma.XOR<Prisma.PostCreateWithoutAuthorInput, Prisma.PostUncheckedCreateWithoutAuthorInput>
+}
+
+export type PostUpdateWithWhereUniqueWithoutAuthorInput = {
+  where: Prisma.PostWhereUniqueInput
+  data: Prisma.XOR<Prisma.PostUpdateWithoutAuthorInput, Prisma.PostUncheckedUpdateWithoutAuthorInput>
+}
+
+export type PostUpdateManyWithWhereWithoutAuthorInput = {
+  where: Prisma.PostScalarWhereInput
+  data: Prisma.XOR<Prisma.PostUpdateManyMutationInput, Prisma.PostUncheckedUpdateManyWithoutAuthorInput>
 }
 
 export type PostCreateManyCommunityInput = {
@@ -635,6 +604,37 @@ export type PostUncheckedUpdateWithoutCommunityInput = {
 export type PostUncheckedUpdateManyWithoutCommunityInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   authorId?: Prisma.IntFieldUpdateOperationsInput | number
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  commentCount?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type PostCreateManyAuthorInput = {
+  id?: number
+  communityId: number
+  content: string
+  commentCount?: number
+  createdAt?: Date | string
+}
+
+export type PostUpdateWithoutAuthorInput = {
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  commentCount?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  community?: Prisma.CommunityUpdateOneRequiredWithoutPostsNestedInput
+}
+
+export type PostUncheckedUpdateWithoutAuthorInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  communityId?: Prisma.IntFieldUpdateOperationsInput | number
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  commentCount?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type PostUncheckedUpdateManyWithoutAuthorInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  communityId?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.StringFieldUpdateOperationsInput | string
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string

@@ -419,16 +419,6 @@ export type CommunityUncheckedUpdateManyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type CommunityListRelationFilter = {
-  every?: Prisma.CommunityWhereInput
-  some?: Prisma.CommunityWhereInput
-  none?: Prisma.CommunityWhereInput
-}
-
-export type CommunityOrderByRelationAggregateInput = {
-  _count?: Prisma.SortOrder
-}
-
 export type CommunityCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
@@ -477,46 +467,38 @@ export type CommunityScalarRelationFilter = {
   isNot?: Prisma.CommunityWhereInput
 }
 
-export type CommunityCreateNestedManyWithoutOwnerInput = {
-  create?: Prisma.XOR<Prisma.CommunityCreateWithoutOwnerInput, Prisma.CommunityUncheckedCreateWithoutOwnerInput> | Prisma.CommunityCreateWithoutOwnerInput[] | Prisma.CommunityUncheckedCreateWithoutOwnerInput[]
-  connectOrCreate?: Prisma.CommunityCreateOrConnectWithoutOwnerInput | Prisma.CommunityCreateOrConnectWithoutOwnerInput[]
-  createMany?: Prisma.CommunityCreateManyOwnerInputEnvelope
-  connect?: Prisma.CommunityWhereUniqueInput | Prisma.CommunityWhereUniqueInput[]
+export type CommunityListRelationFilter = {
+  every?: Prisma.CommunityWhereInput
+  some?: Prisma.CommunityWhereInput
+  none?: Prisma.CommunityWhereInput
 }
 
-export type CommunityUncheckedCreateNestedManyWithoutOwnerInput = {
-  create?: Prisma.XOR<Prisma.CommunityCreateWithoutOwnerInput, Prisma.CommunityUncheckedCreateWithoutOwnerInput> | Prisma.CommunityCreateWithoutOwnerInput[] | Prisma.CommunityUncheckedCreateWithoutOwnerInput[]
-  connectOrCreate?: Prisma.CommunityCreateOrConnectWithoutOwnerInput | Prisma.CommunityCreateOrConnectWithoutOwnerInput[]
-  createMany?: Prisma.CommunityCreateManyOwnerInputEnvelope
-  connect?: Prisma.CommunityWhereUniqueInput | Prisma.CommunityWhereUniqueInput[]
+export type CommunityOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
-export type CommunityUpdateManyWithoutOwnerNestedInput = {
-  create?: Prisma.XOR<Prisma.CommunityCreateWithoutOwnerInput, Prisma.CommunityUncheckedCreateWithoutOwnerInput> | Prisma.CommunityCreateWithoutOwnerInput[] | Prisma.CommunityUncheckedCreateWithoutOwnerInput[]
-  connectOrCreate?: Prisma.CommunityCreateOrConnectWithoutOwnerInput | Prisma.CommunityCreateOrConnectWithoutOwnerInput[]
-  upsert?: Prisma.CommunityUpsertWithWhereUniqueWithoutOwnerInput | Prisma.CommunityUpsertWithWhereUniqueWithoutOwnerInput[]
-  createMany?: Prisma.CommunityCreateManyOwnerInputEnvelope
-  set?: Prisma.CommunityWhereUniqueInput | Prisma.CommunityWhereUniqueInput[]
-  disconnect?: Prisma.CommunityWhereUniqueInput | Prisma.CommunityWhereUniqueInput[]
-  delete?: Prisma.CommunityWhereUniqueInput | Prisma.CommunityWhereUniqueInput[]
-  connect?: Prisma.CommunityWhereUniqueInput | Prisma.CommunityWhereUniqueInput[]
-  update?: Prisma.CommunityUpdateWithWhereUniqueWithoutOwnerInput | Prisma.CommunityUpdateWithWhereUniqueWithoutOwnerInput[]
-  updateMany?: Prisma.CommunityUpdateManyWithWhereWithoutOwnerInput | Prisma.CommunityUpdateManyWithWhereWithoutOwnerInput[]
-  deleteMany?: Prisma.CommunityScalarWhereInput | Prisma.CommunityScalarWhereInput[]
+export type StringFieldUpdateOperationsInput = {
+  set?: string
 }
 
-export type CommunityUncheckedUpdateManyWithoutOwnerNestedInput = {
-  create?: Prisma.XOR<Prisma.CommunityCreateWithoutOwnerInput, Prisma.CommunityUncheckedCreateWithoutOwnerInput> | Prisma.CommunityCreateWithoutOwnerInput[] | Prisma.CommunityUncheckedCreateWithoutOwnerInput[]
-  connectOrCreate?: Prisma.CommunityCreateOrConnectWithoutOwnerInput | Prisma.CommunityCreateOrConnectWithoutOwnerInput[]
-  upsert?: Prisma.CommunityUpsertWithWhereUniqueWithoutOwnerInput | Prisma.CommunityUpsertWithWhereUniqueWithoutOwnerInput[]
-  createMany?: Prisma.CommunityCreateManyOwnerInputEnvelope
-  set?: Prisma.CommunityWhereUniqueInput | Prisma.CommunityWhereUniqueInput[]
-  disconnect?: Prisma.CommunityWhereUniqueInput | Prisma.CommunityWhereUniqueInput[]
-  delete?: Prisma.CommunityWhereUniqueInput | Prisma.CommunityWhereUniqueInput[]
-  connect?: Prisma.CommunityWhereUniqueInput | Prisma.CommunityWhereUniqueInput[]
-  update?: Prisma.CommunityUpdateWithWhereUniqueWithoutOwnerInput | Prisma.CommunityUpdateWithWhereUniqueWithoutOwnerInput[]
-  updateMany?: Prisma.CommunityUpdateManyWithWhereWithoutOwnerInput | Prisma.CommunityUpdateManyWithWhereWithoutOwnerInput[]
-  deleteMany?: Prisma.CommunityScalarWhereInput | Prisma.CommunityScalarWhereInput[]
+export type NullableStringFieldUpdateOperationsInput = {
+  set?: string | null
+}
+
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
+}
+
+export type DateTimeFieldUpdateOperationsInput = {
+  set?: Date | string
+}
+
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
 }
 
 export type CommunityCreateNestedOneWithoutMembershipsInput = {
@@ -603,75 +585,46 @@ export type CommunityUpdateOneRequiredWithoutVotesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.CommunityUpdateToOneWithWhereWithoutVotesInput, Prisma.CommunityUpdateWithoutVotesInput>, Prisma.CommunityUncheckedUpdateWithoutVotesInput>
 }
 
-export type CommunityCreateWithoutOwnerInput = {
-  name: string
-  iconUrl?: string | null
-  coverUrl?: string | null
-  backgroundUrl?: string | null
-  isPublic?: boolean
-  createdAt?: Date | string
-  memberships?: Prisma.MembershipCreateNestedManyWithoutCommunityInput
-  roles?: Prisma.RoleCreateNestedManyWithoutCommunityInput
-  posts?: Prisma.PostCreateNestedManyWithoutCommunityInput
-  threads?: Prisma.ThreadCreateNestedManyWithoutCommunityInput
-  comments?: Prisma.CommentCreateNestedManyWithoutCommunityInput
-  votes?: Prisma.VoteCreateNestedManyWithoutCommunityInput
+export type CommunityCreateNestedManyWithoutOwnerInput = {
+  create?: Prisma.XOR<Prisma.CommunityCreateWithoutOwnerInput, Prisma.CommunityUncheckedCreateWithoutOwnerInput> | Prisma.CommunityCreateWithoutOwnerInput[] | Prisma.CommunityUncheckedCreateWithoutOwnerInput[]
+  connectOrCreate?: Prisma.CommunityCreateOrConnectWithoutOwnerInput | Prisma.CommunityCreateOrConnectWithoutOwnerInput[]
+  createMany?: Prisma.CommunityCreateManyOwnerInputEnvelope
+  connect?: Prisma.CommunityWhereUniqueInput | Prisma.CommunityWhereUniqueInput[]
 }
 
-export type CommunityUncheckedCreateWithoutOwnerInput = {
-  id?: number
-  name: string
-  iconUrl?: string | null
-  coverUrl?: string | null
-  backgroundUrl?: string | null
-  isPublic?: boolean
-  createdAt?: Date | string
-  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutCommunityInput
-  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutCommunityInput
-  posts?: Prisma.PostUncheckedCreateNestedManyWithoutCommunityInput
-  threads?: Prisma.ThreadUncheckedCreateNestedManyWithoutCommunityInput
-  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutCommunityInput
-  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutCommunityInput
+export type CommunityUncheckedCreateNestedManyWithoutOwnerInput = {
+  create?: Prisma.XOR<Prisma.CommunityCreateWithoutOwnerInput, Prisma.CommunityUncheckedCreateWithoutOwnerInput> | Prisma.CommunityCreateWithoutOwnerInput[] | Prisma.CommunityUncheckedCreateWithoutOwnerInput[]
+  connectOrCreate?: Prisma.CommunityCreateOrConnectWithoutOwnerInput | Prisma.CommunityCreateOrConnectWithoutOwnerInput[]
+  createMany?: Prisma.CommunityCreateManyOwnerInputEnvelope
+  connect?: Prisma.CommunityWhereUniqueInput | Prisma.CommunityWhereUniqueInput[]
 }
 
-export type CommunityCreateOrConnectWithoutOwnerInput = {
-  where: Prisma.CommunityWhereUniqueInput
-  create: Prisma.XOR<Prisma.CommunityCreateWithoutOwnerInput, Prisma.CommunityUncheckedCreateWithoutOwnerInput>
+export type CommunityUpdateManyWithoutOwnerNestedInput = {
+  create?: Prisma.XOR<Prisma.CommunityCreateWithoutOwnerInput, Prisma.CommunityUncheckedCreateWithoutOwnerInput> | Prisma.CommunityCreateWithoutOwnerInput[] | Prisma.CommunityUncheckedCreateWithoutOwnerInput[]
+  connectOrCreate?: Prisma.CommunityCreateOrConnectWithoutOwnerInput | Prisma.CommunityCreateOrConnectWithoutOwnerInput[]
+  upsert?: Prisma.CommunityUpsertWithWhereUniqueWithoutOwnerInput | Prisma.CommunityUpsertWithWhereUniqueWithoutOwnerInput[]
+  createMany?: Prisma.CommunityCreateManyOwnerInputEnvelope
+  set?: Prisma.CommunityWhereUniqueInput | Prisma.CommunityWhereUniqueInput[]
+  disconnect?: Prisma.CommunityWhereUniqueInput | Prisma.CommunityWhereUniqueInput[]
+  delete?: Prisma.CommunityWhereUniqueInput | Prisma.CommunityWhereUniqueInput[]
+  connect?: Prisma.CommunityWhereUniqueInput | Prisma.CommunityWhereUniqueInput[]
+  update?: Prisma.CommunityUpdateWithWhereUniqueWithoutOwnerInput | Prisma.CommunityUpdateWithWhereUniqueWithoutOwnerInput[]
+  updateMany?: Prisma.CommunityUpdateManyWithWhereWithoutOwnerInput | Prisma.CommunityUpdateManyWithWhereWithoutOwnerInput[]
+  deleteMany?: Prisma.CommunityScalarWhereInput | Prisma.CommunityScalarWhereInput[]
 }
 
-export type CommunityCreateManyOwnerInputEnvelope = {
-  data: Prisma.CommunityCreateManyOwnerInput | Prisma.CommunityCreateManyOwnerInput[]
-  skipDuplicates?: boolean
-}
-
-export type CommunityUpsertWithWhereUniqueWithoutOwnerInput = {
-  where: Prisma.CommunityWhereUniqueInput
-  update: Prisma.XOR<Prisma.CommunityUpdateWithoutOwnerInput, Prisma.CommunityUncheckedUpdateWithoutOwnerInput>
-  create: Prisma.XOR<Prisma.CommunityCreateWithoutOwnerInput, Prisma.CommunityUncheckedCreateWithoutOwnerInput>
-}
-
-export type CommunityUpdateWithWhereUniqueWithoutOwnerInput = {
-  where: Prisma.CommunityWhereUniqueInput
-  data: Prisma.XOR<Prisma.CommunityUpdateWithoutOwnerInput, Prisma.CommunityUncheckedUpdateWithoutOwnerInput>
-}
-
-export type CommunityUpdateManyWithWhereWithoutOwnerInput = {
-  where: Prisma.CommunityScalarWhereInput
-  data: Prisma.XOR<Prisma.CommunityUpdateManyMutationInput, Prisma.CommunityUncheckedUpdateManyWithoutOwnerInput>
-}
-
-export type CommunityScalarWhereInput = {
-  AND?: Prisma.CommunityScalarWhereInput | Prisma.CommunityScalarWhereInput[]
-  OR?: Prisma.CommunityScalarWhereInput[]
-  NOT?: Prisma.CommunityScalarWhereInput | Prisma.CommunityScalarWhereInput[]
-  id?: Prisma.IntFilter<"Community"> | number
-  name?: Prisma.StringFilter<"Community"> | string
-  iconUrl?: Prisma.StringNullableFilter<"Community"> | string | null
-  coverUrl?: Prisma.StringNullableFilter<"Community"> | string | null
-  backgroundUrl?: Prisma.StringNullableFilter<"Community"> | string | null
-  ownerId?: Prisma.IntFilter<"Community"> | number
-  isPublic?: Prisma.BoolFilter<"Community"> | boolean
-  createdAt?: Prisma.DateTimeFilter<"Community"> | Date | string
+export type CommunityUncheckedUpdateManyWithoutOwnerNestedInput = {
+  create?: Prisma.XOR<Prisma.CommunityCreateWithoutOwnerInput, Prisma.CommunityUncheckedCreateWithoutOwnerInput> | Prisma.CommunityCreateWithoutOwnerInput[] | Prisma.CommunityUncheckedCreateWithoutOwnerInput[]
+  connectOrCreate?: Prisma.CommunityCreateOrConnectWithoutOwnerInput | Prisma.CommunityCreateOrConnectWithoutOwnerInput[]
+  upsert?: Prisma.CommunityUpsertWithWhereUniqueWithoutOwnerInput | Prisma.CommunityUpsertWithWhereUniqueWithoutOwnerInput[]
+  createMany?: Prisma.CommunityCreateManyOwnerInputEnvelope
+  set?: Prisma.CommunityWhereUniqueInput | Prisma.CommunityWhereUniqueInput[]
+  disconnect?: Prisma.CommunityWhereUniqueInput | Prisma.CommunityWhereUniqueInput[]
+  delete?: Prisma.CommunityWhereUniqueInput | Prisma.CommunityWhereUniqueInput[]
+  connect?: Prisma.CommunityWhereUniqueInput | Prisma.CommunityWhereUniqueInput[]
+  update?: Prisma.CommunityUpdateWithWhereUniqueWithoutOwnerInput | Prisma.CommunityUpdateWithWhereUniqueWithoutOwnerInput[]
+  updateMany?: Prisma.CommunityUpdateManyWithWhereWithoutOwnerInput | Prisma.CommunityUpdateManyWithWhereWithoutOwnerInput[]
+  deleteMany?: Prisma.CommunityScalarWhereInput | Prisma.CommunityScalarWhereInput[]
 }
 
 export type CommunityCreateWithoutMembershipsInput = {
@@ -1140,6 +1093,77 @@ export type CommunityUncheckedUpdateWithoutVotesInput = {
   posts?: Prisma.PostUncheckedUpdateManyWithoutCommunityNestedInput
   threads?: Prisma.ThreadUncheckedUpdateManyWithoutCommunityNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutCommunityNestedInput
+}
+
+export type CommunityCreateWithoutOwnerInput = {
+  name: string
+  iconUrl?: string | null
+  coverUrl?: string | null
+  backgroundUrl?: string | null
+  isPublic?: boolean
+  createdAt?: Date | string
+  memberships?: Prisma.MembershipCreateNestedManyWithoutCommunityInput
+  roles?: Prisma.RoleCreateNestedManyWithoutCommunityInput
+  posts?: Prisma.PostCreateNestedManyWithoutCommunityInput
+  threads?: Prisma.ThreadCreateNestedManyWithoutCommunityInput
+  comments?: Prisma.CommentCreateNestedManyWithoutCommunityInput
+  votes?: Prisma.VoteCreateNestedManyWithoutCommunityInput
+}
+
+export type CommunityUncheckedCreateWithoutOwnerInput = {
+  id?: number
+  name: string
+  iconUrl?: string | null
+  coverUrl?: string | null
+  backgroundUrl?: string | null
+  isPublic?: boolean
+  createdAt?: Date | string
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutCommunityInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutCommunityInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutCommunityInput
+  threads?: Prisma.ThreadUncheckedCreateNestedManyWithoutCommunityInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutCommunityInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutCommunityInput
+}
+
+export type CommunityCreateOrConnectWithoutOwnerInput = {
+  where: Prisma.CommunityWhereUniqueInput
+  create: Prisma.XOR<Prisma.CommunityCreateWithoutOwnerInput, Prisma.CommunityUncheckedCreateWithoutOwnerInput>
+}
+
+export type CommunityCreateManyOwnerInputEnvelope = {
+  data: Prisma.CommunityCreateManyOwnerInput | Prisma.CommunityCreateManyOwnerInput[]
+  skipDuplicates?: boolean
+}
+
+export type CommunityUpsertWithWhereUniqueWithoutOwnerInput = {
+  where: Prisma.CommunityWhereUniqueInput
+  update: Prisma.XOR<Prisma.CommunityUpdateWithoutOwnerInput, Prisma.CommunityUncheckedUpdateWithoutOwnerInput>
+  create: Prisma.XOR<Prisma.CommunityCreateWithoutOwnerInput, Prisma.CommunityUncheckedCreateWithoutOwnerInput>
+}
+
+export type CommunityUpdateWithWhereUniqueWithoutOwnerInput = {
+  where: Prisma.CommunityWhereUniqueInput
+  data: Prisma.XOR<Prisma.CommunityUpdateWithoutOwnerInput, Prisma.CommunityUncheckedUpdateWithoutOwnerInput>
+}
+
+export type CommunityUpdateManyWithWhereWithoutOwnerInput = {
+  where: Prisma.CommunityScalarWhereInput
+  data: Prisma.XOR<Prisma.CommunityUpdateManyMutationInput, Prisma.CommunityUncheckedUpdateManyWithoutOwnerInput>
+}
+
+export type CommunityScalarWhereInput = {
+  AND?: Prisma.CommunityScalarWhereInput | Prisma.CommunityScalarWhereInput[]
+  OR?: Prisma.CommunityScalarWhereInput[]
+  NOT?: Prisma.CommunityScalarWhereInput | Prisma.CommunityScalarWhereInput[]
+  id?: Prisma.IntFilter<"Community"> | number
+  name?: Prisma.StringFilter<"Community"> | string
+  iconUrl?: Prisma.StringNullableFilter<"Community"> | string | null
+  coverUrl?: Prisma.StringNullableFilter<"Community"> | string | null
+  backgroundUrl?: Prisma.StringNullableFilter<"Community"> | string | null
+  ownerId?: Prisma.IntFilter<"Community"> | number
+  isPublic?: Prisma.BoolFilter<"Community"> | boolean
+  createdAt?: Prisma.DateTimeFilter<"Community"> | Date | string
 }
 
 export type CommunityCreateManyOwnerInput = {

@@ -358,16 +358,6 @@ export type ReportUncheckedUpdateManyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type ReportListRelationFilter = {
-  every?: Prisma.ReportWhereInput
-  some?: Prisma.ReportWhereInput
-  none?: Prisma.ReportWhereInput
-}
-
-export type ReportOrderByRelationAggregateInput = {
-  _count?: Prisma.SortOrder
-}
-
 export type ReportCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
@@ -406,6 +396,24 @@ export type ReportMinOrderByAggregateInput = {
 export type ReportSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
+}
+
+export type ReportListRelationFilter = {
+  every?: Prisma.ReportWhereInput
+  some?: Prisma.ReportWhereInput
+  none?: Prisma.ReportWhereInput
+}
+
+export type ReportOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
+export type EnumReportCategoryFieldUpdateOperationsInput = {
+  set?: $Enums.ReportCategory
+}
+
+export type EnumReportStatusFieldUpdateOperationsInput = {
+  set?: $Enums.ReportStatus
 }
 
 export type ReportCreateNestedManyWithoutAuthorInput = {
@@ -448,14 +456,6 @@ export type ReportUncheckedUpdateManyWithoutAuthorNestedInput = {
   update?: Prisma.ReportUpdateWithWhereUniqueWithoutAuthorInput | Prisma.ReportUpdateWithWhereUniqueWithoutAuthorInput[]
   updateMany?: Prisma.ReportUpdateManyWithWhereWithoutAuthorInput | Prisma.ReportUpdateManyWithWhereWithoutAuthorInput[]
   deleteMany?: Prisma.ReportScalarWhereInput | Prisma.ReportScalarWhereInput[]
-}
-
-export type EnumReportCategoryFieldUpdateOperationsInput = {
-  set?: $Enums.ReportCategory
-}
-
-export type EnumReportStatusFieldUpdateOperationsInput = {
-  set?: $Enums.ReportStatus
 }
 
 export type ReportCreateWithoutAuthorInput = {

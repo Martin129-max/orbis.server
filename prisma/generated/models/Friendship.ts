@@ -307,16 +307,6 @@ export type FriendshipUncheckedUpdateManyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type FriendshipListRelationFilter = {
-  every?: Prisma.FriendshipWhereInput
-  some?: Prisma.FriendshipWhereInput
-  none?: Prisma.FriendshipWhereInput
-}
-
-export type FriendshipOrderByRelationAggregateInput = {
-  _count?: Prisma.SortOrder
-}
-
 export type FriendshipRequesterIdAddresseeIdCompoundUniqueInput = {
   requesterId: number
   addresseeId: number
@@ -351,6 +341,20 @@ export type FriendshipMinOrderByAggregateInput = {
 export type FriendshipSumOrderByAggregateInput = {
   requesterId?: Prisma.SortOrder
   addresseeId?: Prisma.SortOrder
+}
+
+export type FriendshipListRelationFilter = {
+  every?: Prisma.FriendshipWhereInput
+  some?: Prisma.FriendshipWhereInput
+  none?: Prisma.FriendshipWhereInput
+}
+
+export type FriendshipOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
+export type EnumFriendshipStatusFieldUpdateOperationsInput = {
+  set?: $Enums.FriendshipStatus
 }
 
 export type FriendshipCreateNestedManyWithoutRequesterInput = {
@@ -435,10 +439,6 @@ export type FriendshipUncheckedUpdateManyWithoutAddresseeNestedInput = {
   update?: Prisma.FriendshipUpdateWithWhereUniqueWithoutAddresseeInput | Prisma.FriendshipUpdateWithWhereUniqueWithoutAddresseeInput[]
   updateMany?: Prisma.FriendshipUpdateManyWithWhereWithoutAddresseeInput | Prisma.FriendshipUpdateManyWithWhereWithoutAddresseeInput[]
   deleteMany?: Prisma.FriendshipScalarWhereInput | Prisma.FriendshipScalarWhereInput[]
-}
-
-export type EnumFriendshipStatusFieldUpdateOperationsInput = {
-  set?: $Enums.FriendshipStatus
 }
 
 export type FriendshipCreateWithoutRequesterInput = {

@@ -8,16 +8,16 @@
  *
  * 🟢 You can import this file directly.
  */
-export type * from './models/User'
 export type * from './models/Community'
 export type * from './models/Membership'
 export type * from './models/Role'
 export type * from './models/MembershipRole'
 export type * from './models/Post'
-export type * from './models/Friendship'
 export type * from './models/Thread'
 export type * from './models/Comment'
 export type * from './models/Vote'
-export type * from './models/Report'
+export type * from './models/Friendship'
 export type * from './models/Notification'
+export type * from './models/Report'
+export type * from './models/User'
 export type * from './commonInputTypes'

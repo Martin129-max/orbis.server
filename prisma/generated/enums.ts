@@ -9,15 +9,6 @@
 * 🟢 You can import this file directly.
 */
 
-export const Theme = {
-  system: 'system',
-  light: 'light',
-  dark: 'dark'
-} as const
-
-export type Theme = (typeof Theme)[keyof typeof Theme]
-
-
 export const CommentableType = {
   post: 'post',
   thread: 'thread'
@@ -32,6 +23,26 @@ export const VotableType = {
 } as const
 
 export type VotableType = (typeof VotableType)[keyof typeof VotableType]
+
+
+export const FriendshipStatus = {
+  pending: 'pending',
+  accepted: 'accepted'
+} as const
+
+export type FriendshipStatus = (typeof FriendshipStatus)[keyof typeof FriendshipStatus]
+
+
+export const NotificationType = {
+  post_comment: 'post_comment',
+  thread_comment: 'thread_comment',
+  comment_reply: 'comment_reply',
+  friend_request: 'friend_request',
+  friend_accepted: 'friend_accepted',
+  report_status: 'report_status'
+} as const
+
+export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]
 
 
 export const ReportCategory = {
@@ -52,21 +63,10 @@ export const ReportStatus = {
 export type ReportStatus = (typeof ReportStatus)[keyof typeof ReportStatus]
 
 
-export const NotificationType = {
-  post_comment: 'post_comment',
-  thread_comment: 'thread_comment',
-  comment_reply: 'comment_reply',
-  friend_request: 'friend_request',
-  friend_accepted: 'friend_accepted',
-  report_status: 'report_status'
+export const Theme = {
+  system: 'system',
+  light: 'light',
+  dark: 'dark'
 } as const
 
-export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]
-
-
-export const FriendshipStatus = {
-  pending: 'pending',
-  accepted: 'accepted'
-} as const
-
-export type FriendshipStatus = (typeof FriendshipStatus)[keyof typeof FriendshipStatus]
+export type Theme = (typeof Theme)[keyof typeof Theme]

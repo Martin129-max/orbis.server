@@ -1,8 +1,12 @@
 # Agent Instructions
 
+## Schema Files
+
+The Prisma schema is split by area in `prisma/schema/`: `schema.prisma` holds the generator and datasource, and each other file holds one area's models and enums (`user`, `community`, `content`, `friendship`, `report`, `notification`). Put a new model or enum in the file for its area, or add a new file when it starts a new area. Relations work across files.
+
 ## Database Changes
 
-Whenever you change anything database-related (`prisma/schema.prisma`, a migration, or a new model, field, enum, or relation), update `prisma/seed.ts` in the same change so the seed:
+Whenever you change anything database-related (a file in `prisma/schema/`, a migration, or a new model, field, enum, or relation), update `prisma/seed.ts` in the same change so the seed:
 
 - Runs without errors against the new schema.
 - Fills in any new fields, models, or relations with realistic data, so the site looks alive after seeding.

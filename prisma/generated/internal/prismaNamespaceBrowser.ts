@@ -51,18 +51,18 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
-  User: 'User',
   Community: 'Community',
   Membership: 'Membership',
   Role: 'Role',
   MembershipRole: 'MembershipRole',
   Post: 'Post',
-  Friendship: 'Friendship',
   Thread: 'Thread',
   Comment: 'Comment',
   Vote: 'Vote',
+  Friendship: 'Friendship',
+  Notification: 'Notification',
   Report: 'Report',
-  Notification: 'Notification'
+  User: 'User'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -79,24 +79,6 @@ export const TransactionIsolationLevel = {
 } as const
 
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
-
-
-export const UserScalarFieldEnum = {
-  id: 'id',
-  email: 'email',
-  username: 'username',
-  name: 'name',
-  avatarUrl: 'avatarUrl',
-  password: 'password',
-  theme: 'theme',
-  appearOffline: 'appearOffline',
-  isAdmin: 'isAdmin',
-  tourCompletedAt: 'tourCompletedAt',
-  checklistDismissedAt: 'checklistDismissedAt',
-  createdAt: 'createdAt'
-} as const
-
-export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
 export const CommunityScalarFieldEnum = {
@@ -155,16 +137,6 @@ export const PostScalarFieldEnum = {
 export type PostScalarFieldEnum = (typeof PostScalarFieldEnum)[keyof typeof PostScalarFieldEnum]
 
 
-export const FriendshipScalarFieldEnum = {
-  requesterId: 'requesterId',
-  addresseeId: 'addresseeId',
-  status: 'status',
-  createdAt: 'createdAt'
-} as const
-
-export type FriendshipScalarFieldEnum = (typeof FriendshipScalarFieldEnum)[keyof typeof FriendshipScalarFieldEnum]
-
-
 export const ThreadScalarFieldEnum = {
   id: 'id',
   communityId: 'communityId',
@@ -205,17 +177,14 @@ export const VoteScalarFieldEnum = {
 export type VoteScalarFieldEnum = (typeof VoteScalarFieldEnum)[keyof typeof VoteScalarFieldEnum]
 
 
-export const ReportScalarFieldEnum = {
-  id: 'id',
-  authorId: 'authorId',
-  category: 'category',
+export const FriendshipScalarFieldEnum = {
+  requesterId: 'requesterId',
+  addresseeId: 'addresseeId',
   status: 'status',
-  message: 'message',
-  pageUrl: 'pageUrl',
   createdAt: 'createdAt'
 } as const
 
-export type ReportScalarFieldEnum = (typeof ReportScalarFieldEnum)[keyof typeof ReportScalarFieldEnum]
+export type FriendshipScalarFieldEnum = (typeof FriendshipScalarFieldEnum)[keyof typeof FriendshipScalarFieldEnum]
 
 
 export const NotificationScalarFieldEnum = {
@@ -230,6 +199,37 @@ export const NotificationScalarFieldEnum = {
 } as const
 
 export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
+
+
+export const ReportScalarFieldEnum = {
+  id: 'id',
+  authorId: 'authorId',
+  category: 'category',
+  status: 'status',
+  message: 'message',
+  pageUrl: 'pageUrl',
+  createdAt: 'createdAt'
+} as const
+
+export type ReportScalarFieldEnum = (typeof ReportScalarFieldEnum)[keyof typeof ReportScalarFieldEnum]
+
+
+export const UserScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  username: 'username',
+  name: 'name',
+  avatarUrl: 'avatarUrl',
+  password: 'password',
+  theme: 'theme',
+  appearOffline: 'appearOffline',
+  isAdmin: 'isAdmin',
+  tourCompletedAt: 'tourCompletedAt',
+  checklistDismissedAt: 'checklistDismissedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
 export const SortOrder = {

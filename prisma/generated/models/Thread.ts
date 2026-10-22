@@ -450,48 +450,6 @@ export type ThreadSumOrderByAggregateInput = {
   commentCount?: Prisma.SortOrder
 }
 
-export type ThreadCreateNestedManyWithoutAuthorInput = {
-  create?: Prisma.XOR<Prisma.ThreadCreateWithoutAuthorInput, Prisma.ThreadUncheckedCreateWithoutAuthorInput> | Prisma.ThreadCreateWithoutAuthorInput[] | Prisma.ThreadUncheckedCreateWithoutAuthorInput[]
-  connectOrCreate?: Prisma.ThreadCreateOrConnectWithoutAuthorInput | Prisma.ThreadCreateOrConnectWithoutAuthorInput[]
-  createMany?: Prisma.ThreadCreateManyAuthorInputEnvelope
-  connect?: Prisma.ThreadWhereUniqueInput | Prisma.ThreadWhereUniqueInput[]
-}
-
-export type ThreadUncheckedCreateNestedManyWithoutAuthorInput = {
-  create?: Prisma.XOR<Prisma.ThreadCreateWithoutAuthorInput, Prisma.ThreadUncheckedCreateWithoutAuthorInput> | Prisma.ThreadCreateWithoutAuthorInput[] | Prisma.ThreadUncheckedCreateWithoutAuthorInput[]
-  connectOrCreate?: Prisma.ThreadCreateOrConnectWithoutAuthorInput | Prisma.ThreadCreateOrConnectWithoutAuthorInput[]
-  createMany?: Prisma.ThreadCreateManyAuthorInputEnvelope
-  connect?: Prisma.ThreadWhereUniqueInput | Prisma.ThreadWhereUniqueInput[]
-}
-
-export type ThreadUpdateManyWithoutAuthorNestedInput = {
-  create?: Prisma.XOR<Prisma.ThreadCreateWithoutAuthorInput, Prisma.ThreadUncheckedCreateWithoutAuthorInput> | Prisma.ThreadCreateWithoutAuthorInput[] | Prisma.ThreadUncheckedCreateWithoutAuthorInput[]
-  connectOrCreate?: Prisma.ThreadCreateOrConnectWithoutAuthorInput | Prisma.ThreadCreateOrConnectWithoutAuthorInput[]
-  upsert?: Prisma.ThreadUpsertWithWhereUniqueWithoutAuthorInput | Prisma.ThreadUpsertWithWhereUniqueWithoutAuthorInput[]
-  createMany?: Prisma.ThreadCreateManyAuthorInputEnvelope
-  set?: Prisma.ThreadWhereUniqueInput | Prisma.ThreadWhereUniqueInput[]
-  disconnect?: Prisma.ThreadWhereUniqueInput | Prisma.ThreadWhereUniqueInput[]
-  delete?: Prisma.ThreadWhereUniqueInput | Prisma.ThreadWhereUniqueInput[]
-  connect?: Prisma.ThreadWhereUniqueInput | Prisma.ThreadWhereUniqueInput[]
-  update?: Prisma.ThreadUpdateWithWhereUniqueWithoutAuthorInput | Prisma.ThreadUpdateWithWhereUniqueWithoutAuthorInput[]
-  updateMany?: Prisma.ThreadUpdateManyWithWhereWithoutAuthorInput | Prisma.ThreadUpdateManyWithWhereWithoutAuthorInput[]
-  deleteMany?: Prisma.ThreadScalarWhereInput | Prisma.ThreadScalarWhereInput[]
-}
-
-export type ThreadUncheckedUpdateManyWithoutAuthorNestedInput = {
-  create?: Prisma.XOR<Prisma.ThreadCreateWithoutAuthorInput, Prisma.ThreadUncheckedCreateWithoutAuthorInput> | Prisma.ThreadCreateWithoutAuthorInput[] | Prisma.ThreadUncheckedCreateWithoutAuthorInput[]
-  connectOrCreate?: Prisma.ThreadCreateOrConnectWithoutAuthorInput | Prisma.ThreadCreateOrConnectWithoutAuthorInput[]
-  upsert?: Prisma.ThreadUpsertWithWhereUniqueWithoutAuthorInput | Prisma.ThreadUpsertWithWhereUniqueWithoutAuthorInput[]
-  createMany?: Prisma.ThreadCreateManyAuthorInputEnvelope
-  set?: Prisma.ThreadWhereUniqueInput | Prisma.ThreadWhereUniqueInput[]
-  disconnect?: Prisma.ThreadWhereUniqueInput | Prisma.ThreadWhereUniqueInput[]
-  delete?: Prisma.ThreadWhereUniqueInput | Prisma.ThreadWhereUniqueInput[]
-  connect?: Prisma.ThreadWhereUniqueInput | Prisma.ThreadWhereUniqueInput[]
-  update?: Prisma.ThreadUpdateWithWhereUniqueWithoutAuthorInput | Prisma.ThreadUpdateWithWhereUniqueWithoutAuthorInput[]
-  updateMany?: Prisma.ThreadUpdateManyWithWhereWithoutAuthorInput | Prisma.ThreadUpdateManyWithWhereWithoutAuthorInput[]
-  deleteMany?: Prisma.ThreadScalarWhereInput | Prisma.ThreadScalarWhereInput[]
-}
-
 export type ThreadCreateNestedManyWithoutCommunityInput = {
   create?: Prisma.XOR<Prisma.ThreadCreateWithoutCommunityInput, Prisma.ThreadUncheckedCreateWithoutCommunityInput> | Prisma.ThreadCreateWithoutCommunityInput[] | Prisma.ThreadUncheckedCreateWithoutCommunityInput[]
   connectOrCreate?: Prisma.ThreadCreateOrConnectWithoutCommunityInput | Prisma.ThreadCreateOrConnectWithoutCommunityInput[]
@@ -534,63 +492,46 @@ export type ThreadUncheckedUpdateManyWithoutCommunityNestedInput = {
   deleteMany?: Prisma.ThreadScalarWhereInput | Prisma.ThreadScalarWhereInput[]
 }
 
-export type ThreadCreateWithoutAuthorInput = {
-  title: string
-  content?: string
-  score?: number
-  commentCount?: number
-  createdAt?: Date | string
-  community: Prisma.CommunityCreateNestedOneWithoutThreadsInput
+export type ThreadCreateNestedManyWithoutAuthorInput = {
+  create?: Prisma.XOR<Prisma.ThreadCreateWithoutAuthorInput, Prisma.ThreadUncheckedCreateWithoutAuthorInput> | Prisma.ThreadCreateWithoutAuthorInput[] | Prisma.ThreadUncheckedCreateWithoutAuthorInput[]
+  connectOrCreate?: Prisma.ThreadCreateOrConnectWithoutAuthorInput | Prisma.ThreadCreateOrConnectWithoutAuthorInput[]
+  createMany?: Prisma.ThreadCreateManyAuthorInputEnvelope
+  connect?: Prisma.ThreadWhereUniqueInput | Prisma.ThreadWhereUniqueInput[]
 }
 
-export type ThreadUncheckedCreateWithoutAuthorInput = {
-  id?: number
-  communityId: number
-  title: string
-  content?: string
-  score?: number
-  commentCount?: number
-  createdAt?: Date | string
+export type ThreadUncheckedCreateNestedManyWithoutAuthorInput = {
+  create?: Prisma.XOR<Prisma.ThreadCreateWithoutAuthorInput, Prisma.ThreadUncheckedCreateWithoutAuthorInput> | Prisma.ThreadCreateWithoutAuthorInput[] | Prisma.ThreadUncheckedCreateWithoutAuthorInput[]
+  connectOrCreate?: Prisma.ThreadCreateOrConnectWithoutAuthorInput | Prisma.ThreadCreateOrConnectWithoutAuthorInput[]
+  createMany?: Prisma.ThreadCreateManyAuthorInputEnvelope
+  connect?: Prisma.ThreadWhereUniqueInput | Prisma.ThreadWhereUniqueInput[]
 }
 
-export type ThreadCreateOrConnectWithoutAuthorInput = {
-  where: Prisma.ThreadWhereUniqueInput
-  create: Prisma.XOR<Prisma.ThreadCreateWithoutAuthorInput, Prisma.ThreadUncheckedCreateWithoutAuthorInput>
+export type ThreadUpdateManyWithoutAuthorNestedInput = {
+  create?: Prisma.XOR<Prisma.ThreadCreateWithoutAuthorInput, Prisma.ThreadUncheckedCreateWithoutAuthorInput> | Prisma.ThreadCreateWithoutAuthorInput[] | Prisma.ThreadUncheckedCreateWithoutAuthorInput[]
+  connectOrCreate?: Prisma.ThreadCreateOrConnectWithoutAuthorInput | Prisma.ThreadCreateOrConnectWithoutAuthorInput[]
+  upsert?: Prisma.ThreadUpsertWithWhereUniqueWithoutAuthorInput | Prisma.ThreadUpsertWithWhereUniqueWithoutAuthorInput[]
+  createMany?: Prisma.ThreadCreateManyAuthorInputEnvelope
+  set?: Prisma.ThreadWhereUniqueInput | Prisma.ThreadWhereUniqueInput[]
+  disconnect?: Prisma.ThreadWhereUniqueInput | Prisma.ThreadWhereUniqueInput[]
+  delete?: Prisma.ThreadWhereUniqueInput | Prisma.ThreadWhereUniqueInput[]
+  connect?: Prisma.ThreadWhereUniqueInput | Prisma.ThreadWhereUniqueInput[]
+  update?: Prisma.ThreadUpdateWithWhereUniqueWithoutAuthorInput | Prisma.ThreadUpdateWithWhereUniqueWithoutAuthorInput[]
+  updateMany?: Prisma.ThreadUpdateManyWithWhereWithoutAuthorInput | Prisma.ThreadUpdateManyWithWhereWithoutAuthorInput[]
+  deleteMany?: Prisma.ThreadScalarWhereInput | Prisma.ThreadScalarWhereInput[]
 }
 
-export type ThreadCreateManyAuthorInputEnvelope = {
-  data: Prisma.ThreadCreateManyAuthorInput | Prisma.ThreadCreateManyAuthorInput[]
-  skipDuplicates?: boolean
-}
-
-export type ThreadUpsertWithWhereUniqueWithoutAuthorInput = {
-  where: Prisma.ThreadWhereUniqueInput
-  update: Prisma.XOR<Prisma.ThreadUpdateWithoutAuthorInput, Prisma.ThreadUncheckedUpdateWithoutAuthorInput>
-  create: Prisma.XOR<Prisma.ThreadCreateWithoutAuthorInput, Prisma.ThreadUncheckedCreateWithoutAuthorInput>
-}
-
-export type ThreadUpdateWithWhereUniqueWithoutAuthorInput = {
-  where: Prisma.ThreadWhereUniqueInput
-  data: Prisma.XOR<Prisma.ThreadUpdateWithoutAuthorInput, Prisma.ThreadUncheckedUpdateWithoutAuthorInput>
-}
-
-export type ThreadUpdateManyWithWhereWithoutAuthorInput = {
-  where: Prisma.ThreadScalarWhereInput
-  data: Prisma.XOR<Prisma.ThreadUpdateManyMutationInput, Prisma.ThreadUncheckedUpdateManyWithoutAuthorInput>
-}
-
-export type ThreadScalarWhereInput = {
-  AND?: Prisma.ThreadScalarWhereInput | Prisma.ThreadScalarWhereInput[]
-  OR?: Prisma.ThreadScalarWhereInput[]
-  NOT?: Prisma.ThreadScalarWhereInput | Prisma.ThreadScalarWhereInput[]
-  id?: Prisma.IntFilter<"Thread"> | number
-  communityId?: Prisma.IntFilter<"Thread"> | number
-  authorId?: Prisma.IntFilter<"Thread"> | number
-  title?: Prisma.StringFilter<"Thread"> | string
-  content?: Prisma.StringFilter<"Thread"> | string
-  score?: Prisma.IntFilter<"Thread"> | number
-  commentCount?: Prisma.IntFilter<"Thread"> | number
-  createdAt?: Prisma.DateTimeFilter<"Thread"> | Date | string
+export type ThreadUncheckedUpdateManyWithoutAuthorNestedInput = {
+  create?: Prisma.XOR<Prisma.ThreadCreateWithoutAuthorInput, Prisma.ThreadUncheckedCreateWithoutAuthorInput> | Prisma.ThreadCreateWithoutAuthorInput[] | Prisma.ThreadUncheckedCreateWithoutAuthorInput[]
+  connectOrCreate?: Prisma.ThreadCreateOrConnectWithoutAuthorInput | Prisma.ThreadCreateOrConnectWithoutAuthorInput[]
+  upsert?: Prisma.ThreadUpsertWithWhereUniqueWithoutAuthorInput | Prisma.ThreadUpsertWithWhereUniqueWithoutAuthorInput[]
+  createMany?: Prisma.ThreadCreateManyAuthorInputEnvelope
+  set?: Prisma.ThreadWhereUniqueInput | Prisma.ThreadWhereUniqueInput[]
+  disconnect?: Prisma.ThreadWhereUniqueInput | Prisma.ThreadWhereUniqueInput[]
+  delete?: Prisma.ThreadWhereUniqueInput | Prisma.ThreadWhereUniqueInput[]
+  connect?: Prisma.ThreadWhereUniqueInput | Prisma.ThreadWhereUniqueInput[]
+  update?: Prisma.ThreadUpdateWithWhereUniqueWithoutAuthorInput | Prisma.ThreadUpdateWithWhereUniqueWithoutAuthorInput[]
+  updateMany?: Prisma.ThreadUpdateManyWithWhereWithoutAuthorInput | Prisma.ThreadUpdateManyWithWhereWithoutAuthorInput[]
+  deleteMany?: Prisma.ThreadScalarWhereInput | Prisma.ThreadScalarWhereInput[]
 }
 
 export type ThreadCreateWithoutCommunityInput = {
@@ -638,7 +579,30 @@ export type ThreadUpdateManyWithWhereWithoutCommunityInput = {
   data: Prisma.XOR<Prisma.ThreadUpdateManyMutationInput, Prisma.ThreadUncheckedUpdateManyWithoutCommunityInput>
 }
 
-export type ThreadCreateManyAuthorInput = {
+export type ThreadScalarWhereInput = {
+  AND?: Prisma.ThreadScalarWhereInput | Prisma.ThreadScalarWhereInput[]
+  OR?: Prisma.ThreadScalarWhereInput[]
+  NOT?: Prisma.ThreadScalarWhereInput | Prisma.ThreadScalarWhereInput[]
+  id?: Prisma.IntFilter<"Thread"> | number
+  communityId?: Prisma.IntFilter<"Thread"> | number
+  authorId?: Prisma.IntFilter<"Thread"> | number
+  title?: Prisma.StringFilter<"Thread"> | string
+  content?: Prisma.StringFilter<"Thread"> | string
+  score?: Prisma.IntFilter<"Thread"> | number
+  commentCount?: Prisma.IntFilter<"Thread"> | number
+  createdAt?: Prisma.DateTimeFilter<"Thread"> | Date | string
+}
+
+export type ThreadCreateWithoutAuthorInput = {
+  title: string
+  content?: string
+  score?: number
+  commentCount?: number
+  createdAt?: Date | string
+  community: Prisma.CommunityCreateNestedOneWithoutThreadsInput
+}
+
+export type ThreadUncheckedCreateWithoutAuthorInput = {
   id?: number
   communityId: number
   title: string
@@ -648,33 +612,30 @@ export type ThreadCreateManyAuthorInput = {
   createdAt?: Date | string
 }
 
-export type ThreadUpdateWithoutAuthorInput = {
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.StringFieldUpdateOperationsInput | string
-  score?: Prisma.IntFieldUpdateOperationsInput | number
-  commentCount?: Prisma.IntFieldUpdateOperationsInput | number
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  community?: Prisma.CommunityUpdateOneRequiredWithoutThreadsNestedInput
+export type ThreadCreateOrConnectWithoutAuthorInput = {
+  where: Prisma.ThreadWhereUniqueInput
+  create: Prisma.XOR<Prisma.ThreadCreateWithoutAuthorInput, Prisma.ThreadUncheckedCreateWithoutAuthorInput>
 }
 
-export type ThreadUncheckedUpdateWithoutAuthorInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  communityId?: Prisma.IntFieldUpdateOperationsInput | number
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.StringFieldUpdateOperationsInput | string
-  score?: Prisma.IntFieldUpdateOperationsInput | number
-  commentCount?: Prisma.IntFieldUpdateOperationsInput | number
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+export type ThreadCreateManyAuthorInputEnvelope = {
+  data: Prisma.ThreadCreateManyAuthorInput | Prisma.ThreadCreateManyAuthorInput[]
+  skipDuplicates?: boolean
 }
 
-export type ThreadUncheckedUpdateManyWithoutAuthorInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  communityId?: Prisma.IntFieldUpdateOperationsInput | number
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.StringFieldUpdateOperationsInput | string
-  score?: Prisma.IntFieldUpdateOperationsInput | number
-  commentCount?: Prisma.IntFieldUpdateOperationsInput | number
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+export type ThreadUpsertWithWhereUniqueWithoutAuthorInput = {
+  where: Prisma.ThreadWhereUniqueInput
+  update: Prisma.XOR<Prisma.ThreadUpdateWithoutAuthorInput, Prisma.ThreadUncheckedUpdateWithoutAuthorInput>
+  create: Prisma.XOR<Prisma.ThreadCreateWithoutAuthorInput, Prisma.ThreadUncheckedCreateWithoutAuthorInput>
+}
+
+export type ThreadUpdateWithWhereUniqueWithoutAuthorInput = {
+  where: Prisma.ThreadWhereUniqueInput
+  data: Prisma.XOR<Prisma.ThreadUpdateWithoutAuthorInput, Prisma.ThreadUncheckedUpdateWithoutAuthorInput>
+}
+
+export type ThreadUpdateManyWithWhereWithoutAuthorInput = {
+  where: Prisma.ThreadScalarWhereInput
+  data: Prisma.XOR<Prisma.ThreadUpdateManyMutationInput, Prisma.ThreadUncheckedUpdateManyWithoutAuthorInput>
 }
 
 export type ThreadCreateManyCommunityInput = {
@@ -709,6 +670,45 @@ export type ThreadUncheckedUpdateWithoutCommunityInput = {
 export type ThreadUncheckedUpdateManyWithoutCommunityInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   authorId?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  score?: Prisma.IntFieldUpdateOperationsInput | number
+  commentCount?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ThreadCreateManyAuthorInput = {
+  id?: number
+  communityId: number
+  title: string
+  content?: string
+  score?: number
+  commentCount?: number
+  createdAt?: Date | string
+}
+
+export type ThreadUpdateWithoutAuthorInput = {
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  score?: Prisma.IntFieldUpdateOperationsInput | number
+  commentCount?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  community?: Prisma.CommunityUpdateOneRequiredWithoutThreadsNestedInput
+}
+
+export type ThreadUncheckedUpdateWithoutAuthorInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  communityId?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  score?: Prisma.IntFieldUpdateOperationsInput | number
+  commentCount?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ThreadUncheckedUpdateManyWithoutAuthorInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  communityId?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   score?: Prisma.IntFieldUpdateOperationsInput | number

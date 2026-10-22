@@ -383,16 +383,6 @@ export type NotificationUncheckedUpdateManyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type NotificationListRelationFilter = {
-  every?: Prisma.NotificationWhereInput
-  some?: Prisma.NotificationWhereInput
-  none?: Prisma.NotificationWhereInput
-}
-
-export type NotificationOrderByRelationAggregateInput = {
-  _count?: Prisma.SortOrder
-}
-
 export type NotificationCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
@@ -436,6 +426,24 @@ export type NotificationSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   actorId?: Prisma.SortOrder
+}
+
+export type NotificationListRelationFilter = {
+  every?: Prisma.NotificationWhereInput
+  some?: Prisma.NotificationWhereInput
+  none?: Prisma.NotificationWhereInput
+}
+
+export type NotificationOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
+export type EnumNotificationTypeFieldUpdateOperationsInput = {
+  set?: $Enums.NotificationType
+}
+
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
 }
 
 export type NotificationCreateNestedManyWithoutUserInput = {
@@ -520,10 +528,6 @@ export type NotificationUncheckedUpdateManyWithoutActorNestedInput = {
   update?: Prisma.NotificationUpdateWithWhereUniqueWithoutActorInput | Prisma.NotificationUpdateWithWhereUniqueWithoutActorInput[]
   updateMany?: Prisma.NotificationUpdateManyWithWhereWithoutActorInput | Prisma.NotificationUpdateManyWithWhereWithoutActorInput[]
   deleteMany?: Prisma.NotificationScalarWhereInput | Prisma.NotificationScalarWhereInput[]
-}
-
-export type EnumNotificationTypeFieldUpdateOperationsInput = {
-  set?: $Enums.NotificationType
 }
 
 export type NotificationCreateWithoutUserInput = {

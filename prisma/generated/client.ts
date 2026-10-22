@@ -27,8 +27,8 @@ export * from "./enums"
  * @example
  * ```
  * const prisma = new PrismaClient()
- * // Fetch zero or more Users
- * const users = await prisma.user.findMany()
+ * // Fetch zero or more Communities
+ * const communities = await prisma.community.findMany()
  * ```
  * 
  * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client).
@@ -37,11 +37,6 @@ export const PrismaClient = $Class.getPrismaClientClass()
 export type PrismaClient<LogOpts extends Prisma.LogLevel = never, OmitOpts extends Prisma.PrismaClientOptions["omit"] = Prisma.PrismaClientOptions["omit"], ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = $Class.PrismaClient<LogOpts, OmitOpts, ExtArgs>
 export { Prisma }
 
-/**
- * Model User
- * 
- */
-export type User = Prisma.UserModel
 /**
  * Model Community
  * 
@@ -68,11 +63,6 @@ export type MembershipRole = Prisma.MembershipRoleModel
  */
 export type Post = Prisma.PostModel
 /**
- * Model Friendship
- * 
- */
-export type Friendship = Prisma.FriendshipModel
-/**
  * Model Thread
  * 
  */
@@ -88,12 +78,22 @@ export type Comment = Prisma.CommentModel
  */
 export type Vote = Prisma.VoteModel
 /**
- * Model Report
+ * Model Friendship
  * 
  */
-export type Report = Prisma.ReportModel
+export type Friendship = Prisma.FriendshipModel
 /**
  * Model Notification
  * 
  */
 export type Notification = Prisma.NotificationModel
+/**
+ * Model Report
+ * 
+ */
+export type Report = Prisma.ReportModel
+/**
+ * Model User
+ * 
+ */
+export type User = Prisma.UserModel

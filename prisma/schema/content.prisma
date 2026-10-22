@@ -1,0 +1,70 @@
+enum CommentableType {
+  post
+  thread
+}
+
+enum VotableType {
+  thread
+  comment
+}
+
+model Post {
+  id           Int       @id @default(autoincrement())
+  communityId  Int
+  authorId     Int
+  content      String
+  commentCount Int       @default(0)
+  createdAt    DateTime  @default(now())
+  community    Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  author       User      @relation(fields: [authorId], references: [id])
+
+  @@index([communityId, createdAt(sort: Desc)])
+}
+
+model Thread {
+  id           Int       @id @default(autoincrement())
+  communityId  Int
+  authorId     Int
+  title        String
+  content      String    @default("")
+  score        Int       @default(0)
+  commentCount Int       @default(0)
+  createdAt    DateTime  @default(now())
+  community    Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  author       User      @relation(fields: [authorId], references: [id])
+
+  @@index([communityId, createdAt(sort: Desc)])
+  @@index([communityId, score])
+}
+
+model Comment {
+  id              Int             @id @default(autoincrement())
+  communityId     Int
+  commentableType CommentableType
+  commentableId   Int
+  parentId        Int?
+  authorId        Int
+  content         String
+  score           Int             @default(0)
+  createdAt       DateTime        @default(now())
+  community       Community       @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  author          User            @relation(fields: [authorId], references: [id])
+  parent          Comment?        @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies         Comment[]       @relation("CommentReplies")
+
+  @@index([commentableType, commentableId, createdAt])
+  @@index([parentId])
+}
+
+model Vote {
+  userId      Int
+  votableType VotableType
+  votableId   Int
+  communityId Int
+  value       Int
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  community   Community   @relation(fields: [communityId], references: [id], onDelete: Cascade)
+
+  @@id([userId, votableType, votableId])
+  @@index([votableType, votableId])
+}

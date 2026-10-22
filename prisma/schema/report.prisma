@@ -1,0 +1,24 @@
+enum ReportCategory {
+  bug
+  idea
+  other
+}
+
+enum ReportStatus {
+  todo
+  in_progress
+  done
+}
+
+model Report {
+  id        Int            @id @default(autoincrement())
+  authorId  Int
+  category  ReportCategory
+  status    ReportStatus   @default(todo)
+  message   String
+  pageUrl   String?
+  createdAt DateTime       @default(now())
+  author    User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([createdAt(sort: Desc)])
+}

@@ -388,48 +388,6 @@ export type VoteSumOrderByAggregateInput = {
   value?: Prisma.SortOrder
 }
 
-export type VoteCreateNestedManyWithoutUserInput = {
-  create?: Prisma.XOR<Prisma.VoteCreateWithoutUserInput, Prisma.VoteUncheckedCreateWithoutUserInput> | Prisma.VoteCreateWithoutUserInput[] | Prisma.VoteUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.VoteCreateOrConnectWithoutUserInput | Prisma.VoteCreateOrConnectWithoutUserInput[]
-  createMany?: Prisma.VoteCreateManyUserInputEnvelope
-  connect?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
-}
-
-export type VoteUncheckedCreateNestedManyWithoutUserInput = {
-  create?: Prisma.XOR<Prisma.VoteCreateWithoutUserInput, Prisma.VoteUncheckedCreateWithoutUserInput> | Prisma.VoteCreateWithoutUserInput[] | Prisma.VoteUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.VoteCreateOrConnectWithoutUserInput | Prisma.VoteCreateOrConnectWithoutUserInput[]
-  createMany?: Prisma.VoteCreateManyUserInputEnvelope
-  connect?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
-}
-
-export type VoteUpdateManyWithoutUserNestedInput = {
-  create?: Prisma.XOR<Prisma.VoteCreateWithoutUserInput, Prisma.VoteUncheckedCreateWithoutUserInput> | Prisma.VoteCreateWithoutUserInput[] | Prisma.VoteUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.VoteCreateOrConnectWithoutUserInput | Prisma.VoteCreateOrConnectWithoutUserInput[]
-  upsert?: Prisma.VoteUpsertWithWhereUniqueWithoutUserInput | Prisma.VoteUpsertWithWhereUniqueWithoutUserInput[]
-  createMany?: Prisma.VoteCreateManyUserInputEnvelope
-  set?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
-  disconnect?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
-  delete?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
-  connect?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
-  update?: Prisma.VoteUpdateWithWhereUniqueWithoutUserInput | Prisma.VoteUpdateWithWhereUniqueWithoutUserInput[]
-  updateMany?: Prisma.VoteUpdateManyWithWhereWithoutUserInput | Prisma.VoteUpdateManyWithWhereWithoutUserInput[]
-  deleteMany?: Prisma.VoteScalarWhereInput | Prisma.VoteScalarWhereInput[]
-}
-
-export type VoteUncheckedUpdateManyWithoutUserNestedInput = {
-  create?: Prisma.XOR<Prisma.VoteCreateWithoutUserInput, Prisma.VoteUncheckedCreateWithoutUserInput> | Prisma.VoteCreateWithoutUserInput[] | Prisma.VoteUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.VoteCreateOrConnectWithoutUserInput | Prisma.VoteCreateOrConnectWithoutUserInput[]
-  upsert?: Prisma.VoteUpsertWithWhereUniqueWithoutUserInput | Prisma.VoteUpsertWithWhereUniqueWithoutUserInput[]
-  createMany?: Prisma.VoteCreateManyUserInputEnvelope
-  set?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
-  disconnect?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
-  delete?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
-  connect?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
-  update?: Prisma.VoteUpdateWithWhereUniqueWithoutUserInput | Prisma.VoteUpdateWithWhereUniqueWithoutUserInput[]
-  updateMany?: Prisma.VoteUpdateManyWithWhereWithoutUserInput | Prisma.VoteUpdateManyWithWhereWithoutUserInput[]
-  deleteMany?: Prisma.VoteScalarWhereInput | Prisma.VoteScalarWhereInput[]
-}
-
 export type VoteCreateNestedManyWithoutCommunityInput = {
   create?: Prisma.XOR<Prisma.VoteCreateWithoutCommunityInput, Prisma.VoteUncheckedCreateWithoutCommunityInput> | Prisma.VoteCreateWithoutCommunityInput[] | Prisma.VoteUncheckedCreateWithoutCommunityInput[]
   connectOrCreate?: Prisma.VoteCreateOrConnectWithoutCommunityInput | Prisma.VoteCreateOrConnectWithoutCommunityInput[]
@@ -476,55 +434,46 @@ export type EnumVotableTypeFieldUpdateOperationsInput = {
   set?: $Enums.VotableType
 }
 
-export type VoteCreateWithoutUserInput = {
-  votableType: $Enums.VotableType
-  votableId: number
-  value: number
-  community: Prisma.CommunityCreateNestedOneWithoutVotesInput
+export type VoteCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.VoteCreateWithoutUserInput, Prisma.VoteUncheckedCreateWithoutUserInput> | Prisma.VoteCreateWithoutUserInput[] | Prisma.VoteUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.VoteCreateOrConnectWithoutUserInput | Prisma.VoteCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.VoteCreateManyUserInputEnvelope
+  connect?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
 }
 
-export type VoteUncheckedCreateWithoutUserInput = {
-  votableType: $Enums.VotableType
-  votableId: number
-  communityId: number
-  value: number
+export type VoteUncheckedCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.VoteCreateWithoutUserInput, Prisma.VoteUncheckedCreateWithoutUserInput> | Prisma.VoteCreateWithoutUserInput[] | Prisma.VoteUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.VoteCreateOrConnectWithoutUserInput | Prisma.VoteCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.VoteCreateManyUserInputEnvelope
+  connect?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
 }
 
-export type VoteCreateOrConnectWithoutUserInput = {
-  where: Prisma.VoteWhereUniqueInput
-  create: Prisma.XOR<Prisma.VoteCreateWithoutUserInput, Prisma.VoteUncheckedCreateWithoutUserInput>
+export type VoteUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.VoteCreateWithoutUserInput, Prisma.VoteUncheckedCreateWithoutUserInput> | Prisma.VoteCreateWithoutUserInput[] | Prisma.VoteUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.VoteCreateOrConnectWithoutUserInput | Prisma.VoteCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.VoteUpsertWithWhereUniqueWithoutUserInput | Prisma.VoteUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.VoteCreateManyUserInputEnvelope
+  set?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
+  disconnect?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
+  delete?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
+  connect?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
+  update?: Prisma.VoteUpdateWithWhereUniqueWithoutUserInput | Prisma.VoteUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.VoteUpdateManyWithWhereWithoutUserInput | Prisma.VoteUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.VoteScalarWhereInput | Prisma.VoteScalarWhereInput[]
 }
 
-export type VoteCreateManyUserInputEnvelope = {
-  data: Prisma.VoteCreateManyUserInput | Prisma.VoteCreateManyUserInput[]
-  skipDuplicates?: boolean
-}
-
-export type VoteUpsertWithWhereUniqueWithoutUserInput = {
-  where: Prisma.VoteWhereUniqueInput
-  update: Prisma.XOR<Prisma.VoteUpdateWithoutUserInput, Prisma.VoteUncheckedUpdateWithoutUserInput>
-  create: Prisma.XOR<Prisma.VoteCreateWithoutUserInput, Prisma.VoteUncheckedCreateWithoutUserInput>
-}
-
-export type VoteUpdateWithWhereUniqueWithoutUserInput = {
-  where: Prisma.VoteWhereUniqueInput
-  data: Prisma.XOR<Prisma.VoteUpdateWithoutUserInput, Prisma.VoteUncheckedUpdateWithoutUserInput>
-}
-
-export type VoteUpdateManyWithWhereWithoutUserInput = {
-  where: Prisma.VoteScalarWhereInput
-  data: Prisma.XOR<Prisma.VoteUpdateManyMutationInput, Prisma.VoteUncheckedUpdateManyWithoutUserInput>
-}
-
-export type VoteScalarWhereInput = {
-  AND?: Prisma.VoteScalarWhereInput | Prisma.VoteScalarWhereInput[]
-  OR?: Prisma.VoteScalarWhereInput[]
-  NOT?: Prisma.VoteScalarWhereInput | Prisma.VoteScalarWhereInput[]
-  userId?: Prisma.IntFilter<"Vote"> | number
-  votableType?: Prisma.EnumVotableTypeFilter<"Vote"> | $Enums.VotableType
-  votableId?: Prisma.IntFilter<"Vote"> | number
-  communityId?: Prisma.IntFilter<"Vote"> | number
-  value?: Prisma.IntFilter<"Vote"> | number
+export type VoteUncheckedUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.VoteCreateWithoutUserInput, Prisma.VoteUncheckedCreateWithoutUserInput> | Prisma.VoteCreateWithoutUserInput[] | Prisma.VoteUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.VoteCreateOrConnectWithoutUserInput | Prisma.VoteCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.VoteUpsertWithWhereUniqueWithoutUserInput | Prisma.VoteUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.VoteCreateManyUserInputEnvelope
+  set?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
+  disconnect?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
+  delete?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
+  connect?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
+  update?: Prisma.VoteUpdateWithWhereUniqueWithoutUserInput | Prisma.VoteUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.VoteUpdateManyWithWhereWithoutUserInput | Prisma.VoteUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.VoteScalarWhereInput | Prisma.VoteScalarWhereInput[]
 }
 
 export type VoteCreateWithoutCommunityInput = {
@@ -567,32 +516,55 @@ export type VoteUpdateManyWithWhereWithoutCommunityInput = {
   data: Prisma.XOR<Prisma.VoteUpdateManyMutationInput, Prisma.VoteUncheckedUpdateManyWithoutCommunityInput>
 }
 
-export type VoteCreateManyUserInput = {
+export type VoteScalarWhereInput = {
+  AND?: Prisma.VoteScalarWhereInput | Prisma.VoteScalarWhereInput[]
+  OR?: Prisma.VoteScalarWhereInput[]
+  NOT?: Prisma.VoteScalarWhereInput | Prisma.VoteScalarWhereInput[]
+  userId?: Prisma.IntFilter<"Vote"> | number
+  votableType?: Prisma.EnumVotableTypeFilter<"Vote"> | $Enums.VotableType
+  votableId?: Prisma.IntFilter<"Vote"> | number
+  communityId?: Prisma.IntFilter<"Vote"> | number
+  value?: Prisma.IntFilter<"Vote"> | number
+}
+
+export type VoteCreateWithoutUserInput = {
+  votableType: $Enums.VotableType
+  votableId: number
+  value: number
+  community: Prisma.CommunityCreateNestedOneWithoutVotesInput
+}
+
+export type VoteUncheckedCreateWithoutUserInput = {
   votableType: $Enums.VotableType
   votableId: number
   communityId: number
   value: number
 }
 
-export type VoteUpdateWithoutUserInput = {
-  votableType?: Prisma.EnumVotableTypeFieldUpdateOperationsInput | $Enums.VotableType
-  votableId?: Prisma.IntFieldUpdateOperationsInput | number
-  value?: Prisma.IntFieldUpdateOperationsInput | number
-  community?: Prisma.CommunityUpdateOneRequiredWithoutVotesNestedInput
+export type VoteCreateOrConnectWithoutUserInput = {
+  where: Prisma.VoteWhereUniqueInput
+  create: Prisma.XOR<Prisma.VoteCreateWithoutUserInput, Prisma.VoteUncheckedCreateWithoutUserInput>
 }
 
-export type VoteUncheckedUpdateWithoutUserInput = {
-  votableType?: Prisma.EnumVotableTypeFieldUpdateOperationsInput | $Enums.VotableType
-  votableId?: Prisma.IntFieldUpdateOperationsInput | number
-  communityId?: Prisma.IntFieldUpdateOperationsInput | number
-  value?: Prisma.IntFieldUpdateOperationsInput | number
+export type VoteCreateManyUserInputEnvelope = {
+  data: Prisma.VoteCreateManyUserInput | Prisma.VoteCreateManyUserInput[]
+  skipDuplicates?: boolean
 }
 
-export type VoteUncheckedUpdateManyWithoutUserInput = {
-  votableType?: Prisma.EnumVotableTypeFieldUpdateOperationsInput | $Enums.VotableType
-  votableId?: Prisma.IntFieldUpdateOperationsInput | number
-  communityId?: Prisma.IntFieldUpdateOperationsInput | number
-  value?: Prisma.IntFieldUpdateOperationsInput | number
+export type VoteUpsertWithWhereUniqueWithoutUserInput = {
+  where: Prisma.VoteWhereUniqueInput
+  update: Prisma.XOR<Prisma.VoteUpdateWithoutUserInput, Prisma.VoteUncheckedUpdateWithoutUserInput>
+  create: Prisma.XOR<Prisma.VoteCreateWithoutUserInput, Prisma.VoteUncheckedCreateWithoutUserInput>
+}
+
+export type VoteUpdateWithWhereUniqueWithoutUserInput = {
+  where: Prisma.VoteWhereUniqueInput
+  data: Prisma.XOR<Prisma.VoteUpdateWithoutUserInput, Prisma.VoteUncheckedUpdateWithoutUserInput>
+}
+
+export type VoteUpdateManyWithWhereWithoutUserInput = {
+  where: Prisma.VoteScalarWhereInput
+  data: Prisma.XOR<Prisma.VoteUpdateManyMutationInput, Prisma.VoteUncheckedUpdateManyWithoutUserInput>
 }
 
 export type VoteCreateManyCommunityInput = {
@@ -620,6 +592,34 @@ export type VoteUncheckedUpdateManyWithoutCommunityInput = {
   userId?: Prisma.IntFieldUpdateOperationsInput | number
   votableType?: Prisma.EnumVotableTypeFieldUpdateOperationsInput | $Enums.VotableType
   votableId?: Prisma.IntFieldUpdateOperationsInput | number
+  value?: Prisma.IntFieldUpdateOperationsInput | number
+}
+
+export type VoteCreateManyUserInput = {
+  votableType: $Enums.VotableType
+  votableId: number
+  communityId: number
+  value: number
+}
+
+export type VoteUpdateWithoutUserInput = {
+  votableType?: Prisma.EnumVotableTypeFieldUpdateOperationsInput | $Enums.VotableType
+  votableId?: Prisma.IntFieldUpdateOperationsInput | number
+  value?: Prisma.IntFieldUpdateOperationsInput | number
+  community?: Prisma.CommunityUpdateOneRequiredWithoutVotesNestedInput
+}
+
+export type VoteUncheckedUpdateWithoutUserInput = {
+  votableType?: Prisma.EnumVotableTypeFieldUpdateOperationsInput | $Enums.VotableType
+  votableId?: Prisma.IntFieldUpdateOperationsInput | number
+  communityId?: Prisma.IntFieldUpdateOperationsInput | number
+  value?: Prisma.IntFieldUpdateOperationsInput | number
+}
+
+export type VoteUncheckedUpdateManyWithoutUserInput = {
+  votableType?: Prisma.EnumVotableTypeFieldUpdateOperationsInput | $Enums.VotableType
+  votableId?: Prisma.IntFieldUpdateOperationsInput | number
+  communityId?: Prisma.IntFieldUpdateOperationsInput | number
   value?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
