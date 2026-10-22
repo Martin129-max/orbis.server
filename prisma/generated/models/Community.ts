@@ -467,6 +467,11 @@ export type CommunityScalarRelationFilter = {
   isNot?: Prisma.CommunityWhereInput
 }
 
+export type CommunityNullableScalarRelationFilter = {
+  is?: Prisma.CommunityWhereInput | null
+  isNot?: Prisma.CommunityWhereInput | null
+}
+
 export type CommunityListRelationFilter = {
   every?: Prisma.CommunityWhereInput
   some?: Prisma.CommunityWhereInput
@@ -535,10 +540,12 @@ export type CommunityCreateNestedOneWithoutPostsInput = {
   connect?: Prisma.CommunityWhereUniqueInput
 }
 
-export type CommunityUpdateOneRequiredWithoutPostsNestedInput = {
+export type CommunityUpdateOneWithoutPostsNestedInput = {
   create?: Prisma.XOR<Prisma.CommunityCreateWithoutPostsInput, Prisma.CommunityUncheckedCreateWithoutPostsInput>
   connectOrCreate?: Prisma.CommunityCreateOrConnectWithoutPostsInput
   upsert?: Prisma.CommunityUpsertWithoutPostsInput
+  disconnect?: Prisma.CommunityWhereInput | boolean
+  delete?: Prisma.CommunityWhereInput | boolean
   connect?: Prisma.CommunityWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.CommunityUpdateToOneWithWhereWithoutPostsInput, Prisma.CommunityUpdateWithoutPostsInput>, Prisma.CommunityUncheckedUpdateWithoutPostsInput>
 }
@@ -563,10 +570,12 @@ export type CommunityCreateNestedOneWithoutCommentsInput = {
   connect?: Prisma.CommunityWhereUniqueInput
 }
 
-export type CommunityUpdateOneRequiredWithoutCommentsNestedInput = {
+export type CommunityUpdateOneWithoutCommentsNestedInput = {
   create?: Prisma.XOR<Prisma.CommunityCreateWithoutCommentsInput, Prisma.CommunityUncheckedCreateWithoutCommentsInput>
   connectOrCreate?: Prisma.CommunityCreateOrConnectWithoutCommentsInput
   upsert?: Prisma.CommunityUpsertWithoutCommentsInput
+  disconnect?: Prisma.CommunityWhereInput | boolean
+  delete?: Prisma.CommunityWhereInput | boolean
   connect?: Prisma.CommunityWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.CommunityUpdateToOneWithWhereWithoutCommentsInput, Prisma.CommunityUpdateWithoutCommentsInput>, Prisma.CommunityUncheckedUpdateWithoutCommentsInput>
 }
@@ -577,10 +586,12 @@ export type CommunityCreateNestedOneWithoutVotesInput = {
   connect?: Prisma.CommunityWhereUniqueInput
 }
 
-export type CommunityUpdateOneRequiredWithoutVotesNestedInput = {
+export type CommunityUpdateOneWithoutVotesNestedInput = {
   create?: Prisma.XOR<Prisma.CommunityCreateWithoutVotesInput, Prisma.CommunityUncheckedCreateWithoutVotesInput>
   connectOrCreate?: Prisma.CommunityCreateOrConnectWithoutVotesInput
   upsert?: Prisma.CommunityUpsertWithoutVotesInput
+  disconnect?: Prisma.CommunityWhereInput | boolean
+  delete?: Prisma.CommunityWhereInput | boolean
   connect?: Prisma.CommunityWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.CommunityUpdateToOneWithWhereWithoutVotesInput, Prisma.CommunityUpdateWithoutVotesInput>, Prisma.CommunityUncheckedUpdateWithoutVotesInput>
 }

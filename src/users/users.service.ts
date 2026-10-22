@@ -4,7 +4,11 @@ import { PrismaService } from '../prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePreferencesDto } from './dto/update-preferences.dto';
 import { UpdateOnboardingDto } from './dto/update-onboarding.dto';
-import { User as UserModel } from '../../prisma/generated/client';
+import {
+  LibraryStatus,
+  MediaType,
+  User as UserModel,
+} from '../../prisma/generated/client';
 import { normalizeUsername } from './username';
 import { StorageService } from '../storage/storage.service';
 
@@ -16,6 +20,7 @@ export type PublicProfile = {
   name: string | null;
   avatarUrl: string | null;
   coverUrl: string | null;
+  backgroundUrl: string | null;
   isAdmin: boolean;
   createdAt: Date;
   online: boolean;
@@ -26,7 +31,27 @@ export type PublicProfile = {
     id: number;
     name: string;
     iconUrl: string | null;
+    coverUrl: string | null;
+    memberCount: number;
     isOwner: boolean;
+  }[];
+  friends: {
+    userId: number;
+    username: string;
+    name: string | null;
+    avatarUrl: string | null;
+    coverUrl: string | null;
+    online: boolean;
+  }[];
+  library: {
+    id: number;
+    mediaType: MediaType;
+    sourceId: string;
+    title: string;
+    coverImage: string | null;
+    status: LibraryStatus;
+    progress: number;
+    total: number | null;
   }[];
 };
 
@@ -50,6 +75,7 @@ export type Profile = Pick<
   | 'username'
   | 'avatarUrl'
   | 'coverUrl'
+  | 'backgroundUrl'
   | 'theme'
   | 'appearOffline'
   | 'isAdmin'
@@ -66,6 +92,7 @@ const profile = {
   username: true,
   avatarUrl: true,
   coverUrl: true,
+  backgroundUrl: true,
   theme: true,
   appearOffline: true,
   isAdmin: true,
@@ -120,7 +147,7 @@ export class UsersService {
   }
 
   async updateAvatar(id: number, file: Buffer): Promise<Profile> {
-    const { url } = await this.storage.uploadImage(file, 'avatars', 512);
+    const { url } = await this.storage.uploadImage(file, 'avatars', 384);
     return this.replaceImage(id, 'avatarUrl', url);
   }
 
@@ -137,14 +164,27 @@ export class UsersService {
     return this.replaceImage(id, 'coverUrl', null);
   }
 
+  async updateBackground(id: number, file: Buffer): Promise<Profile> {
+    const { url } = await this.storage.uploadImage(
+      file,
+      'user-backgrounds',
+      1920,
+    );
+    return this.replaceImage(id, 'backgroundUrl', url);
+  }
+
+  removeBackground(id: number): Promise<Profile> {
+    return this.replaceImage(id, 'backgroundUrl', null);
+  }
+
   private async replaceImage(
     id: number,
-    field: 'avatarUrl' | 'coverUrl',
+    field: 'avatarUrl' | 'coverUrl' | 'backgroundUrl',
     url: string | null,
   ): Promise<Profile> {
     const previous = await this.prisma.user.findUnique({
       where: { id },
-      select: { avatarUrl: true, coverUrl: true },
+      select: { avatarUrl: true, coverUrl: true, backgroundUrl: true },
     });
     const user = await this.prisma.user.update({
       where: { id },
@@ -162,7 +202,14 @@ export class UsersService {
   async publicProfile(
     viewerId: number,
     username: string,
-  ): Promise<Omit<PublicProfile, 'online'> & { appearOffline: boolean }> {
+  ): Promise<
+    Omit<PublicProfile, 'online' | 'friends'> & {
+      appearOffline: boolean;
+      friends: (Omit<PublicProfile['friends'][number], 'online'> & {
+        appearOffline: boolean;
+      })[];
+    }
+  > {
     const user = await this.prisma.user.findUnique({
       where: { username: normalizeUsername(username) },
       select: {
@@ -171,6 +218,7 @@ export class UsersService {
         name: true,
         avatarUrl: true,
         coverUrl: true,
+        backgroundUrl: true,
         isAdmin: true,
         appearOffline: true,
         createdAt: true,
@@ -182,8 +230,10 @@ export class UsersService {
                 id: true,
                 name: true,
                 iconUrl: true,
+                coverUrl: true,
                 ownerId: true,
                 isPublic: true,
+                _count: { select: { memberships: true } },
                 memberships: {
                   where: { userId: viewerId },
                   select: { userId: true },
@@ -196,24 +246,62 @@ export class UsersService {
     });
     if (!user) throw new NotFoundException('User not found');
 
-    const [friendCount, posts, threads] = await Promise.all([
-      this.prisma.friendship.count({
+    const friendUser = {
+      select: {
+        id: true,
+        username: true,
+        name: true,
+        avatarUrl: true,
+        coverUrl: true,
+        appearOffline: true,
+      },
+    } as const;
+    const [friendships, posts, threads, library] = await Promise.all([
+      this.prisma.friendship.findMany({
         where: {
           status: 'accepted',
           OR: [{ requesterId: user.id }, { addresseeId: user.id }],
         },
+        orderBy: { createdAt: 'desc' },
+        select: { requester: friendUser, addressee: friendUser },
       }),
       this.prisma.post.count({ where: { authorId: user.id } }),
       this.prisma.thread.count({ where: { authorId: user.id } }),
+      this.prisma.libraryEntry.findMany({
+        where: { userId: user.id, isPublic: true },
+        orderBy: { updatedAt: 'desc' },
+        select: {
+          id: true,
+          mediaType: true,
+          sourceId: true,
+          title: true,
+          coverImage: true,
+          status: true,
+          progress: true,
+          total: true,
+        },
+      }),
     ]);
 
     const { memberships, id, ...rest } = user;
     return {
       ...rest,
       userId: id,
-      friendCount,
+      friendCount: friendships.length,
+      friends: friendships.map(({ requester, addressee }) => {
+        const friend = requester.id === id ? addressee : requester;
+        return {
+          userId: friend.id,
+          username: friend.username,
+          name: friend.name,
+          avatarUrl: friend.avatarUrl,
+          coverUrl: friend.coverUrl,
+          appearOffline: friend.appearOffline,
+        };
+      }),
       postCount: posts + threads,
       communityCount: memberships.length,
+      library,
       communities: memberships
         .map(({ community }) => community)
         .filter(
@@ -223,6 +311,8 @@ export class UsersService {
           id: community.id,
           name: community.name,
           iconUrl: community.iconUrl,
+          coverUrl: community.coverUrl,
+          memberCount: community._count.memberships,
           isOwner: community.ownerId === id,
         })),
     };

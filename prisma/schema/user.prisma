@@ -11,6 +11,7 @@ model User {
   name                 String?
   avatarUrl            String?
   coverUrl             String?
+  backgroundUrl        String?
   password             String
   theme                Theme          @default(system)
   appearOffline        Boolean        @default(false)
@@ -21,6 +22,7 @@ model User {
   ownedCommunities     Community[]
   memberships          Membership[]
   posts                Post[]
+  wallPosts            Post[]         @relation("WallPosts")
   sentFriendships      Friendship[]   @relation("FriendshipRequester")
   receivedFriendships  Friendship[]   @relation("FriendshipAddressee")
   threads              Thread[]

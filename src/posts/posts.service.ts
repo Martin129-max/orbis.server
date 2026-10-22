@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { normalizeUsername } from '../users/username';
 import { MAX_INT } from '../communities/community-member.guard';
 import { PrismaService } from '../prisma.service';
 import { LibraryStatus, Prisma } from '../../prisma/generated/client';
@@ -11,8 +16,14 @@ import {
   threadInclude,
 } from '../threads/threads.service';
 import { CreatePostDto } from './dto/create-post.dto';
+import { NotificationsService } from '../notifications/notifications.service';
+import { friendsOf, requireWallAccess } from './wall-access';
 
-const postInclude = { author, community: communitySummary } as const;
+const postInclude = {
+  author,
+  community: communitySummary,
+  wallUser: author,
+} as const;
 
 export type PostItem = Prisma.PostGetPayload<{
   include: typeof postInclude;
@@ -131,6 +142,7 @@ export class PostsService {
   constructor(
     private prisma: PrismaService,
     private threads: ThreadsService,
+    private notifications: NotificationsService,
   ) {}
 
   async findForCommunity(
@@ -178,7 +190,15 @@ export class PostsService {
 
     const [posts, threads, activities] = await Promise.all([
       this.prisma.post.findMany({
-        where: { ...member, ...olderThan(cursor, RANK.post) },
+        where: {
+          OR: [
+            member,
+            { wallUserId: userId },
+            { authorId: userId, communityId: null },
+            { wallUser: friendsOf(userId) },
+          ],
+          ...olderThan(cursor, RANK.post),
+        },
         orderBy: newestFirst,
         take: PAGE_SIZE + 1,
         include: postInclude,
@@ -226,6 +246,108 @@ export class PostsService {
     );
 
     return { items, nextCursor: nextCursor(merged, page) };
+  }
+
+  async findForProfile(
+    viewerId: number,
+    username: string,
+    rawCursor?: string,
+  ): Promise<Page<FeedItem>> {
+    const cursor = parseFeedCursor(rawCursor);
+    const owner = await this.prisma.user.findUnique({
+      where: { username: normalizeUsername(username) },
+      select: { id: true },
+    });
+    if (!owner) throw new NotFoundException('User not found');
+
+    const visibleCommunity = {
+      OR: [{ isPublic: true }, { memberships: { some: { userId: viewerId } } }],
+    };
+    const [posts, threads, activities] = await Promise.all([
+      this.prisma.post.findMany({
+        where: {
+          OR: [
+            { wallUserId: owner.id },
+            { authorId: owner.id, communityId: null },
+            { authorId: owner.id, community: visibleCommunity },
+          ],
+          ...olderThan(cursor, RANK.post),
+        },
+        orderBy: newestFirst,
+        take: PAGE_SIZE + 1,
+        include: postInclude,
+      }),
+      this.prisma.thread.findMany({
+        where: {
+          authorId: owner.id,
+          community: visibleCommunity,
+          ...olderThan(cursor, RANK.thread),
+        },
+        orderBy: newestFirst,
+        take: PAGE_SIZE + 1,
+        include: threadInclude,
+      }),
+      this.prisma.libraryActivity.findMany({
+        where: {
+          entry: { userId: owner.id, isPublic: true },
+          ...olderThan(cursor, RANK.activity),
+        },
+        orderBy: newestFirst,
+        take: PAGE_SIZE + 1,
+        include: activityInclude,
+      }),
+    ]);
+
+    const merged = [
+      ...posts.map((post) => ({ ...post, type: 'post' as const })),
+      ...threads.map((thread) => ({ ...thread, type: 'thread' as const })),
+      ...activities.map(toActivity),
+    ].sort(compareFeedItems);
+    const page = merged.slice(0, PAGE_SIZE);
+    const voted = new Map(
+      (
+        await this.threads.withMyVotes(
+          viewerId,
+          page.flatMap((item) => (item.type === 'thread' ? [item] : [])),
+        )
+      ).map((thread) => [thread.id, thread]),
+    );
+    const items: FeedItem[] = page.map((item) =>
+      item.type === 'thread' ? voted.get(item.id)! : item,
+    );
+
+    return { items, nextCursor: nextCursor(merged, page) };
+  }
+
+  async createOnWall(
+    username: string,
+    authorId: number,
+    { content }: CreatePostDto,
+  ): Promise<PostItem> {
+    const owner = await this.prisma.user.findUnique({
+      where: { username: normalizeUsername(username) },
+      select: { id: true, username: true },
+    });
+    if (!owner) throw new NotFoundException('User not found');
+    await requireWallAccess(this.prisma, authorId, owner.id);
+
+    const { html, empty } = sanitizeRichText(content);
+    if (empty) throw new BadRequestException('Post cannot be empty');
+
+    const post = await this.prisma.post.create({
+      data: { wallUserId: owner.id, authorId, content: html },
+      include: postInclude,
+    });
+    await this.notifications.notify([
+      {
+        userId: owner.id,
+        actorId: authorId,
+        type: 'wall_post',
+        message: 'posted on your wall',
+        link: `/users/${owner.username}`,
+      },
+    ]);
+    return { ...post, type: 'post' };
   }
 
   async create(

@@ -130,6 +130,7 @@ export type MembershipRoleScalarFieldEnum = (typeof MembershipRoleScalarFieldEnu
 export const PostScalarFieldEnum = {
   id: 'id',
   communityId: 'communityId',
+  wallUserId: 'wallUserId',
   authorId: 'authorId',
   content: 'content',
   commentCount: 'commentCount',
@@ -255,6 +256,7 @@ export const UserScalarFieldEnum = {
   name: 'name',
   avatarUrl: 'avatarUrl',
   coverUrl: 'coverUrl',
+  backgroundUrl: 'backgroundUrl',
   password: 'password',
   theme: 'theme',
   appearOffline: 'appearOffline',

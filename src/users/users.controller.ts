@@ -97,6 +97,25 @@ export class UsersController {
     return this.usersService.removeCover(req.user.userId);
   }
 
+  @Post('me/background')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(
+    FileInterceptor('file', { limits: { fileSize: IMAGE_MAX_BYTES } }),
+  )
+  uploadBackground(
+    @Req() req,
+    @UploadedFile() file?: Express.Multer.File,
+  ): Promise<Profile> {
+    if (!file) throw new BadRequestException('Choose an image to upload');
+    return this.usersService.updateBackground(req.user.userId, file.buffer);
+  }
+
+  @Delete('me/background')
+  @UseGuards(JwtAuthGuard)
+  removeBackground(@Req() req): Promise<Profile> {
+    return this.usersService.removeBackground(req.user.userId);
+  }
+
   @Get('me/onboarding')
   @UseGuards(JwtAuthGuard)
   onboarding(@Req() req): Promise<Onboarding> {
@@ -121,13 +140,15 @@ export class UsersController {
     @Req() req,
     @Param('username') username: string,
   ): Promise<PublicProfile> {
-    const { appearOffline, ...profile } = await this.usersService.publicProfile(
-      req.user.userId,
-      username,
-    );
+    const { appearOffline, friends, ...profile } =
+      await this.usersService.publicProfile(req.user.userId, username);
     return {
       ...profile,
       online: !appearOffline && this.presence.isOnline(profile.userId),
+      friends: friends.map(({ appearOffline, ...friend }) => ({
+        ...friend,
+        online: !appearOffline && this.presence.isOnline(friend.userId),
+      })),
     };
   }
 }

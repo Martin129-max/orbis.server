@@ -8,6 +8,7 @@ import { CommentableType, Prisma } from '../../prisma/generated/client';
 import { author } from '../common/author';
 import { sanitizeRichText } from '../common/rich-text';
 import { requireMembership } from '../communities/require-membership';
+import { requirePostAccess } from '../posts/wall-access';
 import { MAX_INT } from '../communities/community-member.guard';
 import { VotesService } from '../votes/votes.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
@@ -39,22 +40,24 @@ export class CommentsService {
     private notifications: NotificationsService,
   ) {}
 
-  private async communityOf(type: CommentableType, id: number) {
+  private async homeOf(
+    type: CommentableType,
+    id: number,
+  ): Promise<{ communityId: number | null; wallUserId: number | null }> {
     if (id < 1 || id > MAX_INT) throw new NotFoundException('Not found');
 
     const target =
       type === 'post'
         ? await this.prisma.post.findUnique({
             where: { id },
-            select: { communityId: true },
+            select: { communityId: true, wallUserId: true },
           })
-        : await this.prisma.thread.findUnique({
-            where: { id },
-            select: { communityId: true },
-          });
+        : await this.prisma.thread
+            .findUnique({ where: { id }, select: { communityId: true } })
+            .then((thread) => thread && { ...thread, wallUserId: null });
 
     if (!target) throw new NotFoundException('Not found');
-    return target.communityId;
+    return target;
   }
 
   async list(userId: number, type: string, id: number): Promise<CommentView[]> {
@@ -63,8 +66,10 @@ export class CommentsService {
     }
 
     const commentableType = type as CommentableType;
-    const communityId = await this.communityOf(commentableType, id);
-    await requireMembership(this.prisma, userId, communityId);
+    const { communityId } = await this.homeOf(commentableType, id);
+    if (communityId !== null) {
+      await requireMembership(this.prisma, userId, communityId);
+    }
 
     const comments = await this.prisma.comment.findMany({
       where: { commentableType, commentableId: id },
@@ -88,8 +93,8 @@ export class CommentsService {
     userId: number,
     { type, id, parentId, content }: CreateCommentDto,
   ): Promise<CommentView> {
-    const communityId = await this.communityOf(type, id);
-    await requireMembership(this.prisma, userId, communityId);
+    const home = await this.homeOf(type, id);
+    await requirePostAccess(this.prisma, userId, home);
 
     let parentAuthorId: number | undefined;
     if (parentId !== undefined) {
@@ -110,7 +115,7 @@ export class CommentsService {
     const [comment] = await this.prisma.$transaction([
       this.prisma.comment.create({
         data: {
-          communityId,
+          communityId: home.communityId,
           commentableType: type,
           commentableId: id,
           parentId,
@@ -124,7 +129,7 @@ export class CommentsService {
         : this.prisma.thread.update({ where: { id }, data: increment }),
     ]);
 
-    await this.notifyCommented(userId, type, id, communityId, parentAuthorId);
+    await this.notifyCommented(userId, type, id, home, parentAuthorId);
     return { ...comment, myVote: 0 };
   }
 
@@ -132,7 +137,7 @@ export class CommentsService {
     userId: number,
     type: CommentableType,
     id: number,
-    communityId: number,
+    home: { communityId: number | null; wallUserId: number | null },
     parentAuthorId?: number,
   ) {
     const target =
@@ -145,7 +150,15 @@ export class CommentsService {
             where: { id },
             select: { authorId: true, title: true },
           });
-    const link = `/communities/${communityId}${type === 'thread' ? '?tab=forum' : ''}`;
+    const wall =
+      home.wallUserId !== null &&
+      (await this.prisma.user.findUnique({
+        where: { id: home.wallUserId },
+        select: { username: true },
+      }));
+    const link = wall
+      ? `/users/${wall.username}`
+      : `/communities/${home.communityId}${type === 'thread' ? '?tab=forum' : ''}`;
     const notifications: NewNotification[] = [];
 
     if (parentAuthorId !== undefined) {

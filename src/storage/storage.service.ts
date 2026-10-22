@@ -62,7 +62,7 @@ export class StorageService {
       return await sharp(file)
         .rotate()
         .resize(maxSize, maxSize, { fit: 'inside', withoutEnlargement: true })
-        .webp({ quality: 85 })
+        .webp({ quality: 80, effort: 6, smartSubsample: true })
         .toBuffer();
     } catch {
       throw new BadRequestException('File is not a supported image');

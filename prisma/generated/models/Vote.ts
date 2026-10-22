@@ -195,7 +195,7 @@ export type VoteGroupByOutputType = {
   userId: number
   votableType: $Enums.VotableType
   votableId: number
-  communityId: number
+  communityId: number | null
   value: number
   _count: VoteCountAggregateOutputType | null
   _avg: VoteAvgAggregateOutputType | null
@@ -226,17 +226,17 @@ export type VoteWhereInput = {
   userId?: Prisma.IntFilter<"Vote"> | number
   votableType?: Prisma.EnumVotableTypeFilter<"Vote"> | $Enums.VotableType
   votableId?: Prisma.IntFilter<"Vote"> | number
-  communityId?: Prisma.IntFilter<"Vote"> | number
+  communityId?: Prisma.IntNullableFilter<"Vote"> | number | null
   value?: Prisma.IntFilter<"Vote"> | number
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-  community?: Prisma.XOR<Prisma.CommunityScalarRelationFilter, Prisma.CommunityWhereInput>
+  community?: Prisma.XOR<Prisma.CommunityNullableScalarRelationFilter, Prisma.CommunityWhereInput> | null
 }
 
 export type VoteOrderByWithRelationInput = {
   userId?: Prisma.SortOrder
   votableType?: Prisma.SortOrder
   votableId?: Prisma.SortOrder
-  communityId?: Prisma.SortOrder
+  communityId?: Prisma.SortOrderInput | Prisma.SortOrder
   value?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
   community?: Prisma.CommunityOrderByWithRelationInput
@@ -250,17 +250,17 @@ export type VoteWhereUniqueInput = Prisma.AtLeast<{
   userId?: Prisma.IntFilter<"Vote"> | number
   votableType?: Prisma.EnumVotableTypeFilter<"Vote"> | $Enums.VotableType
   votableId?: Prisma.IntFilter<"Vote"> | number
-  communityId?: Prisma.IntFilter<"Vote"> | number
+  communityId?: Prisma.IntNullableFilter<"Vote"> | number | null
   value?: Prisma.IntFilter<"Vote"> | number
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-  community?: Prisma.XOR<Prisma.CommunityScalarRelationFilter, Prisma.CommunityWhereInput>
+  community?: Prisma.XOR<Prisma.CommunityNullableScalarRelationFilter, Prisma.CommunityWhereInput> | null
 }, "userId_votableType_votableId">
 
 export type VoteOrderByWithAggregationInput = {
   userId?: Prisma.SortOrder
   votableType?: Prisma.SortOrder
   votableId?: Prisma.SortOrder
-  communityId?: Prisma.SortOrder
+  communityId?: Prisma.SortOrderInput | Prisma.SortOrder
   value?: Prisma.SortOrder
   _count?: Prisma.VoteCountOrderByAggregateInput
   _avg?: Prisma.VoteAvgOrderByAggregateInput
@@ -276,7 +276,7 @@ export type VoteScalarWhereWithAggregatesInput = {
   userId?: Prisma.IntWithAggregatesFilter<"Vote"> | number
   votableType?: Prisma.EnumVotableTypeWithAggregatesFilter<"Vote"> | $Enums.VotableType
   votableId?: Prisma.IntWithAggregatesFilter<"Vote"> | number
-  communityId?: Prisma.IntWithAggregatesFilter<"Vote"> | number
+  communityId?: Prisma.IntNullableWithAggregatesFilter<"Vote"> | number | null
   value?: Prisma.IntWithAggregatesFilter<"Vote"> | number
 }
 
@@ -285,14 +285,14 @@ export type VoteCreateInput = {
   votableId: number
   value: number
   user: Prisma.UserCreateNestedOneWithoutVotesInput
-  community: Prisma.CommunityCreateNestedOneWithoutVotesInput
+  community?: Prisma.CommunityCreateNestedOneWithoutVotesInput
 }
 
 export type VoteUncheckedCreateInput = {
   userId: number
   votableType: $Enums.VotableType
   votableId: number
-  communityId: number
+  communityId?: number | null
   value: number
 }
 
@@ -301,14 +301,14 @@ export type VoteUpdateInput = {
   votableId?: Prisma.IntFieldUpdateOperationsInput | number
   value?: Prisma.IntFieldUpdateOperationsInput | number
   user?: Prisma.UserUpdateOneRequiredWithoutVotesNestedInput
-  community?: Prisma.CommunityUpdateOneRequiredWithoutVotesNestedInput
+  community?: Prisma.CommunityUpdateOneWithoutVotesNestedInput
 }
 
 export type VoteUncheckedUpdateInput = {
   userId?: Prisma.IntFieldUpdateOperationsInput | number
   votableType?: Prisma.EnumVotableTypeFieldUpdateOperationsInput | $Enums.VotableType
   votableId?: Prisma.IntFieldUpdateOperationsInput | number
-  communityId?: Prisma.IntFieldUpdateOperationsInput | number
+  communityId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   value?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -316,7 +316,7 @@ export type VoteCreateManyInput = {
   userId: number
   votableType: $Enums.VotableType
   votableId: number
-  communityId: number
+  communityId?: number | null
   value: number
 }
 
@@ -330,7 +330,7 @@ export type VoteUncheckedUpdateManyInput = {
   userId?: Prisma.IntFieldUpdateOperationsInput | number
   votableType?: Prisma.EnumVotableTypeFieldUpdateOperationsInput | $Enums.VotableType
   votableId?: Prisma.IntFieldUpdateOperationsInput | number
-  communityId?: Prisma.IntFieldUpdateOperationsInput | number
+  communityId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   value?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -523,7 +523,7 @@ export type VoteScalarWhereInput = {
   userId?: Prisma.IntFilter<"Vote"> | number
   votableType?: Prisma.EnumVotableTypeFilter<"Vote"> | $Enums.VotableType
   votableId?: Prisma.IntFilter<"Vote"> | number
-  communityId?: Prisma.IntFilter<"Vote"> | number
+  communityId?: Prisma.IntNullableFilter<"Vote"> | number | null
   value?: Prisma.IntFilter<"Vote"> | number
 }
 
@@ -531,13 +531,13 @@ export type VoteCreateWithoutUserInput = {
   votableType: $Enums.VotableType
   votableId: number
   value: number
-  community: Prisma.CommunityCreateNestedOneWithoutVotesInput
+  community?: Prisma.CommunityCreateNestedOneWithoutVotesInput
 }
 
 export type VoteUncheckedCreateWithoutUserInput = {
   votableType: $Enums.VotableType
   votableId: number
-  communityId: number
+  communityId?: number | null
   value: number
 }
 
@@ -598,7 +598,7 @@ export type VoteUncheckedUpdateManyWithoutCommunityInput = {
 export type VoteCreateManyUserInput = {
   votableType: $Enums.VotableType
   votableId: number
-  communityId: number
+  communityId?: number | null
   value: number
 }
 
@@ -606,20 +606,20 @@ export type VoteUpdateWithoutUserInput = {
   votableType?: Prisma.EnumVotableTypeFieldUpdateOperationsInput | $Enums.VotableType
   votableId?: Prisma.IntFieldUpdateOperationsInput | number
   value?: Prisma.IntFieldUpdateOperationsInput | number
-  community?: Prisma.CommunityUpdateOneRequiredWithoutVotesNestedInput
+  community?: Prisma.CommunityUpdateOneWithoutVotesNestedInput
 }
 
 export type VoteUncheckedUpdateWithoutUserInput = {
   votableType?: Prisma.EnumVotableTypeFieldUpdateOperationsInput | $Enums.VotableType
   votableId?: Prisma.IntFieldUpdateOperationsInput | number
-  communityId?: Prisma.IntFieldUpdateOperationsInput | number
+  communityId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   value?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type VoteUncheckedUpdateManyWithoutUserInput = {
   votableType?: Prisma.EnumVotableTypeFieldUpdateOperationsInput | $Enums.VotableType
   votableId?: Prisma.IntFieldUpdateOperationsInput | number
-  communityId?: Prisma.IntFieldUpdateOperationsInput | number
+  communityId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   value?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -632,7 +632,7 @@ export type VoteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   communityId?: boolean
   value?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  community?: boolean | Prisma.CommunityDefaultArgs<ExtArgs>
+  community?: boolean | Prisma.Vote$communityArgs<ExtArgs>
 }, ExtArgs["result"]["vote"]>
 
 export type VoteSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -642,7 +642,7 @@ export type VoteSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   communityId?: boolean
   value?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  community?: boolean | Prisma.CommunityDefaultArgs<ExtArgs>
+  community?: boolean | Prisma.Vote$communityArgs<ExtArgs>
 }, ExtArgs["result"]["vote"]>
 
 export type VoteSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -652,7 +652,7 @@ export type VoteSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   communityId?: boolean
   value?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  community?: boolean | Prisma.CommunityDefaultArgs<ExtArgs>
+  community?: boolean | Prisma.Vote$communityArgs<ExtArgs>
 }, ExtArgs["result"]["vote"]>
 
 export type VoteSelectScalar = {
@@ -666,28 +666,28 @@ export type VoteSelectScalar = {
 export type VoteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"userId" | "votableType" | "votableId" | "communityId" | "value", ExtArgs["result"]["vote"]>
 export type VoteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  community?: boolean | Prisma.CommunityDefaultArgs<ExtArgs>
+  community?: boolean | Prisma.Vote$communityArgs<ExtArgs>
 }
 export type VoteIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  community?: boolean | Prisma.CommunityDefaultArgs<ExtArgs>
+  community?: boolean | Prisma.Vote$communityArgs<ExtArgs>
 }
 export type VoteIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  community?: boolean | Prisma.CommunityDefaultArgs<ExtArgs>
+  community?: boolean | Prisma.Vote$communityArgs<ExtArgs>
 }
 
 export type $VotePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Vote"
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
-    community: Prisma.$CommunityPayload<ExtArgs>
+    community: Prisma.$CommunityPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     userId: number
     votableType: $Enums.VotableType
     votableId: number
-    communityId: number
+    communityId: number | null
     value: number
   }, ExtArgs["result"]["vote"]>
   composites: {}
@@ -1084,7 +1084,7 @@ readonly fields: VoteFieldRefs;
 export interface Prisma__VoteClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  community<T extends Prisma.CommunityDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CommunityDefaultArgs<ExtArgs>>): Prisma.Prisma__CommunityClient<runtime.Types.Result.GetResult<Prisma.$CommunityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  community<T extends Prisma.Vote$communityArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Vote$communityArgs<ExtArgs>>): Prisma.Prisma__CommunityClient<runtime.Types.Result.GetResult<Prisma.$CommunityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1512,6 +1512,25 @@ export type VoteDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Limit how many Votes to delete.
    */
   limit?: number
+}
+
+/**
+ * Vote.community
+ */
+export type Vote$communityArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Community
+   */
+  select?: Prisma.CommunitySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Community
+   */
+  omit?: Prisma.CommunityOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CommunityInclude<ExtArgs> | null
+  where?: Prisma.CommunityWhereInput
 }
 
 /**

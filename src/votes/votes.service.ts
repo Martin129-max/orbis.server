@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { VotableType } from '../../prisma/generated/client';
-import { requireMembership } from '../communities/require-membership';
+import { requirePostAccess } from '../posts/wall-access';
 import { VoteDto } from './dto/vote.dto';
 
 export type VoteResult = { score: number; myVote: number };
@@ -24,23 +24,41 @@ export class VotesService {
     return new Map(votes.map(({ votableId, value }) => [votableId, value]));
   }
 
+  private async homeOf(
+    type: VoteDto['type'],
+    id: number,
+  ): Promise<{ communityId: number | null; wallUserId: number | null }> {
+    if (type === 'thread') {
+      const thread = await this.prisma.thread.findUnique({
+        where: { id },
+        select: { communityId: true },
+      });
+      if (!thread) throw new NotFoundException('Not found');
+      return { communityId: thread.communityId, wallUserId: null };
+    }
+
+    const comment = await this.prisma.comment.findUnique({
+      where: { id },
+      select: { communityId: true, commentableId: true },
+    });
+    if (!comment) throw new NotFoundException('Not found');
+    if (comment.communityId !== null) {
+      return { communityId: comment.communityId, wallUserId: null };
+    }
+
+    const post = await this.prisma.post.findUnique({
+      where: { id: comment.commentableId },
+      select: { wallUserId: true },
+    });
+    return { communityId: null, wallUserId: post?.wallUserId ?? null };
+  }
+
   async vote(
     userId: number,
     { type, id, value }: VoteDto,
   ): Promise<VoteResult> {
-    const target =
-      type === 'thread'
-        ? await this.prisma.thread.findUnique({
-            where: { id },
-            select: { communityId: true },
-          })
-        : await this.prisma.comment.findUnique({
-            where: { id },
-            select: { communityId: true },
-          });
-
-    if (!target) throw new NotFoundException('Not found');
-    await requireMembership(this.prisma, userId, target.communityId);
+    const home = await this.homeOf(type, id);
+    await requirePostAccess(this.prisma, userId, home);
 
     return this.prisma.$transaction(async (tx) => {
       const key = {
@@ -62,7 +80,7 @@ export class VotesService {
             userId,
             votableType: type,
             votableId: id,
-            communityId: target.communityId,
+            communityId: home.communityId,
             value,
           },
           update: { value },

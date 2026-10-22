@@ -5,6 +5,7 @@ enum NotificationType {
   friend_request
   friend_accepted
   report_status
+  wall_post
 }
 
 model Notification {

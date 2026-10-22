@@ -747,7 +747,7 @@ function participants(comments: SeedComment[] = []): UserKey[] {
 }
 
 async function createVotes(
-  communityId: number,
+  communityId: number | null,
   votableType: 'thread' | 'comment',
   votableId: number,
   { up = [], down = [] }: Votes,
@@ -771,7 +771,7 @@ function scoreOf({ up = [], down = [] }: Votes) {
 }
 
 async function createComments(
-  communityId: number,
+  communityId: number | null,
   commentableType: 'post' | 'thread',
   commentableId: number,
   comments: SeedComment[] = [],
@@ -808,6 +808,84 @@ async function createComments(
 }
 
 const userIds = {} as Record<UserKey, number>;
+
+const wallPosts: {
+  wall: UserKey;
+  author: UserKey;
+  ago: number;
+  content: string;
+  comments?: SeedComment[];
+}[] = [
+  {
+    wall: 'admin',
+    author: 'admin',
+    ago: 50,
+    content:
+      '<p>Profiles now have walls! Drop a hello here, friends only. 👋</p>',
+    comments: [
+      { author: 'gojo', ago: 42, content: '<p>First. Obviously.</p>' },
+    ],
+  },
+  {
+    wall: 'admin',
+    author: 'naruto',
+    ago: 35,
+    content:
+      '<p>Hey Admin! Thanks for setting all this up. Ramen on me next time! 🍜</p>',
+    comments: [
+      {
+        author: 'admin',
+        ago: 30,
+        content: '<p>Holding you to that. Extra pork.</p>',
+      },
+    ],
+  },
+  {
+    wall: 'admin',
+    author: 'luffy',
+    ago: 400,
+    content: '<p>Admin!! Join my crew!! We have meat!!</p>',
+  },
+  {
+    wall: 'naruto',
+    author: 'sakura',
+    ago: 180,
+    content:
+      '<p>Don’t forget training tomorrow at 6. <strong>Six.</strong> Not noon.</p>',
+    comments: [
+      { author: 'sasuke', ago: 170, content: '<p>He’ll be late.</p>' },
+      { author: 'naruto', ago: 160, content: '<p>I’ll be early, believe it!</p>' },
+    ],
+  },
+  {
+    wall: 'luffy',
+    author: 'nami',
+    ago: 300,
+    content:
+      '<p>You owe me 200,000 berries. I’m writing it here so everyone sees.</p>',
+    comments: [{ author: 'zoro', ago: 280, content: '<p>Ha.</p>' }],
+  },
+  {
+    wall: 'goku',
+    author: 'vegeta',
+    ago: 720,
+    content: '<p>Tomorrow. Gravity room. Don’t you dare bring snacks.</p>',
+  },
+  {
+    wall: 'tanjiro',
+    author: 'tanjiro',
+    ago: 1200,
+    content:
+      '<p>Nezuko slept in the sunshine-safe corner all afternoon. Peaceful day. 🌸</p>',
+    comments: [{ author: 'nezuko', ago: 1180, content: '<p>Mmm! 🌸</p>' }],
+  },
+  {
+    wall: 'mikasa',
+    author: 'levi',
+    ago: 2000,
+    content: '<p>Your blades were dull at inspection. Fix it.</p>',
+  },
+];
 
 function communityImage(folder: string, name: string) {
   return `/images/${folder}/${name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.webp`;
@@ -892,7 +970,15 @@ async function createNotifications() {
   }[] = [];
 
   const [posts, threads, comments] = await Promise.all([
-    prisma.post.findMany({ select: { id: true, authorId: true } }),
+    prisma.post.findMany({
+      select: {
+        id: true,
+        authorId: true,
+        wallUserId: true,
+        createdAt: true,
+        wallUser: { select: { username: true } },
+      },
+    }),
     prisma.thread.findMany({
       select: { id: true, authorId: true, title: true },
     }),
@@ -908,6 +994,25 @@ async function createNotifications() {
     }),
   ]);
   const postAuthors = new Map(posts.map((post) => [post.id, post.authorId]));
+  const postWalls = new Map(
+    posts.flatMap((post) =>
+      post.wallUser ? [[post.id, post.wallUser.username] as const] : [],
+    ),
+  );
+
+  for (const post of posts) {
+    if (post.wallUser && post.wallUserId !== post.authorId) {
+      notifications.push({
+        userId: post.wallUserId!,
+        actorId: post.authorId,
+        type: 'wall_post',
+        message: 'posted on your wall',
+        link: `/users/${post.wallUser.username}`,
+        createdAt: post.createdAt,
+        readAt: readAt(post.createdAt),
+      });
+    }
+  }
   const threadsById = new Map(threads.map((thread) => [thread.id, thread]));
 
   for (const comment of comments) {
@@ -916,9 +1021,12 @@ async function createNotifications() {
     const ownerId = isThread
       ? thread?.authorId
       : postAuthors.get(comment.commentableId);
+    const wall = isThread ? undefined : postWalls.get(comment.commentableId);
     const base = {
       actorId: comment.authorId,
-      link: `/communities/${comment.communityId}${isThread ? '?tab=forum' : ''}`,
+      link: wall
+        ? `/users/${wall}`
+        : `/communities/${comment.communityId}${isThread ? '?tab=forum' : ''}`,
       createdAt: comment.createdAt,
       readAt: readAt(comment.createdAt),
     };
@@ -1152,6 +1260,7 @@ async function main() {
       name: 'Admin',
       avatarUrl: '/images/avatars/admin.webp',
       coverUrl: '/images/user-covers/admin.webp',
+      backgroundUrl: '/images/user-backgrounds/admin.webp',
       isAdmin: true,
       tourCompletedAt: minutesAgo(days(30)),
       password: await bcrypt.hash('123456', 10),
@@ -1167,6 +1276,7 @@ async function main() {
       name: 'User',
       avatarUrl: '/images/avatars/user.webp',
       coverUrl: '/images/user-covers/user.webp',
+      backgroundUrl: '/images/user-backgrounds/user.webp',
       password: await bcrypt.hash('123456', 10),
       createdAt: minutesAgo(days(2)),
     },
@@ -1181,6 +1291,7 @@ async function main() {
         name,
         avatarUrl: `/images/avatars/${key}.webp`,
         coverUrl: `/images/user-covers/${key}.webp`,
+        backgroundUrl: `/images/user-backgrounds/${key}.webp`,
         tourCompletedAt: minutesAgo(days(30)),
         checklistDismissedAt: minutesAgo(days(29)),
         password: characterPassword,
@@ -1316,6 +1427,29 @@ async function main() {
   });
 
   console.log('🤝 Friendships created:', friendships.length);
+
+  for (const wallPost of wallPosts) {
+    const post = await prisma.post.create({
+      data: {
+        wallUserId: userIds[wallPost.wall],
+        authorId: userIds[wallPost.author],
+        content: wallPost.content,
+        createdAt: minutesAgo(wallPost.ago),
+      },
+    });
+    const commentCount = await createComments(
+      null,
+      'post',
+      post.id,
+      wallPost.comments,
+    );
+    await prisma.post.update({
+      where: { id: post.id },
+      data: { commentCount },
+    });
+  }
+
+  console.log('🧱 Wall posts created:', wallPosts.length);
 
   await prisma.report.createMany({
     data: reports.map(([author, category, status, ago, message, pageUrl]) => ({

@@ -177,13 +177,6 @@ export type BigIntWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedBigIntFilter<$PrismaModel>
 }
 
-export type EnumCommentableTypeFilter<$PrismaModel = never> = {
-  equals?: $Enums.CommentableType | Prisma.EnumCommentableTypeFieldRefInput<$PrismaModel>
-  in?: $Enums.CommentableType[] | Prisma.ListEnumCommentableTypeFieldRefInput<$PrismaModel>
-  notIn?: $Enums.CommentableType[] | Prisma.ListEnumCommentableTypeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumCommentableTypeFilter<$PrismaModel> | $Enums.CommentableType
-}
-
 export type IntNullableFilter<$PrismaModel = never> = {
   equals?: number | Prisma.IntFieldRefInput<$PrismaModel> | null
   in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel> | null
@@ -193,16 +186,6 @@ export type IntNullableFilter<$PrismaModel = never> = {
   gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
   gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
   not?: Prisma.NestedIntNullableFilter<$PrismaModel> | number | null
-}
-
-export type EnumCommentableTypeWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.CommentableType | Prisma.EnumCommentableTypeFieldRefInput<$PrismaModel>
-  in?: $Enums.CommentableType[] | Prisma.ListEnumCommentableTypeFieldRefInput<$PrismaModel>
-  notIn?: $Enums.CommentableType[] | Prisma.ListEnumCommentableTypeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumCommentableTypeWithAggregatesFilter<$PrismaModel> | $Enums.CommentableType
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumCommentableTypeFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumCommentableTypeFilter<$PrismaModel>
 }
 
 export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -219,6 +202,23 @@ export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
   _sum?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _max?: Prisma.NestedIntNullableFilter<$PrismaModel>
+}
+
+export type EnumCommentableTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.CommentableType | Prisma.EnumCommentableTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.CommentableType[] | Prisma.ListEnumCommentableTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CommentableType[] | Prisma.ListEnumCommentableTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCommentableTypeFilter<$PrismaModel> | $Enums.CommentableType
+}
+
+export type EnumCommentableTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.CommentableType | Prisma.EnumCommentableTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.CommentableType[] | Prisma.ListEnumCommentableTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CommentableType[] | Prisma.ListEnumCommentableTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCommentableTypeWithAggregatesFilter<$PrismaModel> | $Enums.CommentableType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumCommentableTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumCommentableTypeFilter<$PrismaModel>
 }
 
 export type EnumVotableTypeFilter<$PrismaModel = never> = {
@@ -558,23 +558,6 @@ export type NestedBigIntWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedBigIntFilter<$PrismaModel>
 }
 
-export type NestedEnumCommentableTypeFilter<$PrismaModel = never> = {
-  equals?: $Enums.CommentableType | Prisma.EnumCommentableTypeFieldRefInput<$PrismaModel>
-  in?: $Enums.CommentableType[] | Prisma.ListEnumCommentableTypeFieldRefInput<$PrismaModel>
-  notIn?: $Enums.CommentableType[] | Prisma.ListEnumCommentableTypeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumCommentableTypeFilter<$PrismaModel> | $Enums.CommentableType
-}
-
-export type NestedEnumCommentableTypeWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.CommentableType | Prisma.EnumCommentableTypeFieldRefInput<$PrismaModel>
-  in?: $Enums.CommentableType[] | Prisma.ListEnumCommentableTypeFieldRefInput<$PrismaModel>
-  notIn?: $Enums.CommentableType[] | Prisma.ListEnumCommentableTypeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumCommentableTypeWithAggregatesFilter<$PrismaModel> | $Enums.CommentableType
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumCommentableTypeFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumCommentableTypeFilter<$PrismaModel>
-}
-
 export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
   equals?: number | Prisma.IntFieldRefInput<$PrismaModel> | null
   in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel> | null
@@ -600,6 +583,23 @@ export type NestedFloatNullableFilter<$PrismaModel = never> = {
   gt?: number | Prisma.FloatFieldRefInput<$PrismaModel>
   gte?: number | Prisma.FloatFieldRefInput<$PrismaModel>
   not?: Prisma.NestedFloatNullableFilter<$PrismaModel> | number | null
+}
+
+export type NestedEnumCommentableTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.CommentableType | Prisma.EnumCommentableTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.CommentableType[] | Prisma.ListEnumCommentableTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CommentableType[] | Prisma.ListEnumCommentableTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCommentableTypeFilter<$PrismaModel> | $Enums.CommentableType
+}
+
+export type NestedEnumCommentableTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.CommentableType | Prisma.EnumCommentableTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.CommentableType[] | Prisma.ListEnumCommentableTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CommentableType[] | Prisma.ListEnumCommentableTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCommentableTypeWithAggregatesFilter<$PrismaModel> | $Enums.CommentableType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumCommentableTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumCommentableTypeFilter<$PrismaModel>
 }
 
 export type NestedEnumVotableTypeFilter<$PrismaModel = never> = {
