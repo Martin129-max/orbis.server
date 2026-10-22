@@ -39,6 +39,8 @@ model LibraryActivity {
   status       LibraryStatus
   progressFrom Int?
   progressTo   Int?
+  commentCount Int           @default(0)
+  likeCount    Int           @default(0)
   createdAt    DateTime      @default(now())
   entry        LibraryEntry  @relation(fields: [entryId], references: [id], onDelete: Cascade)
 

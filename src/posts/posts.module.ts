@@ -7,9 +7,10 @@ import { CommunityMemberGuard } from '../communities/community-member.guard';
 import { PrismaService } from '../prisma.service';
 import { ThreadsModule } from '../threads/threads.module';
 import { NotificationsModule } from '../notifications/notifications.module';
+import { LikesModule } from '../likes/likes.module';
 
 @Module({
-  imports: [ThreadsModule, NotificationsModule],
+  imports: [ThreadsModule, NotificationsModule, LikesModule],
   controllers: [PostsController, FeedController, UserPostsController],
   providers: [PostsService, CommunityMemberGuard, PrismaService],
 })

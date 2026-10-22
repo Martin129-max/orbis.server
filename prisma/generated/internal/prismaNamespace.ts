@@ -393,6 +393,7 @@ export const ModelName = {
   Thread: 'Thread',
   Comment: 'Comment',
   Vote: 'Vote',
+  Like: 'Like',
   Friendship: 'Friendship',
   LibraryEntry: 'LibraryEntry',
   LibraryActivity: 'LibraryActivity',
@@ -414,7 +415,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "community" | "membership" | "railFolder" | "role" | "membershipRole" | "post" | "thread" | "comment" | "vote" | "friendship" | "libraryEntry" | "libraryActivity" | "notification" | "report" | "user"
+    modelProps: "community" | "membership" | "railFolder" | "role" | "membershipRole" | "post" | "thread" | "comment" | "vote" | "like" | "friendship" | "libraryEntry" | "libraryActivity" | "notification" | "report" | "user"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1084,6 +1085,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Like: {
+      payload: Prisma.$LikePayload<ExtArgs>
+      fields: Prisma.LikeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LikeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LikePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LikeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LikePayload>
+        }
+        findFirst: {
+          args: Prisma.LikeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LikePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LikeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LikePayload>
+        }
+        findMany: {
+          args: Prisma.LikeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LikePayload>[]
+        }
+        create: {
+          args: Prisma.LikeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LikePayload>
+        }
+        createMany: {
+          args: Prisma.LikeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.LikeCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LikePayload>[]
+        }
+        delete: {
+          args: Prisma.LikeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LikePayload>
+        }
+        update: {
+          args: Prisma.LikeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LikePayload>
+        }
+        deleteMany: {
+          args: Prisma.LikeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LikeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.LikeUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LikePayload>[]
+        }
+        upsert: {
+          args: Prisma.LikeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LikePayload>
+        }
+        aggregate: {
+          args: Prisma.LikeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLike>
+        }
+        groupBy: {
+          args: Prisma.LikeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LikeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LikeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LikeCountAggregateOutputType> | number
+        }
+      }
+    }
     Friendship: {
       payload: Prisma.$FriendshipPayload<ExtArgs>
       fields: Prisma.FriendshipFieldRefs
@@ -1631,6 +1706,7 @@ export const PostScalarFieldEnum = {
   authorId: 'authorId',
   content: 'content',
   commentCount: 'commentCount',
+  likeCount: 'likeCount',
   createdAt: 'createdAt'
 } as const
 
@@ -1677,6 +1753,16 @@ export const VoteScalarFieldEnum = {
 export type VoteScalarFieldEnum = (typeof VoteScalarFieldEnum)[keyof typeof VoteScalarFieldEnum]
 
 
+export const LikeScalarFieldEnum = {
+  userId: 'userId',
+  likeableType: 'likeableType',
+  likeableId: 'likeableId',
+  createdAt: 'createdAt'
+} as const
+
+export type LikeScalarFieldEnum = (typeof LikeScalarFieldEnum)[keyof typeof LikeScalarFieldEnum]
+
+
 export const FriendshipScalarFieldEnum = {
   requesterId: 'requesterId',
   addresseeId: 'addresseeId',
@@ -1713,6 +1799,8 @@ export const LibraryActivityScalarFieldEnum = {
   status: 'status',
   progressFrom: 'progressFrom',
   progressTo: 'progressTo',
+  commentCount: 'commentCount',
+  likeCount: 'likeCount',
   createdAt: 'createdAt'
 } as const
 
@@ -1884,6 +1972,20 @@ export type EnumVotableTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$Pris
  * Reference to a field of type 'VotableType[]'
  */
 export type ListEnumVotableTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VotableType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'LikeableType'
+ */
+export type EnumLikeableTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LikeableType'>
+    
+
+
+/**
+ * Reference to a field of type 'LikeableType[]'
+ */
+export type ListEnumLikeableTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LikeableType[]'>
     
 
 
@@ -2086,6 +2188,7 @@ export type GlobalOmitConfig = {
   thread?: Prisma.ThreadOmit
   comment?: Prisma.CommentOmit
   vote?: Prisma.VoteOmit
+  like?: Prisma.LikeOmit
   friendship?: Prisma.FriendshipOmit
   libraryEntry?: Prisma.LibraryEntryOmit
   libraryActivity?: Prisma.LibraryActivityOmit

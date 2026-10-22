@@ -60,6 +60,7 @@ export const ModelName = {
   Thread: 'Thread',
   Comment: 'Comment',
   Vote: 'Vote',
+  Like: 'Like',
   Friendship: 'Friendship',
   LibraryEntry: 'LibraryEntry',
   LibraryActivity: 'LibraryActivity',
@@ -148,6 +149,7 @@ export const PostScalarFieldEnum = {
   authorId: 'authorId',
   content: 'content',
   commentCount: 'commentCount',
+  likeCount: 'likeCount',
   createdAt: 'createdAt'
 } as const
 
@@ -194,6 +196,16 @@ export const VoteScalarFieldEnum = {
 export type VoteScalarFieldEnum = (typeof VoteScalarFieldEnum)[keyof typeof VoteScalarFieldEnum]
 
 
+export const LikeScalarFieldEnum = {
+  userId: 'userId',
+  likeableType: 'likeableType',
+  likeableId: 'likeableId',
+  createdAt: 'createdAt'
+} as const
+
+export type LikeScalarFieldEnum = (typeof LikeScalarFieldEnum)[keyof typeof LikeScalarFieldEnum]
+
+
 export const FriendshipScalarFieldEnum = {
   requesterId: 'requesterId',
   addresseeId: 'addresseeId',
@@ -230,6 +242,8 @@ export const LibraryActivityScalarFieldEnum = {
   status: 'status',
   progressFrom: 'progressFrom',
   progressTo: 'progressTo',
+  commentCount: 'commentCount',
+  likeCount: 'likeCount',
   createdAt: 'createdAt'
 } as const
 

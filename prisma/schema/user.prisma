@@ -33,4 +33,5 @@ model User {
   causedNotifications  Notification[] @relation("NotificationActor")
   libraryEntries       LibraryEntry[]
   railFolders          RailFolder[]
+  likes                Like[]
 }

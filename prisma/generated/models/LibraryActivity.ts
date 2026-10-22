@@ -31,6 +31,8 @@ export type LibraryActivityAvgAggregateOutputType = {
   entryId: number | null
   progressFrom: number | null
   progressTo: number | null
+  commentCount: number | null
+  likeCount: number | null
 }
 
 export type LibraryActivitySumAggregateOutputType = {
@@ -38,6 +40,8 @@ export type LibraryActivitySumAggregateOutputType = {
   entryId: number | null
   progressFrom: number | null
   progressTo: number | null
+  commentCount: number | null
+  likeCount: number | null
 }
 
 export type LibraryActivityMinAggregateOutputType = {
@@ -46,6 +50,8 @@ export type LibraryActivityMinAggregateOutputType = {
   status: $Enums.LibraryStatus | null
   progressFrom: number | null
   progressTo: number | null
+  commentCount: number | null
+  likeCount: number | null
   createdAt: Date | null
 }
 
@@ -55,6 +61,8 @@ export type LibraryActivityMaxAggregateOutputType = {
   status: $Enums.LibraryStatus | null
   progressFrom: number | null
   progressTo: number | null
+  commentCount: number | null
+  likeCount: number | null
   createdAt: Date | null
 }
 
@@ -64,6 +72,8 @@ export type LibraryActivityCountAggregateOutputType = {
   status: number
   progressFrom: number
   progressTo: number
+  commentCount: number
+  likeCount: number
   createdAt: number
   _all: number
 }
@@ -74,6 +84,8 @@ export type LibraryActivityAvgAggregateInputType = {
   entryId?: true
   progressFrom?: true
   progressTo?: true
+  commentCount?: true
+  likeCount?: true
 }
 
 export type LibraryActivitySumAggregateInputType = {
@@ -81,6 +93,8 @@ export type LibraryActivitySumAggregateInputType = {
   entryId?: true
   progressFrom?: true
   progressTo?: true
+  commentCount?: true
+  likeCount?: true
 }
 
 export type LibraryActivityMinAggregateInputType = {
@@ -89,6 +103,8 @@ export type LibraryActivityMinAggregateInputType = {
   status?: true
   progressFrom?: true
   progressTo?: true
+  commentCount?: true
+  likeCount?: true
   createdAt?: true
 }
 
@@ -98,6 +114,8 @@ export type LibraryActivityMaxAggregateInputType = {
   status?: true
   progressFrom?: true
   progressTo?: true
+  commentCount?: true
+  likeCount?: true
   createdAt?: true
 }
 
@@ -107,6 +125,8 @@ export type LibraryActivityCountAggregateInputType = {
   status?: true
   progressFrom?: true
   progressTo?: true
+  commentCount?: true
+  likeCount?: true
   createdAt?: true
   _all?: true
 }
@@ -203,6 +223,8 @@ export type LibraryActivityGroupByOutputType = {
   status: $Enums.LibraryStatus
   progressFrom: number | null
   progressTo: number | null
+  commentCount: number
+  likeCount: number
   createdAt: Date
   _count: LibraryActivityCountAggregateOutputType | null
   _avg: LibraryActivityAvgAggregateOutputType | null
@@ -235,6 +257,8 @@ export type LibraryActivityWhereInput = {
   status?: Prisma.EnumLibraryStatusFilter<"LibraryActivity"> | $Enums.LibraryStatus
   progressFrom?: Prisma.IntNullableFilter<"LibraryActivity"> | number | null
   progressTo?: Prisma.IntNullableFilter<"LibraryActivity"> | number | null
+  commentCount?: Prisma.IntFilter<"LibraryActivity"> | number
+  likeCount?: Prisma.IntFilter<"LibraryActivity"> | number
   createdAt?: Prisma.DateTimeFilter<"LibraryActivity"> | Date | string
   entry?: Prisma.XOR<Prisma.LibraryEntryScalarRelationFilter, Prisma.LibraryEntryWhereInput>
 }
@@ -245,6 +269,8 @@ export type LibraryActivityOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   progressFrom?: Prisma.SortOrderInput | Prisma.SortOrder
   progressTo?: Prisma.SortOrderInput | Prisma.SortOrder
+  commentCount?: Prisma.SortOrder
+  likeCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   entry?: Prisma.LibraryEntryOrderByWithRelationInput
 }
@@ -258,6 +284,8 @@ export type LibraryActivityWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.EnumLibraryStatusFilter<"LibraryActivity"> | $Enums.LibraryStatus
   progressFrom?: Prisma.IntNullableFilter<"LibraryActivity"> | number | null
   progressTo?: Prisma.IntNullableFilter<"LibraryActivity"> | number | null
+  commentCount?: Prisma.IntFilter<"LibraryActivity"> | number
+  likeCount?: Prisma.IntFilter<"LibraryActivity"> | number
   createdAt?: Prisma.DateTimeFilter<"LibraryActivity"> | Date | string
   entry?: Prisma.XOR<Prisma.LibraryEntryScalarRelationFilter, Prisma.LibraryEntryWhereInput>
 }, "id">
@@ -268,6 +296,8 @@ export type LibraryActivityOrderByWithAggregationInput = {
   status?: Prisma.SortOrder
   progressFrom?: Prisma.SortOrderInput | Prisma.SortOrder
   progressTo?: Prisma.SortOrderInput | Prisma.SortOrder
+  commentCount?: Prisma.SortOrder
+  likeCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.LibraryActivityCountOrderByAggregateInput
   _avg?: Prisma.LibraryActivityAvgOrderByAggregateInput
@@ -285,6 +315,8 @@ export type LibraryActivityScalarWhereWithAggregatesInput = {
   status?: Prisma.EnumLibraryStatusWithAggregatesFilter<"LibraryActivity"> | $Enums.LibraryStatus
   progressFrom?: Prisma.IntNullableWithAggregatesFilter<"LibraryActivity"> | number | null
   progressTo?: Prisma.IntNullableWithAggregatesFilter<"LibraryActivity"> | number | null
+  commentCount?: Prisma.IntWithAggregatesFilter<"LibraryActivity"> | number
+  likeCount?: Prisma.IntWithAggregatesFilter<"LibraryActivity"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"LibraryActivity"> | Date | string
 }
 
@@ -292,6 +324,8 @@ export type LibraryActivityCreateInput = {
   status: $Enums.LibraryStatus
   progressFrom?: number | null
   progressTo?: number | null
+  commentCount?: number
+  likeCount?: number
   createdAt?: Date | string
   entry: Prisma.LibraryEntryCreateNestedOneWithoutActivitiesInput
 }
@@ -302,6 +336,8 @@ export type LibraryActivityUncheckedCreateInput = {
   status: $Enums.LibraryStatus
   progressFrom?: number | null
   progressTo?: number | null
+  commentCount?: number
+  likeCount?: number
   createdAt?: Date | string
 }
 
@@ -309,6 +345,8 @@ export type LibraryActivityUpdateInput = {
   status?: Prisma.EnumLibraryStatusFieldUpdateOperationsInput | $Enums.LibraryStatus
   progressFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   progressTo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  commentCount?: Prisma.IntFieldUpdateOperationsInput | number
+  likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   entry?: Prisma.LibraryEntryUpdateOneRequiredWithoutActivitiesNestedInput
 }
@@ -319,6 +357,8 @@ export type LibraryActivityUncheckedUpdateInput = {
   status?: Prisma.EnumLibraryStatusFieldUpdateOperationsInput | $Enums.LibraryStatus
   progressFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   progressTo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  commentCount?: Prisma.IntFieldUpdateOperationsInput | number
+  likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -328,6 +368,8 @@ export type LibraryActivityCreateManyInput = {
   status: $Enums.LibraryStatus
   progressFrom?: number | null
   progressTo?: number | null
+  commentCount?: number
+  likeCount?: number
   createdAt?: Date | string
 }
 
@@ -335,6 +377,8 @@ export type LibraryActivityUpdateManyMutationInput = {
   status?: Prisma.EnumLibraryStatusFieldUpdateOperationsInput | $Enums.LibraryStatus
   progressFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   progressTo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  commentCount?: Prisma.IntFieldUpdateOperationsInput | number
+  likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -344,6 +388,8 @@ export type LibraryActivityUncheckedUpdateManyInput = {
   status?: Prisma.EnumLibraryStatusFieldUpdateOperationsInput | $Enums.LibraryStatus
   progressFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   progressTo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  commentCount?: Prisma.IntFieldUpdateOperationsInput | number
+  likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -363,6 +409,8 @@ export type LibraryActivityCountOrderByAggregateInput = {
   status?: Prisma.SortOrder
   progressFrom?: Prisma.SortOrder
   progressTo?: Prisma.SortOrder
+  commentCount?: Prisma.SortOrder
+  likeCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -371,6 +419,8 @@ export type LibraryActivityAvgOrderByAggregateInput = {
   entryId?: Prisma.SortOrder
   progressFrom?: Prisma.SortOrder
   progressTo?: Prisma.SortOrder
+  commentCount?: Prisma.SortOrder
+  likeCount?: Prisma.SortOrder
 }
 
 export type LibraryActivityMaxOrderByAggregateInput = {
@@ -379,6 +429,8 @@ export type LibraryActivityMaxOrderByAggregateInput = {
   status?: Prisma.SortOrder
   progressFrom?: Prisma.SortOrder
   progressTo?: Prisma.SortOrder
+  commentCount?: Prisma.SortOrder
+  likeCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -388,6 +440,8 @@ export type LibraryActivityMinOrderByAggregateInput = {
   status?: Prisma.SortOrder
   progressFrom?: Prisma.SortOrder
   progressTo?: Prisma.SortOrder
+  commentCount?: Prisma.SortOrder
+  likeCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -396,6 +450,8 @@ export type LibraryActivitySumOrderByAggregateInput = {
   entryId?: Prisma.SortOrder
   progressFrom?: Prisma.SortOrder
   progressTo?: Prisma.SortOrder
+  commentCount?: Prisma.SortOrder
+  likeCount?: Prisma.SortOrder
 }
 
 export type LibraryActivityCreateNestedManyWithoutEntryInput = {
@@ -444,6 +500,8 @@ export type LibraryActivityCreateWithoutEntryInput = {
   status: $Enums.LibraryStatus
   progressFrom?: number | null
   progressTo?: number | null
+  commentCount?: number
+  likeCount?: number
   createdAt?: Date | string
 }
 
@@ -452,6 +510,8 @@ export type LibraryActivityUncheckedCreateWithoutEntryInput = {
   status: $Enums.LibraryStatus
   progressFrom?: number | null
   progressTo?: number | null
+  commentCount?: number
+  likeCount?: number
   createdAt?: Date | string
 }
 
@@ -490,6 +550,8 @@ export type LibraryActivityScalarWhereInput = {
   status?: Prisma.EnumLibraryStatusFilter<"LibraryActivity"> | $Enums.LibraryStatus
   progressFrom?: Prisma.IntNullableFilter<"LibraryActivity"> | number | null
   progressTo?: Prisma.IntNullableFilter<"LibraryActivity"> | number | null
+  commentCount?: Prisma.IntFilter<"LibraryActivity"> | number
+  likeCount?: Prisma.IntFilter<"LibraryActivity"> | number
   createdAt?: Prisma.DateTimeFilter<"LibraryActivity"> | Date | string
 }
 
@@ -498,6 +560,8 @@ export type LibraryActivityCreateManyEntryInput = {
   status: $Enums.LibraryStatus
   progressFrom?: number | null
   progressTo?: number | null
+  commentCount?: number
+  likeCount?: number
   createdAt?: Date | string
 }
 
@@ -505,6 +569,8 @@ export type LibraryActivityUpdateWithoutEntryInput = {
   status?: Prisma.EnumLibraryStatusFieldUpdateOperationsInput | $Enums.LibraryStatus
   progressFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   progressTo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  commentCount?: Prisma.IntFieldUpdateOperationsInput | number
+  likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -513,6 +579,8 @@ export type LibraryActivityUncheckedUpdateWithoutEntryInput = {
   status?: Prisma.EnumLibraryStatusFieldUpdateOperationsInput | $Enums.LibraryStatus
   progressFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   progressTo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  commentCount?: Prisma.IntFieldUpdateOperationsInput | number
+  likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -521,6 +589,8 @@ export type LibraryActivityUncheckedUpdateManyWithoutEntryInput = {
   status?: Prisma.EnumLibraryStatusFieldUpdateOperationsInput | $Enums.LibraryStatus
   progressFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   progressTo?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  commentCount?: Prisma.IntFieldUpdateOperationsInput | number
+  likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -532,6 +602,8 @@ export type LibraryActivitySelect<ExtArgs extends runtime.Types.Extensions.Inter
   status?: boolean
   progressFrom?: boolean
   progressTo?: boolean
+  commentCount?: boolean
+  likeCount?: boolean
   createdAt?: boolean
   entry?: boolean | Prisma.LibraryEntryDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["libraryActivity"]>
@@ -542,6 +614,8 @@ export type LibraryActivitySelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   status?: boolean
   progressFrom?: boolean
   progressTo?: boolean
+  commentCount?: boolean
+  likeCount?: boolean
   createdAt?: boolean
   entry?: boolean | Prisma.LibraryEntryDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["libraryActivity"]>
@@ -552,6 +626,8 @@ export type LibraryActivitySelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   status?: boolean
   progressFrom?: boolean
   progressTo?: boolean
+  commentCount?: boolean
+  likeCount?: boolean
   createdAt?: boolean
   entry?: boolean | Prisma.LibraryEntryDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["libraryActivity"]>
@@ -562,10 +638,12 @@ export type LibraryActivitySelectScalar = {
   status?: boolean
   progressFrom?: boolean
   progressTo?: boolean
+  commentCount?: boolean
+  likeCount?: boolean
   createdAt?: boolean
 }
 
-export type LibraryActivityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "entryId" | "status" | "progressFrom" | "progressTo" | "createdAt", ExtArgs["result"]["libraryActivity"]>
+export type LibraryActivityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "entryId" | "status" | "progressFrom" | "progressTo" | "commentCount" | "likeCount" | "createdAt", ExtArgs["result"]["libraryActivity"]>
 export type LibraryActivityInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   entry?: boolean | Prisma.LibraryEntryDefaultArgs<ExtArgs>
 }
@@ -587,6 +665,8 @@ export type $LibraryActivityPayload<ExtArgs extends runtime.Types.Extensions.Int
     status: $Enums.LibraryStatus
     progressFrom: number | null
     progressTo: number | null
+    commentCount: number
+    likeCount: number
     createdAt: Date
   }, ExtArgs["result"]["libraryActivity"]>
   composites: {}
@@ -1017,6 +1097,8 @@ export interface LibraryActivityFieldRefs {
   readonly status: Prisma.FieldRef<"LibraryActivity", 'LibraryStatus'>
   readonly progressFrom: Prisma.FieldRef<"LibraryActivity", 'Int'>
   readonly progressTo: Prisma.FieldRef<"LibraryActivity", 'Int'>
+  readonly commentCount: Prisma.FieldRef<"LibraryActivity", 'Int'>
+  readonly likeCount: Prisma.FieldRef<"LibraryActivity", 'Int'>
   readonly createdAt: Prisma.FieldRef<"LibraryActivity", 'DateTime'>
 }
     

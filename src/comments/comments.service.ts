@@ -8,7 +8,11 @@ import { CommentableType, Prisma } from '../../prisma/generated/client';
 import { author } from '../common/author';
 import { sanitizeRichText } from '../common/rich-text';
 import { requireMembership } from '../communities/require-membership';
-import { requirePostAccess } from '../posts/wall-access';
+import {
+  EngagementTarget,
+  requireTargetAccess,
+  targetOf,
+} from '../posts/wall-access';
 import { MAX_INT } from '../communities/community-member.guard';
 import { VotesService } from '../votes/votes.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
@@ -40,33 +44,18 @@ export class CommentsService {
     private notifications: NotificationsService,
   ) {}
 
-  private async homeOf(
-    type: CommentableType,
-    id: number,
-  ): Promise<{ communityId: number | null; wallUserId: number | null }> {
-    if (id < 1 || id > MAX_INT) throw new NotFoundException('Not found');
-
-    const target =
-      type === 'post'
-        ? await this.prisma.post.findUnique({
-            where: { id },
-            select: { communityId: true, wallUserId: true },
-          })
-        : await this.prisma.thread
-            .findUnique({ where: { id }, select: { communityId: true } })
-            .then((thread) => thread && { ...thread, wallUserId: null });
-
-    if (!target) throw new NotFoundException('Not found');
-    return target;
-  }
-
   async list(userId: number, type: string, id: number): Promise<CommentView[]> {
     if (!Object.values(CommentableType).includes(type as CommentableType)) {
-      throw new BadRequestException('type must be post or thread');
+      throw new BadRequestException('type must be post, thread, or activity');
     }
 
     const commentableType = type as CommentableType;
-    const { communityId } = await this.homeOf(commentableType, id);
+    const { communityId } = await targetOf(
+      this.prisma,
+      userId,
+      commentableType,
+      id,
+    );
     if (communityId !== null) {
       await requireMembership(this.prisma, userId, communityId);
     }
@@ -93,8 +82,8 @@ export class CommentsService {
     userId: number,
     { type, id, parentId, content }: CreateCommentDto,
   ): Promise<CommentView> {
-    const home = await this.homeOf(type, id);
-    await requirePostAccess(this.prisma, userId, home);
+    const home = await targetOf(this.prisma, userId, type, id);
+    await requireTargetAccess(this.prisma, userId, home);
 
     let parentAuthorId: number | undefined;
     if (parentId !== undefined) {
@@ -126,39 +115,42 @@ export class CommentsService {
       }),
       type === 'post'
         ? this.prisma.post.update({ where: { id }, data: increment })
-        : this.prisma.thread.update({ where: { id }, data: increment }),
+        : type === 'thread'
+          ? this.prisma.thread.update({ where: { id }, data: increment })
+          : this.prisma.libraryActivity.update({
+              where: { id },
+              data: increment,
+            }),
     ]);
 
-    await this.notifyCommented(userId, type, id, home, parentAuthorId);
+    await this.notifyCommented(userId, home, parentAuthorId);
     return { ...comment, myVote: 0 };
   }
 
   private async notifyCommented(
     userId: number,
-    type: CommentableType,
-    id: number,
-    home: { communityId: number | null; wallUserId: number | null },
+    target: EngagementTarget,
     parentAuthorId?: number,
   ) {
-    const target =
-      type === 'post'
-        ? await this.prisma.post.findUnique({
+    const { type, id } = target;
+    const thread =
+      type === 'thread'
+        ? await this.prisma.thread.findUnique({
             where: { id },
-            select: { authorId: true },
+            select: { title: true },
           })
-        : await this.prisma.thread.findUnique({
-            where: { id },
-            select: { authorId: true, title: true },
-          });
-    const wall =
-      home.wallUserId !== null &&
+        : null;
+    const profileOwner =
+      target.wallUserId ?? (type === 'activity' ? target.ownerId : null);
+    const profile =
+      profileOwner !== null &&
       (await this.prisma.user.findUnique({
-        where: { id: home.wallUserId },
+        where: { id: profileOwner },
         select: { username: true },
       }));
-    const link = wall
-      ? `/users/${wall.username}`
-      : `/communities/${home.communityId}${type === 'thread' ? '?tab=forum' : ''}`;
+    const link = profile
+      ? `/users/${profile.username}`
+      : `/communities/${target.communityId}${type === 'thread' ? '?tab=forum' : ''}`;
     const notifications: NewNotification[] = [];
 
     if (parentAuthorId !== undefined) {
@@ -170,14 +162,15 @@ export class CommentsService {
         link,
       });
     }
-    if (target && target.authorId !== parentAuthorId) {
+    if (target.ownerId !== parentAuthorId) {
       notifications.push({
-        userId: target.authorId,
+        userId: target.ownerId,
         actorId: userId,
-        type: type === 'post' ? 'post_comment' : 'thread_comment',
-        message:
-          'title' in target
-            ? `commented on your thread “${target.title}”`
+        type: type === 'thread' ? 'thread_comment' : 'post_comment',
+        message: thread
+          ? `commented on your thread “${thread.title}”`
+          : type === 'activity'
+            ? 'commented on your library update'
             : 'commented on your post',
         link,
       });

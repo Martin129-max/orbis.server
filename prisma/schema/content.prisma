@@ -1,6 +1,12 @@
 enum CommentableType {
   post
   thread
+  activity
+}
+
+enum LikeableType {
+  post
+  activity
 }
 
 enum VotableType {
@@ -15,6 +21,7 @@ model Post {
   authorId     Int
   content      String
   commentCount Int        @default(0)
+  likeCount    Int        @default(0)
   createdAt    DateTime   @default(now())
   community    Community? @relation(fields: [communityId], references: [id], onDelete: Cascade)
   wallUser     User?      @relation("WallPosts", fields: [wallUserId], references: [id], onDelete: Cascade)
@@ -70,4 +77,15 @@ model Vote {
 
   @@id([userId, votableType, votableId])
   @@index([votableType, votableId])
+}
+
+model Like {
+  userId       Int
+  likeableType LikeableType
+  likeableId   Int
+  createdAt    DateTime     @default(now())
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, likeableType, likeableId])
+  @@index([likeableType, likeableId])
 }

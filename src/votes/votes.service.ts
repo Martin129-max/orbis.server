@@ -1,7 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { VotableType } from '../../prisma/generated/client';
-import { requirePostAccess } from '../posts/wall-access';
+import {
+  EngagementTarget,
+  requirePostAccess,
+  requireTargetAccess,
+  targetOf,
+} from '../posts/wall-access';
 import { VoteDto } from './dto/vote.dto';
 
 export type VoteResult = { score: number; myVote: number };
@@ -25,9 +30,12 @@ export class VotesService {
   }
 
   private async homeOf(
+    userId: number,
     type: VoteDto['type'],
     id: number,
-  ): Promise<{ communityId: number | null; wallUserId: number | null }> {
+  ): Promise<
+    EngagementTarget | { communityId: number | null; wallUserId: number | null }
+  > {
     if (type === 'thread') {
       const thread = await this.prisma.thread.findUnique({
         where: { id },
@@ -39,26 +47,28 @@ export class VotesService {
 
     const comment = await this.prisma.comment.findUnique({
       where: { id },
-      select: { communityId: true, commentableId: true },
+      select: { communityId: true, commentableType: true, commentableId: true },
     });
     if (!comment) throw new NotFoundException('Not found');
     if (comment.communityId !== null) {
       return { communityId: comment.communityId, wallUserId: null };
     }
 
-    const post = await this.prisma.post.findUnique({
-      where: { id: comment.commentableId },
-      select: { wallUserId: true },
-    });
-    return { communityId: null, wallUserId: post?.wallUserId ?? null };
+    return targetOf(
+      this.prisma,
+      userId,
+      comment.commentableType,
+      comment.commentableId,
+    );
   }
 
   async vote(
     userId: number,
     { type, id, value }: VoteDto,
   ): Promise<VoteResult> {
-    const home = await this.homeOf(type, id);
-    await requirePostAccess(this.prisma, userId, home);
+    const home = await this.homeOf(userId, type, id);
+    if ('type' in home) await requireTargetAccess(this.prisma, userId, home);
+    else await requirePostAccess(this.prisma, userId, home);
 
     return this.prisma.$transaction(async (tx) => {
       const key = {

@@ -11,10 +11,19 @@
 
 export const CommentableType = {
   post: 'post',
-  thread: 'thread'
+  thread: 'thread',
+  activity: 'activity'
 } as const
 
 export type CommentableType = (typeof CommentableType)[keyof typeof CommentableType]
+
+
+export const LikeableType = {
+  post: 'post',
+  activity: 'activity'
+} as const
+
+export type LikeableType = (typeof LikeableType)[keyof typeof LikeableType]
 
 
 export const VotableType = {

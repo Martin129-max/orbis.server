@@ -63,6 +63,11 @@ export type Comment = Prisma.CommentModel
  */
 export type Vote = Prisma.VoteModel
 /**
+ * Model Like
+ * 
+ */
+export type Like = Prisma.LikeModel
+/**
  * Model Friendship
  * 
  */

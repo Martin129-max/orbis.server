@@ -238,6 +238,23 @@ export type EnumVotableTypeWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumVotableTypeFilter<$PrismaModel>
 }
 
+export type EnumLikeableTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.LikeableType | Prisma.EnumLikeableTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.LikeableType[] | Prisma.ListEnumLikeableTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.LikeableType[] | Prisma.ListEnumLikeableTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumLikeableTypeFilter<$PrismaModel> | $Enums.LikeableType
+}
+
+export type EnumLikeableTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.LikeableType | Prisma.EnumLikeableTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.LikeableType[] | Prisma.ListEnumLikeableTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.LikeableType[] | Prisma.ListEnumLikeableTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumLikeableTypeWithAggregatesFilter<$PrismaModel> | $Enums.LikeableType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumLikeableTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumLikeableTypeFilter<$PrismaModel>
+}
+
 export type EnumFriendshipStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.FriendshipStatus | Prisma.EnumFriendshipStatusFieldRefInput<$PrismaModel>
   in?: $Enums.FriendshipStatus[] | Prisma.ListEnumFriendshipStatusFieldRefInput<$PrismaModel>
@@ -617,6 +634,23 @@ export type NestedEnumVotableTypeWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumVotableTypeFilter<$PrismaModel>
   _max?: Prisma.NestedEnumVotableTypeFilter<$PrismaModel>
+}
+
+export type NestedEnumLikeableTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.LikeableType | Prisma.EnumLikeableTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.LikeableType[] | Prisma.ListEnumLikeableTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.LikeableType[] | Prisma.ListEnumLikeableTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumLikeableTypeFilter<$PrismaModel> | $Enums.LikeableType
+}
+
+export type NestedEnumLikeableTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.LikeableType | Prisma.EnumLikeableTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.LikeableType[] | Prisma.ListEnumLikeableTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.LikeableType[] | Prisma.ListEnumLikeableTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumLikeableTypeWithAggregatesFilter<$PrismaModel> | $Enums.LikeableType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumLikeableTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumLikeableTypeFilter<$PrismaModel>
 }
 
 export type NestedEnumFriendshipStatusFilter<$PrismaModel = never> = {

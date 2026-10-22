@@ -772,7 +772,7 @@ function scoreOf({ up = [], down = [] }: Votes) {
 
 async function createComments(
   communityId: number | null,
-  commentableType: 'post' | 'thread',
+  commentableType: 'post' | 'thread' | 'activity',
   commentableId: number,
   comments: SeedComment[] = [],
   parentId?: number,
@@ -854,7 +854,11 @@ const wallPosts: {
       '<p>Don’t forget training tomorrow at 6. <strong>Six.</strong> Not noon.</p>',
     comments: [
       { author: 'sasuke', ago: 170, content: '<p>He’ll be late.</p>' },
-      { author: 'naruto', ago: 160, content: '<p>I’ll be early, believe it!</p>' },
+      {
+        author: 'naruto',
+        ago: 160,
+        content: '<p>I’ll be early, believe it!</p>',
+      },
     ],
   },
   {
@@ -969,7 +973,7 @@ async function createNotifications() {
     readAt: Date | null;
   }[] = [];
 
-  const [posts, threads, comments] = await Promise.all([
+  const [posts, threads, comments, activities] = await Promise.all([
     prisma.post.findMany({
       select: {
         id: true,
@@ -992,7 +996,16 @@ async function createNotifications() {
         parent: { select: { authorId: true } },
       },
     }),
+    prisma.libraryActivity.findMany({
+      select: {
+        id: true,
+        entry: { select: { user: { select: { id: true, username: true } } } },
+      },
+    }),
   ]);
+  const activityOwners = new Map(
+    activities.map((activity) => [activity.id, activity.entry.user]),
+  );
   const postAuthors = new Map(posts.map((post) => [post.id, post.authorId]));
   const postWalls = new Map(
     posts.flatMap((post) =>
@@ -1017,11 +1030,21 @@ async function createNotifications() {
 
   for (const comment of comments) {
     const isThread = comment.commentableType === 'thread';
+    const isActivity = comment.commentableType === 'activity';
     const thread = threadsById.get(comment.commentableId);
+    const activityOwner = isActivity
+      ? activityOwners.get(comment.commentableId)
+      : undefined;
     const ownerId = isThread
       ? thread?.authorId
-      : postAuthors.get(comment.commentableId);
-    const wall = isThread ? undefined : postWalls.get(comment.commentableId);
+      : isActivity
+        ? activityOwner?.id
+        : postAuthors.get(comment.commentableId);
+    const wall = isThread
+      ? undefined
+      : isActivity
+        ? activityOwner?.username
+        : postWalls.get(comment.commentableId);
     const base = {
       actorId: comment.authorId,
       link: wall
@@ -1050,7 +1073,9 @@ async function createNotifications() {
         type: isThread ? 'thread_comment' : 'post_comment',
         message: isThread
           ? `commented on your thread “${thread!.title}”`
-          : 'commented on your post',
+          : isActivity
+            ? 'commented on your library update'
+            : 'commented on your post',
       });
     }
   }
@@ -1233,6 +1258,234 @@ const library: [UserKey, keyof typeof media, LibraryStatus, boolean, number][] =
     ['zoro', 'persona', 'current', false, days(2)],
   ];
 
+const activityComments: {
+  owner: UserKey;
+  media: keyof typeof media;
+  comments: SeedComment[];
+}[] = [
+  {
+    owner: 'anya',
+    media: 'spyFamily',
+    comments: [
+      {
+        author: 'naruto',
+        ago: 60,
+        content: '<p>Spies, peanuts, and a dog. Classic Anya.</p>',
+      },
+      {
+        author: 'nami',
+        ago: 50,
+        content: '<p>Bond is the real MVP of that show.</p>',
+        replies: [
+          {
+            author: 'anya',
+            ago: 40,
+            content: '<p>Anya agrees. Bond is best boy. Waku waku!</p>',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    owner: 'admin',
+    media: 'frieren',
+    comments: [
+      {
+        author: 'gojo',
+        ago: 150,
+        content: '<p>Took you long enough. Fern supremacy.</p>',
+      },
+      {
+        author: 'naruto',
+        ago: 120,
+        content: '<p>Is it sad? Sakura said it’s sad.</p>',
+        replies: [
+          {
+            author: 'admin',
+            ago: 110,
+            content: '<p>Quietly devastating. In a good way.</p>',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    owner: 'luffy',
+    media: 'onePiece',
+    comments: [
+      {
+        author: 'zoro',
+        ago: hours(7),
+        content: '<p>You’re reading about yourself?</p>',
+      },
+      {
+        author: 'nami',
+        ago: hours(6),
+        content: '<p>Skip to the parts where I’m right. So, all of them.</p>',
+      },
+    ],
+  },
+  {
+    owner: 'gojo',
+    media: 'jujutsu',
+    comments: [
+      {
+        author: 'itadori',
+        ago: hours(18),
+        content: '<p>Sensei, you’re literally in this.</p>',
+        replies: [
+          {
+            author: 'gojo',
+            ago: hours(17),
+            content: '<p>And I’m the best part. Obviously.</p>',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    owner: 'spike',
+    media: 'bebop',
+    comments: [
+      {
+        author: 'goku',
+        ago: hours(12),
+        content: '<p>Is there a lot of fighting? I’m in.</p>',
+      },
+    ],
+  },
+];
+
+async function createActivityComments() {
+  for (const { owner, media: key, comments } of activityComments) {
+    const [mediaType, sourceId] = media[key];
+    const activity = await prisma.libraryActivity.findFirst({
+      where: { entry: { userId: userIds[owner], mediaType, sourceId } },
+      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+      select: { id: true },
+    });
+    if (!activity) throw new Error(`No library activity for ${owner}/${key}`);
+
+    const commentCount = await createComments(
+      null,
+      'activity',
+      activity.id,
+      comments,
+    );
+    await prisma.libraryActivity.update({
+      where: { id: activity.id },
+      data: { commentCount },
+    });
+  }
+}
+
+function seededPick(itemId: number, userId: number, percent: number) {
+  return (itemId * 31 + userId * 17) % 100 < percent;
+}
+
+async function createLikes(): Promise<number> {
+  const [posts, activities, memberships, friendships] = await Promise.all([
+    prisma.post.findMany({
+      select: {
+        id: true,
+        authorId: true,
+        communityId: true,
+        wallUserId: true,
+        createdAt: true,
+      },
+    }),
+    prisma.libraryActivity.findMany({
+      where: { entry: { isPublic: true } },
+      select: {
+        id: true,
+        createdAt: true,
+        entry: { select: { userId: true } },
+      },
+    }),
+    prisma.membership.findMany({
+      select: { userId: true, communityId: true },
+    }),
+    prisma.friendship.findMany({
+      where: { status: 'accepted' },
+      select: { requesterId: true, addresseeId: true },
+    }),
+  ]);
+
+  const membersOf = new Map<number, number[]>();
+  for (const { userId, communityId } of memberships) {
+    membersOf.set(communityId, [...(membersOf.get(communityId) ?? []), userId]);
+  }
+  const friendsOf = (userId: number) =>
+    friendships.flatMap(({ requesterId, addresseeId }) =>
+      requesterId === userId
+        ? [addresseeId]
+        : addresseeId === userId
+          ? [requesterId]
+          : [],
+    );
+  const neighborsOf = (userId: number) => [
+    ...new Set(
+      memberships
+        .filter((membership) => membership.userId === userId)
+        .flatMap(({ communityId }) => membersOf.get(communityId) ?? []),
+    ),
+  ];
+  const likedAt = (createdAt: Date, offset: number) =>
+    new Date(
+      Math.min(Date.now(), createdAt.getTime() + (offset + 1) * 7 * 60 * 1000),
+    );
+
+  const likes: {
+    userId: number;
+    likeableType: 'post' | 'activity';
+    likeableId: number;
+    createdAt: Date;
+  }[] = [];
+
+  for (const post of posts) {
+    const candidates = post.communityId
+      ? (membersOf.get(post.communityId) ?? [])
+      : [post.wallUserId!, ...friendsOf(post.wallUserId!)];
+    const likers = [...new Set(candidates)].filter(
+      (userId) => userId !== post.authorId && seededPick(post.id, userId, 45),
+    );
+    likers.forEach((userId, index) =>
+      likes.push({
+        userId,
+        likeableType: 'post',
+        likeableId: post.id,
+        createdAt: likedAt(post.createdAt, index),
+      }),
+    );
+    await prisma.post.update({
+      where: { id: post.id },
+      data: { likeCount: likers.length },
+    });
+  }
+
+  for (const activity of activities) {
+    const likers = neighborsOf(activity.entry.userId).filter(
+      (userId) =>
+        userId !== activity.entry.userId && seededPick(activity.id, userId, 30),
+    );
+    likers.forEach((userId, index) =>
+      likes.push({
+        userId,
+        likeableType: 'activity',
+        likeableId: activity.id,
+        createdAt: likedAt(activity.createdAt, index),
+      }),
+    );
+    await prisma.libraryActivity.update({
+      where: { id: activity.id },
+      data: { likeCount: likers.length },
+    });
+  }
+
+  await prisma.like.createMany({ data: likes });
+  return likes.length;
+}
+
 const earlierStatuses: Record<LibraryStatus, LibraryStatus[]> = {
   planned: [],
   current: ['planned'],
@@ -1248,6 +1501,8 @@ function minutesAgo(minutes: number) {
 async function main() {
   console.log('🌱 Seeding database...');
 
+  await prisma.comment.deleteMany();
+  await prisma.post.deleteMany();
   await prisma.community.deleteMany();
   await prisma.user.deleteMany();
 
@@ -1413,7 +1668,11 @@ async function main() {
     }
   }
 
-  const adminFolder = ['Hidden Leaf Village', 'Straw Hat Pirates', 'Demon Slayer Corps'];
+  const adminFolder = [
+    'Hidden Leaf Village',
+    'Straw Hat Pirates',
+    'Demon Slayer Corps',
+  ];
   const adminMemberships = await prisma.membership.findMany({
     where: { userId: userIds.admin },
     orderBy: { position: 'asc' },
@@ -1558,6 +1817,11 @@ async function main() {
   }
 
   console.log('📚 Library entries created:', library.length);
+
+  await createActivityComments();
+  console.log('💬 Library update comments created:', activityComments.length);
+
+  console.log('❤️ Likes created:', await createLikes());
 
   console.log('🔔 Notifications created:', await createNotifications());
 

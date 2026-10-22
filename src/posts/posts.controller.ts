@@ -21,10 +21,15 @@ export class PostsController {
 
   @Get()
   findAll(
+    @Req() req,
     @Param('communityId', ParseIntPipe) communityId: number,
     @Query('cursor') cursor?: string,
   ) {
-    return this.postsService.findForCommunity(communityId, cursor);
+    return this.postsService.findForCommunity(
+      req.user.userId,
+      communityId,
+      cursor,
+    );
   }
 
   @Post()

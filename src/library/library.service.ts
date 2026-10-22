@@ -248,7 +248,7 @@ export class LibraryService {
 
     if (recent) {
       if (after < recent.progressFrom!) {
-        await this.prisma.libraryActivity.delete({ where: { id: recent.id } });
+        await this.deleteActivities([recent.id]);
       } else {
         await this.prisma.libraryActivity.update({
           where: { id: recent.id },
@@ -268,7 +268,35 @@ export class LibraryService {
 
   async remove(userId: number, id: number) {
     await this.ownEntry(userId, id);
+    const activities = await this.prisma.libraryActivity.findMany({
+      where: { entryId: id },
+      select: { id: true },
+    });
+    await this.deleteActivities(activities.map((activity) => activity.id));
     await this.prisma.libraryEntry.delete({ where: { id } });
+  }
+
+  private async deleteActivities(ids: number[]) {
+    if (ids.length === 0) return;
+    const comments = await this.prisma.comment.findMany({
+      where: { commentableType: 'activity', commentableId: { in: ids } },
+      select: { id: true },
+    });
+    await this.prisma.$transaction([
+      this.prisma.vote.deleteMany({
+        where: {
+          votableType: 'comment',
+          votableId: { in: comments.map((comment) => comment.id) },
+        },
+      }),
+      this.prisma.comment.deleteMany({
+        where: { commentableType: 'activity', commentableId: { in: ids } },
+      }),
+      this.prisma.like.deleteMany({
+        where: { likeableType: 'activity', likeableId: { in: ids } },
+      }),
+      this.prisma.libraryActivity.deleteMany({ where: { id: { in: ids } } }),
+    ]);
   }
 
   private async ownEntry(userId: number, id: number) {

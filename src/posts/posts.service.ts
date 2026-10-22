@@ -18,6 +18,7 @@ import {
 import { CreatePostDto } from './dto/create-post.dto';
 import { NotificationsService } from '../notifications/notifications.service';
 import { friendsOf, requireWallAccess } from './wall-access';
+import { LikesService } from '../likes/likes.service';
 
 const postInclude = {
   author,
@@ -25,9 +26,26 @@ const postInclude = {
   wallUser: author,
 } as const;
 
-export type PostItem = Prisma.PostGetPayload<{
+const previewSelect = {
+  id: true,
+  content: true,
+  createdAt: true,
+  author,
+} as const;
+
+const PREVIEW_COMMENTS = 3;
+
+export type PreviewComment = Prisma.CommentGetPayload<{
+  select: typeof previewSelect;
+}>;
+
+type Engagement = { previewComments: PreviewComment[] };
+
+type RawPost = Prisma.PostGetPayload<{
   include: typeof postInclude;
 }> & { type: 'post' };
+
+export type PostItem = RawPost & Engagement & { liked: boolean };
 
 const activityInclude = {
   entry: {
@@ -42,10 +60,12 @@ const activityInclude = {
   },
 } as const;
 
-export type ActivityItem = {
+type RawActivity = {
   type: 'activity';
   id: number;
   createdAt: Date;
+  commentCount: number;
+  likeCount: number;
   author: Prisma.UserGetPayload<typeof author>;
   status: LibraryStatus;
   progress: { from: number; to: number } | null;
@@ -58,7 +78,9 @@ export type ActivityItem = {
   };
 };
 
-export type FeedItem = PostItem | ThreadSummary | ActivityItem;
+export type ActivityItem = RawActivity & Engagement & { liked: boolean };
+
+export type FeedItem = PostItem | (ThreadSummary & Engagement) | ActivityItem;
 
 const RANK = { post: 0, thread: 1, activity: 2 } as const;
 
@@ -108,12 +130,14 @@ function toActivity(
   activity: Prisma.LibraryActivityGetPayload<{
     include: typeof activityInclude;
   }>,
-): ActivityItem {
+): RawActivity {
   const { entry } = activity;
   return {
     type: 'activity',
     id: activity.id,
     createdAt: activity.createdAt,
+    commentCount: activity.commentCount,
+    likeCount: activity.likeCount,
     author: entry.user,
     status: activity.status,
     progress:
@@ -143,12 +167,53 @@ export class PostsService {
     private prisma: PrismaService,
     private threads: ThreadsService,
     private notifications: NotificationsService,
+    private likes: LikesService,
   ) {}
 
+  private async engage(
+    viewerId: number,
+    items: (RawPost | ThreadSummary | RawActivity)[],
+  ): Promise<FeedItem[]> {
+    const idsOf = (type: 'post' | 'activity') =>
+      items.flatMap((item) => (item.type === type ? [item.id] : []));
+    const [likedPosts, likedActivities, previews] = await Promise.all([
+      this.likes.likedBy(viewerId, 'post', idsOf('post')),
+      this.likes.likedBy(viewerId, 'activity', idsOf('activity')),
+      Promise.all(
+        items.map((item) =>
+          item.commentCount === 0
+            ? []
+            : this.prisma.comment
+                .findMany({
+                  where: {
+                    commentableType: item.type,
+                    commentableId: item.id,
+                    parentId: null,
+                  },
+                  orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+                  take: PREVIEW_COMMENTS,
+                  select: previewSelect,
+                })
+                .then((comments) => comments.reverse()),
+        ),
+      ),
+    ]);
+
+    return items.map((item, index) => {
+      const previewComments = previews[index];
+      if (item.type === 'thread') return { ...item, previewComments };
+      const liked = (item.type === 'post' ? likedPosts : likedActivities).has(
+        item.id,
+      );
+      return { ...item, liked, previewComments };
+    });
+  }
+
   async findForCommunity(
+    viewerId: number,
     communityId: number,
     rawCursor?: string,
-  ): Promise<Page<PostItem | ActivityItem>> {
+  ): Promise<Page<FeedItem>> {
     const cursor = parseFeedCursor(rawCursor);
 
     const [posts, activities] = await Promise.all([
@@ -176,9 +241,12 @@ export class PostsService {
       ...posts.map((post) => ({ ...post, type: 'post' as const })),
       ...activities.map(toActivity),
     ].sort(compareFeedItems);
-    const items = merged.slice(0, PAGE_SIZE);
+    const page = merged.slice(0, PAGE_SIZE);
 
-    return { items, nextCursor: nextCursor(merged, items) };
+    return {
+      items: await this.engage(viewerId, page),
+      nextCursor: nextCursor(merged, page),
+    };
   }
 
   async findForMember(
@@ -241,8 +309,9 @@ export class PostsService {
         )
       ).map((thread) => [thread.id, thread]),
     );
-    const items: FeedItem[] = page.map((item) =>
-      item.type === 'thread' ? voted.get(item.id)! : item,
+    const items = await this.engage(
+      userId,
+      page.map((item) => (item.type === 'thread' ? voted.get(item.id)! : item)),
     );
 
     return { items, nextCursor: nextCursor(merged, page) };
@@ -312,8 +381,9 @@ export class PostsService {
         )
       ).map((thread) => [thread.id, thread]),
     );
-    const items: FeedItem[] = page.map((item) =>
-      item.type === 'thread' ? voted.get(item.id)! : item,
+    const items = await this.engage(
+      viewerId,
+      page.map((item) => (item.type === 'thread' ? voted.get(item.id)! : item)),
     );
 
     return { items, nextCursor: nextCursor(merged, page) };
@@ -347,7 +417,7 @@ export class PostsService {
         link: `/users/${owner.username}`,
       },
     ]);
-    return { ...post, type: 'post' };
+    return { ...post, type: 'post', liked: false, previewComments: [] };
   }
 
   async create(
@@ -362,6 +432,6 @@ export class PostsService {
       data: { communityId, authorId, content: html },
       include: postInclude,
     });
-    return { ...post, type: 'post' };
+    return { ...post, type: 'post', liked: false, previewComments: [] };
   }
 }
