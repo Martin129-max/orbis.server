@@ -53,6 +53,7 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   Community: 'Community',
   Membership: 'Membership',
+  RailFolder: 'RailFolder',
   Role: 'Role',
   MembershipRole: 'MembershipRole',
   Post: 'Post',
@@ -102,10 +103,23 @@ export const MembershipScalarFieldEnum = {
   communityId: 'communityId',
   nickname: 'nickname',
   position: 'position',
+  folderId: 'folderId',
   joinedAt: 'joinedAt'
 } as const
 
 export type MembershipScalarFieldEnum = (typeof MembershipScalarFieldEnum)[keyof typeof MembershipScalarFieldEnum]
+
+
+export const RailFolderScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  name: 'name',
+  color: 'color',
+  position: 'position',
+  createdAt: 'createdAt'
+} as const
+
+export type RailFolderScalarFieldEnum = (typeof RailFolderScalarFieldEnum)[keyof typeof RailFolderScalarFieldEnum]
 
 
 export const RoleScalarFieldEnum = {

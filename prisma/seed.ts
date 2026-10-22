@@ -1413,6 +1413,41 @@ async function main() {
     }
   }
 
+  const adminFolder = ['Hidden Leaf Village', 'Straw Hat Pirates', 'Demon Slayer Corps'];
+  const adminMemberships = await prisma.membership.findMany({
+    where: { userId: userIds.admin },
+    orderBy: { position: 'asc' },
+    include: { community: { select: { name: true } } },
+  });
+  const folderAt = adminMemberships.findIndex(({ community }) =>
+    adminFolder.includes(community.name),
+  );
+  const folder = await prisma.railFolder.create({
+    data: {
+      userId: userIds.admin,
+      name: 'Shōnen',
+      color: '#f08a4b',
+      position: folderAt,
+    },
+  });
+  let topLevel = 0;
+  for (const membership of adminMemberships) {
+    const inFolder = adminFolder.indexOf(membership.community.name);
+    if (topLevel === folderAt) topLevel++;
+    await prisma.membership.update({
+      where: {
+        userId_communityId: {
+          userId: membership.userId,
+          communityId: membership.communityId,
+        },
+      },
+      data:
+        inFolder === -1
+          ? { position: topLevel++ }
+          : { position: inFolder, folderId: folder.id },
+    });
+  }
+
   console.log(
     '🏘️ Communities created:',
     communities.map(({ name }) => name),

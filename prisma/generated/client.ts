@@ -48,6 +48,11 @@ export type Community = Prisma.CommunityModel
  */
 export type Membership = Prisma.MembershipModel
 /**
+ * Model RailFolder
+ * 
+ */
+export type RailFolder = Prisma.RailFolderModel
+/**
  * Model Role
  * 
  */

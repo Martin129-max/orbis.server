@@ -386,6 +386,7 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 export const ModelName = {
   Community: 'Community',
   Membership: 'Membership',
+  RailFolder: 'RailFolder',
   Role: 'Role',
   MembershipRole: 'MembershipRole',
   Post: 'Post',
@@ -413,7 +414,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "community" | "membership" | "role" | "membershipRole" | "post" | "thread" | "comment" | "vote" | "friendship" | "libraryEntry" | "libraryActivity" | "notification" | "report" | "user"
+    modelProps: "community" | "membership" | "railFolder" | "role" | "membershipRole" | "post" | "thread" | "comment" | "vote" | "friendship" | "libraryEntry" | "libraryActivity" | "notification" | "report" | "user"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -562,6 +563,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.MembershipCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.MembershipCountAggregateOutputType> | number
+        }
+      }
+    }
+    RailFolder: {
+      payload: Prisma.$RailFolderPayload<ExtArgs>
+      fields: Prisma.RailFolderFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.RailFolderFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RailFolderPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.RailFolderFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RailFolderPayload>
+        }
+        findFirst: {
+          args: Prisma.RailFolderFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RailFolderPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.RailFolderFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RailFolderPayload>
+        }
+        findMany: {
+          args: Prisma.RailFolderFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RailFolderPayload>[]
+        }
+        create: {
+          args: Prisma.RailFolderCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RailFolderPayload>
+        }
+        createMany: {
+          args: Prisma.RailFolderCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.RailFolderCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RailFolderPayload>[]
+        }
+        delete: {
+          args: Prisma.RailFolderDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RailFolderPayload>
+        }
+        update: {
+          args: Prisma.RailFolderUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RailFolderPayload>
+        }
+        deleteMany: {
+          args: Prisma.RailFolderDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.RailFolderUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.RailFolderUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RailFolderPayload>[]
+        }
+        upsert: {
+          args: Prisma.RailFolderUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RailFolderPayload>
+        }
+        aggregate: {
+          args: Prisma.RailFolderAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateRailFolder>
+        }
+        groupBy: {
+          args: Prisma.RailFolderGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RailFolderGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.RailFolderCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RailFolderCountAggregateOutputType> | number
         }
       }
     }
@@ -1511,10 +1586,23 @@ export const MembershipScalarFieldEnum = {
   communityId: 'communityId',
   nickname: 'nickname',
   position: 'position',
+  folderId: 'folderId',
   joinedAt: 'joinedAt'
 } as const
 
 export type MembershipScalarFieldEnum = (typeof MembershipScalarFieldEnum)[keyof typeof MembershipScalarFieldEnum]
+
+
+export const RailFolderScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  name: 'name',
+  color: 'color',
+  position: 'position',
+  createdAt: 'createdAt'
+} as const
+
+export type RailFolderScalarFieldEnum = (typeof RailFolderScalarFieldEnum)[keyof typeof RailFolderScalarFieldEnum]
 
 
 export const RoleScalarFieldEnum = {
@@ -1991,6 +2079,7 @@ export type PrismaClientOptions = ({
 export type GlobalOmitConfig = {
   community?: Prisma.CommunityOmit
   membership?: Prisma.MembershipOmit
+  railFolder?: Prisma.RailFolderOmit
   role?: Prisma.RoleOmit
   membershipRole?: Prisma.MembershipRoleOmit
   post?: Prisma.PostOmit

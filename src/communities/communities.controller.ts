@@ -23,9 +23,10 @@ import {
   CommunityMember,
   CommunitySearchResult,
   CommunityWithRole,
+  RailItem,
 } from './communities.service';
 import { CreateCommunityDto } from './dto/create-community.dto';
-import { ReorderCommunitiesDto } from './dto/reorder-communities.dto';
+import { UpdateRailLayoutDto } from './dto/update-rail-layout.dto';
 import { SearchCommunitiesDto } from './dto/search-communities.dto';
 import { UpdateCommunityDto } from './dto/update-community.dto';
 import { CommunityMemberGuard } from './community-member.guard';
@@ -70,14 +71,19 @@ export class CommunitiesController {
     return this.communitiesService.join(req.user.userId, communityId);
   }
 
-  @Put('order')
-  reorder(
+  @Get('layout')
+  railLayout(@Req() req): Promise<RailItem[]> {
+    return this.communitiesService.railLayout(req.user.userId);
+  }
+
+  @Put('layout')
+  updateRailLayout(
     @Req() req,
-    @Body() reorderCommunitiesDto: ReorderCommunitiesDto,
-  ): Promise<CommunityModel[]> {
-    return this.communitiesService.reorder(
+    @Body() updateRailLayoutDto: UpdateRailLayoutDto,
+  ): Promise<RailItem[]> {
+    return this.communitiesService.updateRailLayout(
       req.user.userId,
-      reorderCommunitiesDto,
+      updateRailLayoutDto,
     );
   }
 

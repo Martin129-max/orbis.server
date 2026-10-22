@@ -30,12 +30,14 @@ export type MembershipAvgAggregateOutputType = {
   userId: number | null
   communityId: number | null
   position: number | null
+  folderId: number | null
 }
 
 export type MembershipSumAggregateOutputType = {
   userId: number | null
   communityId: number | null
   position: number | null
+  folderId: number | null
 }
 
 export type MembershipMinAggregateOutputType = {
@@ -43,6 +45,7 @@ export type MembershipMinAggregateOutputType = {
   communityId: number | null
   nickname: string | null
   position: number | null
+  folderId: number | null
   joinedAt: Date | null
 }
 
@@ -51,6 +54,7 @@ export type MembershipMaxAggregateOutputType = {
   communityId: number | null
   nickname: string | null
   position: number | null
+  folderId: number | null
   joinedAt: Date | null
 }
 
@@ -59,6 +63,7 @@ export type MembershipCountAggregateOutputType = {
   communityId: number
   nickname: number
   position: number
+  folderId: number
   joinedAt: number
   _all: number
 }
@@ -68,12 +73,14 @@ export type MembershipAvgAggregateInputType = {
   userId?: true
   communityId?: true
   position?: true
+  folderId?: true
 }
 
 export type MembershipSumAggregateInputType = {
   userId?: true
   communityId?: true
   position?: true
+  folderId?: true
 }
 
 export type MembershipMinAggregateInputType = {
@@ -81,6 +88,7 @@ export type MembershipMinAggregateInputType = {
   communityId?: true
   nickname?: true
   position?: true
+  folderId?: true
   joinedAt?: true
 }
 
@@ -89,6 +97,7 @@ export type MembershipMaxAggregateInputType = {
   communityId?: true
   nickname?: true
   position?: true
+  folderId?: true
   joinedAt?: true
 }
 
@@ -97,6 +106,7 @@ export type MembershipCountAggregateInputType = {
   communityId?: true
   nickname?: true
   position?: true
+  folderId?: true
   joinedAt?: true
   _all?: true
 }
@@ -192,6 +202,7 @@ export type MembershipGroupByOutputType = {
   communityId: number
   nickname: string | null
   position: number
+  folderId: number | null
   joinedAt: Date
   _count: MembershipCountAggregateOutputType | null
   _avg: MembershipAvgAggregateOutputType | null
@@ -223,9 +234,11 @@ export type MembershipWhereInput = {
   communityId?: Prisma.IntFilter<"Membership"> | number
   nickname?: Prisma.StringNullableFilter<"Membership"> | string | null
   position?: Prisma.IntFilter<"Membership"> | number
+  folderId?: Prisma.IntNullableFilter<"Membership"> | number | null
   joinedAt?: Prisma.DateTimeFilter<"Membership"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   community?: Prisma.XOR<Prisma.CommunityScalarRelationFilter, Prisma.CommunityWhereInput>
+  folder?: Prisma.XOR<Prisma.RailFolderNullableScalarRelationFilter, Prisma.RailFolderWhereInput> | null
   roles?: Prisma.MembershipRoleListRelationFilter
 }
 
@@ -234,9 +247,11 @@ export type MembershipOrderByWithRelationInput = {
   communityId?: Prisma.SortOrder
   nickname?: Prisma.SortOrderInput | Prisma.SortOrder
   position?: Prisma.SortOrder
+  folderId?: Prisma.SortOrderInput | Prisma.SortOrder
   joinedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
   community?: Prisma.CommunityOrderByWithRelationInput
+  folder?: Prisma.RailFolderOrderByWithRelationInput
   roles?: Prisma.MembershipRoleOrderByRelationAggregateInput
 }
 
@@ -249,9 +264,11 @@ export type MembershipWhereUniqueInput = Prisma.AtLeast<{
   communityId?: Prisma.IntFilter<"Membership"> | number
   nickname?: Prisma.StringNullableFilter<"Membership"> | string | null
   position?: Prisma.IntFilter<"Membership"> | number
+  folderId?: Prisma.IntNullableFilter<"Membership"> | number | null
   joinedAt?: Prisma.DateTimeFilter<"Membership"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   community?: Prisma.XOR<Prisma.CommunityScalarRelationFilter, Prisma.CommunityWhereInput>
+  folder?: Prisma.XOR<Prisma.RailFolderNullableScalarRelationFilter, Prisma.RailFolderWhereInput> | null
   roles?: Prisma.MembershipRoleListRelationFilter
 }, "userId_communityId">
 
@@ -260,6 +277,7 @@ export type MembershipOrderByWithAggregationInput = {
   communityId?: Prisma.SortOrder
   nickname?: Prisma.SortOrderInput | Prisma.SortOrder
   position?: Prisma.SortOrder
+  folderId?: Prisma.SortOrderInput | Prisma.SortOrder
   joinedAt?: Prisma.SortOrder
   _count?: Prisma.MembershipCountOrderByAggregateInput
   _avg?: Prisma.MembershipAvgOrderByAggregateInput
@@ -276,6 +294,7 @@ export type MembershipScalarWhereWithAggregatesInput = {
   communityId?: Prisma.IntWithAggregatesFilter<"Membership"> | number
   nickname?: Prisma.StringNullableWithAggregatesFilter<"Membership"> | string | null
   position?: Prisma.IntWithAggregatesFilter<"Membership"> | number
+  folderId?: Prisma.IntNullableWithAggregatesFilter<"Membership"> | number | null
   joinedAt?: Prisma.DateTimeWithAggregatesFilter<"Membership"> | Date | string
 }
 
@@ -285,6 +304,7 @@ export type MembershipCreateInput = {
   joinedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutMembershipsInput
   community: Prisma.CommunityCreateNestedOneWithoutMembershipsInput
+  folder?: Prisma.RailFolderCreateNestedOneWithoutMembershipsInput
   roles?: Prisma.MembershipRoleCreateNestedManyWithoutMembershipInput
 }
 
@@ -293,6 +313,7 @@ export type MembershipUncheckedCreateInput = {
   communityId: number
   nickname?: string | null
   position?: number
+  folderId?: number | null
   joinedAt?: Date | string
   roles?: Prisma.MembershipRoleUncheckedCreateNestedManyWithoutMembershipInput
 }
@@ -303,6 +324,7 @@ export type MembershipUpdateInput = {
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutMembershipsNestedInput
   community?: Prisma.CommunityUpdateOneRequiredWithoutMembershipsNestedInput
+  folder?: Prisma.RailFolderUpdateOneWithoutMembershipsNestedInput
   roles?: Prisma.MembershipRoleUpdateManyWithoutMembershipNestedInput
 }
 
@@ -311,6 +333,7 @@ export type MembershipUncheckedUpdateInput = {
   communityId?: Prisma.IntFieldUpdateOperationsInput | number
   nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  folderId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roles?: Prisma.MembershipRoleUncheckedUpdateManyWithoutMembershipNestedInput
 }
@@ -320,6 +343,7 @@ export type MembershipCreateManyInput = {
   communityId: number
   nickname?: string | null
   position?: number
+  folderId?: number | null
   joinedAt?: Date | string
 }
 
@@ -334,6 +358,7 @@ export type MembershipUncheckedUpdateManyInput = {
   communityId?: Prisma.IntFieldUpdateOperationsInput | number
   nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  folderId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -357,6 +382,7 @@ export type MembershipCountOrderByAggregateInput = {
   communityId?: Prisma.SortOrder
   nickname?: Prisma.SortOrder
   position?: Prisma.SortOrder
+  folderId?: Prisma.SortOrder
   joinedAt?: Prisma.SortOrder
 }
 
@@ -364,6 +390,7 @@ export type MembershipAvgOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   communityId?: Prisma.SortOrder
   position?: Prisma.SortOrder
+  folderId?: Prisma.SortOrder
 }
 
 export type MembershipMaxOrderByAggregateInput = {
@@ -371,6 +398,7 @@ export type MembershipMaxOrderByAggregateInput = {
   communityId?: Prisma.SortOrder
   nickname?: Prisma.SortOrder
   position?: Prisma.SortOrder
+  folderId?: Prisma.SortOrder
   joinedAt?: Prisma.SortOrder
 }
 
@@ -379,6 +407,7 @@ export type MembershipMinOrderByAggregateInput = {
   communityId?: Prisma.SortOrder
   nickname?: Prisma.SortOrder
   position?: Prisma.SortOrder
+  folderId?: Prisma.SortOrder
   joinedAt?: Prisma.SortOrder
 }
 
@@ -386,6 +415,7 @@ export type MembershipSumOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   communityId?: Prisma.SortOrder
   position?: Prisma.SortOrder
+  folderId?: Prisma.SortOrder
 }
 
 export type MembershipScalarRelationFilter = {
@@ -432,6 +462,56 @@ export type MembershipUncheckedUpdateManyWithoutCommunityNestedInput = {
   connect?: Prisma.MembershipWhereUniqueInput | Prisma.MembershipWhereUniqueInput[]
   update?: Prisma.MembershipUpdateWithWhereUniqueWithoutCommunityInput | Prisma.MembershipUpdateWithWhereUniqueWithoutCommunityInput[]
   updateMany?: Prisma.MembershipUpdateManyWithWhereWithoutCommunityInput | Prisma.MembershipUpdateManyWithWhereWithoutCommunityInput[]
+  deleteMany?: Prisma.MembershipScalarWhereInput | Prisma.MembershipScalarWhereInput[]
+}
+
+export type NullableIntFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
+export type MembershipCreateNestedManyWithoutFolderInput = {
+  create?: Prisma.XOR<Prisma.MembershipCreateWithoutFolderInput, Prisma.MembershipUncheckedCreateWithoutFolderInput> | Prisma.MembershipCreateWithoutFolderInput[] | Prisma.MembershipUncheckedCreateWithoutFolderInput[]
+  connectOrCreate?: Prisma.MembershipCreateOrConnectWithoutFolderInput | Prisma.MembershipCreateOrConnectWithoutFolderInput[]
+  createMany?: Prisma.MembershipCreateManyFolderInputEnvelope
+  connect?: Prisma.MembershipWhereUniqueInput | Prisma.MembershipWhereUniqueInput[]
+}
+
+export type MembershipUncheckedCreateNestedManyWithoutFolderInput = {
+  create?: Prisma.XOR<Prisma.MembershipCreateWithoutFolderInput, Prisma.MembershipUncheckedCreateWithoutFolderInput> | Prisma.MembershipCreateWithoutFolderInput[] | Prisma.MembershipUncheckedCreateWithoutFolderInput[]
+  connectOrCreate?: Prisma.MembershipCreateOrConnectWithoutFolderInput | Prisma.MembershipCreateOrConnectWithoutFolderInput[]
+  createMany?: Prisma.MembershipCreateManyFolderInputEnvelope
+  connect?: Prisma.MembershipWhereUniqueInput | Prisma.MembershipWhereUniqueInput[]
+}
+
+export type MembershipUpdateManyWithoutFolderNestedInput = {
+  create?: Prisma.XOR<Prisma.MembershipCreateWithoutFolderInput, Prisma.MembershipUncheckedCreateWithoutFolderInput> | Prisma.MembershipCreateWithoutFolderInput[] | Prisma.MembershipUncheckedCreateWithoutFolderInput[]
+  connectOrCreate?: Prisma.MembershipCreateOrConnectWithoutFolderInput | Prisma.MembershipCreateOrConnectWithoutFolderInput[]
+  upsert?: Prisma.MembershipUpsertWithWhereUniqueWithoutFolderInput | Prisma.MembershipUpsertWithWhereUniqueWithoutFolderInput[]
+  createMany?: Prisma.MembershipCreateManyFolderInputEnvelope
+  set?: Prisma.MembershipWhereUniqueInput | Prisma.MembershipWhereUniqueInput[]
+  disconnect?: Prisma.MembershipWhereUniqueInput | Prisma.MembershipWhereUniqueInput[]
+  delete?: Prisma.MembershipWhereUniqueInput | Prisma.MembershipWhereUniqueInput[]
+  connect?: Prisma.MembershipWhereUniqueInput | Prisma.MembershipWhereUniqueInput[]
+  update?: Prisma.MembershipUpdateWithWhereUniqueWithoutFolderInput | Prisma.MembershipUpdateWithWhereUniqueWithoutFolderInput[]
+  updateMany?: Prisma.MembershipUpdateManyWithWhereWithoutFolderInput | Prisma.MembershipUpdateManyWithWhereWithoutFolderInput[]
+  deleteMany?: Prisma.MembershipScalarWhereInput | Prisma.MembershipScalarWhereInput[]
+}
+
+export type MembershipUncheckedUpdateManyWithoutFolderNestedInput = {
+  create?: Prisma.XOR<Prisma.MembershipCreateWithoutFolderInput, Prisma.MembershipUncheckedCreateWithoutFolderInput> | Prisma.MembershipCreateWithoutFolderInput[] | Prisma.MembershipUncheckedCreateWithoutFolderInput[]
+  connectOrCreate?: Prisma.MembershipCreateOrConnectWithoutFolderInput | Prisma.MembershipCreateOrConnectWithoutFolderInput[]
+  upsert?: Prisma.MembershipUpsertWithWhereUniqueWithoutFolderInput | Prisma.MembershipUpsertWithWhereUniqueWithoutFolderInput[]
+  createMany?: Prisma.MembershipCreateManyFolderInputEnvelope
+  set?: Prisma.MembershipWhereUniqueInput | Prisma.MembershipWhereUniqueInput[]
+  disconnect?: Prisma.MembershipWhereUniqueInput | Prisma.MembershipWhereUniqueInput[]
+  delete?: Prisma.MembershipWhereUniqueInput | Prisma.MembershipWhereUniqueInput[]
+  connect?: Prisma.MembershipWhereUniqueInput | Prisma.MembershipWhereUniqueInput[]
+  update?: Prisma.MembershipUpdateWithWhereUniqueWithoutFolderInput | Prisma.MembershipUpdateWithWhereUniqueWithoutFolderInput[]
+  updateMany?: Prisma.MembershipUpdateManyWithWhereWithoutFolderInput | Prisma.MembershipUpdateManyWithWhereWithoutFolderInput[]
   deleteMany?: Prisma.MembershipScalarWhereInput | Prisma.MembershipScalarWhereInput[]
 }
 
@@ -496,6 +576,7 @@ export type MembershipCreateWithoutCommunityInput = {
   position?: number
   joinedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutMembershipsInput
+  folder?: Prisma.RailFolderCreateNestedOneWithoutMembershipsInput
   roles?: Prisma.MembershipRoleCreateNestedManyWithoutMembershipInput
 }
 
@@ -503,6 +584,7 @@ export type MembershipUncheckedCreateWithoutCommunityInput = {
   userId: number
   nickname?: string | null
   position?: number
+  folderId?: number | null
   joinedAt?: Date | string
   roles?: Prisma.MembershipRoleUncheckedCreateNestedManyWithoutMembershipInput
 }
@@ -541,7 +623,52 @@ export type MembershipScalarWhereInput = {
   communityId?: Prisma.IntFilter<"Membership"> | number
   nickname?: Prisma.StringNullableFilter<"Membership"> | string | null
   position?: Prisma.IntFilter<"Membership"> | number
+  folderId?: Prisma.IntNullableFilter<"Membership"> | number | null
   joinedAt?: Prisma.DateTimeFilter<"Membership"> | Date | string
+}
+
+export type MembershipCreateWithoutFolderInput = {
+  nickname?: string | null
+  position?: number
+  joinedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutMembershipsInput
+  community: Prisma.CommunityCreateNestedOneWithoutMembershipsInput
+  roles?: Prisma.MembershipRoleCreateNestedManyWithoutMembershipInput
+}
+
+export type MembershipUncheckedCreateWithoutFolderInput = {
+  userId: number
+  communityId: number
+  nickname?: string | null
+  position?: number
+  joinedAt?: Date | string
+  roles?: Prisma.MembershipRoleUncheckedCreateNestedManyWithoutMembershipInput
+}
+
+export type MembershipCreateOrConnectWithoutFolderInput = {
+  where: Prisma.MembershipWhereUniqueInput
+  create: Prisma.XOR<Prisma.MembershipCreateWithoutFolderInput, Prisma.MembershipUncheckedCreateWithoutFolderInput>
+}
+
+export type MembershipCreateManyFolderInputEnvelope = {
+  data: Prisma.MembershipCreateManyFolderInput | Prisma.MembershipCreateManyFolderInput[]
+  skipDuplicates?: boolean
+}
+
+export type MembershipUpsertWithWhereUniqueWithoutFolderInput = {
+  where: Prisma.MembershipWhereUniqueInput
+  update: Prisma.XOR<Prisma.MembershipUpdateWithoutFolderInput, Prisma.MembershipUncheckedUpdateWithoutFolderInput>
+  create: Prisma.XOR<Prisma.MembershipCreateWithoutFolderInput, Prisma.MembershipUncheckedCreateWithoutFolderInput>
+}
+
+export type MembershipUpdateWithWhereUniqueWithoutFolderInput = {
+  where: Prisma.MembershipWhereUniqueInput
+  data: Prisma.XOR<Prisma.MembershipUpdateWithoutFolderInput, Prisma.MembershipUncheckedUpdateWithoutFolderInput>
+}
+
+export type MembershipUpdateManyWithWhereWithoutFolderInput = {
+  where: Prisma.MembershipScalarWhereInput
+  data: Prisma.XOR<Prisma.MembershipUpdateManyMutationInput, Prisma.MembershipUncheckedUpdateManyWithoutFolderInput>
 }
 
 export type MembershipCreateWithoutRolesInput = {
@@ -550,6 +677,7 @@ export type MembershipCreateWithoutRolesInput = {
   joinedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutMembershipsInput
   community: Prisma.CommunityCreateNestedOneWithoutMembershipsInput
+  folder?: Prisma.RailFolderCreateNestedOneWithoutMembershipsInput
 }
 
 export type MembershipUncheckedCreateWithoutRolesInput = {
@@ -557,6 +685,7 @@ export type MembershipUncheckedCreateWithoutRolesInput = {
   communityId: number
   nickname?: string | null
   position?: number
+  folderId?: number | null
   joinedAt?: Date | string
 }
 
@@ -582,6 +711,7 @@ export type MembershipUpdateWithoutRolesInput = {
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutMembershipsNestedInput
   community?: Prisma.CommunityUpdateOneRequiredWithoutMembershipsNestedInput
+  folder?: Prisma.RailFolderUpdateOneWithoutMembershipsNestedInput
 }
 
 export type MembershipUncheckedUpdateWithoutRolesInput = {
@@ -589,6 +719,7 @@ export type MembershipUncheckedUpdateWithoutRolesInput = {
   communityId?: Prisma.IntFieldUpdateOperationsInput | number
   nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  folderId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -597,6 +728,7 @@ export type MembershipCreateWithoutUserInput = {
   position?: number
   joinedAt?: Date | string
   community: Prisma.CommunityCreateNestedOneWithoutMembershipsInput
+  folder?: Prisma.RailFolderCreateNestedOneWithoutMembershipsInput
   roles?: Prisma.MembershipRoleCreateNestedManyWithoutMembershipInput
 }
 
@@ -604,6 +736,7 @@ export type MembershipUncheckedCreateWithoutUserInput = {
   communityId: number
   nickname?: string | null
   position?: number
+  folderId?: number | null
   joinedAt?: Date | string
   roles?: Prisma.MembershipRoleUncheckedCreateNestedManyWithoutMembershipInput
 }
@@ -638,6 +771,7 @@ export type MembershipCreateManyCommunityInput = {
   userId: number
   nickname?: string | null
   position?: number
+  folderId?: number | null
   joinedAt?: Date | string
 }
 
@@ -646,6 +780,7 @@ export type MembershipUpdateWithoutCommunityInput = {
   position?: Prisma.IntFieldUpdateOperationsInput | number
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutMembershipsNestedInput
+  folder?: Prisma.RailFolderUpdateOneWithoutMembershipsNestedInput
   roles?: Prisma.MembershipRoleUpdateManyWithoutMembershipNestedInput
 }
 
@@ -653,12 +788,48 @@ export type MembershipUncheckedUpdateWithoutCommunityInput = {
   userId?: Prisma.IntFieldUpdateOperationsInput | number
   nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  folderId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roles?: Prisma.MembershipRoleUncheckedUpdateManyWithoutMembershipNestedInput
 }
 
 export type MembershipUncheckedUpdateManyWithoutCommunityInput = {
   userId?: Prisma.IntFieldUpdateOperationsInput | number
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.IntFieldUpdateOperationsInput | number
+  folderId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type MembershipCreateManyFolderInput = {
+  userId: number
+  communityId: number
+  nickname?: string | null
+  position?: number
+  joinedAt?: Date | string
+}
+
+export type MembershipUpdateWithoutFolderInput = {
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.IntFieldUpdateOperationsInput | number
+  joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutMembershipsNestedInput
+  community?: Prisma.CommunityUpdateOneRequiredWithoutMembershipsNestedInput
+  roles?: Prisma.MembershipRoleUpdateManyWithoutMembershipNestedInput
+}
+
+export type MembershipUncheckedUpdateWithoutFolderInput = {
+  userId?: Prisma.IntFieldUpdateOperationsInput | number
+  communityId?: Prisma.IntFieldUpdateOperationsInput | number
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.IntFieldUpdateOperationsInput | number
+  joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  roles?: Prisma.MembershipRoleUncheckedUpdateManyWithoutMembershipNestedInput
+}
+
+export type MembershipUncheckedUpdateManyWithoutFolderInput = {
+  userId?: Prisma.IntFieldUpdateOperationsInput | number
+  communityId?: Prisma.IntFieldUpdateOperationsInput | number
   nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.IntFieldUpdateOperationsInput | number
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -668,6 +839,7 @@ export type MembershipCreateManyUserInput = {
   communityId: number
   nickname?: string | null
   position?: number
+  folderId?: number | null
   joinedAt?: Date | string
 }
 
@@ -676,6 +848,7 @@ export type MembershipUpdateWithoutUserInput = {
   position?: Prisma.IntFieldUpdateOperationsInput | number
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   community?: Prisma.CommunityUpdateOneRequiredWithoutMembershipsNestedInput
+  folder?: Prisma.RailFolderUpdateOneWithoutMembershipsNestedInput
   roles?: Prisma.MembershipRoleUpdateManyWithoutMembershipNestedInput
 }
 
@@ -683,6 +856,7 @@ export type MembershipUncheckedUpdateWithoutUserInput = {
   communityId?: Prisma.IntFieldUpdateOperationsInput | number
   nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  folderId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roles?: Prisma.MembershipRoleUncheckedUpdateManyWithoutMembershipNestedInput
 }
@@ -691,6 +865,7 @@ export type MembershipUncheckedUpdateManyWithoutUserInput = {
   communityId?: Prisma.IntFieldUpdateOperationsInput | number
   nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  folderId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -730,9 +905,11 @@ export type MembershipSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   communityId?: boolean
   nickname?: boolean
   position?: boolean
+  folderId?: boolean
   joinedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   community?: boolean | Prisma.CommunityDefaultArgs<ExtArgs>
+  folder?: boolean | Prisma.Membership$folderArgs<ExtArgs>
   roles?: boolean | Prisma.Membership$rolesArgs<ExtArgs>
   _count?: boolean | Prisma.MembershipCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["membership"]>
@@ -742,9 +919,11 @@ export type MembershipSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   communityId?: boolean
   nickname?: boolean
   position?: boolean
+  folderId?: boolean
   joinedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   community?: boolean | Prisma.CommunityDefaultArgs<ExtArgs>
+  folder?: boolean | Prisma.Membership$folderArgs<ExtArgs>
 }, ExtArgs["result"]["membership"]>
 
 export type MembershipSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -752,9 +931,11 @@ export type MembershipSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   communityId?: boolean
   nickname?: boolean
   position?: boolean
+  folderId?: boolean
   joinedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   community?: boolean | Prisma.CommunityDefaultArgs<ExtArgs>
+  folder?: boolean | Prisma.Membership$folderArgs<ExtArgs>
 }, ExtArgs["result"]["membership"]>
 
 export type MembershipSelectScalar = {
@@ -762,23 +943,27 @@ export type MembershipSelectScalar = {
   communityId?: boolean
   nickname?: boolean
   position?: boolean
+  folderId?: boolean
   joinedAt?: boolean
 }
 
-export type MembershipOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"userId" | "communityId" | "nickname" | "position" | "joinedAt", ExtArgs["result"]["membership"]>
+export type MembershipOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"userId" | "communityId" | "nickname" | "position" | "folderId" | "joinedAt", ExtArgs["result"]["membership"]>
 export type MembershipInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   community?: boolean | Prisma.CommunityDefaultArgs<ExtArgs>
+  folder?: boolean | Prisma.Membership$folderArgs<ExtArgs>
   roles?: boolean | Prisma.Membership$rolesArgs<ExtArgs>
   _count?: boolean | Prisma.MembershipCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type MembershipIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   community?: boolean | Prisma.CommunityDefaultArgs<ExtArgs>
+  folder?: boolean | Prisma.Membership$folderArgs<ExtArgs>
 }
 export type MembershipIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   community?: boolean | Prisma.CommunityDefaultArgs<ExtArgs>
+  folder?: boolean | Prisma.Membership$folderArgs<ExtArgs>
 }
 
 export type $MembershipPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -786,6 +971,7 @@ export type $MembershipPayload<ExtArgs extends runtime.Types.Extensions.Internal
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
     community: Prisma.$CommunityPayload<ExtArgs>
+    folder: Prisma.$RailFolderPayload<ExtArgs> | null
     roles: Prisma.$MembershipRolePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -793,6 +979,7 @@ export type $MembershipPayload<ExtArgs extends runtime.Types.Extensions.Internal
     communityId: number
     nickname: string | null
     position: number
+    folderId: number | null
     joinedAt: Date
   }, ExtArgs["result"]["membership"]>
   composites: {}
@@ -1190,6 +1377,7 @@ export interface Prisma__MembershipClient<T, Null = never, ExtArgs extends runti
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   community<T extends Prisma.CommunityDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CommunityDefaultArgs<ExtArgs>>): Prisma.Prisma__CommunityClient<runtime.Types.Result.GetResult<Prisma.$CommunityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  folder<T extends Prisma.Membership$folderArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Membership$folderArgs<ExtArgs>>): Prisma.Prisma__RailFolderClient<runtime.Types.Result.GetResult<Prisma.$RailFolderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   roles<T extends Prisma.Membership$rolesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Membership$rolesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MembershipRolePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1224,6 +1412,7 @@ export interface MembershipFieldRefs {
   readonly communityId: Prisma.FieldRef<"Membership", 'Int'>
   readonly nickname: Prisma.FieldRef<"Membership", 'String'>
   readonly position: Prisma.FieldRef<"Membership", 'Int'>
+  readonly folderId: Prisma.FieldRef<"Membership", 'Int'>
   readonly joinedAt: Prisma.FieldRef<"Membership", 'DateTime'>
 }
     
@@ -1618,6 +1807,25 @@ export type MembershipDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.In
    * Limit how many Memberships to delete.
    */
   limit?: number
+}
+
+/**
+ * Membership.folder
+ */
+export type Membership$folderArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RailFolder
+   */
+  select?: Prisma.RailFolderSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the RailFolder
+   */
+  omit?: Prisma.RailFolderOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RailFolderInclude<ExtArgs> | null
+  where?: Prisma.RailFolderWhereInput
 }
 
 /**

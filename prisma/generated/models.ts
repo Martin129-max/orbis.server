@@ -10,6 +10,7 @@
  */
 export type * from './models/Community'
 export type * from './models/Membership'
+export type * from './models/RailFolder'
 export type * from './models/Role'
 export type * from './models/MembershipRole'
 export type * from './models/Post'

@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { CreateCommunityDto } from './dto/create-community.dto';
-import { ReorderCommunitiesDto } from './dto/reorder-communities.dto';
+import { UpdateRailLayoutDto } from './dto/update-rail-layout.dto';
 import { SearchCommunitiesDto } from './dto/search-communities.dto';
 import { UpdateCommunityDto } from './dto/update-community.dto';
 import { ADMINISTRATOR, CommunityRole, isAdministrator } from './permissions';
@@ -56,6 +56,16 @@ export type CommunitySearchResult = {
   joined: boolean;
 };
 
+export type RailItem =
+  | { type: 'community'; communityId: number }
+  | {
+      type: 'folder';
+      id: number;
+      name: string | null;
+      color: string | null;
+      communityIds: number[];
+    };
+
 @Injectable()
 export class CommunitiesService {
   constructor(
@@ -68,9 +78,7 @@ export class CommunitiesService {
     ownerId: number,
     createCommunityDto: CreateCommunityDto,
   ): Promise<CommunityModel> {
-    const position = await this.prisma.membership.count({
-      where: { userId: ownerId },
-    });
+    const position = await this.nextRailPosition(ownerId);
 
     return this.prisma.community.create({
       data: {
@@ -126,9 +134,7 @@ export class CommunitiesService {
       throw new NotFoundException('Community not found');
     }
 
-    const position = await this.prisma.membership.count({
-      where: { userId },
-    });
+    const position = await this.nextRailPosition(userId);
     await this.prisma.membership.upsert({
       where: { userId_communityId: { userId, communityId } },
       create: { userId, communityId, position },
@@ -148,36 +154,163 @@ export class CommunitiesService {
     return memberships.map(({ community }) => community);
   }
 
-  async reorder(
+  private async nextRailPosition(userId: number): Promise<number> {
+    const [memberships, folders] = await Promise.all([
+      this.prisma.membership.aggregate({
+        where: { userId, folderId: null },
+        _max: { position: true },
+      }),
+      this.prisma.railFolder.aggregate({
+        where: { userId },
+        _max: { position: true },
+      }),
+    ]);
+
+    return (
+      Math.max(memberships._max.position ?? -1, folders._max.position ?? -1) + 1
+    );
+  }
+
+  async railLayout(userId: number): Promise<RailItem[]> {
+    const [memberships, folders] = await Promise.all([
+      this.prisma.membership.findMany({
+        where: { userId },
+        orderBy: [{ position: 'asc' }, { joinedAt: 'asc' }],
+        select: { communityId: true, folderId: true, position: true },
+      }),
+      this.prisma.railFolder.findMany({
+        where: { userId },
+        orderBy: { position: 'asc' },
+      }),
+    ]);
+
+    const entries = [
+      ...memberships
+        .filter(({ folderId }) => folderId === null)
+        .map(({ communityId, position }) => ({
+          position,
+          item: { type: 'community', communityId } as RailItem,
+        })),
+      ...folders.flatMap((folder) => {
+        const communityIds = memberships
+          .filter(({ folderId }) => folderId === folder.id)
+          .map(({ communityId }) => communityId);
+        return communityIds.length === 0
+          ? []
+          : [
+              {
+                position: folder.position,
+                item: {
+                  type: 'folder',
+                  id: folder.id,
+                  name: folder.name,
+                  color: folder.color,
+                  communityIds,
+                } as RailItem,
+              },
+            ];
+      }),
+    ];
+
+    return entries
+      .sort((a, b) => a.position - b.position)
+      .map(({ item }) => item);
+  }
+
+  async updateRailLayout(
     userId: number,
-    { communityIds }: ReorderCommunitiesDto,
-  ): Promise<CommunityModel[]> {
-    const memberships = await this.prisma.membership.findMany({
-      where: { userId },
-      select: { communityId: true },
-    });
+    { items }: UpdateRailLayoutDto,
+  ): Promise<RailItem[]> {
+    const [memberships, folders] = await Promise.all([
+      this.prisma.membership.findMany({
+        where: { userId },
+        select: { communityId: true },
+      }),
+      this.prisma.railFolder.findMany({
+        where: { userId },
+        select: { id: true },
+      }),
+    ]);
     const memberOf = new Set(memberships.map(({ communityId }) => communityId));
+    const ownFolders = new Set(folders.map(({ id }) => id));
+    const listed = items.flatMap((item) =>
+      item.folder ? item.folder.communityIds : [item.communityId],
+    );
 
     if (
-      communityIds.length !== memberOf.size ||
-      new Set(communityIds).size !== communityIds.length ||
-      communityIds.some((id) => !memberOf.has(id))
+      items.some(
+        (item) =>
+          (item.folder === undefined) === (item.communityId === undefined),
+      )
     ) {
       throw new BadRequestException(
-        'communityIds must list each of your communities exactly once',
+        'Each item must be either a community or a folder',
       );
     }
+    if (
+      listed.length !== memberOf.size ||
+      new Set(listed).size !== listed.length ||
+      listed.some((id) => id === undefined || !memberOf.has(id))
+    ) {
+      throw new BadRequestException(
+        'The layout must list each of your communities exactly once',
+      );
+    }
+    if (
+      items.some(
+        ({ folder }) => folder?.id !== undefined && !ownFolders.has(folder.id),
+      )
+    ) {
+      throw new BadRequestException('Folder not found');
+    }
 
-    await this.prisma.$transaction(
-      communityIds.map((communityId, position) =>
-        this.prisma.membership.update({
-          where: { userId_communityId: { userId, communityId } },
-          data: { position },
-        }),
+    const kept = new Set(
+      items.flatMap(({ folder }) =>
+        folder?.id !== undefined && folder.communityIds.length > 0
+          ? [folder.id]
+          : [],
       ),
     );
 
-    return this.findForMember(userId);
+    await this.prisma.$transaction(async (tx) => {
+      await tx.railFolder.deleteMany({
+        where: { userId, id: { notIn: [...kept] } },
+      });
+
+      for (const [position, item] of items.entries()) {
+        if (item.communityId !== undefined) {
+          await tx.membership.update({
+            where: {
+              userId_communityId: { userId, communityId: item.communityId },
+            },
+            data: { position, folderId: null },
+          });
+          continue;
+        }
+
+        const { id, name, color, communityIds } = item.folder!;
+        if (communityIds.length === 0) continue;
+
+        const data = {
+          name: name?.trim() || null,
+          color: color?.toLowerCase() ?? null,
+          position,
+        };
+        const folder =
+          id === undefined
+            ? await tx.railFolder.create({ data: { ...data, userId } })
+            : await tx.railFolder.update({ where: { id }, data });
+
+        for (const [index, communityId] of communityIds.entries()) {
+          await tx.membership.update({
+            where: { userId_communityId: { userId, communityId } },
+            data: { position: index, folderId: folder.id },
+          });
+        }
+      }
+    });
+
+    return this.railLayout(userId);
   }
 
   async findMembers(communityId: number): Promise<CommunityMember[]> {
