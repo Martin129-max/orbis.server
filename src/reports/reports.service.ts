@@ -91,14 +91,7 @@ export class ReportsService {
 
     const report = await this.prisma.report.create({
       data: { authorId: userId, category, message: text, pageUrl },
-      select: {
-        id: true,
-        category: true,
-        message: true,
-        pageUrl: true,
-        createdAt: true,
-        author: { select: { username: true, name: true, avatarUrl: true } },
-      },
+      select: adminReportSelect,
     });
 
     void this.announce(report);
@@ -208,6 +201,7 @@ export class ReportsService {
         ? (updated.assignee.name ?? updated.assignee.username)
         : null;
       this.shareActivity(userId, (actor) => ({
+        report: updated,
         path: `/reports?report=${id}`,
         title: assigneeName
           ? `👤 ${actor} assigned ${ticketNumber(id)} to ${assigneeName}`
@@ -264,7 +258,7 @@ export class ReportsService {
       }),
       this.prisma.report.findUniqueOrThrow({
         where: { id },
-        select: { assigneeId: true },
+        select: adminReportSelect,
       }),
       this.prisma.reportComment.findMany({
         where: { reportId: id },
@@ -275,7 +269,7 @@ export class ReportsService {
 
     const recipients = new Set([
       ...commenters.map(({ authorId }) => authorId),
-      ...(report.assigneeId !== null ? [report.assigneeId] : []),
+      ...(report.assignee ? [report.assignee.id] : []),
     ]);
     recipients.delete(userId);
     await this.notifications.notify(
@@ -289,6 +283,7 @@ export class ReportsService {
     );
 
     this.shareActivity(userId, (actor) => ({
+      report,
       path: `/reports?report=${id}`,
       title: `💬 ${actor} commented on ${ticketNumber(id)}`,
       description: text,
@@ -383,6 +378,7 @@ export class ReportsService {
 
     if (report.status !== status) {
       this.shareActivity(userId, (actor) => ({
+        report: updated,
         path: `/reports?report=${id}`,
         title: `➡️ ${actor} moved ${ticketNumber(id)} from ${boardLabels[report.status]} to ${boardLabels[status]}`,
         description: resolutionNote ? `Reply: ${resolutionNote}` : undefined,
@@ -418,6 +414,7 @@ export class ReportsService {
       }),
     );
     this.shareActivity(userId, (actor) => ({
+      report: hidden,
       path: `/reports?report=${id}`,
       title: `🙈 ${actor} hid ${ticketNumber(id)}`,
       color: ACTIVITY_COLOR.hide,
@@ -437,6 +434,7 @@ export class ReportsService {
       }),
     );
     this.shareActivity(userId, (actor) => ({
+      report: restored,
       path: `/reports?report=${id}`,
       title: `↩️ ${actor} moved ${ticketNumber(id)} back to To do`,
       color: ACTIVITY_COLOR.hide,

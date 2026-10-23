@@ -10,7 +10,7 @@ RUN pnpm run build
 FROM node:24-slim
 WORKDIR /app
 ENV NODE_ENV=production
-RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates fontconfig fonts-noto-cjk fonts-noto-color-emoji && rm -rf /var/lib/apt/lists/*
 COPY --from=build /app/package.json /app/prisma.config.ts ./
 COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/prisma ./prisma
