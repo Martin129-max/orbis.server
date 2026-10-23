@@ -1031,6 +1031,7 @@ const reports: [
   number,
   string,
   string,
+  { note?: string; hidden?: boolean }?,
 ][] = [
   [
     'naruto',
@@ -1071,6 +1072,27 @@ const reports: [
     1440,
     'Dark mode is easy on the eyes at 3am. That is all.',
     '/profile',
+    { note: 'Thanks, Spike! Night owls are our favorite users.' },
+  ],
+  [
+    'luffy',
+    'bug',
+    'done',
+    4320,
+    'My name got cut off on the member list. It says "Monkey D. Lu". I am not Lu.',
+    '/explore',
+    {
+      note: 'Fixed! Long names now wrap instead of getting cut off. Sorry, Captain.',
+    },
+  ],
+  [
+    'goku',
+    'other',
+    'todo',
+    30,
+    'test test is this thing on',
+    '/',
+    { hidden: true },
   ],
   [
     'gojo',
@@ -1246,6 +1268,7 @@ async function createNotifications() {
       authorId: true,
       status: true,
       category: true,
+      resolutionNote: true,
       createdAt: true,
     },
   });
@@ -1254,7 +1277,7 @@ async function createNotifications() {
       userId: report.authorId,
       actorId: userIds.admin,
       type: 'report_status',
-      message: `updated your report ${ticketNumber(report.id)}: ${getReporterStatusLabel(report.status, report.category)}`,
+      message: `updated your report ${ticketNumber(report.id)}: ${getReporterStatusLabel(report.status, report.category)}${report.resolutionNote ? ` — “${report.resolutionNote}”` : ''}`,
       link: '/reports',
       createdAt: new Date(
         Math.min(Date.now(), report.createdAt.getTime() + 20 * 60 * 1000),
@@ -1945,14 +1968,18 @@ async function main() {
   console.log('🎬 Title wall posts created:', titlePosts.length);
 
   await prisma.report.createMany({
-    data: reports.map(([author, category, status, ago, message, pageUrl]) => ({
-      authorId: userIds[author],
-      category,
-      status,
-      message,
-      pageUrl,
-      createdAt: minutesAgo(ago),
-    })),
+    data: reports.map(
+      ([author, category, status, ago, message, pageUrl, extra]) => ({
+        authorId: userIds[author],
+        category,
+        status,
+        message,
+        pageUrl,
+        resolutionNote: extra?.note,
+        hiddenAt: extra?.hidden ? minutesAgo(ago - 10) : null,
+        createdAt: minutesAgo(ago),
+      }),
+    ),
   });
 
   console.log('📣 Reports created:', reports.length);

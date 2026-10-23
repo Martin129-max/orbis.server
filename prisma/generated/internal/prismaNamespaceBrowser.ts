@@ -288,6 +288,8 @@ export const ReportScalarFieldEnum = {
   status: 'status',
   message: 'message',
   pageUrl: 'pageUrl',
+  resolutionNote: 'resolutionNote',
+  hiddenAt: 'hiddenAt',
   createdAt: 'createdAt'
 } as const
 

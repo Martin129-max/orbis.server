@@ -19,9 +19,20 @@ const reportSelect = {
   status: true,
   message: true,
   pageUrl: true,
+  resolutionNote: true,
   createdAt: true,
   author,
 } as const;
+
+const adminReportSelect = { ...reportSelect, hiddenAt: true } as const;
+
+const NOTE_PREVIEW = 140;
+
+function preview(note: string) {
+  return note.length > NOTE_PREVIEW
+    ? `${note.slice(0, NOTE_PREVIEW - 1).trimEnd()}…`
+    : note;
+}
 
 @Injectable()
 export class ReportsService {
@@ -43,12 +54,13 @@ export class ReportsService {
     });
   }
 
-  async findAll(userId: number) {
+  async findAll(userId: number, hidden: boolean) {
     await this.requireAdmin(userId);
 
     return this.prisma.report.findMany({
-      orderBy: { createdAt: 'desc' },
-      select: reportSelect,
+      where: { hiddenAt: hidden ? { not: null } : null },
+      orderBy: hidden ? { hiddenAt: 'desc' } : { createdAt: 'desc' },
+      select: adminReportSelect,
     });
   }
 
@@ -60,7 +72,7 @@ export class ReportsService {
     });
   }
 
-  async update(userId: number, id: number, { status }: UpdateReportDto) {
+  async update(userId: number, id: number, { status, note }: UpdateReportDto) {
     await this.requireAdmin(userId);
 
     const report = await this.prisma.report.findUnique({
@@ -69,25 +81,59 @@ export class ReportsService {
     });
     if (!report) throw new NotFoundException('Report not found');
 
+    const resolutionNote = status === 'done' ? note?.trim() || null : null;
     const updated = await this.prisma.report.update({
       where: { id },
-      data: { status },
-      select: reportSelect,
+      data: { status, resolutionNote },
+      select: adminReportSelect,
     });
 
     if (report.status !== status) {
+      const label = getReporterStatusLabel(status, report.category);
       await this.notifications.notify([
         {
           userId: report.authorId,
           actorId: userId,
           type: 'report_status',
-          message: `updated your report ${ticketNumber(id)}: ${getReporterStatusLabel(status, report.category)}`,
+          message: resolutionNote
+            ? `updated your report ${ticketNumber(id)}: ${label} — “${preview(resolutionNote)}”`
+            : `updated your report ${ticketNumber(id)}: ${label}`,
           link: '/reports',
         },
       ]);
     }
 
     return updated;
+  }
+
+  async hide(userId: number, id: number) {
+    await this.requireAdmin(userId);
+    await this.requireReport(id);
+
+    return this.prisma.report.update({
+      where: { id },
+      data: { hiddenAt: new Date() },
+      select: adminReportSelect,
+    });
+  }
+
+  async restore(userId: number, id: number) {
+    await this.requireAdmin(userId);
+    await this.requireReport(id);
+
+    return this.prisma.report.update({
+      where: { id },
+      data: { hiddenAt: null, status: 'todo', resolutionNote: null },
+      select: adminReportSelect,
+    });
+  }
+
+  private async requireReport(id: number) {
+    const report = await this.prisma.report.findUnique({
+      where: { id },
+      select: { id: true },
+    });
+    if (!report) throw new NotFoundException('Report not found');
   }
 
   private async requireAdmin(userId: number) {

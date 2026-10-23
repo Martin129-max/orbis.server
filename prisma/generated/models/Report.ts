@@ -43,6 +43,8 @@ export type ReportMinAggregateOutputType = {
   status: $Enums.ReportStatus | null
   message: string | null
   pageUrl: string | null
+  resolutionNote: string | null
+  hiddenAt: Date | null
   createdAt: Date | null
 }
 
@@ -53,6 +55,8 @@ export type ReportMaxAggregateOutputType = {
   status: $Enums.ReportStatus | null
   message: string | null
   pageUrl: string | null
+  resolutionNote: string | null
+  hiddenAt: Date | null
   createdAt: Date | null
 }
 
@@ -63,6 +67,8 @@ export type ReportCountAggregateOutputType = {
   status: number
   message: number
   pageUrl: number
+  resolutionNote: number
+  hiddenAt: number
   createdAt: number
   _all: number
 }
@@ -85,6 +91,8 @@ export type ReportMinAggregateInputType = {
   status?: true
   message?: true
   pageUrl?: true
+  resolutionNote?: true
+  hiddenAt?: true
   createdAt?: true
 }
 
@@ -95,6 +103,8 @@ export type ReportMaxAggregateInputType = {
   status?: true
   message?: true
   pageUrl?: true
+  resolutionNote?: true
+  hiddenAt?: true
   createdAt?: true
 }
 
@@ -105,6 +115,8 @@ export type ReportCountAggregateInputType = {
   status?: true
   message?: true
   pageUrl?: true
+  resolutionNote?: true
+  hiddenAt?: true
   createdAt?: true
   _all?: true
 }
@@ -202,6 +214,8 @@ export type ReportGroupByOutputType = {
   status: $Enums.ReportStatus
   message: string
   pageUrl: string | null
+  resolutionNote: string | null
+  hiddenAt: Date | null
   createdAt: Date
   _count: ReportCountAggregateOutputType | null
   _avg: ReportAvgAggregateOutputType | null
@@ -235,6 +249,8 @@ export type ReportWhereInput = {
   status?: Prisma.EnumReportStatusFilter<"Report"> | $Enums.ReportStatus
   message?: Prisma.StringFilter<"Report"> | string
   pageUrl?: Prisma.StringNullableFilter<"Report"> | string | null
+  resolutionNote?: Prisma.StringNullableFilter<"Report"> | string | null
+  hiddenAt?: Prisma.DateTimeNullableFilter<"Report"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Report"> | Date | string
   author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
@@ -246,6 +262,8 @@ export type ReportOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   message?: Prisma.SortOrder
   pageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  resolutionNote?: Prisma.SortOrderInput | Prisma.SortOrder
+  hiddenAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   author?: Prisma.UserOrderByWithRelationInput
 }
@@ -260,6 +278,8 @@ export type ReportWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.EnumReportStatusFilter<"Report"> | $Enums.ReportStatus
   message?: Prisma.StringFilter<"Report"> | string
   pageUrl?: Prisma.StringNullableFilter<"Report"> | string | null
+  resolutionNote?: Prisma.StringNullableFilter<"Report"> | string | null
+  hiddenAt?: Prisma.DateTimeNullableFilter<"Report"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Report"> | Date | string
   author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id">
@@ -271,6 +291,8 @@ export type ReportOrderByWithAggregationInput = {
   status?: Prisma.SortOrder
   message?: Prisma.SortOrder
   pageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  resolutionNote?: Prisma.SortOrderInput | Prisma.SortOrder
+  hiddenAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.ReportCountOrderByAggregateInput
   _avg?: Prisma.ReportAvgOrderByAggregateInput
@@ -289,6 +311,8 @@ export type ReportScalarWhereWithAggregatesInput = {
   status?: Prisma.EnumReportStatusWithAggregatesFilter<"Report"> | $Enums.ReportStatus
   message?: Prisma.StringWithAggregatesFilter<"Report"> | string
   pageUrl?: Prisma.StringNullableWithAggregatesFilter<"Report"> | string | null
+  resolutionNote?: Prisma.StringNullableWithAggregatesFilter<"Report"> | string | null
+  hiddenAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Report"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Report"> | Date | string
 }
 
@@ -297,6 +321,8 @@ export type ReportCreateInput = {
   status?: $Enums.ReportStatus
   message: string
   pageUrl?: string | null
+  resolutionNote?: string | null
+  hiddenAt?: Date | string | null
   createdAt?: Date | string
   author: Prisma.UserCreateNestedOneWithoutReportsInput
 }
@@ -308,6 +334,8 @@ export type ReportUncheckedCreateInput = {
   status?: $Enums.ReportStatus
   message: string
   pageUrl?: string | null
+  resolutionNote?: string | null
+  hiddenAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -316,6 +344,8 @@ export type ReportUpdateInput = {
   status?: Prisma.EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
   message?: Prisma.StringFieldUpdateOperationsInput | string
   pageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resolutionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   author?: Prisma.UserUpdateOneRequiredWithoutReportsNestedInput
 }
@@ -327,6 +357,8 @@ export type ReportUncheckedUpdateInput = {
   status?: Prisma.EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
   message?: Prisma.StringFieldUpdateOperationsInput | string
   pageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resolutionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -337,6 +369,8 @@ export type ReportCreateManyInput = {
   status?: $Enums.ReportStatus
   message: string
   pageUrl?: string | null
+  resolutionNote?: string | null
+  hiddenAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -345,6 +379,8 @@ export type ReportUpdateManyMutationInput = {
   status?: Prisma.EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
   message?: Prisma.StringFieldUpdateOperationsInput | string
   pageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resolutionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -355,6 +391,8 @@ export type ReportUncheckedUpdateManyInput = {
   status?: Prisma.EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
   message?: Prisma.StringFieldUpdateOperationsInput | string
   pageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resolutionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -365,6 +403,8 @@ export type ReportCountOrderByAggregateInput = {
   status?: Prisma.SortOrder
   message?: Prisma.SortOrder
   pageUrl?: Prisma.SortOrder
+  resolutionNote?: Prisma.SortOrder
+  hiddenAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -380,6 +420,8 @@ export type ReportMaxOrderByAggregateInput = {
   status?: Prisma.SortOrder
   message?: Prisma.SortOrder
   pageUrl?: Prisma.SortOrder
+  resolutionNote?: Prisma.SortOrder
+  hiddenAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -390,6 +432,8 @@ export type ReportMinOrderByAggregateInput = {
   status?: Prisma.SortOrder
   message?: Prisma.SortOrder
   pageUrl?: Prisma.SortOrder
+  resolutionNote?: Prisma.SortOrder
+  hiddenAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -463,6 +507,8 @@ export type ReportCreateWithoutAuthorInput = {
   status?: $Enums.ReportStatus
   message: string
   pageUrl?: string | null
+  resolutionNote?: string | null
+  hiddenAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -472,6 +518,8 @@ export type ReportUncheckedCreateWithoutAuthorInput = {
   status?: $Enums.ReportStatus
   message: string
   pageUrl?: string | null
+  resolutionNote?: string | null
+  hiddenAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -511,6 +559,8 @@ export type ReportScalarWhereInput = {
   status?: Prisma.EnumReportStatusFilter<"Report"> | $Enums.ReportStatus
   message?: Prisma.StringFilter<"Report"> | string
   pageUrl?: Prisma.StringNullableFilter<"Report"> | string | null
+  resolutionNote?: Prisma.StringNullableFilter<"Report"> | string | null
+  hiddenAt?: Prisma.DateTimeNullableFilter<"Report"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Report"> | Date | string
 }
 
@@ -520,6 +570,8 @@ export type ReportCreateManyAuthorInput = {
   status?: $Enums.ReportStatus
   message: string
   pageUrl?: string | null
+  resolutionNote?: string | null
+  hiddenAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -528,6 +580,8 @@ export type ReportUpdateWithoutAuthorInput = {
   status?: Prisma.EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
   message?: Prisma.StringFieldUpdateOperationsInput | string
   pageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resolutionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -537,6 +591,8 @@ export type ReportUncheckedUpdateWithoutAuthorInput = {
   status?: Prisma.EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
   message?: Prisma.StringFieldUpdateOperationsInput | string
   pageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resolutionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -546,6 +602,8 @@ export type ReportUncheckedUpdateManyWithoutAuthorInput = {
   status?: Prisma.EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
   message?: Prisma.StringFieldUpdateOperationsInput | string
   pageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resolutionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -558,6 +616,8 @@ export type ReportSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   status?: boolean
   message?: boolean
   pageUrl?: boolean
+  resolutionNote?: boolean
+  hiddenAt?: boolean
   createdAt?: boolean
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["report"]>
@@ -569,6 +629,8 @@ export type ReportSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   status?: boolean
   message?: boolean
   pageUrl?: boolean
+  resolutionNote?: boolean
+  hiddenAt?: boolean
   createdAt?: boolean
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["report"]>
@@ -580,6 +642,8 @@ export type ReportSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   status?: boolean
   message?: boolean
   pageUrl?: boolean
+  resolutionNote?: boolean
+  hiddenAt?: boolean
   createdAt?: boolean
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["report"]>
@@ -591,10 +655,12 @@ export type ReportSelectScalar = {
   status?: boolean
   message?: boolean
   pageUrl?: boolean
+  resolutionNote?: boolean
+  hiddenAt?: boolean
   createdAt?: boolean
 }
 
-export type ReportOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "authorId" | "category" | "status" | "message" | "pageUrl" | "createdAt", ExtArgs["result"]["report"]>
+export type ReportOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "authorId" | "category" | "status" | "message" | "pageUrl" | "resolutionNote" | "hiddenAt" | "createdAt", ExtArgs["result"]["report"]>
 export type ReportInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -617,6 +683,8 @@ export type $ReportPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     status: $Enums.ReportStatus
     message: string
     pageUrl: string | null
+    resolutionNote: string | null
+    hiddenAt: Date | null
     createdAt: Date
   }, ExtArgs["result"]["report"]>
   composites: {}
@@ -1048,6 +1116,8 @@ export interface ReportFieldRefs {
   readonly status: Prisma.FieldRef<"Report", 'ReportStatus'>
   readonly message: Prisma.FieldRef<"Report", 'String'>
   readonly pageUrl: Prisma.FieldRef<"Report", 'String'>
+  readonly resolutionNote: Prisma.FieldRef<"Report", 'String'>
+  readonly hiddenAt: Prisma.FieldRef<"Report", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Report", 'DateTime'>
 }
     

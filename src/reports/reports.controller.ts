@@ -1,11 +1,14 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
   Patch,
   Post,
+  Put,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -30,8 +33,18 @@ export class ReportsController {
   }
 
   @Get()
-  findAll(@Req() req) {
-    return this.reportsService.findAll(req.user.userId);
+  findAll(@Req() req, @Query('hidden') hidden?: string) {
+    return this.reportsService.findAll(req.user.userId, hidden === 'true');
+  }
+
+  @Put(':id/hidden')
+  hide(@Req() req, @Param('id', ParseIntPipe) id: number) {
+    return this.reportsService.hide(req.user.userId, id);
+  }
+
+  @Delete(':id/hidden')
+  restore(@Req() req, @Param('id', ParseIntPipe) id: number) {
+    return this.reportsService.restore(req.user.userId, id);
   }
 
   @Patch(':id')
