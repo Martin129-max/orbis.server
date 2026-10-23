@@ -9,5 +9,6 @@ import { PresenceModule } from '../friends/presence.module';
   imports: [NotificationsModule, PresenceModule],
   controllers: [ReportsController],
   providers: [ReportsService, PrismaService],
+  exports: [ReportsService],
 })
 export class ReportsModule {}

@@ -163,6 +163,7 @@ export class InvitesService {
 
     const { community } = invite;
     if (await this.communities.roleOf(userId, community.id)) return community;
+    await this.communities.requireRoomToJoin(userId);
 
     const position = await this.communities.nextRailPosition(userId);
     try {

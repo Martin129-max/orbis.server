@@ -67,6 +67,9 @@ export type CommunitySearchResult = {
   mutualCount: number;
 };
 
+export const MAX_OWNED_COMMUNITIES = 10;
+export const MAX_JOINED_COMMUNITIES = 50;
+
 const MEMBER_PREVIEW = 5;
 const MUTUAL_PREVIEW = 3;
 const person = {
@@ -91,10 +94,27 @@ export class CommunitiesService {
     private presence: PresenceGateway,
   ) {}
 
+  async requireRoomToJoin(userId: number) {
+    const joined = await this.prisma.membership.count({ where: { userId } });
+    if (joined >= MAX_JOINED_COMMUNITIES) {
+      throw new ForbiddenException(
+        `You can be in up to ${MAX_JOINED_COMMUNITIES} communities. Leave one to join another`,
+      );
+    }
+  }
+
   async create(
     ownerId: number,
     createCommunityDto: CreateCommunityDto,
   ): Promise<CommunityModel> {
+    const owned = await this.prisma.community.count({ where: { ownerId } });
+    if (owned >= MAX_OWNED_COMMUNITIES) {
+      throw new ForbiddenException(
+        `You can own up to ${MAX_OWNED_COMMUNITIES} communities`,
+      );
+    }
+    await this.requireRoomToJoin(ownerId);
+
     const position = await this.nextRailPosition(ownerId);
 
     return this.prisma.community.create({
@@ -220,6 +240,9 @@ export class CommunitiesService {
       throw new NotFoundException('Community not found');
     }
 
+    if (!(await this.roleOf(userId, communityId))) {
+      await this.requireRoomToJoin(userId);
+    }
     const position = await this.nextRailPosition(userId);
     await this.prisma.membership.upsert({
       where: { userId_communityId: { userId, communityId } },

@@ -33,12 +33,14 @@ import { CommunityMemberGuard } from './community-member.guard';
 import { JwtAuthGuard } from '../auth/jwt.guard';
 import { Community as CommunityModel } from '../../prisma/generated/client';
 import { IMAGE_MAX_BYTES } from '../storage/storage.service';
+import { DAY, MINUTE, RateLimit } from '../common/throttle';
 
 @Controller('communities')
 @UseGuards(JwtAuthGuard)
 export class CommunitiesController {
   constructor(private readonly communitiesService: CommunitiesService) {}
 
+  @RateLimit(3, DAY)
   @Post()
   create(
     @Req() req,
@@ -52,6 +54,7 @@ export class CommunitiesController {
     return this.communitiesService.findForMember(req.user.userId);
   }
 
+  @RateLimit(60, MINUTE)
   @Get('search')
   search(
     @Req() req,

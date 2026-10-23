@@ -103,6 +103,11 @@ export type Report = Prisma.ReportModel
  */
 export type ReportComment = Prisma.ReportCommentModel
 /**
+ * Model ContentReport
+ * 
+ */
+export type ContentReport = Prisma.ContentReportModel
+/**
  * Model Setting
  * 
  */

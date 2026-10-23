@@ -68,6 +68,7 @@ export const ModelName = {
   Notification: 'Notification',
   Report: 'Report',
   ReportComment: 'ReportComment',
+  ContentReport: 'ContentReport',
   Setting: 'Setting',
   User: 'User'
 } as const
@@ -309,6 +310,22 @@ export const ReportCommentScalarFieldEnum = {
 } as const
 
 export type ReportCommentScalarFieldEnum = (typeof ReportCommentScalarFieldEnum)[keyof typeof ReportCommentScalarFieldEnum]
+
+
+export const ContentReportScalarFieldEnum = {
+  id: 'id',
+  reporterId: 'reporterId',
+  targetType: 'targetType',
+  targetId: 'targetId',
+  reason: 'reason',
+  details: 'details',
+  resolution: 'resolution',
+  resolvedById: 'resolvedById',
+  resolvedAt: 'resolvedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type ContentReportScalarFieldEnum = (typeof ContentReportScalarFieldEnum)[keyof typeof ContentReportScalarFieldEnum]
 
 
 export const SettingScalarFieldEnum = {

@@ -70,6 +70,7 @@
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "10.4.22",
     "@nestjs/platform-socket.io": "10.4.22",
+    "@nestjs/throttler": "^6.7.1",
     "@nestjs/websockets": "10.4.22",
     "@prisma/adapter-pg": "7.0.0",
     "@prisma/client": "7.0.0",

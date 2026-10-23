@@ -13,6 +13,7 @@ import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { JwtAuthGuard } from '../auth/jwt.guard';
 import { MediaType } from '../../prisma/generated/client';
+import { RateLimit, MINUTE } from '../common/throttle';
 
 @Controller('library/media/:type/:sourceId/posts')
 @UseGuards(JwtAuthGuard)
@@ -34,6 +35,7 @@ export class MediaPostsController {
     );
   }
 
+  @RateLimit(10, MINUTE)
   @Post()
   createOnMedia(
     @Req() req,

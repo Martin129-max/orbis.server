@@ -401,6 +401,7 @@ export const ModelName = {
   Notification: 'Notification',
   Report: 'Report',
   ReportComment: 'ReportComment',
+  ContentReport: 'ContentReport',
   Setting: 'Setting',
   User: 'User'
 } as const
@@ -418,7 +419,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "community" | "membership" | "railFolder" | "role" | "membershipRole" | "invite" | "post" | "thread" | "comment" | "vote" | "like" | "friendship" | "libraryEntry" | "libraryActivity" | "notification" | "report" | "reportComment" | "setting" | "user"
+    modelProps: "community" | "membership" | "railFolder" | "role" | "membershipRole" | "invite" | "post" | "thread" | "comment" | "vote" | "like" | "friendship" | "libraryEntry" | "libraryActivity" | "notification" | "report" | "reportComment" | "contentReport" | "setting" | "user"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1680,6 +1681,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ContentReport: {
+      payload: Prisma.$ContentReportPayload<ExtArgs>
+      fields: Prisma.ContentReportFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ContentReportFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContentReportPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ContentReportFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContentReportPayload>
+        }
+        findFirst: {
+          args: Prisma.ContentReportFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContentReportPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ContentReportFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContentReportPayload>
+        }
+        findMany: {
+          args: Prisma.ContentReportFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContentReportPayload>[]
+        }
+        create: {
+          args: Prisma.ContentReportCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContentReportPayload>
+        }
+        createMany: {
+          args: Prisma.ContentReportCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ContentReportCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContentReportPayload>[]
+        }
+        delete: {
+          args: Prisma.ContentReportDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContentReportPayload>
+        }
+        update: {
+          args: Prisma.ContentReportUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContentReportPayload>
+        }
+        deleteMany: {
+          args: Prisma.ContentReportDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ContentReportUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ContentReportUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContentReportPayload>[]
+        }
+        upsert: {
+          args: Prisma.ContentReportUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContentReportPayload>
+        }
+        aggregate: {
+          args: Prisma.ContentReportAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateContentReport>
+        }
+        groupBy: {
+          args: Prisma.ContentReportGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ContentReportGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ContentReportCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ContentReportCountAggregateOutputType> | number
+        }
+      }
+    }
     Setting: {
       payload: Prisma.$SettingPayload<ExtArgs>
       fields: Prisma.SettingFieldRefs
@@ -2090,6 +2165,22 @@ export const ReportCommentScalarFieldEnum = {
 export type ReportCommentScalarFieldEnum = (typeof ReportCommentScalarFieldEnum)[keyof typeof ReportCommentScalarFieldEnum]
 
 
+export const ContentReportScalarFieldEnum = {
+  id: 'id',
+  reporterId: 'reporterId',
+  targetType: 'targetType',
+  targetId: 'targetId',
+  reason: 'reason',
+  details: 'details',
+  resolution: 'resolution',
+  resolvedById: 'resolvedById',
+  resolvedAt: 'resolvedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type ContentReportScalarFieldEnum = (typeof ContentReportScalarFieldEnum)[keyof typeof ContentReportScalarFieldEnum]
+
+
 export const SettingScalarFieldEnum = {
   key: 'key',
   value: 'value',
@@ -2339,6 +2430,48 @@ export type ListEnumReportStatusFieldRefInput<$PrismaModel> = FieldRefInputType<
 
 
 /**
+ * Reference to a field of type 'ContentReportTarget'
+ */
+export type EnumContentReportTargetFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContentReportTarget'>
+    
+
+
+/**
+ * Reference to a field of type 'ContentReportTarget[]'
+ */
+export type ListEnumContentReportTargetFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContentReportTarget[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ContentReportReason'
+ */
+export type EnumContentReportReasonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContentReportReason'>
+    
+
+
+/**
+ * Reference to a field of type 'ContentReportReason[]'
+ */
+export type ListEnumContentReportReasonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContentReportReason[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ContentReportResolution'
+ */
+export type EnumContentReportResolutionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContentReportResolution'>
+    
+
+
+/**
+ * Reference to a field of type 'ContentReportResolution[]'
+ */
+export type ListEnumContentReportResolutionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContentReportResolution[]'>
+    
+
+
+/**
  * Reference to a field of type 'Theme'
  */
 export type EnumThemeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Theme'>
@@ -2461,6 +2594,7 @@ export type GlobalOmitConfig = {
   notification?: Prisma.NotificationOmit
   report?: Prisma.ReportOmit
   reportComment?: Prisma.ReportCommentOmit
+  contentReport?: Prisma.ContentReportOmit
   setting?: Prisma.SettingOmit
   user?: Prisma.UserOmit
 }

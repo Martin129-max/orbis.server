@@ -40,3 +40,42 @@ model ReportComment {
 
   @@index([reportId, createdAt])
 }
+
+enum ContentReportTarget {
+  post
+  thread
+  comment
+  user
+  community
+}
+
+enum ContentReportReason {
+  spam
+  harassment
+  inappropriate
+  other
+}
+
+enum ContentReportResolution {
+  resolved
+  dismissed
+}
+
+model ContentReport {
+  id           Int                      @id @default(autoincrement())
+  reporterId   Int
+  targetType   ContentReportTarget
+  targetId     Int
+  reason       ContentReportReason
+  details      String?
+  resolution   ContentReportResolution?
+  resolvedById Int?
+  resolvedAt   DateTime?
+  createdAt    DateTime                 @default(now())
+  reporter     User                     @relation("ContentReporter", fields: [reporterId], references: [id], onDelete: Cascade)
+  resolvedBy   User?                    @relation("ContentReportResolver", fields: [resolvedById], references: [id], onDelete: SetNull)
+
+  @@unique([reporterId, targetType, targetId])
+  @@index([targetType, targetId])
+  @@index([resolvedAt])
+}

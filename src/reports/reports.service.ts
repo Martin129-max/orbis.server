@@ -123,7 +123,7 @@ export class ReportsService {
     });
   }
 
-  private shareActivity(
+  shareActivity(
     userId: number,
     activity: (actor: string) => Omit<DiscordActivity, 'actor'>,
   ) {
@@ -208,7 +208,7 @@ export class ReportsService {
         ? (updated.assignee.name ?? updated.assignee.username)
         : null;
       this.shareActivity(userId, (actor) => ({
-        reportId: id,
+        path: `/reports?report=${id}`,
         title: assigneeName
           ? `👤 ${actor} assigned ${ticketNumber(id)} to ${assigneeName}`
           : `👤 ${actor} unassigned ${ticketNumber(id)}`,
@@ -255,7 +255,11 @@ export class ReportsService {
 
     const [comment, report, commenters] = await Promise.all([
       this.prisma.reportComment.create({
-        data: { reportId: id, authorId: userId, content: text },
+        data: {
+          reportId: id,
+          authorId: userId,
+          content: text,
+        },
         select: commentSelect,
       }),
       this.prisma.report.findUniqueOrThrow({
@@ -285,7 +289,7 @@ export class ReportsService {
     );
 
     this.shareActivity(userId, (actor) => ({
-      reportId: id,
+      path: `/reports?report=${id}`,
       title: `💬 ${actor} commented on ${ticketNumber(id)}`,
       description: text,
       color: ACTIVITY_COLOR.comment,
@@ -379,7 +383,7 @@ export class ReportsService {
 
     if (report.status !== status) {
       this.shareActivity(userId, (actor) => ({
-        reportId: id,
+        path: `/reports?report=${id}`,
         title: `➡️ ${actor} moved ${ticketNumber(id)} from ${boardLabels[report.status]} to ${boardLabels[status]}`,
         description: resolutionNote ? `Reply: ${resolutionNote}` : undefined,
         color: ACTIVITY_COLOR.move,
@@ -414,7 +418,7 @@ export class ReportsService {
       }),
     );
     this.shareActivity(userId, (actor) => ({
-      reportId: id,
+      path: `/reports?report=${id}`,
       title: `🙈 ${actor} hid ${ticketNumber(id)}`,
       color: ACTIVITY_COLOR.hide,
     }));
@@ -433,7 +437,7 @@ export class ReportsService {
       }),
     );
     this.shareActivity(userId, (actor) => ({
-      reportId: id,
+      path: `/reports?report=${id}`,
       title: `↩️ ${actor} moved ${ticketNumber(id)} back to To do`,
       color: ACTIVITY_COLOR.hide,
     }));

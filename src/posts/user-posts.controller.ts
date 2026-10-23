@@ -11,6 +11,7 @@ import {
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { JwtAuthGuard } from '../auth/jwt.guard';
+import { RateLimit, MINUTE } from '../common/throttle';
 
 @Controller('users/:username/posts')
 @UseGuards(JwtAuthGuard)
@@ -26,6 +27,7 @@ export class UserPostsController {
     return this.postsService.findForProfile(req.user.userId, username, cursor);
   }
 
+  @RateLimit(10, MINUTE)
   @Post()
   createOnWall(
     @Req() req,

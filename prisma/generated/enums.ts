@@ -95,6 +95,35 @@ export const ReportStatus = {
 export type ReportStatus = (typeof ReportStatus)[keyof typeof ReportStatus]
 
 
+export const ContentReportTarget = {
+  post: 'post',
+  thread: 'thread',
+  comment: 'comment',
+  user: 'user',
+  community: 'community'
+} as const
+
+export type ContentReportTarget = (typeof ContentReportTarget)[keyof typeof ContentReportTarget]
+
+
+export const ContentReportReason = {
+  spam: 'spam',
+  harassment: 'harassment',
+  inappropriate: 'inappropriate',
+  other: 'other'
+} as const
+
+export type ContentReportReason = (typeof ContentReportReason)[keyof typeof ContentReportReason]
+
+
+export const ContentReportResolution = {
+  resolved: 'resolved',
+  dismissed: 'dismissed'
+} as const
+
+export type ContentReportResolution = (typeof ContentReportResolution)[keyof typeof ContentReportResolution]
+
+
 export const Theme = {
   system: 'system',
   light: 'light',

@@ -19,12 +19,14 @@ import { SetWebhookDto } from './dto/set-webhook.dto';
 import { AssignReportDto } from './dto/assign-report.dto';
 import { CreateReportCommentDto } from './dto/create-report-comment.dto';
 import { ReportsService } from './reports.service';
+import { HOUR, MINUTE, RateLimit } from '../common/throttle';
 
 @Controller('reports')
 @UseGuards(JwtAuthGuard)
 export class ReportsController {
   constructor(private readonly reportsService: ReportsService) {}
 
+  @RateLimit(5, HOUR)
   @Post()
   create(@Req() req, @Body() createReportDto: CreateReportDto) {
     return this.reportsService.create(req.user.userId, createReportDto);
@@ -79,6 +81,7 @@ export class ReportsController {
     return this.reportsService.comments(req.user.userId, id);
   }
 
+  @RateLimit(20, MINUTE)
   @Post(':id/comments')
   addComment(
     @Req() req,

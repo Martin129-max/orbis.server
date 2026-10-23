@@ -1,4 +1,11 @@
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerModule } from '@nestjs/throttler';
+import {
+  AppThrottlerGuard,
+  MINUTE,
+  RATE_LIMIT_MESSAGE,
+} from './common/throttle';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { CommunitiesModule } from './communities/communities.module';
@@ -14,12 +21,17 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { LibraryModule } from './library/library.module';
 import { InvitesModule } from './invites/invites.module';
 import { AdminModule } from './admin/admin.module';
+import { ModerationModule } from './moderation/moderation.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaService } from './prisma.service';
 
 @Module({
   imports: [
+    ThrottlerModule.forRoot({
+      throttlers: [{ ttl: MINUTE, limit: 300 }],
+      errorMessage: RATE_LIMIT_MESSAGE,
+    }),
     UsersModule,
     AuthModule,
     CommunitiesModule,
@@ -35,8 +47,13 @@ import { PrismaService } from './prisma.service';
     LibraryModule,
     InvitesModule,
     AdminModule,
+    ModerationModule,
   ],
   controllers: [AppController],
-  providers: [AppService, PrismaService],
+  providers: [
+    AppService,
+    PrismaService,
+    { provide: APP_GUARD, useClass: AppThrottlerGuard },
+  ],
 })
 export class AppModule {}

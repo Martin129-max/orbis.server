@@ -19,11 +19,13 @@ import { CreateInviteDto } from './dto/create-invite.dto';
 import { CommunityMemberGuard } from '../communities/community-member.guard';
 import { JwtAuthGuard } from '../auth/jwt.guard';
 import { Community as CommunityModel } from '../../prisma/generated/client';
+import { RateLimit, HOUR } from '../common/throttle';
 
 @Controller()
 export class InvitesController {
   constructor(private readonly invitesService: InvitesService) {}
 
+  @RateLimit(20, HOUR)
   @Post('communities/:communityId/invites')
   @UseGuards(JwtAuthGuard, CommunityMemberGuard)
   create(

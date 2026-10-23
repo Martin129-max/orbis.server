@@ -31,6 +31,8 @@ model User {
   reports              Report[]        @relation("ReportAuthor")
   assignedReports      Report[]        @relation("ReportAssignee")
   reportComments       ReportComment[]
+  contentReports       ContentReport[] @relation("ContentReporter")
+  resolvedReports      ContentReport[] @relation("ContentReportResolver")
   notifications        Notification[]  @relation("NotificationRecipient")
   causedNotifications  Notification[]  @relation("NotificationActor")
   libraryEntries       LibraryEntry[]

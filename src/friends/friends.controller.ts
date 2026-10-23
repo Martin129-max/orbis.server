@@ -15,6 +15,7 @@ import { FriendList, FriendUser, FriendsService } from './friends.service';
 import { AddFriendDto } from './dto/add-friend.dto';
 import { SearchPeopleDto } from './dto/search-people.dto';
 import { JwtAuthGuard } from '../auth/jwt.guard';
+import { HOUR, MINUTE, RateLimit } from '../common/throttle';
 
 @Controller('friends')
 @UseGuards(JwtAuthGuard)
@@ -26,11 +27,13 @@ export class FriendsController {
     return this.friendsService.list(req.user.userId);
   }
 
+  @RateLimit(60, MINUTE)
   @Get('search')
   search(@Req() req, @Query() { q }: SearchPeopleDto): Promise<FriendUser[]> {
     return this.friendsService.search(req.user.userId, q);
   }
 
+  @RateLimit(20, HOUR)
   @Post()
   @HttpCode(204)
   add(@Req() req, @Body() addFriendDto: AddFriendDto): Promise<void> {

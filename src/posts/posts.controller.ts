@@ -13,6 +13,7 @@ import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { JwtAuthGuard } from '../auth/jwt.guard';
 import { CommunityMemberGuard } from '../communities/community-member.guard';
+import { RateLimit, MINUTE } from '../common/throttle';
 
 @Controller('communities/:communityId/posts')
 @UseGuards(JwtAuthGuard, CommunityMemberGuard)
@@ -32,6 +33,7 @@ export class PostsController {
     );
   }
 
+  @RateLimit(10, MINUTE)
   @Post()
   create(
     @Req() req,

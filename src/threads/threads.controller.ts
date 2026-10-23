@@ -14,6 +14,7 @@ import { CreateThreadDto } from './dto/create-thread.dto';
 import { JwtAuthGuard } from '../auth/jwt.guard';
 import { CommunityMemberGuard } from '../communities/community-member.guard';
 import { Page } from '../common/pagination';
+import { RateLimit, MINUTE } from '../common/throttle';
 
 @Controller('communities/:communityId/threads')
 @UseGuards(JwtAuthGuard, CommunityMemberGuard)
@@ -30,6 +31,7 @@ export class CommunityThreadsController {
     return this.threadsService.list(req.user.userId, communityId, sort, cursor);
   }
 
+  @RateLimit(10, MINUTE)
   @Post()
   create(
     @Req() req,

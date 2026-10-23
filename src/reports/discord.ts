@@ -100,7 +100,7 @@ async function send(url: string, body: unknown) {
 }
 
 export type DiscordActivity = {
-  reportId: number;
+  path: string;
   actor: DiscordPerson;
   title: string;
   description?: string;
@@ -112,13 +112,14 @@ export const ACTIVITY_COLOR = {
   move: 0x83ac83,
   hide: 0x777970,
   assign: 0xb195f2,
+  flag: 0xe5484d,
 } as const;
 
 export async function postActivityToDiscord(
   { webhookUrl, siteUrl }: DiscordTarget,
-  { reportId, actor, title, description, color }: DiscordActivity,
+  { path, actor, title, description, color }: DiscordActivity,
 ) {
-  const link = `${siteUrl.replace(/\/$/, '')}/reports?report=${reportId}`;
+  const link = `${siteUrl.replace(/\/$/, '')}${path}`;
   const embed = {
     author: embedAuthor(siteUrl, actor),
     title,

@@ -18,12 +18,14 @@ import { AddLibraryEntryDto } from './dto/add-library-entry.dto';
 import { UpdateLibraryEntryDto } from './dto/update-library-entry.dto';
 import { LibraryService } from './library.service';
 import { MediaType } from '../../prisma/generated/client';
+import { RateLimit, MINUTE } from '../common/throttle';
 
 @Controller('library')
 @UseGuards(JwtAuthGuard)
 export class LibraryController {
   constructor(private readonly libraryService: LibraryService) {}
 
+  @RateLimit(60, MINUTE)
   @Get('search')
   search(@Req() req, @Query('q') q?: string) {
     return this.libraryService.search(req.user.userId, q);

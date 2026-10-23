@@ -1160,6 +1160,51 @@ const reports: [
   ],
 ];
 
+async function createContentReports() {
+  const [sasukePost, luffyComment] = await Promise.all([
+    prisma.post.findFirst({
+      where: { authorId: userIds.sasuke },
+      orderBy: { createdAt: 'desc' },
+      select: { id: true },
+    }),
+    prisma.comment.findFirst({
+      where: { authorId: userIds.luffy },
+      orderBy: { createdAt: 'desc' },
+      select: { id: true },
+    }),
+  ]);
+
+  const reports = [
+    sasukePost && {
+      reporterId: userIds.naruto,
+      targetType: 'post' as const,
+      targetId: sasukePost.id,
+      reason: 'harassment' as const,
+      details: 'He keeps calling me a loser in every thread.',
+      createdAt: minutesAgo(hours(2)),
+    },
+    luffyComment && {
+      reporterId: userIds.nami,
+      targetType: 'comment' as const,
+      targetId: luffyComment.id,
+      reason: 'spam' as const,
+      details: 'The same meat emoji forty times.',
+      createdAt: minutesAgo(hours(5)),
+    },
+    {
+      reporterId: userIds.vegeta,
+      targetType: 'user' as const,
+      targetId: userIds.goku,
+      reason: 'other' as const,
+      details: 'Challenges me to a fight in every community.',
+      createdAt: minutesAgo(days(1)),
+    },
+  ].filter((report) => report !== null);
+
+  await prisma.contentReport.createMany({ data: reports });
+  return reports.length;
+}
+
 async function createNotifications() {
   const day = 24 * 60 * 60 * 1000;
   const readAt = (createdAt: Date) =>
@@ -2124,6 +2169,7 @@ async function main() {
 
   console.log('❤️ Likes created:', await createLikes());
 
+  console.log('🚩 Content reports created:', await createContentReports());
   console.log('🔔 Notifications created:', await createNotifications());
 
   console.log('✅ Seeding complete!');
