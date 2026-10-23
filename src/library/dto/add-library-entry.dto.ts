@@ -1,4 +1,12 @@
-import { IsBoolean, IsIn, IsOptional, Matches } from 'class-validator';
+import {
+  IsBoolean,
+  IsIn,
+  IsInt,
+  IsOptional,
+  Matches,
+  Max,
+  Min,
+} from 'class-validator';
 import { LibraryStatus, MediaType } from '../../../prisma/generated/client';
 
 export class AddLibraryEntryDto {
@@ -15,4 +23,10 @@ export class AddLibraryEntryDto {
   @IsOptional()
   @IsBoolean()
   isPublic?: boolean;
+
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  @Max(100000)
+  progress?: number;
 }

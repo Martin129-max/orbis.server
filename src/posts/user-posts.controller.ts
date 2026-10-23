@@ -23,8 +23,14 @@ export class UserPostsController {
     @Req() req,
     @Param('username') username: string,
     @Query('cursor') cursor?: string,
+    @Query('exclude') exclude?: string,
   ) {
-    return this.postsService.findForProfile(req.user.userId, username, cursor);
+    return this.postsService.findForProfile(
+      req.user.userId,
+      username,
+      cursor,
+      exclude,
+    );
   }
 
   @RateLimit(10, MINUTE)

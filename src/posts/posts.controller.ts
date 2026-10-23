@@ -25,11 +25,13 @@ export class PostsController {
     @Req() req,
     @Param('communityId', ParseIntPipe) communityId: number,
     @Query('cursor') cursor?: string,
+    @Query('exclude') exclude?: string,
   ) {
     return this.postsService.findForCommunity(
       req.user.userId,
       communityId,
       cursor,
+      exclude,
     );
   }
 

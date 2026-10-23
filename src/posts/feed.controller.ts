@@ -8,7 +8,11 @@ export class FeedController {
   constructor(private readonly postsService: PostsService) {}
 
   @Get()
-  findMine(@Req() req, @Query('cursor') cursor?: string) {
-    return this.postsService.findForMember(req.user.userId, cursor);
+  findMine(
+    @Req() req,
+    @Query('cursor') cursor?: string,
+    @Query('exclude') exclude?: string,
+  ) {
+    return this.postsService.findForMember(req.user.userId, cursor, exclude);
   }
 }

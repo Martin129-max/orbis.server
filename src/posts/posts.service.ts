@@ -90,6 +90,15 @@ export type FeedItem = PostItem | (ThreadSummary & Engagement) | ActivityItem;
 
 const RANK = { post: 0, thread: 1, activity: 2 } as const;
 
+function excludedTypes(raw?: string) {
+  if (!raw) return new Set<string>();
+  const types = raw.split(',');
+  if (types.some((type) => !Object.prototype.hasOwnProperty.call(RANK, type))) {
+    throw new BadRequestException('Invalid feed content type');
+  }
+  return new Set(types);
+}
+
 type FeedCursor = { createdAt: Date; rank: number; id: number };
 
 const newestFirst = [{ createdAt: 'desc' as const }, { id: 'desc' as const }];
@@ -221,33 +230,39 @@ export class PostsService {
     viewerId: number,
     communityId: number,
     rawCursor?: string,
+    exclude?: string,
   ): Promise<Page<FeedItem>> {
     const cursor = parseFeedCursor(rawCursor);
+    const excluded = excludedTypes(exclude);
     const reported = await reportedBy(this.prisma, viewerId);
 
     const [posts, activities] = await Promise.all([
-      this.prisma.post.findMany({
-        where: {
-          communityId,
-          ...olderThan(cursor, RANK.post),
-          ...visibleTo(viewerId, reported.post),
-        },
-        orderBy: newestFirst,
-        take: PAGE_SIZE + 1,
-        include: postInclude,
-      }),
-      this.prisma.libraryActivity.findMany({
-        where: {
-          entry: {
-            isPublic: true,
-            user: { memberships: { some: { communityId } } },
-          },
-          ...olderThan(cursor, RANK.activity),
-        },
-        orderBy: newestFirst,
-        take: PAGE_SIZE + 1,
-        include: activityInclude,
-      }),
+      excluded.has('post')
+        ? []
+        : this.prisma.post.findMany({
+            where: {
+              communityId,
+              ...olderThan(cursor, RANK.post),
+              ...visibleTo(viewerId, reported.post),
+            },
+            orderBy: newestFirst,
+            take: PAGE_SIZE + 1,
+            include: postInclude,
+          }),
+      excluded.has('activity')
+        ? []
+        : this.prisma.libraryActivity.findMany({
+            where: {
+              entry: {
+                isPublic: true,
+                user: { memberships: { some: { communityId } } },
+              },
+              ...olderThan(cursor, RANK.activity),
+            },
+            orderBy: newestFirst,
+            take: PAGE_SIZE + 1,
+            include: activityInclude,
+          }),
     ]);
 
     const merged = [
@@ -265,53 +280,65 @@ export class PostsService {
   async findForMember(
     userId: number,
     rawCursor?: string,
+    exclude?: string,
   ): Promise<Page<FeedItem>> {
     const cursor = parseFeedCursor(rawCursor);
+    const excluded = excludedTypes(exclude);
     const member = { community: { memberships: { some: { userId } } } };
     const reported = await reportedBy(this.prisma, userId);
 
     const [posts, threads, activities] = await Promise.all([
-      this.prisma.post.findMany({
-        where: {
-          OR: [
-            member,
-            { wallUserId: userId },
-            { authorId: userId, communityId: null, mediaType: null },
-            { wallUser: friendsOf(userId) },
-          ],
-          ...olderThan(cursor, RANK.post),
-          ...visibleTo(userId, reported.post),
-        },
-        orderBy: newestFirst,
-        take: PAGE_SIZE + 1,
-        include: postInclude,
-      }),
-      this.prisma.thread.findMany({
-        where: {
-          ...member,
-          ...olderThan(cursor, RANK.thread),
-          ...visibleTo(userId, reported.thread),
-        },
-        orderBy: newestFirst,
-        take: PAGE_SIZE + 1,
-        include: threadInclude,
-      }),
-      this.prisma.libraryActivity.findMany({
-        where: {
-          entry: {
-            isPublic: true,
-            user: {
-              memberships: {
-                some: { community: { memberships: { some: { userId } } } },
-              },
+      excluded.has('post')
+        ? []
+        : this.prisma.post.findMany({
+            where: {
+              AND: [
+                {
+                  OR: [
+                    member,
+                    { wallUserId: userId },
+                    { authorId: userId, communityId: null, mediaType: null },
+                    { wallUser: friendsOf(userId) },
+                  ],
+                },
+                olderThan(cursor, RANK.post),
+                visibleTo(userId, reported.post),
+              ],
             },
-          },
-          ...olderThan(cursor, RANK.activity),
-        },
-        orderBy: newestFirst,
-        take: PAGE_SIZE + 1,
-        include: activityInclude,
-      }),
+            orderBy: newestFirst,
+            take: PAGE_SIZE + 1,
+            include: postInclude,
+          }),
+      excluded.has('thread')
+        ? []
+        : this.prisma.thread.findMany({
+            where: {
+              ...member,
+              ...olderThan(cursor, RANK.thread),
+              ...visibleTo(userId, reported.thread),
+            },
+            orderBy: newestFirst,
+            take: PAGE_SIZE + 1,
+            include: threadInclude,
+          }),
+      excluded.has('activity')
+        ? []
+        : this.prisma.libraryActivity.findMany({
+            where: {
+              entry: {
+                isPublic: true,
+                user: {
+                  memberships: {
+                    some: { community: { memberships: { some: { userId } } } },
+                  },
+                },
+              },
+              ...olderThan(cursor, RANK.activity),
+            },
+            orderBy: newestFirst,
+            take: PAGE_SIZE + 1,
+            include: activityInclude,
+          }),
     ]);
 
     const merged = [
@@ -340,8 +367,10 @@ export class PostsService {
     viewerId: number,
     username: string,
     rawCursor?: string,
+    exclude?: string,
   ): Promise<Page<FeedItem>> {
     const cursor = parseFeedCursor(rawCursor);
+    const excluded = excludedTypes(exclude);
     const owner = await this.prisma.user.findUnique({
       where: { username: normalizeUsername(username) },
       select: { id: true },
@@ -353,40 +382,50 @@ export class PostsService {
       OR: [{ isPublic: true }, { memberships: { some: { userId: viewerId } } }],
     };
     const [posts, threads, activities] = await Promise.all([
-      this.prisma.post.findMany({
-        where: {
-          OR: [
-            { wallUserId: owner.id },
-            { authorId: owner.id, communityId: null, mediaType: null },
-            { authorId: owner.id, community: visibleCommunity },
-          ],
-          ...olderThan(cursor, RANK.post),
-          ...visibleTo(viewerId, reported.post),
-        },
-        orderBy: newestFirst,
-        take: PAGE_SIZE + 1,
-        include: postInclude,
-      }),
-      this.prisma.thread.findMany({
-        where: {
-          authorId: owner.id,
-          community: visibleCommunity,
-          ...olderThan(cursor, RANK.thread),
-          ...visibleTo(viewerId, reported.thread),
-        },
-        orderBy: newestFirst,
-        take: PAGE_SIZE + 1,
-        include: threadInclude,
-      }),
-      this.prisma.libraryActivity.findMany({
-        where: {
-          entry: { userId: owner.id, isPublic: true },
-          ...olderThan(cursor, RANK.activity),
-        },
-        orderBy: newestFirst,
-        take: PAGE_SIZE + 1,
-        include: activityInclude,
-      }),
+      excluded.has('post')
+        ? []
+        : this.prisma.post.findMany({
+            where: {
+              AND: [
+                {
+                  OR: [
+                    { wallUserId: owner.id },
+                    { authorId: owner.id, communityId: null, mediaType: null },
+                    { authorId: owner.id, community: visibleCommunity },
+                  ],
+                },
+                olderThan(cursor, RANK.post),
+                visibleTo(viewerId, reported.post),
+              ],
+            },
+            orderBy: newestFirst,
+            take: PAGE_SIZE + 1,
+            include: postInclude,
+          }),
+      excluded.has('thread')
+        ? []
+        : this.prisma.thread.findMany({
+            where: {
+              authorId: owner.id,
+              community: visibleCommunity,
+              ...olderThan(cursor, RANK.thread),
+              ...visibleTo(viewerId, reported.thread),
+            },
+            orderBy: newestFirst,
+            take: PAGE_SIZE + 1,
+            include: threadInclude,
+          }),
+      excluded.has('activity')
+        ? []
+        : this.prisma.libraryActivity.findMany({
+            where: {
+              entry: { userId: owner.id, isPublic: true },
+              ...olderThan(cursor, RANK.activity),
+            },
+            orderBy: newestFirst,
+            take: PAGE_SIZE + 1,
+            include: activityInclude,
+          }),
     ]);
 
     const merged = [
@@ -447,19 +486,26 @@ export class PostsService {
     mediaType: MediaType,
     mediaSourceId: string,
     rawCursor?: string,
+    exclude?: string,
   ): Promise<Page<FeedItem>> {
     const cursor = parseFeedCursor(rawCursor);
-    const posts = await this.prisma.post.findMany({
-      where: {
-        mediaType,
-        mediaSourceId,
-        ...olderThan(cursor, RANK.post),
-        ...visibleTo(viewerId, (await reportedBy(this.prisma, viewerId)).post),
-      },
-      orderBy: newestFirst,
-      take: PAGE_SIZE + 1,
-      include: postInclude,
-    });
+    const excluded = excludedTypes(exclude);
+    const posts = excluded.has('post')
+      ? []
+      : await this.prisma.post.findMany({
+          where: {
+            mediaType,
+            mediaSourceId,
+            ...olderThan(cursor, RANK.post),
+            ...visibleTo(
+              viewerId,
+              (await reportedBy(this.prisma, viewerId)).post,
+            ),
+          },
+          orderBy: newestFirst,
+          take: PAGE_SIZE + 1,
+          include: postInclude,
+        });
 
     const merged = posts.map((post) => ({ ...post, type: 'post' as const }));
     const page = merged.slice(0, PAGE_SIZE);

@@ -137,9 +137,22 @@ export class LibraryService {
 
   async add(
     userId: number,
-    { type, sourceId, status = 'planned', isPublic = true }: AddLibraryEntryDto,
+    {
+      type,
+      sourceId,
+      status = 'planned',
+      isPublic = true,
+      progress = 0,
+    }: AddLibraryEntryDto,
   ): Promise<LibraryEntryView> {
     const media = await getMedia(type, sourceId);
+    const total = totalOf(media);
+    const initialProgress =
+      type === 'game'
+        ? 0
+        : status === 'completed' && total !== null
+          ? total
+          : Math.min(progress, total ?? progress);
 
     try {
       return await this.prisma.libraryEntry.create({
@@ -152,8 +165,8 @@ export class LibraryService {
           coverImage: media.coverImage,
           year: media.year,
           status,
-          ...this.progressFor(status, totalOf(media)),
-          total: totalOf(media),
+          progress: initialProgress,
+          total,
           isPublic,
           activities: { create: { status } },
         },
@@ -260,10 +273,6 @@ export class LibraryService {
         data: { entryId, status, progressFrom: before + 1, progressTo: after },
       });
     }
-  }
-
-  private progressFor(status: string, total: number | null) {
-    return { progress: status === 'completed' && total ? total : 0 };
   }
 
   async remove(userId: number, id: number) {

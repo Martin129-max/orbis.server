@@ -26,12 +26,14 @@ export class MediaPostsController {
     @Param('type', new ParseEnumPipe(MediaType)) type: MediaType,
     @Param('sourceId') sourceId: string,
     @Query('cursor') cursor?: string,
+    @Query('exclude') exclude?: string,
   ) {
     return this.postsService.findForMedia(
       req.user.userId,
       type,
       sourceId,
       cursor,
+      exclude,
     );
   }
 
