@@ -10,6 +10,7 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import * as bcrypt from 'bcrypt';
 import { ADMINISTRATOR } from '../src/communities/permissions';
 import { ticketNumber } from '../src/reports/ticket';
+import { getReporterStatusLabel } from '../src/reports/status-labels';
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
 const prisma = new PrismaClient({ adapter });
@@ -1081,11 +1082,6 @@ const reports: [
   ],
 ];
 
-const reportStatusLabels: Record<ReportStatus, string> = {
-  todo: 'To do',
-  in_progress: 'In progress',
-  done: 'Done',
-};
 
 async function createNotifications() {
   const day = 24 * 60 * 60 * 1000;
@@ -1246,14 +1242,14 @@ async function createNotifications() {
 
   const movedReports = await prisma.report.findMany({
     where: { status: { not: 'todo' } },
-    select: { id: true, authorId: true, status: true, createdAt: true },
+    select: { id: true, authorId: true, status: true, category: true, createdAt: true },
   });
   for (const report of movedReports) {
     notifications.push({
       userId: report.authorId,
       actorId: userIds.admin,
       type: 'report_status',
-      message: `moved your report ${ticketNumber(report.id)} to ${reportStatusLabels[report.status]}`,
+      message: `updated your report ${ticketNumber(report.id)}: ${getReporterStatusLabel(report.status, report.category)}`,
       link: '/reports',
       createdAt: new Date(
         Math.min(Date.now(), report.createdAt.getTime() + 20 * 60 * 1000),
