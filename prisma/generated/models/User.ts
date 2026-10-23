@@ -82,6 +82,7 @@ export type UserCountAggregateOutputType = {
   isAdmin: number
   tourCompletedAt: number
   checklistDismissedAt: number
+  completedTours: number
   createdAt: number
   _all: number
 }
@@ -143,6 +144,7 @@ export type UserCountAggregateInputType = {
   isAdmin?: true
   tourCompletedAt?: true
   checklistDismissedAt?: true
+  completedTours?: true
   createdAt?: true
   _all?: true
 }
@@ -247,6 +249,7 @@ export type UserGroupByOutputType = {
   isAdmin: boolean
   tourCompletedAt: Date | null
   checklistDismissedAt: Date | null
+  completedTours: string[]
   createdAt: Date
   _count: UserCountAggregateOutputType | null
   _avg: UserAvgAggregateOutputType | null
@@ -287,6 +290,7 @@ export type UserWhereInput = {
   isAdmin?: Prisma.BoolFilter<"User"> | boolean
   tourCompletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   checklistDismissedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  completedTours?: Prisma.StringNullableListFilter<"User">
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   ownedCommunities?: Prisma.CommunityListRelationFilter
   memberships?: Prisma.MembershipListRelationFilter
@@ -324,6 +328,7 @@ export type UserOrderByWithRelationInput = {
   isAdmin?: Prisma.SortOrder
   tourCompletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   checklistDismissedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  completedTours?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   ownedCommunities?: Prisma.CommunityOrderByRelationAggregateInput
   memberships?: Prisma.MembershipOrderByRelationAggregateInput
@@ -364,6 +369,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   isAdmin?: Prisma.BoolFilter<"User"> | boolean
   tourCompletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   checklistDismissedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  completedTours?: Prisma.StringNullableListFilter<"User">
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   ownedCommunities?: Prisma.CommunityListRelationFilter
   memberships?: Prisma.MembershipListRelationFilter
@@ -401,6 +407,7 @@ export type UserOrderByWithAggregationInput = {
   isAdmin?: Prisma.SortOrder
   tourCompletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   checklistDismissedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  completedTours?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _avg?: Prisma.UserAvgOrderByAggregateInput
@@ -426,6 +433,7 @@ export type UserScalarWhereWithAggregatesInput = {
   isAdmin?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   tourCompletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   checklistDismissedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+  completedTours?: Prisma.StringNullableListFilter<"User">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
 
@@ -442,6 +450,7 @@ export type UserCreateInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
@@ -479,6 +488,7 @@ export type UserUncheckedCreateInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
@@ -515,6 +525,7 @@ export type UserUpdateInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
@@ -552,6 +563,7 @@ export type UserUncheckedUpdateInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
@@ -589,6 +601,7 @@ export type UserCreateManyInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
 }
 
@@ -605,6 +618,7 @@ export type UserUpdateManyMutationInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -622,6 +636,7 @@ export type UserUncheckedUpdateManyInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -633,6 +648,14 @@ export type UserScalarRelationFilter = {
 export type UserNullableScalarRelationFilter = {
   is?: Prisma.UserWhereInput | null
   isNot?: Prisma.UserWhereInput | null
+}
+
+export type StringNullableListFilter<$PrismaModel = never> = {
+  equals?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
+  has?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
+  hasEvery?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  hasSome?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  isEmpty?: boolean
 }
 
 export type UserCountOrderByAggregateInput = {
@@ -649,6 +672,7 @@ export type UserCountOrderByAggregateInput = {
   isAdmin?: Prisma.SortOrder
   tourCompletedAt?: Prisma.SortOrder
   checklistDismissedAt?: Prisma.SortOrder
+  completedTours?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -982,8 +1006,17 @@ export type UserUpdateOneWithoutResolvedReportsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutResolvedReportsInput, Prisma.UserUpdateWithoutResolvedReportsInput>, Prisma.UserUncheckedUpdateWithoutResolvedReportsInput>
 }
 
+export type UserCreatecompletedToursInput = {
+  set: string[]
+}
+
 export type EnumThemeFieldUpdateOperationsInput = {
   set?: $Enums.Theme
+}
+
+export type UserUpdatecompletedToursInput = {
+  set?: string[]
+  push?: string | string[]
 }
 
 export type UserCreateWithoutOwnedCommunitiesInput = {
@@ -999,6 +1032,7 @@ export type UserCreateWithoutOwnedCommunitiesInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
   posts?: Prisma.PostCreateNestedManyWithoutAuthorInput
@@ -1035,6 +1069,7 @@ export type UserUncheckedCreateWithoutOwnedCommunitiesInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
@@ -1086,6 +1121,7 @@ export type UserUpdateWithoutOwnedCommunitiesInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
   posts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
@@ -1122,6 +1158,7 @@ export type UserUncheckedUpdateWithoutOwnedCommunitiesInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
   posts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
@@ -1157,6 +1194,7 @@ export type UserCreateWithoutMembershipsInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityCreateNestedManyWithoutOwnerInput
   posts?: Prisma.PostCreateNestedManyWithoutAuthorInput
@@ -1193,6 +1231,7 @@ export type UserUncheckedCreateWithoutMembershipsInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutOwnerInput
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
@@ -1244,6 +1283,7 @@ export type UserUpdateWithoutMembershipsInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUpdateManyWithoutOwnerNestedInput
   posts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
@@ -1280,6 +1320,7 @@ export type UserUncheckedUpdateWithoutMembershipsInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutOwnerNestedInput
   posts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
@@ -1315,6 +1356,7 @@ export type UserCreateWithoutRailFoldersInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
@@ -1351,6 +1393,7 @@ export type UserUncheckedCreateWithoutRailFoldersInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
@@ -1402,6 +1445,7 @@ export type UserUpdateWithoutRailFoldersInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
@@ -1438,6 +1482,7 @@ export type UserUncheckedUpdateWithoutRailFoldersInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
@@ -1473,6 +1518,7 @@ export type UserCreateWithoutInvitesInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
@@ -1509,6 +1555,7 @@ export type UserUncheckedCreateWithoutInvitesInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
@@ -1560,6 +1607,7 @@ export type UserUpdateWithoutInvitesInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
@@ -1596,6 +1644,7 @@ export type UserUncheckedUpdateWithoutInvitesInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
@@ -1631,6 +1680,7 @@ export type UserCreateWithoutWallPostsInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
@@ -1667,6 +1717,7 @@ export type UserUncheckedCreateWithoutWallPostsInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
@@ -1707,6 +1758,7 @@ export type UserCreateWithoutPostsInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
@@ -1743,6 +1795,7 @@ export type UserUncheckedCreateWithoutPostsInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
@@ -1794,6 +1847,7 @@ export type UserUpdateWithoutWallPostsInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
@@ -1830,6 +1884,7 @@ export type UserUncheckedUpdateWithoutWallPostsInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
@@ -1876,6 +1931,7 @@ export type UserUpdateWithoutPostsInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
@@ -1912,6 +1968,7 @@ export type UserUncheckedUpdateWithoutPostsInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
@@ -1947,6 +2004,7 @@ export type UserCreateWithoutThreadsInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
@@ -1983,6 +2041,7 @@ export type UserUncheckedCreateWithoutThreadsInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
@@ -2034,6 +2093,7 @@ export type UserUpdateWithoutThreadsInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
@@ -2070,6 +2130,7 @@ export type UserUncheckedUpdateWithoutThreadsInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
@@ -2105,6 +2166,7 @@ export type UserCreateWithoutCommentsInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
@@ -2141,6 +2203,7 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
@@ -2192,6 +2255,7 @@ export type UserUpdateWithoutCommentsInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
@@ -2228,6 +2292,7 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
@@ -2263,6 +2328,7 @@ export type UserCreateWithoutVotesInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
@@ -2299,6 +2365,7 @@ export type UserUncheckedCreateWithoutVotesInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
@@ -2350,6 +2417,7 @@ export type UserUpdateWithoutVotesInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
@@ -2386,6 +2454,7 @@ export type UserUncheckedUpdateWithoutVotesInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
@@ -2421,6 +2490,7 @@ export type UserCreateWithoutLikesInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
@@ -2457,6 +2527,7 @@ export type UserUncheckedCreateWithoutLikesInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
@@ -2508,6 +2579,7 @@ export type UserUpdateWithoutLikesInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
@@ -2544,6 +2616,7 @@ export type UserUncheckedUpdateWithoutLikesInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
@@ -2579,6 +2652,7 @@ export type UserCreateWithoutSentFriendshipsInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
@@ -2615,6 +2689,7 @@ export type UserUncheckedCreateWithoutSentFriendshipsInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
@@ -2655,6 +2730,7 @@ export type UserCreateWithoutReceivedFriendshipsInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
@@ -2691,6 +2767,7 @@ export type UserUncheckedCreateWithoutReceivedFriendshipsInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
@@ -2742,6 +2819,7 @@ export type UserUpdateWithoutSentFriendshipsInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
@@ -2778,6 +2856,7 @@ export type UserUncheckedUpdateWithoutSentFriendshipsInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
@@ -2824,6 +2903,7 @@ export type UserUpdateWithoutReceivedFriendshipsInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
@@ -2860,6 +2940,7 @@ export type UserUncheckedUpdateWithoutReceivedFriendshipsInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
@@ -2895,6 +2976,7 @@ export type UserCreateWithoutLibraryEntriesInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
@@ -2931,6 +3013,7 @@ export type UserUncheckedCreateWithoutLibraryEntriesInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
@@ -2982,6 +3065,7 @@ export type UserUpdateWithoutLibraryEntriesInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
@@ -3018,6 +3102,7 @@ export type UserUncheckedUpdateWithoutLibraryEntriesInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
@@ -3053,6 +3138,7 @@ export type UserCreateWithoutNotificationsInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
@@ -3089,6 +3175,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
@@ -3129,6 +3216,7 @@ export type UserCreateWithoutCausedNotificationsInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
@@ -3165,6 +3253,7 @@ export type UserUncheckedCreateWithoutCausedNotificationsInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
@@ -3216,6 +3305,7 @@ export type UserUpdateWithoutNotificationsInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
@@ -3252,6 +3342,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
@@ -3298,6 +3389,7 @@ export type UserUpdateWithoutCausedNotificationsInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
@@ -3334,6 +3426,7 @@ export type UserUncheckedUpdateWithoutCausedNotificationsInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
@@ -3369,6 +3462,7 @@ export type UserCreateWithoutReportsInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
@@ -3405,6 +3499,7 @@ export type UserUncheckedCreateWithoutReportsInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
@@ -3445,6 +3540,7 @@ export type UserCreateWithoutAssignedReportsInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
@@ -3481,6 +3577,7 @@ export type UserUncheckedCreateWithoutAssignedReportsInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
@@ -3532,6 +3629,7 @@ export type UserUpdateWithoutReportsInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
@@ -3568,6 +3666,7 @@ export type UserUncheckedUpdateWithoutReportsInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
@@ -3614,6 +3713,7 @@ export type UserUpdateWithoutAssignedReportsInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
@@ -3650,6 +3750,7 @@ export type UserUncheckedUpdateWithoutAssignedReportsInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
@@ -3685,6 +3786,7 @@ export type UserCreateWithoutReportCommentsInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
@@ -3721,6 +3823,7 @@ export type UserUncheckedCreateWithoutReportCommentsInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
@@ -3772,6 +3875,7 @@ export type UserUpdateWithoutReportCommentsInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
@@ -3808,6 +3912,7 @@ export type UserUncheckedUpdateWithoutReportCommentsInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
@@ -3843,6 +3948,7 @@ export type UserCreateWithoutContentReportsInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
@@ -3879,6 +3985,7 @@ export type UserUncheckedCreateWithoutContentReportsInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
@@ -3919,6 +4026,7 @@ export type UserCreateWithoutResolvedReportsInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
@@ -3955,6 +4063,7 @@ export type UserUncheckedCreateWithoutResolvedReportsInput = {
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
   createdAt?: Date | string
   ownedCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutOwnerInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
@@ -4006,6 +4115,7 @@ export type UserUpdateWithoutContentReportsInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
@@ -4042,6 +4152,7 @@ export type UserUncheckedUpdateWithoutContentReportsInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
@@ -4088,6 +4199,7 @@ export type UserUpdateWithoutResolvedReportsInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
@@ -4124,6 +4236,7 @@ export type UserUncheckedUpdateWithoutResolvedReportsInput = {
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
@@ -4362,6 +4475,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   isAdmin?: boolean
   tourCompletedAt?: boolean
   checklistDismissedAt?: boolean
+  completedTours?: boolean
   createdAt?: boolean
   ownedCommunities?: boolean | Prisma.User$ownedCommunitiesArgs<ExtArgs>
   memberships?: boolean | Prisma.User$membershipsArgs<ExtArgs>
@@ -4400,6 +4514,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   isAdmin?: boolean
   tourCompletedAt?: boolean
   checklistDismissedAt?: boolean
+  completedTours?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["user"]>
 
@@ -4417,6 +4532,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   isAdmin?: boolean
   tourCompletedAt?: boolean
   checklistDismissedAt?: boolean
+  completedTours?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["user"]>
 
@@ -4434,10 +4550,11 @@ export type UserSelectScalar = {
   isAdmin?: boolean
   tourCompletedAt?: boolean
   checklistDismissedAt?: boolean
+  completedTours?: boolean
   createdAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "username" | "name" | "avatarUrl" | "coverUrl" | "backgroundUrl" | "password" | "theme" | "appearOffline" | "isAdmin" | "tourCompletedAt" | "checklistDismissedAt" | "createdAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "username" | "name" | "avatarUrl" | "coverUrl" | "backgroundUrl" | "password" | "theme" | "appearOffline" | "isAdmin" | "tourCompletedAt" | "checklistDismissedAt" | "completedTours" | "createdAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   ownedCommunities?: boolean | Prisma.User$ownedCommunitiesArgs<ExtArgs>
   memberships?: boolean | Prisma.User$membershipsArgs<ExtArgs>
@@ -4502,6 +4619,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     isAdmin: boolean
     tourCompletedAt: Date | null
     checklistDismissedAt: Date | null
+    completedTours: string[]
     createdAt: Date
   }, ExtArgs["result"]["user"]>
   composites: {}
@@ -4959,6 +5077,7 @@ export interface UserFieldRefs {
   readonly isAdmin: Prisma.FieldRef<"User", 'Boolean'>
   readonly tourCompletedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly checklistDismissedAt: Prisma.FieldRef<"User", 'DateTime'>
+  readonly completedTours: Prisma.FieldRef<"User", 'String[]'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
 }
     

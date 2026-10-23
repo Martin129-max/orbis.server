@@ -65,6 +65,7 @@ export type PublicProfile = {
 export type Onboarding = {
   tourCompleted: boolean;
   checklistDismissed: boolean;
+  completedTours: string[];
   steps: {
     avatar: boolean;
     community: boolean;
@@ -384,6 +385,7 @@ export class UsersService {
           avatarUrl: true,
           tourCompletedAt: true,
           checklistDismissedAt: true,
+          completedTours: true,
         },
       }),
       this.prisma.membership.count({ where: { userId: id } }),
@@ -402,6 +404,7 @@ export class UsersService {
     return {
       tourCompleted: user.tourCompletedAt !== null,
       checklistDismissed: user.checklistDismissedAt !== null,
+      completedTours: user.completedTours,
       steps: {
         avatar: user.avatarUrl !== null,
         community: memberships > 0,
@@ -416,16 +419,35 @@ export class UsersService {
 
   async updateOnboarding(
     id: number,
-    { tourCompleted, checklistDismissed }: UpdateOnboardingDto,
+    {
+      tourCompleted,
+      checklistDismissed,
+      completedTour,
+      resetTours,
+    }: UpdateOnboardingDto,
   ): Promise<Onboarding> {
     const at = (value?: boolean) =>
       value === undefined ? undefined : value ? new Date() : null;
+
+    const completedTours = completedTour
+      ? (
+          await this.prisma.user.findUniqueOrThrow({
+            where: { id },
+            select: { completedTours: true },
+          })
+        ).completedTours
+      : [];
 
     await this.prisma.user.update({
       where: { id },
       data: {
         tourCompletedAt: at(tourCompleted),
         checklistDismissedAt: at(checklistDismissed),
+        ...(completedTour &&
+          !completedTours.includes(completedTour) && {
+            completedTours: { push: completedTour },
+          }),
+        ...(resetTours && { tourCompletedAt: null, completedTours: [] }),
       },
     });
     return this.onboarding(id);

@@ -1,4 +1,4 @@
-import { IsBoolean, IsOptional } from 'class-validator';
+import { IsBoolean, IsOptional, Matches } from 'class-validator';
 
 export class UpdateOnboardingDto {
   @IsOptional()
@@ -8,4 +8,12 @@ export class UpdateOnboardingDto {
   @IsOptional()
   @IsBoolean()
   checklistDismissed?: boolean;
+
+  @IsOptional()
+  @Matches(/^[a-z][a-z-]{0,39}$/)
+  completedTour?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  resetTours?: boolean;
 }

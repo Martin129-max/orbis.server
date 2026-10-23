@@ -2207,6 +2207,7 @@ export const UserScalarFieldEnum = {
   isAdmin: 'isAdmin',
   tourCompletedAt: 'tourCompletedAt',
   checklistDismissedAt: 'checklistDismissedAt',
+  completedTours: 'completedTours',
   createdAt: 'createdAt'
 } as const
 
