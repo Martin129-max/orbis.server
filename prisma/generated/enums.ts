@@ -62,6 +62,14 @@ export const LibraryStatus = {
 export type LibraryStatus = (typeof LibraryStatus)[keyof typeof LibraryStatus]
 
 
+export const ConversationStatus = {
+  accepted: 'accepted',
+  request: 'request'
+} as const
+
+export type ConversationStatus = (typeof ConversationStatus)[keyof typeof ConversationStatus]
+
+
 export const NotificationType = {
   post_comment: 'post_comment',
   thread_comment: 'thread_comment',

@@ -5,39 +5,43 @@ enum Theme {
 }
 
 model User {
-  id                   Int             @id @default(autoincrement())
-  email                String          @unique
-  username             String          @unique
+  id                   Int                  @id @default(autoincrement())
+  email                String               @unique
+  username             String               @unique
   name                 String?
   avatarUrl            String?
   coverUrl             String?
   backgroundUrl        String?
   password             String
-  theme                Theme           @default(dark)
-  appearOffline        Boolean         @default(false)
-  isAdmin              Boolean         @default(false)
+  theme                Theme                @default(dark)
+  appearOffline        Boolean              @default(false)
+  isAdmin              Boolean              @default(false)
   tourCompletedAt      DateTime?
   checklistDismissedAt DateTime?
-  completedTours       String[]        @default([])
-  createdAt            DateTime        @default(now())
+  completedTours       String[]             @default([])
+  createdAt            DateTime             @default(now())
   ownedCommunities     Community[]
   memberships          Membership[]
   posts                Post[]
-  wallPosts            Post[]          @relation("WallPosts")
-  sentFriendships      Friendship[]    @relation("FriendshipRequester")
-  receivedFriendships  Friendship[]    @relation("FriendshipAddressee")
+  wallPosts            Post[]               @relation("WallPosts")
+  sentFriendships      Friendship[]         @relation("FriendshipRequester")
+  receivedFriendships  Friendship[]         @relation("FriendshipAddressee")
   threads              Thread[]
   comments             Comment[]
   votes                Vote[]
-  reports              Report[]        @relation("ReportAuthor")
-  assignedReports      Report[]        @relation("ReportAssignee")
+  reports              Report[]             @relation("ReportAuthor")
+  assignedReports      Report[]             @relation("ReportAssignee")
   reportComments       ReportComment[]
-  contentReports       ContentReport[] @relation("ContentReporter")
-  resolvedReports      ContentReport[] @relation("ContentReportResolver")
-  notifications        Notification[]  @relation("NotificationRecipient")
-  causedNotifications  Notification[]  @relation("NotificationActor")
+  contentReports       ContentReport[]      @relation("ContentReporter")
+  resolvedReports      ContentReport[]      @relation("ContentReportResolver")
+  notifications        Notification[]       @relation("NotificationRecipient")
+  causedNotifications  Notification[]       @relation("NotificationActor")
   libraryEntries       LibraryEntry[]
   railFolders          RailFolder[]
   likes                Like[]
   invites              Invite[]
+  conversationsAsA     Conversation[]       @relation("ConversationUserA")
+  conversationsAsB     Conversation[]       @relation("ConversationUserB")
+  conversations        ConversationMember[]
+  messages             Message[]
 }

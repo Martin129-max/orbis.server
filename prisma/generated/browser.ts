@@ -88,6 +88,21 @@ export type LibraryEntry = Prisma.LibraryEntryModel
  */
 export type LibraryActivity = Prisma.LibraryActivityModel
 /**
+ * Model Conversation
+ * 
+ */
+export type Conversation = Prisma.ConversationModel
+/**
+ * Model ConversationMember
+ * 
+ */
+export type ConversationMember = Prisma.ConversationMemberModel
+/**
+ * Model Message
+ * 
+ */
+export type Message = Prisma.MessageModel
+/**
  * Model Notification
  * 
  */

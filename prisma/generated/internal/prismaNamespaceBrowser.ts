@@ -65,6 +65,9 @@ export const ModelName = {
   Friendship: 'Friendship',
   LibraryEntry: 'LibraryEntry',
   LibraryActivity: 'LibraryActivity',
+  Conversation: 'Conversation',
+  ConversationMember: 'ConversationMember',
+  Message: 'Message',
   Notification: 'Notification',
   Report: 'Report',
   ReportComment: 'ReportComment',
@@ -272,6 +275,41 @@ export const LibraryActivityScalarFieldEnum = {
 } as const
 
 export type LibraryActivityScalarFieldEnum = (typeof LibraryActivityScalarFieldEnum)[keyof typeof LibraryActivityScalarFieldEnum]
+
+
+export const ConversationScalarFieldEnum = {
+  id: 'id',
+  userAId: 'userAId',
+  userBId: 'userBId',
+  lastText: 'lastText',
+  lastSenderId: 'lastSenderId',
+  lastMessageAt: 'lastMessageAt',
+  createdAt: 'createdAt'
+} as const
+
+export type ConversationScalarFieldEnum = (typeof ConversationScalarFieldEnum)[keyof typeof ConversationScalarFieldEnum]
+
+
+export const ConversationMemberScalarFieldEnum = {
+  conversationId: 'conversationId',
+  userId: 'userId',
+  status: 'status',
+  unread: 'unread',
+  readAt: 'readAt'
+} as const
+
+export type ConversationMemberScalarFieldEnum = (typeof ConversationMemberScalarFieldEnum)[keyof typeof ConversationMemberScalarFieldEnum]
+
+
+export const MessageScalarFieldEnum = {
+  id: 'id',
+  conversationId: 'conversationId',
+  senderId: 'senderId',
+  text: 'text',
+  createdAt: 'createdAt'
+} as const
+
+export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
 
 
 export const NotificationScalarFieldEnum = {

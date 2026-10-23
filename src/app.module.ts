@@ -22,6 +22,7 @@ import { LibraryModule } from './library/library.module';
 import { InvitesModule } from './invites/invites.module';
 import { AdminModule } from './admin/admin.module';
 import { ModerationModule } from './moderation/moderation.module';
+import { MessagesModule } from './messages/messages.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaService } from './prisma.service';
@@ -48,6 +49,7 @@ import { PrismaService } from './prisma.service';
     InvitesModule,
     AdminModule,
     ModerationModule,
+    MessagesModule,
   ],
   controllers: [AppController],
   providers: [

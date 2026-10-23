@@ -63,8 +63,8 @@ export class PresenceGateway
     return this.connections.has(userId);
   }
 
-  notify(userIds: number[], event: string) {
-    this.server.to(userIds.map(room)).emit(event);
+  notify(userIds: number[], event: string, payload?: unknown) {
+    this.server.to(userIds.map(room)).emit(event, payload);
   }
 
   async broadcastPresence(userId: number) {

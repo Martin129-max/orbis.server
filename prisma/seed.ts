@@ -11,6 +11,7 @@ import * as bcrypt from 'bcrypt';
 import { ADMINISTRATOR } from '../src/communities/permissions';
 import { ticketNumber } from '../src/reports/ticket';
 import { getReporterStatusLabel } from '../src/reports/status-labels';
+import { pair } from '../src/messages/conversation';
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
 const prisma = new PrismaClient({ adapter });
@@ -760,6 +761,51 @@ const friendships: [UserKey, UserKey, 'accepted' | 'pending'][] = [
   ['naruto', 'user', 'pending'],
 ];
 
+type SeedChat = {
+  between: [UserKey, UserKey];
+  request?: boolean;
+  seen?: boolean;
+  messages: [UserKey, string, number][];
+};
+
+const chats: SeedChat[] = [
+  {
+    between: ['admin', 'naruto'],
+    messages: [
+      ['naruto', 'Did you see the new chapter?? Believe it!', 95],
+      ['admin', 'Not yet, no spoilers please 😅', 90],
+      ['naruto', 'Okay okay. Ramen later though?', 12],
+      ['naruto', 'Ichiraku, my treat this time', 11],
+    ],
+  },
+  {
+    between: ['admin', 'luffy'],
+    seen: true,
+    messages: [
+      ['luffy', 'Are you coming to the Grand Line Crew watch party?', 300],
+      ['admin', 'Wouldn’t miss it. Bringing snacks!', 290],
+      ['luffy', 'MEAT. Bring meat.', 288],
+      ['admin', 'Meat it is 🍖', 280],
+    ],
+  },
+  {
+    between: ['gojo', 'admin'],
+    seen: true,
+    messages: [
+      ['admin', 'Thanks for helping moderate the Jujutsu community', 1500],
+      ['gojo', 'Anytime. I’m the strongest moderator, after all.', 1490],
+    ],
+  },
+  {
+    between: ['zoro', 'admin'],
+    request: true,
+    messages: [
+      ['zoro', 'Which way is the Swordsmanship Dojo community?', 40],
+      ['zoro', 'I think I got lost again.', 38],
+    ],
+  },
+];
+
 function voters({ up = [], down = [] }: Votes) {
   return [...up, ...down];
 }
@@ -1228,6 +1274,53 @@ async function createContentReports() {
 
   await prisma.contentReport.createMany({ data: reports });
   return reports.length;
+}
+
+async function createChats() {
+  for (const { between, request, seen, messages } of chats) {
+    const [starter, other] = between.map((key) => userIds[key]);
+    const [lastAuthor, lastText, lastMinutes] = messages.at(-1)!;
+    const lastSenderId = userIds[lastAuthor];
+    const lastMessageAt = minutesAgo(lastMinutes);
+    let trailing = 0;
+    for (const [author] of [...messages].reverse()) {
+      if (userIds[author] !== lastSenderId) break;
+      trailing += 1;
+    }
+
+    await prisma.conversation.create({
+      data: {
+        ...pair(starter, other),
+        lastText,
+        lastSenderId,
+        lastMessageAt,
+        createdAt: minutesAgo(messages[0][2]),
+        messages: {
+          create: messages.map(([author, text, minutes]) => ({
+            senderId: userIds[author],
+            text,
+            createdAt: minutesAgo(minutes),
+          })),
+        },
+        members: {
+          create: [starter, other].map((userId) => {
+            const receiving = userId !== lastSenderId;
+            return {
+              userId,
+              status: request && userId === other ? 'request' : 'accepted',
+              unread: receiving && !seen ? trailing : 0,
+              readAt:
+                !receiving || seen
+                  ? new Date(lastMessageAt.getTime() + 60_000)
+                  : null,
+            } as const;
+          }),
+        },
+      },
+    });
+  }
+
+  return chats.length;
 }
 
 async function createNotifications() {
@@ -2199,6 +2292,7 @@ async function main() {
 
   console.log('🚩 Content reports created:', await createContentReports());
   console.log('🔔 Notifications created:', await createNotifications());
+  console.log('💬 Chats created:', await createChats());
 
   console.log('✅ Seeding complete!');
   console.log('🔑 admin (or admin@user.com) / 123456');
