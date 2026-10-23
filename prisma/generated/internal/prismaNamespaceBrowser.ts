@@ -67,6 +67,8 @@ export const ModelName = {
   LibraryActivity: 'LibraryActivity',
   Notification: 'Notification',
   Report: 'Report',
+  ReportComment: 'ReportComment',
+  Setting: 'Setting',
   User: 'User'
 } as const
 
@@ -290,10 +292,31 @@ export const ReportScalarFieldEnum = {
   pageUrl: 'pageUrl',
   resolutionNote: 'resolutionNote',
   hiddenAt: 'hiddenAt',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  assigneeId: 'assigneeId'
 } as const
 
 export type ReportScalarFieldEnum = (typeof ReportScalarFieldEnum)[keyof typeof ReportScalarFieldEnum]
+
+
+export const ReportCommentScalarFieldEnum = {
+  id: 'id',
+  reportId: 'reportId',
+  authorId: 'authorId',
+  content: 'content',
+  createdAt: 'createdAt'
+} as const
+
+export type ReportCommentScalarFieldEnum = (typeof ReportCommentScalarFieldEnum)[keyof typeof ReportCommentScalarFieldEnum]
+
+
+export const SettingScalarFieldEnum = {
+  key: 'key',
+  value: 'value',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SettingScalarFieldEnum = (typeof SettingScalarFieldEnum)[keyof typeof SettingScalarFieldEnum]
 
 
 export const UserScalarFieldEnum = {

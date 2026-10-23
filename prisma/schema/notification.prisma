@@ -5,6 +5,8 @@ enum NotificationType {
   friend_request
   friend_accepted
   report_status
+  report_assigned
+  report_comment
   wall_post
 }
 

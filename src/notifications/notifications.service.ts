@@ -14,7 +14,7 @@ const PAGE_SIZE = 20;
 const filters: Record<string, NotificationType[]> = {
   comments: ['post_comment', 'thread_comment', 'comment_reply', 'wall_post'],
   friends: ['friend_request', 'friend_accepted'],
-  reports: ['report_status'],
+  reports: ['report_status', 'report_assigned', 'report_comment'],
 };
 
 export type NotificationQuery = {

@@ -1031,7 +1031,12 @@ const reports: [
   number,
   string,
   string,
-  { note?: string; hidden?: boolean }?,
+  {
+    note?: string;
+    hidden?: boolean;
+    assignee?: UserKey;
+    comments?: [UserKey, number, string][];
+  }?,
 ][] = [
   [
     'naruto',
@@ -1056,6 +1061,21 @@ const reports: [
     240,
     'Thread list jumped back to the top after I voted. Clean that up.',
     '/explore',
+    {
+      assignee: 'admin',
+      comments: [
+        [
+          'admin',
+          200,
+          'Reproduced on Chrome. Voting refetches the whole list, which resets the scroll.',
+        ],
+        [
+          'admin',
+          150,
+          'Switching to an optimistic update so the list stays put. Testing on mobile next.',
+        ],
+      ],
+    },
   ],
   [
     'nami',
@@ -1064,6 +1084,15 @@ const reports: [
     600,
     'Let community owners pin a thread so the rules stay at the top of the forum.',
     '/explore',
+    {
+      comments: [
+        [
+          'admin',
+          500,
+          'Good one. Adding it to the roadmap after folders ship.',
+        ],
+      ],
+    },
   ],
   [
     'spike',
@@ -1101,6 +1130,16 @@ const reports: [
     2880,
     'Uploaded a new cover and the old one showed for a second before switching.',
     '/explore',
+    {
+      assignee: 'admin',
+      comments: [
+        [
+          'admin',
+          2000,
+          'Probably the browser cache. The new image needs a fresh URL.',
+        ],
+      ],
+    },
   ],
 ];
 
@@ -1967,9 +2006,17 @@ async function main() {
 
   console.log('🎬 Title wall posts created:', titlePosts.length);
 
-  await prisma.report.createMany({
-    data: reports.map(
-      ([author, category, status, ago, message, pageUrl, extra]) => ({
+  for (const [
+    author,
+    category,
+    status,
+    ago,
+    message,
+    pageUrl,
+    extra,
+  ] of reports) {
+    await prisma.report.create({
+      data: {
         authorId: userIds[author],
         category,
         status,
@@ -1977,10 +2024,20 @@ async function main() {
         pageUrl,
         resolutionNote: extra?.note,
         hiddenAt: extra?.hidden ? minutesAgo(ago - 10) : null,
+        assigneeId: extra?.assignee && userIds[extra.assignee],
         createdAt: minutesAgo(ago),
-      }),
-    ),
-  });
+        comments: {
+          create: (extra?.comments ?? []).map(
+            ([commenter, commentAgo, content]) => ({
+              authorId: userIds[commenter],
+              content,
+              createdAt: minutesAgo(commentAgo),
+            }),
+          ),
+        },
+      },
+    });
+  }
 
   console.log('📣 Reports created:', reports.length);
 

@@ -5,32 +5,34 @@ enum Theme {
 }
 
 model User {
-  id                   Int            @id @default(autoincrement())
-  email                String         @unique
-  username             String         @unique
+  id                   Int             @id @default(autoincrement())
+  email                String          @unique
+  username             String          @unique
   name                 String?
   avatarUrl            String?
   coverUrl             String?
   backgroundUrl        String?
   password             String
-  theme                Theme          @default(dark)
-  appearOffline        Boolean        @default(false)
-  isAdmin              Boolean        @default(false)
+  theme                Theme           @default(dark)
+  appearOffline        Boolean         @default(false)
+  isAdmin              Boolean         @default(false)
   tourCompletedAt      DateTime?
   checklistDismissedAt DateTime?
-  createdAt            DateTime       @default(now())
+  createdAt            DateTime        @default(now())
   ownedCommunities     Community[]
   memberships          Membership[]
   posts                Post[]
-  wallPosts            Post[]         @relation("WallPosts")
-  sentFriendships      Friendship[]   @relation("FriendshipRequester")
-  receivedFriendships  Friendship[]   @relation("FriendshipAddressee")
+  wallPosts            Post[]          @relation("WallPosts")
+  sentFriendships      Friendship[]    @relation("FriendshipRequester")
+  receivedFriendships  Friendship[]    @relation("FriendshipAddressee")
   threads              Thread[]
   comments             Comment[]
   votes                Vote[]
-  reports              Report[]
-  notifications        Notification[] @relation("NotificationRecipient")
-  causedNotifications  Notification[] @relation("NotificationActor")
+  reports              Report[]        @relation("ReportAuthor")
+  assignedReports      Report[]        @relation("ReportAssignee")
+  reportComments       ReportComment[]
+  notifications        Notification[]  @relation("NotificationRecipient")
+  causedNotifications  Notification[]  @relation("NotificationActor")
   libraryEntries       LibraryEntry[]
   railFolders          RailFolder[]
   likes                Like[]

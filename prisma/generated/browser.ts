@@ -98,6 +98,16 @@ export type Notification = Prisma.NotificationModel
  */
 export type Report = Prisma.ReportModel
 /**
+ * Model ReportComment
+ * 
+ */
+export type ReportComment = Prisma.ReportCommentModel
+/**
+ * Model Setting
+ * 
+ */
+export type Setting = Prisma.SettingModel
+/**
  * Model User
  * 
  */

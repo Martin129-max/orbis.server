@@ -3,9 +3,10 @@ import { ReportsController } from './reports.controller';
 import { ReportsService } from './reports.service';
 import { PrismaService } from '../prisma.service';
 import { NotificationsModule } from '../notifications/notifications.module';
+import { PresenceModule } from '../friends/presence.module';
 
 @Module({
-  imports: [NotificationsModule],
+  imports: [NotificationsModule, PresenceModule],
   controllers: [ReportsController],
   providers: [ReportsService, PrismaService],
 })

@@ -11,16 +11,32 @@ enum ReportStatus {
 }
 
 model Report {
-  id             Int            @id @default(autoincrement())
+  id             Int             @id @default(autoincrement())
   authorId       Int
   category       ReportCategory
-  status         ReportStatus   @default(todo)
+  status         ReportStatus    @default(todo)
   message        String
   pageUrl        String?
   resolutionNote String?
   hiddenAt       DateTime?
-  createdAt      DateTime       @default(now())
-  author         User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  createdAt      DateTime        @default(now())
+  assigneeId     Int?
+  author         User            @relation("ReportAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  assignee       User?           @relation("ReportAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
+  comments       ReportComment[]
 
   @@index([createdAt(sort: Desc)])
+  @@index([assigneeId])
+}
+
+model ReportComment {
+  id        Int      @id @default(autoincrement())
+  reportId  Int
+  authorId  Int
+  content   String
+  createdAt DateTime @default(now())
+  report    Report   @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([reportId, createdAt])
 }

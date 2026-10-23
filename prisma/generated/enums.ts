@@ -69,6 +69,8 @@ export const NotificationType = {
   friend_request: 'friend_request',
   friend_accepted: 'friend_accepted',
   report_status: 'report_status',
+  report_assigned: 'report_assigned',
+  report_comment: 'report_comment',
   wall_post: 'wall_post'
 } as const
 

@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ForbiddenException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
@@ -12,6 +13,24 @@ import { NotificationsService } from '../notifications/notifications.service';
 import { ticketNumber } from './ticket';
 import { getReporterStatusLabel } from './status-labels';
 import { isHeadAdmin } from '../users/head-admin';
+import { PresenceGateway } from '../friends/presence.gateway';
+import {
+  ACTIVITY_COLOR,
+  DiscordActivity,
+  DiscordTarget,
+  postActivityToDiscord,
+  postReportToDiscord,
+} from './discord';
+import { ReportStatus } from '../../prisma/generated/client';
+
+const boardLabels: Record<ReportStatus, string> = {
+  todo: 'To do',
+  in_progress: 'In progress',
+  done: 'Done',
+};
+
+const WEBHOOK_KEY = 'reports.discordWebhook';
+const SITE_URL_KEY = 'reports.siteUrl';
 
 const reportSelect = {
   id: true,
@@ -24,7 +43,26 @@ const reportSelect = {
   author,
 } as const;
 
-const adminReportSelect = { ...reportSelect, hiddenAt: true } as const;
+const adminReportSelect = {
+  ...reportSelect,
+  hiddenAt: true,
+  assignee: author,
+  _count: { select: { comments: true } },
+} as const;
+
+const commentSelect = {
+  id: true,
+  content: true,
+  createdAt: true,
+  author,
+} as const;
+
+function toAdminReport<T extends { _count: { comments: number } }>({
+  _count,
+  ...report
+}: T) {
+  return { ...report, commentCount: _count.comments };
+}
 
 const NOTE_PREVIEW = 140;
 
@@ -36,9 +74,12 @@ function preview(note: string) {
 
 @Injectable()
 export class ReportsService {
+  private readonly logger = new Logger(ReportsService.name);
+
   constructor(
     private prisma: PrismaService,
     private notifications: NotificationsService,
+    private presence: PresenceGateway,
   ) {}
 
   async create(
@@ -48,20 +89,267 @@ export class ReportsService {
     const text = message.trim();
     if (!text) throw new BadRequestException('Write a message');
 
-    return this.prisma.report.create({
+    const report = await this.prisma.report.create({
       data: { authorId: userId, category, message: text, pageUrl },
-      select: { id: true },
+      select: {
+        id: true,
+        category: true,
+        message: true,
+        pageUrl: true,
+        createdAt: true,
+        author: { select: { username: true, name: true } },
+      },
     });
+
+    void this.announce(report);
+    return { id: report.id };
+  }
+
+  private async announce(report: Parameters<typeof postReportToDiscord>[1]) {
+    try {
+      const target = await this.discordTarget();
+      if (target) await postReportToDiscord(target, report);
+    } catch (e) {
+      this.logger.warn(
+        `Could not post report ${report.id} to Discord: ${e instanceof Error ? e.message : e}`,
+      );
+    }
+  }
+
+  private actorName(userId: number) {
+    return this.prisma.user
+      .findUnique({
+        where: { id: userId },
+        select: { name: true, username: true },
+      })
+      .then((user) => user?.name ?? user?.username ?? 'Someone');
+  }
+
+  private shareActivity(
+    userId: number,
+    activity: (actor: string) => DiscordActivity,
+  ) {
+    void (async () => {
+      try {
+        const target = await this.discordTarget();
+        if (!target) return;
+        await postActivityToDiscord(
+          target,
+          activity(await this.actorName(userId)),
+        );
+      } catch (e) {
+        this.logger.warn(
+          `Could not post report activity to Discord: ${e instanceof Error ? e.message : e}`,
+        );
+      }
+    })();
+  }
+
+  async findOne(userId: number, id: number) {
+    await this.requireAdmin(userId);
+    const report = await this.prisma.report.findUnique({
+      where: { id },
+      select: adminReportSelect,
+    });
+    if (!report) throw new NotFoundException('Report not found');
+    return toAdminReport(report);
+  }
+
+  async admins(userId: number) {
+    await this.requireAdmin(userId);
+    const headAdmin = process.env.HEAD_ADMIN?.trim();
+
+    const admins = await this.prisma.user.findMany({
+      where: {
+        OR: [
+          { isAdmin: true },
+          ...(headAdmin
+            ? [{ email: { equals: headAdmin, mode: 'insensitive' as const } }]
+            : []),
+        ],
+      },
+      orderBy: { username: 'asc' },
+      select: { ...author.select, email: true, appearOffline: true },
+    });
+
+    return admins.map(({ email, appearOffline, ...admin }) => ({
+      ...admin,
+      isHeadAdmin: isHeadAdmin(email),
+      online: !appearOffline && this.presence.isOnline(admin.id),
+    }));
+  }
+
+  async assign(userId: number, id: number, assigneeId: number | null) {
+    await this.requireAdmin(userId);
+
+    const report = await this.prisma.report.findUnique({
+      where: { id },
+      select: { assigneeId: true },
+    });
+    if (!report) throw new NotFoundException('Report not found');
+
+    if (assigneeId !== null) {
+      const assignee = await this.prisma.user.findUnique({
+        where: { id: assigneeId },
+        select: { isAdmin: true, email: true },
+      });
+      if (!assignee || !(assignee.isAdmin || isHeadAdmin(assignee.email))) {
+        throw new BadRequestException('Reports can only be assigned to admins');
+      }
+    }
+
+    const updated = await this.prisma.report.update({
+      where: { id },
+      data: { assigneeId },
+      select: adminReportSelect,
+    });
+
+    if (assigneeId !== report.assigneeId) {
+      const assigneeName = updated.assignee
+        ? (updated.assignee.name ?? updated.assignee.username)
+        : null;
+      this.shareActivity(userId, (actor) => ({
+        reportId: id,
+        title: assigneeName
+          ? `👤 ${actor} assigned ${ticketNumber(id)} to ${assigneeName}`
+          : `👤 ${actor} unassigned ${ticketNumber(id)}`,
+        color: ACTIVITY_COLOR.assign,
+      }));
+    }
+
+    if (
+      assigneeId !== null &&
+      assigneeId !== userId &&
+      assigneeId !== report.assigneeId
+    ) {
+      await this.notifications.notify([
+        {
+          userId: assigneeId,
+          actorId: userId,
+          type: 'report_assigned',
+          message: `assigned you report ${ticketNumber(id)}`,
+          link: `/reports?report=${id}`,
+        },
+      ]);
+    }
+
+    return toAdminReport(updated);
+  }
+
+  async comments(userId: number, id: number) {
+    await this.requireAdmin(userId);
+    await this.requireReport(id);
+
+    return this.prisma.reportComment.findMany({
+      where: { reportId: id },
+      orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
+      select: commentSelect,
+    });
+  }
+
+  async addComment(userId: number, id: number, content: string) {
+    await this.requireAdmin(userId);
+    await this.requireReport(id);
+
+    const text = content.trim();
+    if (!text) throw new BadRequestException('Write a comment');
+
+    const [comment, report, commenters] = await Promise.all([
+      this.prisma.reportComment.create({
+        data: { reportId: id, authorId: userId, content: text },
+        select: commentSelect,
+      }),
+      this.prisma.report.findUniqueOrThrow({
+        where: { id },
+        select: { assigneeId: true },
+      }),
+      this.prisma.reportComment.findMany({
+        where: { reportId: id },
+        distinct: ['authorId'],
+        select: { authorId: true },
+      }),
+    ]);
+
+    const recipients = new Set([
+      ...commenters.map(({ authorId }) => authorId),
+      ...(report.assigneeId !== null ? [report.assigneeId] : []),
+    ]);
+    recipients.delete(userId);
+    await this.notifications.notify(
+      [...recipients].map((recipient) => ({
+        userId: recipient,
+        actorId: userId,
+        type: 'report_comment' as const,
+        message: `commented on report ${ticketNumber(id)}`,
+        link: `/reports?report=${id}`,
+      })),
+    );
+
+    this.shareActivity(userId, (actor) => ({
+      reportId: id,
+      title: `💬 ${actor} commented on ${ticketNumber(id)}`,
+      description: text,
+      color: ACTIVITY_COLOR.comment,
+    }));
+
+    return comment;
+  }
+
+  private async discordTarget(): Promise<DiscordTarget | null> {
+    const settings = await this.prisma.setting.findMany({
+      where: { key: { in: [WEBHOOK_KEY, SITE_URL_KEY] } },
+    });
+    const value = (key: string) =>
+      settings.find((setting) => setting.key === key)?.value;
+    const webhookUrl = value(WEBHOOK_KEY);
+    const siteUrl = value(SITE_URL_KEY);
+    return webhookUrl && siteUrl ? { webhookUrl, siteUrl } : null;
+  }
+
+  async webhook(userId: number) {
+    await this.requireHeadAdmin(userId);
+    const target = await this.discordTarget();
+    return {
+      url: target?.webhookUrl ?? null,
+      siteUrl: target?.siteUrl ?? null,
+    };
+  }
+
+  async setWebhook(userId: number, url: string, siteUrl: string) {
+    await this.requireHeadAdmin(userId);
+    const site = siteUrl.replace(/\/+$/, '');
+    await this.prisma.$transaction(
+      [
+        [WEBHOOK_KEY, url],
+        [SITE_URL_KEY, site],
+      ].map(([key, value]) =>
+        this.prisma.setting.upsert({
+          where: { key },
+          create: { key, value },
+          update: { value },
+        }),
+      ),
+    );
+    return { url, siteUrl: site };
+  }
+
+  async removeWebhook(userId: number) {
+    await this.requireHeadAdmin(userId);
+    await this.prisma.setting.deleteMany({
+      where: { key: { in: [WEBHOOK_KEY, SITE_URL_KEY] } },
+    });
+    return { url: null, siteUrl: null };
   }
 
   async findAll(userId: number, hidden: boolean) {
     await this.requireAdmin(userId);
 
-    return this.prisma.report.findMany({
+    const reports = await this.prisma.report.findMany({
       where: { hiddenAt: hidden ? { not: null } : null },
       orderBy: hidden ? { hiddenAt: 'desc' } : { createdAt: 'desc' },
       select: adminReportSelect,
     });
+    return reports.map(toAdminReport);
   }
 
   mine(userId: number) {
@@ -82,13 +370,22 @@ export class ReportsService {
     if (!report) throw new NotFoundException('Report not found');
 
     const resolutionNote = status === 'done' ? note?.trim() || null : null;
-    const updated = await this.prisma.report.update({
-      where: { id },
-      data: { status, resolutionNote },
-      select: adminReportSelect,
-    });
+    const updated = toAdminReport(
+      await this.prisma.report.update({
+        where: { id },
+        data: { status, resolutionNote },
+        select: adminReportSelect,
+      }),
+    );
 
     if (report.status !== status) {
+      this.shareActivity(userId, (actor) => ({
+        reportId: id,
+        title: `➡️ ${actor} moved ${ticketNumber(id)} from ${boardLabels[report.status]} to ${boardLabels[status]}`,
+        description: resolutionNote ? `Reply: ${resolutionNote}` : undefined,
+        color: ACTIVITY_COLOR.move,
+      }));
+
       const label = getReporterStatusLabel(status, report.category);
       await this.notifications.notify([
         {
@@ -110,22 +407,38 @@ export class ReportsService {
     await this.requireAdmin(userId);
     await this.requireReport(id);
 
-    return this.prisma.report.update({
-      where: { id },
-      data: { hiddenAt: new Date() },
-      select: adminReportSelect,
-    });
+    const hidden = toAdminReport(
+      await this.prisma.report.update({
+        where: { id },
+        data: { hiddenAt: new Date() },
+        select: adminReportSelect,
+      }),
+    );
+    this.shareActivity(userId, (actor) => ({
+      reportId: id,
+      title: `🙈 ${actor} hid ${ticketNumber(id)}`,
+      color: ACTIVITY_COLOR.hide,
+    }));
+    return hidden;
   }
 
   async restore(userId: number, id: number) {
     await this.requireAdmin(userId);
     await this.requireReport(id);
 
-    return this.prisma.report.update({
-      where: { id },
-      data: { hiddenAt: null, status: 'todo', resolutionNote: null },
-      select: adminReportSelect,
-    });
+    const restored = toAdminReport(
+      await this.prisma.report.update({
+        where: { id },
+        data: { hiddenAt: null, status: 'todo', resolutionNote: null },
+        select: adminReportSelect,
+      }),
+    );
+    this.shareActivity(userId, (actor) => ({
+      reportId: id,
+      title: `↩️ ${actor} moved ${ticketNumber(id)} back to To do`,
+      color: ACTIVITY_COLOR.hide,
+    }));
+    return restored;
   }
 
   private async requireReport(id: number) {
@@ -134,6 +447,16 @@ export class ReportsService {
       select: { id: true },
     });
     if (!report) throw new NotFoundException('Report not found');
+  }
+
+  private async requireHeadAdmin(userId: number) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { email: true },
+    });
+    if (!user || !isHeadAdmin(user.email)) {
+      throw new ForbiddenException('Only the head admin can do this');
+    }
   }
 
   private async requireAdmin(userId: number) {
