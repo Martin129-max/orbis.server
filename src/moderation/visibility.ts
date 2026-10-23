@@ -1,0 +1,38 @@
+import { Prisma } from '../../prisma/generated/client';
+import { PrismaService } from '../prisma.service';
+
+export type ReportedIds = {
+  post: number[];
+  thread: number[];
+  comment: number[];
+};
+
+export async function reportedBy(
+  prisma: PrismaService,
+  viewerId: number,
+): Promise<ReportedIds> {
+  const reports = await prisma.contentReport.findMany({
+    where: {
+      reporterId: viewerId,
+      resolvedAt: null,
+      targetType: { in: ['post', 'thread', 'comment'] },
+    },
+    select: { targetType: true, targetId: true },
+  });
+  const ids: ReportedIds = { post: [], thread: [], comment: [] };
+  for (const { targetType, targetId } of reports) {
+    if (targetType in ids) ids[targetType as keyof ReportedIds].push(targetId);
+  }
+  return ids;
+}
+
+export function visibleTo(viewerId: number, reported: number[]) {
+  return {
+    AND: [
+      { OR: [{ hiddenAt: null }, { authorId: viewerId }] },
+      ...(reported.length > 0 ? [{ id: { notIn: reported } }] : []),
+    ],
+  } satisfies Prisma.PostWhereInput &
+    Prisma.ThreadWhereInput &
+    Prisma.CommentWhereInput;
+}

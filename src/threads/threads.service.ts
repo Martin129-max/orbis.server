@@ -8,6 +8,7 @@ import { Prisma } from '../../prisma/generated/client';
 import { author, communitySummary } from '../common/author';
 import { PAGE_SIZE, Page } from '../common/pagination';
 import { sanitizeRichText } from '../common/rich-text';
+import { reportedBy, visibleTo } from '../moderation/visibility';
 import { requireMembership } from '../communities/require-membership';
 import { MAX_INT } from '../communities/community-member.guard';
 import { VotesService } from '../votes/votes.service';
@@ -61,11 +62,14 @@ export class ThreadsService {
       throw new BadRequestException('Invalid cursor');
     }
 
+    const reported = (await reportedBy(this.prisma, userId)).thread;
     let threads: ThreadRow[];
     if (sort === 'hot') {
       const rows = await this.prisma.$queryRaw<{ id: number }[]>`
         SELECT "id" FROM "Thread"
         WHERE "communityId" = ${communityId}
+          AND ("hiddenAt" IS NULL OR "authorId" = ${userId})
+          AND NOT ("id" = ANY(${reported}::int[]))
         ORDER BY ("score" + 1) / power(extract(epoch from (now() - "createdAt")) / 3600 + 2, 1.5) DESC, "id" DESC
         OFFSET ${offset} LIMIT ${PAGE_SIZE + 1}`;
       const found = await this.prisma.thread.findMany({
@@ -76,7 +80,7 @@ export class ThreadsService {
       threads = rows.flatMap(({ id }) => byId.get(id) ?? []);
     } else {
       threads = await this.prisma.thread.findMany({
-        where: { communityId },
+        where: { communityId, ...visibleTo(userId, reported) },
         orderBy:
           sort === 'top'
             ? [{ score: 'desc' }, { createdAt: 'desc' }, { id: 'desc' }]
@@ -121,7 +125,9 @@ export class ThreadsService {
       include: threadInclude,
     });
 
-    if (!thread) throw new NotFoundException('Thread not found');
+    if (!thread || (thread.hiddenAt && thread.authorId !== userId)) {
+      throw new NotFoundException('Thread not found');
+    }
     await requireMembership(this.prisma, userId, thread.communityId);
 
     const [summary] = await this.withMyVotes(userId, [thread]);

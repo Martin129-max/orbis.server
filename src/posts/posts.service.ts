@@ -24,6 +24,7 @@ import { NotificationsService } from '../notifications/notifications.service';
 import { friendsOf, requireWallAccess } from './wall-access';
 import { LikesService } from '../likes/likes.service';
 import { getMedia } from '../library/library-api';
+import { reportedBy, visibleTo } from '../moderation/visibility';
 
 const postInclude = {
   author,
@@ -181,6 +182,7 @@ export class PostsService {
   ): Promise<FeedItem[]> {
     const idsOf = (type: 'post' | 'activity') =>
       items.flatMap((item) => (item.type === type ? [item.id] : []));
+    const reported = await reportedBy(this.prisma, viewerId);
     const [likedPosts, likedActivities, previews] = await Promise.all([
       this.likes.likedBy(viewerId, 'post', idsOf('post')),
       this.likes.likedBy(viewerId, 'activity', idsOf('activity')),
@@ -194,6 +196,7 @@ export class PostsService {
                     commentableType: item.type,
                     commentableId: item.id,
                     parentId: null,
+                    ...visibleTo(viewerId, reported.comment),
                   },
                   orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
                   take: PREVIEW_COMMENTS,
@@ -220,10 +223,15 @@ export class PostsService {
     rawCursor?: string,
   ): Promise<Page<FeedItem>> {
     const cursor = parseFeedCursor(rawCursor);
+    const reported = await reportedBy(this.prisma, viewerId);
 
     const [posts, activities] = await Promise.all([
       this.prisma.post.findMany({
-        where: { communityId, ...olderThan(cursor, RANK.post) },
+        where: {
+          communityId,
+          ...olderThan(cursor, RANK.post),
+          ...visibleTo(viewerId, reported.post),
+        },
         orderBy: newestFirst,
         take: PAGE_SIZE + 1,
         include: postInclude,
@@ -260,6 +268,7 @@ export class PostsService {
   ): Promise<Page<FeedItem>> {
     const cursor = parseFeedCursor(rawCursor);
     const member = { community: { memberships: { some: { userId } } } };
+    const reported = await reportedBy(this.prisma, userId);
 
     const [posts, threads, activities] = await Promise.all([
       this.prisma.post.findMany({
@@ -271,13 +280,18 @@ export class PostsService {
             { wallUser: friendsOf(userId) },
           ],
           ...olderThan(cursor, RANK.post),
+          ...visibleTo(userId, reported.post),
         },
         orderBy: newestFirst,
         take: PAGE_SIZE + 1,
         include: postInclude,
       }),
       this.prisma.thread.findMany({
-        where: { ...member, ...olderThan(cursor, RANK.thread) },
+        where: {
+          ...member,
+          ...olderThan(cursor, RANK.thread),
+          ...visibleTo(userId, reported.thread),
+        },
         orderBy: newestFirst,
         take: PAGE_SIZE + 1,
         include: threadInclude,
@@ -334,6 +348,7 @@ export class PostsService {
     });
     if (!owner) throw new NotFoundException('User not found');
 
+    const reported = await reportedBy(this.prisma, viewerId);
     const visibleCommunity = {
       OR: [{ isPublic: true }, { memberships: { some: { userId: viewerId } } }],
     };
@@ -346,6 +361,7 @@ export class PostsService {
             { authorId: owner.id, community: visibleCommunity },
           ],
           ...olderThan(cursor, RANK.post),
+          ...visibleTo(viewerId, reported.post),
         },
         orderBy: newestFirst,
         take: PAGE_SIZE + 1,
@@ -356,6 +372,7 @@ export class PostsService {
           authorId: owner.id,
           community: visibleCommunity,
           ...olderThan(cursor, RANK.thread),
+          ...visibleTo(viewerId, reported.thread),
         },
         orderBy: newestFirst,
         take: PAGE_SIZE + 1,
@@ -433,7 +450,12 @@ export class PostsService {
   ): Promise<Page<FeedItem>> {
     const cursor = parseFeedCursor(rawCursor);
     const posts = await this.prisma.post.findMany({
-      where: { mediaType, mediaSourceId, ...olderThan(cursor, RANK.post) },
+      where: {
+        mediaType,
+        mediaSourceId,
+        ...olderThan(cursor, RANK.post),
+        ...visibleTo(viewerId, (await reportedBy(this.prisma, viewerId)).post),
+      },
       orderBy: newestFirst,
       take: PAGE_SIZE + 1,
       include: postInclude,

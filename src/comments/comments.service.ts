@@ -15,6 +15,7 @@ import {
 } from '../posts/wall-access';
 import { MAX_INT } from '../communities/community-member.guard';
 import { VotesService } from '../votes/votes.service';
+import { reportedBy } from '../moderation/visibility';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import {
   NewNotification,
@@ -28,13 +29,14 @@ const commentSelect = {
   parentId: true,
   content: true,
   score: true,
+  hiddenAt: true,
   createdAt: true,
   author,
 } as const;
 
 export type CommentView = Prisma.CommentGetPayload<{
   select: typeof commentSelect;
-}> & { myVote: number };
+}> & { myVote: number; hidden: 'review' | 'reported' | null };
 
 @Injectable()
 export class CommentsService {
@@ -66,16 +68,30 @@ export class CommentsService {
       take: MAX_COMMENTS,
       select: commentSelect,
     });
-    const mine = await this.votes.myVotes(
-      userId,
-      'comment',
-      comments.map((comment) => comment.id),
-    );
+    const [mine, reported] = await Promise.all([
+      this.votes.myVotes(
+        userId,
+        'comment',
+        comments.map((comment) => comment.id),
+      ),
+      reportedBy(this.prisma, userId),
+    ]);
+    const reportedIds = new Set(reported.comment);
 
-    return comments.map((comment) => ({
-      ...comment,
-      myVote: mine.get(comment.id) ?? 0,
-    }));
+    return comments.map((comment) => {
+      const own = comment.author.id === userId;
+      const hidden = reportedIds.has(comment.id)
+        ? ('reported' as const)
+        : comment.hiddenAt && !own
+          ? ('review' as const)
+          : null;
+      return {
+        ...comment,
+        content: hidden ? '' : comment.content,
+        myVote: mine.get(comment.id) ?? 0,
+        hidden,
+      };
+    });
   }
 
   async create(
@@ -124,7 +140,7 @@ export class CommentsService {
     ]);
 
     await this.notifyCommented(userId, home, parentAuthorId);
-    return { ...comment, myVote: 0 };
+    return { ...comment, myVote: 0, hidden: null };
   }
 
   private async notifyCommented(

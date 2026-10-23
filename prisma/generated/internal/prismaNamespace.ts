@@ -2024,6 +2024,7 @@ export const PostScalarFieldEnum = {
   content: 'content',
   commentCount: 'commentCount',
   likeCount: 'likeCount',
+  hiddenAt: 'hiddenAt',
   createdAt: 'createdAt'
 } as const
 
@@ -2038,6 +2039,7 @@ export const ThreadScalarFieldEnum = {
   content: 'content',
   score: 'score',
   commentCount: 'commentCount',
+  hiddenAt: 'hiddenAt',
   createdAt: 'createdAt'
 } as const
 
@@ -2053,6 +2055,7 @@ export const CommentScalarFieldEnum = {
   authorId: 'authorId',
   content: 'content',
   score: 'score',
+  hiddenAt: 'hiddenAt',
   createdAt: 'createdAt'
 } as const
 

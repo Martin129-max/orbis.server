@@ -7,6 +7,7 @@ import {
 import { PrismaService } from '../prisma.service';
 import { author } from '../common/author';
 import { ReportsService } from '../reports/reports.service';
+import { isHeadAdmin } from '../users/head-admin';
 import { ACTIVITY_COLOR } from '../reports/discord';
 import {
   ContentReportReason,
@@ -53,6 +54,17 @@ const reasonLabels: Record<ContentReportReason, string> = {
 };
 
 const RECENT_REPORTS = 5;
+const DAY = 24 * 60 * 60 * 1000;
+const MIN_REPORTER_AGE = 3 * DAY;
+
+export function hideThreshold(members: number | null) {
+  if (members === null) return 3;
+  return Math.min(25, Math.max(3, Math.ceil(members / 50)));
+}
+
+type Hideable = 'post' | 'thread' | 'comment';
+const hideable = (type: ContentReportTarget): type is Hideable =>
+  type === 'post' || type === 'thread' || type === 'comment';
 
 function excerpt(html: string, length = 200) {
   const text = html
@@ -270,6 +282,8 @@ export class ModerationService {
       },
     });
 
+    if (hideable(type)) await this.autoHide(type, id);
+
     this.reports.shareActivity(userId, (actor) => ({
       path: '/reports?tab=reported',
       title: `🚩 ${actor} reported a ${type}: ${reasonLabels[reason]}`,
@@ -335,5 +349,69 @@ export class ModerationService {
       data: { resolution, resolvedAt: new Date(), resolvedById: userId },
     });
     if (count === 0) throw new NotFoundException('Nothing to resolve');
+    if (resolution === 'dismissed' && hideable(type)) {
+      await this.setHidden(type, id, null);
+    }
+  }
+
+  private async setHidden(type: Hideable, id: number, hiddenAt: Date | null) {
+    const args = { where: { id }, data: { hiddenAt } };
+    if (type === 'post') await this.prisma.post.updateMany(args);
+    else if (type === 'thread') await this.prisma.thread.updateMany(args);
+    else await this.prisma.comment.updateMany(args);
+  }
+
+  private async hideContext(type: Hideable, id: number) {
+    const select = {
+      hiddenAt: true,
+      communityId: true,
+      author: { select: { id: true, isAdmin: true, email: true } },
+    } as const;
+    const row =
+      type === 'post'
+        ? await this.prisma.post.findUnique({ where: { id }, select })
+        : type === 'thread'
+          ? await this.prisma.thread.findUnique({ where: { id }, select })
+          : await this.prisma.comment.findUnique({ where: { id }, select });
+    if (!row) return null;
+
+    const community =
+      row.communityId === null
+        ? null
+        : await this.prisma.community.findUnique({
+            where: { id: row.communityId },
+            select: {
+              ownerId: true,
+              _count: { select: { memberships: true } },
+            },
+          });
+    return { ...row, community };
+  }
+
+  private async autoHide(type: Hideable, id: number) {
+    const context = await this.hideContext(type, id);
+    if (!context || context.hiddenAt) return;
+
+    const { author: owner, community } = context;
+    const exempt =
+      owner.isAdmin ||
+      isHeadAdmin(owner.email) ||
+      community?.ownerId === owner.id;
+    if (exempt) return;
+
+    const now = Date.now();
+    const reporters = await this.prisma.contentReport.count({
+      where: {
+        targetType: type,
+        targetId: id,
+        resolvedAt: null,
+        createdAt: { gte: new Date(now - DAY) },
+        reporter: { createdAt: { lte: new Date(now - MIN_REPORTER_AGE) } },
+      },
+    });
+
+    if (reporters >= hideThreshold(community?._count.memberships ?? null)) {
+      await this.setHidden(type, id, new Date());
+    }
   }
 }

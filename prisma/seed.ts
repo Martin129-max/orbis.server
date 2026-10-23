@@ -1201,6 +1201,23 @@ async function createContentReports() {
     },
   ].filter((report) => report !== null);
 
+  if (sasukePost) {
+    reports.push(
+      ...(['sakura', 'itadori'] as const).map((reporter, index) => ({
+        reporterId: userIds[reporter],
+        targetType: 'post' as const,
+        targetId: sasukePost.id,
+        reason: 'harassment' as const,
+        details: null,
+        createdAt: minutesAgo(hours(1) - index * 10),
+      })),
+    );
+    await prisma.post.update({
+      where: { id: sasukePost.id },
+      data: { hiddenAt: minutesAgo(hours(1) - 10) },
+    });
+  }
+
   await prisma.contentReport.createMany({ data: reports });
   return reports.length;
 }
