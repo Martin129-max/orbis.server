@@ -1818,6 +1818,7 @@ async function main() {
       backgroundUrl: '/images/user-backgrounds/admin.webp',
       isAdmin: true,
       tourCompletedAt: minutesAgo(days(30)),
+      checklistDismissedAt: minutesAgo(days(29)),
       completedTours: PAGE_TOURS,
       password: await bcrypt.hash('123456', 10),
       createdAt: minutesAgo(days(30)),

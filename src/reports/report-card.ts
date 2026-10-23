@@ -68,7 +68,7 @@ export async function renderReportCard(
 ): Promise<Buffer> {
   const color = colors[report.category];
   const background = Buffer.from(
-    `<svg width="1200" height="675" xmlns="http://www.w3.org/2000/svg"><rect width="1200" height="675" fill="#f5f2eb"/><rect width="12" height="675" fill="${color}"/><rect x="38" y="136" width="1124" height="330" rx="18" fill="#fffefa"/><path d="M48 502H1152" stroke="#d6d0c5"/><circle cx="1160" cy="20" r="150" fill="none" stroke="#ddd7cb"/></svg>`,
+    `<svg width="1200" height="675" xmlns="http://www.w3.org/2000/svg"><rect width="1200" height="675" fill="#f5f2eb"/><rect width="12" height="675" fill="${color}"/><rect x="38" y="136" width="1124" height="330" rx="18" fill="#fffefa"/><path d="M48 502H1152" stroke="#d6d0c5"/></svg>`,
   );
   const name = (person: DiscordReport['author']) =>
     person.name
