@@ -19,10 +19,28 @@ export type DiscordReport = {
   message: string;
   pageUrl: string | null;
   createdAt: Date;
-  author: { username: string; name: string | null };
+  author: DiscordPerson;
+};
+
+export type DiscordPerson = {
+  username: string;
+  name: string | null;
+  avatarUrl: string | null;
 };
 
 export type DiscordTarget = { webhookUrl: string; siteUrl: string };
+
+function embedAuthor(siteUrl: string, person: DiscordPerson) {
+  const site = siteUrl.replace(/\/$/, '');
+  const icon = person.avatarUrl?.startsWith('/')
+    ? `${site}${person.avatarUrl}`
+    : person.avatarUrl;
+  return {
+    name: person.name ?? `@${person.username}`,
+    url: `${site}/users/${person.username}`,
+    ...(icon && /^https?:\/\//.test(icon) && { icon_url: icon }),
+  };
+}
 
 function sender(siteUrl: string) {
   return {
@@ -43,6 +61,7 @@ function payload(report: DiscordReport, siteUrl: string, withButton: boolean) {
     ...sender(siteUrl),
     embeds: [
       {
+        author: embedAuthor(siteUrl, report.author),
         title: `${style.emoji} ${style.label} report ${ticketNumber(report.id)}`,
         url: link,
         description: report.message.slice(0, 4000),
@@ -82,6 +101,7 @@ async function send(url: string, body: unknown) {
 
 export type DiscordActivity = {
   reportId: number;
+  actor: DiscordPerson;
   title: string;
   description?: string;
   color: number;
@@ -96,10 +116,11 @@ export const ACTIVITY_COLOR = {
 
 export async function postActivityToDiscord(
   { webhookUrl, siteUrl }: DiscordTarget,
-  { reportId, title, description, color }: DiscordActivity,
+  { reportId, actor, title, description, color }: DiscordActivity,
 ) {
   const link = `${siteUrl.replace(/\/$/, '')}/reports?report=${reportId}`;
   const embed = {
+    author: embedAuthor(siteUrl, actor),
     title,
     url: link,
     description: description?.slice(0, 4000),

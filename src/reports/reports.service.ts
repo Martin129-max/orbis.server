@@ -97,7 +97,7 @@ export class ReportsService {
         message: true,
         pageUrl: true,
         createdAt: true,
-        author: { select: { username: true, name: true } },
+        author: { select: { username: true, name: true, avatarUrl: true } },
       },
     });
 
@@ -116,27 +116,26 @@ export class ReportsService {
     }
   }
 
-  private actorName(userId: number) {
-    return this.prisma.user
-      .findUnique({
-        where: { id: userId },
-        select: { name: true, username: true },
-      })
-      .then((user) => user?.name ?? user?.username ?? 'Someone');
+  private actor(userId: number) {
+    return this.prisma.user.findUniqueOrThrow({
+      where: { id: userId },
+      select: { name: true, username: true, avatarUrl: true },
+    });
   }
 
   private shareActivity(
     userId: number,
-    activity: (actor: string) => DiscordActivity,
+    activity: (actor: string) => Omit<DiscordActivity, 'actor'>,
   ) {
     void (async () => {
       try {
         const target = await this.discordTarget();
         if (!target) return;
-        await postActivityToDiscord(
-          target,
-          activity(await this.actorName(userId)),
-        );
+        const actor = await this.actor(userId);
+        await postActivityToDiscord(target, {
+          ...activity(actor.name ?? actor.username),
+          actor,
+        });
       } catch (e) {
         this.logger.warn(
           `Could not post report activity to Discord: ${e instanceof Error ? e.message : e}`,
