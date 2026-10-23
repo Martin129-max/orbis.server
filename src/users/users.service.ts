@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -10,6 +15,7 @@ import {
   User as UserModel,
 } from '../../prisma/generated/client';
 import { normalizeUsername } from './username';
+import { isHeadAdmin } from './head-admin';
 import { StorageService } from '../storage/storage.service';
 
 export type PublicUser = Omit<UserModel, 'password'>;
@@ -22,6 +28,7 @@ export type PublicProfile = {
   coverUrl: string | null;
   backgroundUrl: string | null;
   isAdmin: boolean;
+  isHeadAdmin: boolean;
   createdAt: Date;
   online: boolean;
   friendCount: number;
@@ -82,6 +89,7 @@ export type Profile = Pick<
   | 'createdAt'
 > & {
   userId: number;
+  isHeadAdmin: boolean;
 };
 
 const omitPassword = { password: true } as const;
@@ -103,7 +111,13 @@ function toProfile({
   id,
   ...user
 }: Pick<UserModel, keyof typeof profile>): Profile {
-  return { userId: id, ...user };
+  const headAdmin = isHeadAdmin(user.email);
+  return {
+    userId: id,
+    ...user,
+    isAdmin: user.isAdmin || headAdmin,
+    isHeadAdmin: headAdmin,
+  };
 }
 
 @Injectable()
@@ -219,6 +233,7 @@ export class UsersService {
         avatarUrl: true,
         coverUrl: true,
         backgroundUrl: true,
+        email: true,
         isAdmin: true,
         appearOffline: true,
         createdAt: true,
@@ -283,9 +298,12 @@ export class UsersService {
       }),
     ]);
 
-    const { memberships, id, ...rest } = user;
+    const { memberships, id, email, ...rest } = user;
+    const headAdmin = isHeadAdmin(email);
     return {
       ...rest,
+      isAdmin: rest.isAdmin || headAdmin,
+      isHeadAdmin: headAdmin,
       userId: id,
       friendCount: friendships.length,
       friends: friendships.map(({ requester, addressee }) => {
@@ -316,6 +334,37 @@ export class UsersService {
           isOwner: community.ownerId === id,
         })),
     };
+  }
+
+  async setAdmin(
+    headAdminId: number,
+    username: string,
+    isAdmin: boolean,
+  ): Promise<{ isAdmin: boolean }> {
+    const headAdmin = await this.prisma.user.findUnique({
+      where: { id: headAdminId },
+      select: { email: true },
+    });
+    if (!headAdmin || !isHeadAdmin(headAdmin.email)) {
+      throw new ForbiddenException(
+        'Only the head admin can change site admins',
+      );
+    }
+
+    const user = await this.prisma.user.findUnique({
+      where: { username: normalizeUsername(username) },
+      select: { id: true, email: true },
+    });
+    if (!user) throw new NotFoundException('User not found');
+    if (isHeadAdmin(user.email)) {
+      throw new BadRequestException('The head admin is always an admin');
+    }
+
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: { isAdmin },
+    });
+    return { isAdmin };
   }
 
   async onboarding(id: number): Promise<Onboarding> {

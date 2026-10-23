@@ -6,7 +6,11 @@ import {
 import { normalizeUsername } from '../users/username';
 import { MAX_INT } from '../communities/community-member.guard';
 import { PrismaService } from '../prisma.service';
-import { LibraryStatus, Prisma } from '../../prisma/generated/client';
+import {
+  LibraryStatus,
+  MediaType,
+  Prisma,
+} from '../../prisma/generated/client';
 import { author, communitySummary } from '../common/author';
 import { PAGE_SIZE, Page } from '../common/pagination';
 import { sanitizeRichText } from '../common/rich-text';
@@ -19,6 +23,7 @@ import { CreatePostDto } from './dto/create-post.dto';
 import { NotificationsService } from '../notifications/notifications.service';
 import { friendsOf, requireWallAccess } from './wall-access';
 import { LikesService } from '../likes/likes.service';
+import { getMedia } from '../library/library-api';
 
 const postInclude = {
   author,
@@ -262,7 +267,7 @@ export class PostsService {
           OR: [
             member,
             { wallUserId: userId },
-            { authorId: userId, communityId: null },
+            { authorId: userId, communityId: null, mediaType: null },
             { wallUser: friendsOf(userId) },
           ],
           ...olderThan(cursor, RANK.post),
@@ -337,7 +342,7 @@ export class PostsService {
         where: {
           OR: [
             { wallUserId: owner.id },
-            { authorId: owner.id, communityId: null },
+            { authorId: owner.id, communityId: null, mediaType: null },
             { authorId: owner.id, community: visibleCommunity },
           ],
           ...olderThan(cursor, RANK.post),
@@ -417,6 +422,47 @@ export class PostsService {
         link: `/users/${owner.username}`,
       },
     ]);
+    return { ...post, type: 'post', liked: false, previewComments: [] };
+  }
+
+  async findForMedia(
+    viewerId: number,
+    mediaType: MediaType,
+    mediaSourceId: string,
+    rawCursor?: string,
+  ): Promise<Page<FeedItem>> {
+    const cursor = parseFeedCursor(rawCursor);
+    const posts = await this.prisma.post.findMany({
+      where: { mediaType, mediaSourceId, ...olderThan(cursor, RANK.post) },
+      orderBy: newestFirst,
+      take: PAGE_SIZE + 1,
+      include: postInclude,
+    });
+
+    const merged = posts.map((post) => ({ ...post, type: 'post' as const }));
+    const page = merged.slice(0, PAGE_SIZE);
+    const items = await this.engage(viewerId, page);
+    return { items, nextCursor: nextCursor(merged, page) };
+  }
+
+  async createOnMedia(
+    mediaType: MediaType,
+    mediaSourceId: string,
+    authorId: number,
+    { content }: CreatePostDto,
+  ): Promise<PostItem> {
+    if (!/^\d{1,12}$/.test(mediaSourceId)) {
+      throw new NotFoundException('Title not found');
+    }
+    await getMedia(mediaType, mediaSourceId);
+
+    const { html, empty } = sanitizeRichText(content);
+    if (empty) throw new BadRequestException('Post cannot be empty');
+
+    const post = await this.prisma.post.create({
+      data: { mediaType, mediaSourceId, authorId, content: html },
+      include: postInclude,
+    });
     return { ...post, type: 'post', liked: false, previewComments: [] };
   }
 

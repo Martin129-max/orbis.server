@@ -1,6 +1,6 @@
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
-import { Prisma } from '../../prisma/generated/client';
+import { MediaType, Prisma } from '../../prisma/generated/client';
 import { requireMembership } from '../communities/require-membership';
 
 export function friendsOf(userId: number): Prisma.UserWhereInput {
@@ -47,13 +47,18 @@ export async function requirePostAccess(
   {
     communityId,
     wallUserId,
-  }: { communityId: number | null; wallUserId: number | null },
+    mediaType = null,
+  }: {
+    communityId: number | null;
+    wallUserId: number | null;
+    mediaType?: MediaType | null;
+  },
 ) {
   if (communityId !== null) {
     await requireMembership(prisma, userId, communityId);
   } else if (wallUserId !== null) {
     await requireWallAccess(prisma, userId, wallUserId);
-  } else {
+  } else if (mediaType === null) {
     throw new NotFoundException('Not found');
   }
 }
@@ -65,6 +70,8 @@ export type EngagementTarget = {
   id: number;
   communityId: number | null;
   wallUserId: number | null;
+  mediaType: MediaType | null;
+  mediaSourceId: string | null;
   ownerId: number;
 };
 
@@ -79,7 +86,13 @@ export async function targetOf(
   if (type === 'post') {
     const post = await prisma.post.findUnique({
       where: { id },
-      select: { communityId: true, wallUserId: true, authorId: true },
+      select: {
+        communityId: true,
+        wallUserId: true,
+        mediaType: true,
+        mediaSourceId: true,
+        authorId: true,
+      },
     });
     if (!post) throw new NotFoundException('Not found');
     return { type, id, ...post, ownerId: post.authorId };
@@ -96,6 +109,8 @@ export async function targetOf(
       id,
       communityId: thread.communityId,
       wallUserId: null,
+      mediaType: null,
+      mediaSourceId: null,
       ownerId: thread.authorId,
     };
   }
@@ -115,6 +130,8 @@ export async function targetOf(
     id,
     communityId: null,
     wallUserId: null,
+    mediaType: null,
+    mediaSourceId: null,
     ownerId: activity.entry.userId,
   };
 }

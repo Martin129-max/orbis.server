@@ -11,6 +11,7 @@ import { UpdateReportDto } from './dto/update-report.dto';
 import { NotificationsService } from '../notifications/notifications.service';
 import { ticketNumber } from './ticket';
 import { getReporterStatusLabel } from './status-labels';
+import { isHeadAdmin } from '../users/head-admin';
 
 
 const reportSelect = {
@@ -93,9 +94,9 @@ export class ReportsService {
   private async requireAdmin(userId: number) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
-      select: { isAdmin: true },
+      select: { isAdmin: true, email: true },
     });
-    if (!user?.isAdmin) {
+    if (!user || !(user.isAdmin || isHeadAdmin(user.email))) {
       throw new ForbiddenException('Only site admins can see reports');
     }
   }

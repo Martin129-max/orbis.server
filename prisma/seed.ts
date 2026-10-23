@@ -862,6 +862,82 @@ const invites: {
 
 const userIds = {} as Record<UserKey, number>;
 
+const titlePosts: {
+  title: keyof typeof media;
+  author: UserKey;
+  ago: number;
+  content: string;
+  comments?: SeedComment[];
+}[] = [
+  {
+    title: 'frieren',
+    author: 'admin',
+    ago: hours(6),
+    content:
+      '<p>Rewatching for the third time and the flashbacks still get me. Himmel was right about everything.</p>',
+    comments: [
+      {
+        author: 'anya',
+        ago: hours(5),
+        content: '<p>Anya cried at the flower field. Anya is not ashamed.</p>',
+      },
+      {
+        author: 'gojo',
+        ago: hours(4),
+        content:
+          '<p>Strong mage, terrible at small talk. I relate to exactly half of that.</p>',
+        replies: [
+          {
+            author: 'admin',
+            ago: hours(3),
+            content: '<p>We all know which half, Gojo.</p>',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    title: 'onePiece',
+    author: 'luffy',
+    ago: hours(20),
+    content:
+      '<p>Best story ever written. Also the food. Mostly the food. 🍖</p>',
+    comments: [
+      {
+        author: 'zoro',
+        ago: hours(19),
+        content: '<p>You only read the chapters with meat in them.</p>',
+      },
+      {
+        author: 'nami',
+        ago: hours(18),
+        content: '<p>Spoilers in this thread and I’m charging interest.</p>',
+      },
+    ],
+  },
+  {
+    title: 'onePiece',
+    author: 'nami',
+    ago: days(2),
+    content:
+      '<p>Rereading arc by arc and charting every island along the way. 🗺️</p>',
+  },
+  {
+    title: 'eldenRing',
+    author: 'goku',
+    ago: days(1) + hours(2),
+    content:
+      '<p>Beat Malenia after 64 tries! Next I want to fight someone even stronger.</p>',
+    comments: [
+      {
+        author: 'vegeta',
+        ago: days(1),
+        content: '<p>It took me 63. Write that down.</p>',
+      },
+    ],
+  },
+];
+
 const wallPosts: {
   wall: UserKey;
   author: UserKey;
@@ -1027,6 +1103,8 @@ async function createNotifications() {
         id: true,
         authorId: true,
         wallUserId: true,
+        mediaType: true,
+        mediaSourceId: true,
         createdAt: true,
         wallUser: { select: { username: true } },
       },
@@ -1055,6 +1133,18 @@ async function createNotifications() {
     activities.map((activity) => [activity.id, activity.entry.user]),
   );
   const postAuthors = new Map(posts.map((post) => [post.id, post.authorId]));
+  const postTitles = new Map(
+    posts.flatMap((post) =>
+      post.mediaType
+        ? [
+            [
+              post.id,
+              `/library/${post.mediaType}/${post.mediaSourceId}`,
+            ] as const,
+          ]
+        : [],
+    ),
+  );
   const postWalls = new Map(
     posts.flatMap((post) =>
       post.wallUser ? [[post.id, post.wallUser.username] as const] : [],
@@ -1093,11 +1183,17 @@ async function createNotifications() {
       : isActivity
         ? activityOwner?.username
         : postWalls.get(comment.commentableId);
+    const titleLink =
+      comment.commentableType === 'post'
+        ? postTitles.get(comment.commentableId)
+        : undefined;
     const base = {
       actorId: comment.authorId,
-      link: wall
-        ? `/users/${wall}`
-        : `/communities/${comment.communityId}${isThread ? '?tab=forum' : ''}`,
+      link:
+        titleLink ??
+        (wall
+          ? `/users/${wall}`
+          : `/communities/${comment.communityId}${isThread ? '?tab=forum' : ''}`),
       createdAt: comment.createdAt,
       readAt: readAt(comment.createdAt),
     };
@@ -1493,7 +1589,9 @@ async function createLikes(): Promise<number> {
   for (const post of posts) {
     const candidates = post.communityId
       ? (membersOf.get(post.communityId) ?? [])
-      : [post.wallUserId!, ...friendsOf(post.wallUserId!)];
+      : post.wallUserId
+        ? [post.wallUserId, ...friendsOf(post.wallUserId)]
+        : Object.values(userIds);
     const likers = [...new Set(candidates)].filter(
       (userId) => userId !== post.authorId && seededPick(post.id, userId, 45),
     );
@@ -1815,6 +1913,31 @@ async function main() {
   }
 
   console.log('🧱 Wall posts created:', wallPosts.length);
+
+  for (const titlePost of titlePosts) {
+    const [mediaType, mediaSourceId] = media[titlePost.title];
+    const post = await prisma.post.create({
+      data: {
+        mediaType,
+        mediaSourceId,
+        authorId: userIds[titlePost.author],
+        content: titlePost.content,
+        createdAt: minutesAgo(titlePost.ago),
+      },
+    });
+    const commentCount = await createComments(
+      null,
+      'post',
+      post.id,
+      titlePost.comments,
+    );
+    await prisma.post.update({
+      where: { id: post.id },
+      data: { commentCount },
+    });
+  }
+
+  console.log('🎬 Title wall posts created:', titlePosts.length);
 
   await prisma.report.createMany({
     data: reports.map(([author, category, status, ago, message, pageUrl]) => ({
