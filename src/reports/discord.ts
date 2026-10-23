@@ -24,6 +24,14 @@ export type DiscordReport = {
 
 export type DiscordTarget = { webhookUrl: string; siteUrl: string };
 
+function sender(siteUrl: string) {
+  return {
+    username: 'Orbis',
+    avatar_url: `${siteUrl.replace(/\/$/, '')}/apple-icon`,
+    allowed_mentions: { parse: [] },
+  };
+}
+
 function payload(report: DiscordReport, siteUrl: string, withButton: boolean) {
   const style = categoryStyle[report.category];
   const link = `${siteUrl.replace(/\/$/, '')}/reports?report=${report.id}`;
@@ -32,8 +40,7 @@ function payload(report: DiscordReport, siteUrl: string, withButton: boolean) {
     : `@${report.author.username}`;
 
   return {
-    username: 'Orbis Reports',
-    allowed_mentions: { parse: [] },
+    ...sender(siteUrl),
     embeds: [
       {
         title: `${style.emoji} ${style.label} report ${ticketNumber(report.id)}`,
@@ -107,11 +114,7 @@ export async function postActivityToDiscord(
       },
     ],
   };
-  const base = {
-    username: 'Orbis Reports',
-    allowed_mentions: { parse: [] },
-    embeds: [embed],
-  };
+  const base = { ...sender(siteUrl), embeds: [embed] };
 
   const withButton = await send(`${webhookUrl}?with_components=true`, {
     ...base,
