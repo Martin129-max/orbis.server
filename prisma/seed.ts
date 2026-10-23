@@ -1082,7 +1082,6 @@ const reports: [
   ],
 ];
 
-
 async function createNotifications() {
   const day = 24 * 60 * 60 * 1000;
   const readAt = (createdAt: Date) =>
@@ -1242,7 +1241,13 @@ async function createNotifications() {
 
   const movedReports = await prisma.report.findMany({
     where: { status: { not: 'todo' } },
-    select: { id: true, authorId: true, status: true, category: true, createdAt: true },
+    select: {
+      id: true,
+      authorId: true,
+      status: true,
+      category: true,
+      createdAt: true,
+    },
   });
   for (const report of movedReports) {
     notifications.push({

@@ -13,7 +13,6 @@ import { ticketNumber } from './ticket';
 import { getReporterStatusLabel } from './status-labels';
 import { isHeadAdmin } from '../users/head-admin';
 
-
 const reportSelect = {
   id: true,
   category: true,
