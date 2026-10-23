@@ -91,6 +91,7 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 export const CommunityScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  description: 'description',
   iconUrl: 'iconUrl',
   coverUrl: 'coverUrl',
   backgroundUrl: 'backgroundUrl',

@@ -39,6 +39,7 @@ export type CommunitySumAggregateOutputType = {
 export type CommunityMinAggregateOutputType = {
   id: number | null
   name: string | null
+  description: string | null
   iconUrl: string | null
   coverUrl: string | null
   backgroundUrl: string | null
@@ -50,6 +51,7 @@ export type CommunityMinAggregateOutputType = {
 export type CommunityMaxAggregateOutputType = {
   id: number | null
   name: string | null
+  description: string | null
   iconUrl: string | null
   coverUrl: string | null
   backgroundUrl: string | null
@@ -61,6 +63,7 @@ export type CommunityMaxAggregateOutputType = {
 export type CommunityCountAggregateOutputType = {
   id: number
   name: number
+  description: number
   iconUrl: number
   coverUrl: number
   backgroundUrl: number
@@ -84,6 +87,7 @@ export type CommunitySumAggregateInputType = {
 export type CommunityMinAggregateInputType = {
   id?: true
   name?: true
+  description?: true
   iconUrl?: true
   coverUrl?: true
   backgroundUrl?: true
@@ -95,6 +99,7 @@ export type CommunityMinAggregateInputType = {
 export type CommunityMaxAggregateInputType = {
   id?: true
   name?: true
+  description?: true
   iconUrl?: true
   coverUrl?: true
   backgroundUrl?: true
@@ -106,6 +111,7 @@ export type CommunityMaxAggregateInputType = {
 export type CommunityCountAggregateInputType = {
   id?: true
   name?: true
+  description?: true
   iconUrl?: true
   coverUrl?: true
   backgroundUrl?: true
@@ -204,6 +210,7 @@ export type CommunityGroupByArgs<ExtArgs extends runtime.Types.Extensions.Intern
 export type CommunityGroupByOutputType = {
   id: number
   name: string
+  description: string | null
   iconUrl: string | null
   coverUrl: string | null
   backgroundUrl: string | null
@@ -238,6 +245,7 @@ export type CommunityWhereInput = {
   NOT?: Prisma.CommunityWhereInput | Prisma.CommunityWhereInput[]
   id?: Prisma.IntFilter<"Community"> | number
   name?: Prisma.StringFilter<"Community"> | string
+  description?: Prisma.StringNullableFilter<"Community"> | string | null
   iconUrl?: Prisma.StringNullableFilter<"Community"> | string | null
   coverUrl?: Prisma.StringNullableFilter<"Community"> | string | null
   backgroundUrl?: Prisma.StringNullableFilter<"Community"> | string | null
@@ -257,6 +265,7 @@ export type CommunityWhereInput = {
 export type CommunityOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  description?: Prisma.SortOrderInput | Prisma.SortOrder
   iconUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   coverUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   backgroundUrl?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -279,6 +288,7 @@ export type CommunityWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.CommunityWhereInput[]
   NOT?: Prisma.CommunityWhereInput | Prisma.CommunityWhereInput[]
   name?: Prisma.StringFilter<"Community"> | string
+  description?: Prisma.StringNullableFilter<"Community"> | string | null
   iconUrl?: Prisma.StringNullableFilter<"Community"> | string | null
   coverUrl?: Prisma.StringNullableFilter<"Community"> | string | null
   backgroundUrl?: Prisma.StringNullableFilter<"Community"> | string | null
@@ -298,6 +308,7 @@ export type CommunityWhereUniqueInput = Prisma.AtLeast<{
 export type CommunityOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  description?: Prisma.SortOrderInput | Prisma.SortOrder
   iconUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   coverUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   backgroundUrl?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -317,6 +328,7 @@ export type CommunityScalarWhereWithAggregatesInput = {
   NOT?: Prisma.CommunityScalarWhereWithAggregatesInput | Prisma.CommunityScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"Community"> | number
   name?: Prisma.StringWithAggregatesFilter<"Community"> | string
+  description?: Prisma.StringNullableWithAggregatesFilter<"Community"> | string | null
   iconUrl?: Prisma.StringNullableWithAggregatesFilter<"Community"> | string | null
   coverUrl?: Prisma.StringNullableWithAggregatesFilter<"Community"> | string | null
   backgroundUrl?: Prisma.StringNullableWithAggregatesFilter<"Community"> | string | null
@@ -327,6 +339,7 @@ export type CommunityScalarWhereWithAggregatesInput = {
 
 export type CommunityCreateInput = {
   name: string
+  description?: string | null
   iconUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
@@ -345,6 +358,7 @@ export type CommunityCreateInput = {
 export type CommunityUncheckedCreateInput = {
   id?: number
   name: string
+  description?: string | null
   iconUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
@@ -362,6 +376,7 @@ export type CommunityUncheckedCreateInput = {
 
 export type CommunityUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -380,6 +395,7 @@ export type CommunityUpdateInput = {
 export type CommunityUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -398,6 +414,7 @@ export type CommunityUncheckedUpdateInput = {
 export type CommunityCreateManyInput = {
   id?: number
   name: string
+  description?: string | null
   iconUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
@@ -408,6 +425,7 @@ export type CommunityCreateManyInput = {
 
 export type CommunityUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -418,6 +436,7 @@ export type CommunityUpdateManyMutationInput = {
 export type CommunityUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -429,6 +448,7 @@ export type CommunityUncheckedUpdateManyInput = {
 export type CommunityCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   iconUrl?: Prisma.SortOrder
   coverUrl?: Prisma.SortOrder
   backgroundUrl?: Prisma.SortOrder
@@ -445,6 +465,7 @@ export type CommunityAvgOrderByAggregateInput = {
 export type CommunityMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   iconUrl?: Prisma.SortOrder
   coverUrl?: Prisma.SortOrder
   backgroundUrl?: Prisma.SortOrder
@@ -456,6 +477,7 @@ export type CommunityMaxOrderByAggregateInput = {
 export type CommunityMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   iconUrl?: Prisma.SortOrder
   coverUrl?: Prisma.SortOrder
   backgroundUrl?: Prisma.SortOrder
@@ -661,6 +683,7 @@ export type CommunityUncheckedUpdateManyWithoutOwnerNestedInput = {
 
 export type CommunityCreateWithoutMembershipsInput = {
   name: string
+  description?: string | null
   iconUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
@@ -678,6 +701,7 @@ export type CommunityCreateWithoutMembershipsInput = {
 export type CommunityUncheckedCreateWithoutMembershipsInput = {
   id?: number
   name: string
+  description?: string | null
   iconUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
@@ -710,6 +734,7 @@ export type CommunityUpdateToOneWithWhereWithoutMembershipsInput = {
 
 export type CommunityUpdateWithoutMembershipsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -727,6 +752,7 @@ export type CommunityUpdateWithoutMembershipsInput = {
 export type CommunityUncheckedUpdateWithoutMembershipsInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -743,6 +769,7 @@ export type CommunityUncheckedUpdateWithoutMembershipsInput = {
 
 export type CommunityCreateWithoutRolesInput = {
   name: string
+  description?: string | null
   iconUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
@@ -760,6 +787,7 @@ export type CommunityCreateWithoutRolesInput = {
 export type CommunityUncheckedCreateWithoutRolesInput = {
   id?: number
   name: string
+  description?: string | null
   iconUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
@@ -792,6 +820,7 @@ export type CommunityUpdateToOneWithWhereWithoutRolesInput = {
 
 export type CommunityUpdateWithoutRolesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -809,6 +838,7 @@ export type CommunityUpdateWithoutRolesInput = {
 export type CommunityUncheckedUpdateWithoutRolesInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -825,6 +855,7 @@ export type CommunityUncheckedUpdateWithoutRolesInput = {
 
 export type CommunityCreateWithoutInvitesInput = {
   name: string
+  description?: string | null
   iconUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
@@ -842,6 +873,7 @@ export type CommunityCreateWithoutInvitesInput = {
 export type CommunityUncheckedCreateWithoutInvitesInput = {
   id?: number
   name: string
+  description?: string | null
   iconUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
@@ -874,6 +906,7 @@ export type CommunityUpdateToOneWithWhereWithoutInvitesInput = {
 
 export type CommunityUpdateWithoutInvitesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -891,6 +924,7 @@ export type CommunityUpdateWithoutInvitesInput = {
 export type CommunityUncheckedUpdateWithoutInvitesInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -907,6 +941,7 @@ export type CommunityUncheckedUpdateWithoutInvitesInput = {
 
 export type CommunityCreateWithoutPostsInput = {
   name: string
+  description?: string | null
   iconUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
@@ -924,6 +959,7 @@ export type CommunityCreateWithoutPostsInput = {
 export type CommunityUncheckedCreateWithoutPostsInput = {
   id?: number
   name: string
+  description?: string | null
   iconUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
@@ -956,6 +992,7 @@ export type CommunityUpdateToOneWithWhereWithoutPostsInput = {
 
 export type CommunityUpdateWithoutPostsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -973,6 +1010,7 @@ export type CommunityUpdateWithoutPostsInput = {
 export type CommunityUncheckedUpdateWithoutPostsInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -989,6 +1027,7 @@ export type CommunityUncheckedUpdateWithoutPostsInput = {
 
 export type CommunityCreateWithoutThreadsInput = {
   name: string
+  description?: string | null
   iconUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
@@ -1006,6 +1045,7 @@ export type CommunityCreateWithoutThreadsInput = {
 export type CommunityUncheckedCreateWithoutThreadsInput = {
   id?: number
   name: string
+  description?: string | null
   iconUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
@@ -1038,6 +1078,7 @@ export type CommunityUpdateToOneWithWhereWithoutThreadsInput = {
 
 export type CommunityUpdateWithoutThreadsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1055,6 +1096,7 @@ export type CommunityUpdateWithoutThreadsInput = {
 export type CommunityUncheckedUpdateWithoutThreadsInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1071,6 +1113,7 @@ export type CommunityUncheckedUpdateWithoutThreadsInput = {
 
 export type CommunityCreateWithoutCommentsInput = {
   name: string
+  description?: string | null
   iconUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
@@ -1088,6 +1131,7 @@ export type CommunityCreateWithoutCommentsInput = {
 export type CommunityUncheckedCreateWithoutCommentsInput = {
   id?: number
   name: string
+  description?: string | null
   iconUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
@@ -1120,6 +1164,7 @@ export type CommunityUpdateToOneWithWhereWithoutCommentsInput = {
 
 export type CommunityUpdateWithoutCommentsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1137,6 +1182,7 @@ export type CommunityUpdateWithoutCommentsInput = {
 export type CommunityUncheckedUpdateWithoutCommentsInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1153,6 +1199,7 @@ export type CommunityUncheckedUpdateWithoutCommentsInput = {
 
 export type CommunityCreateWithoutVotesInput = {
   name: string
+  description?: string | null
   iconUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
@@ -1170,6 +1217,7 @@ export type CommunityCreateWithoutVotesInput = {
 export type CommunityUncheckedCreateWithoutVotesInput = {
   id?: number
   name: string
+  description?: string | null
   iconUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
@@ -1202,6 +1250,7 @@ export type CommunityUpdateToOneWithWhereWithoutVotesInput = {
 
 export type CommunityUpdateWithoutVotesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1219,6 +1268,7 @@ export type CommunityUpdateWithoutVotesInput = {
 export type CommunityUncheckedUpdateWithoutVotesInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1235,6 +1285,7 @@ export type CommunityUncheckedUpdateWithoutVotesInput = {
 
 export type CommunityCreateWithoutOwnerInput = {
   name: string
+  description?: string | null
   iconUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
@@ -1252,6 +1303,7 @@ export type CommunityCreateWithoutOwnerInput = {
 export type CommunityUncheckedCreateWithoutOwnerInput = {
   id?: number
   name: string
+  description?: string | null
   iconUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
@@ -1298,6 +1350,7 @@ export type CommunityScalarWhereInput = {
   NOT?: Prisma.CommunityScalarWhereInput | Prisma.CommunityScalarWhereInput[]
   id?: Prisma.IntFilter<"Community"> | number
   name?: Prisma.StringFilter<"Community"> | string
+  description?: Prisma.StringNullableFilter<"Community"> | string | null
   iconUrl?: Prisma.StringNullableFilter<"Community"> | string | null
   coverUrl?: Prisma.StringNullableFilter<"Community"> | string | null
   backgroundUrl?: Prisma.StringNullableFilter<"Community"> | string | null
@@ -1309,6 +1362,7 @@ export type CommunityScalarWhereInput = {
 export type CommunityCreateManyOwnerInput = {
   id?: number
   name: string
+  description?: string | null
   iconUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
@@ -1318,6 +1372,7 @@ export type CommunityCreateManyOwnerInput = {
 
 export type CommunityUpdateWithoutOwnerInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1335,6 +1390,7 @@ export type CommunityUpdateWithoutOwnerInput = {
 export type CommunityUncheckedUpdateWithoutOwnerInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1352,6 +1408,7 @@ export type CommunityUncheckedUpdateWithoutOwnerInput = {
 export type CommunityUncheckedUpdateManyWithoutOwnerInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1447,6 +1504,7 @@ export type CommunityCountOutputTypeCountInvitesArgs<ExtArgs extends runtime.Typ
 export type CommunitySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  description?: boolean
   iconUrl?: boolean
   coverUrl?: boolean
   backgroundUrl?: boolean
@@ -1467,6 +1525,7 @@ export type CommunitySelect<ExtArgs extends runtime.Types.Extensions.InternalArg
 export type CommunitySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  description?: boolean
   iconUrl?: boolean
   coverUrl?: boolean
   backgroundUrl?: boolean
@@ -1479,6 +1538,7 @@ export type CommunitySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
 export type CommunitySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  description?: boolean
   iconUrl?: boolean
   coverUrl?: boolean
   backgroundUrl?: boolean
@@ -1491,6 +1551,7 @@ export type CommunitySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
 export type CommunitySelectScalar = {
   id?: boolean
   name?: boolean
+  description?: boolean
   iconUrl?: boolean
   coverUrl?: boolean
   backgroundUrl?: boolean
@@ -1499,7 +1560,7 @@ export type CommunitySelectScalar = {
   createdAt?: boolean
 }
 
-export type CommunityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "iconUrl" | "coverUrl" | "backgroundUrl" | "ownerId" | "isPublic" | "createdAt", ExtArgs["result"]["community"]>
+export type CommunityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "iconUrl" | "coverUrl" | "backgroundUrl" | "ownerId" | "isPublic" | "createdAt", ExtArgs["result"]["community"]>
 export type CommunityInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   memberships?: boolean | Prisma.Community$membershipsArgs<ExtArgs>
@@ -1533,6 +1594,7 @@ export type $CommunityPayload<ExtArgs extends runtime.Types.Extensions.InternalA
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     name: string
+    description: string | null
     iconUrl: string | null
     coverUrl: string | null
     backgroundUrl: string | null
@@ -1972,6 +2034,7 @@ export interface Prisma__CommunityClient<T, Null = never, ExtArgs extends runtim
 export interface CommunityFieldRefs {
   readonly id: Prisma.FieldRef<"Community", 'Int'>
   readonly name: Prisma.FieldRef<"Community", 'String'>
+  readonly description: Prisma.FieldRef<"Community", 'String'>
   readonly iconUrl: Prisma.FieldRef<"Community", 'String'>
   readonly coverUrl: Prisma.FieldRef<"Community", 'String'>
   readonly backgroundUrl: Prisma.FieldRef<"Community", 'String'>

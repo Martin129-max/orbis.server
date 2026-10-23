@@ -16,4 +16,9 @@ export class UpdateCommunityDto {
   @IsOptional()
   @IsBoolean()
   isPublic?: boolean;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(300)
+  description?: string;
 }

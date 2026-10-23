@@ -1,6 +1,7 @@
 model Community {
   id            Int          @id @default(autoincrement())
   name          String
+  description   String?
   iconUrl       String?
   coverUrl      String?
   backgroundUrl String?

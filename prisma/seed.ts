@@ -41,6 +41,7 @@ type UserKey = Character | 'admin' | 'user';
 
 type SeedCommunity = {
   name: string;
+  description: string;
   owner: UserKey;
   isPublic: boolean;
   members: [UserKey, string?][];
@@ -71,6 +72,8 @@ const days = (count: number) => count * 24 * 60;
 const communities: SeedCommunity[] = [
   {
     name: 'Seasonal Anime Club',
+    description:
+      'Weekly threads for everything airing this season. Hot takes, episode reactions, and what to drop.',
     owner: 'admin',
     isPublic: true,
     members: [
@@ -118,6 +121,8 @@ const communities: SeedCommunity[] = [
   },
   {
     name: 'Hidden Leaf Village',
+    description:
+      'Believe it! A home for Naruto fans, from the Academy days to the Hokage era.',
     owner: 'naruto',
     isPublic: true,
     admins: ['admin', 'sakura'],
@@ -160,6 +165,8 @@ const communities: SeedCommunity[] = [
   },
   {
     name: 'Straw Hat Pirates',
+    description:
+      'Set sail with the crew. One Piece theories, chapter talk, and a lot of meat.',
     owner: 'luffy',
     isPublic: true,
     admins: ['zoro'],
@@ -197,6 +204,8 @@ const communities: SeedCommunity[] = [
   },
   {
     name: 'Saiyan Training Grounds',
+    description:
+      'Train hard, power up, and argue about who would win. All things Dragon Ball.',
     owner: 'goku',
     isPublic: true,
     members: [['goku'], ['vegeta', 'Prince of All Saiyans'], ['luffy']],
@@ -230,6 +239,8 @@ const communities: SeedCommunity[] = [
   },
   {
     name: 'Demon Slayer Corps',
+    description:
+      'Breathing styles, Hashira rankings, and the best fight scenes in anime.',
     owner: 'tanjiro',
     isPublic: true,
     admins: ['admin'],
@@ -260,6 +271,8 @@ const communities: SeedCommunity[] = [
   },
   {
     name: 'Jujutsu High',
+    description:
+      'Cursed energy, domain expansions, and Gojo being Gojo. Jujutsu Kaisen talk.',
     owner: 'gojo',
     isPublic: true,
     members: [['gojo', 'The Strongest'], ['itadori']],
@@ -289,6 +302,8 @@ const communities: SeedCommunity[] = [
   },
   {
     name: 'Survey Corps',
+    description:
+      'Private quarters for the Scouts. Expedition reports and Attack on Titan discussion.',
     owner: 'levi',
     isPublic: false,
     members: [['levi', 'Captain'], ['mikasa'], ['admin']],
@@ -312,6 +327,8 @@ const communities: SeedCommunity[] = [
   },
   {
     name: 'Bebop Lounge',
+    description:
+      'A quiet corner for space cowboys. Jazz, bounties, and Cowboy Bebop rewatches.',
     owner: 'spike',
     isPublic: false,
     members: [['spike'], ['admin']],
@@ -1797,6 +1814,7 @@ async function main() {
     const created = await prisma.community.create({
       data: {
         name: community.name,
+        description: community.description,
         iconUrl: communityImage('communities', community.name),
         coverUrl: communityImage('covers', community.name),
         backgroundUrl: communityImage('backgrounds', community.name),

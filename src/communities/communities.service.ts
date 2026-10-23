@@ -47,14 +47,31 @@ const communityImages = {
 
 export type CommunityImage = keyof typeof communityImages;
 
+type Person = {
+  id: number;
+  username: string;
+  name: string | null;
+  avatarUrl: string | null;
+};
+
 export type CommunitySearchResult = {
   id: number;
   name: string;
+  description: string | null;
   iconUrl: string | null;
   coverUrl: string | null;
   memberCount: number;
   joined: boolean;
+  members: Person[];
+  mutuals: Person[];
+  mutualCount: number;
 };
+
+const MEMBER_PREVIEW = 5;
+const MUTUAL_PREVIEW = 3;
+const person = {
+  select: { id: true, username: true, name: true, avatarUrl: true },
+} as const;
 
 export type RailItem =
   | { type: 'community'; communityId: number }
@@ -90,7 +107,12 @@ export class CommunitiesService {
     });
   }
 
-  async findPublic(): Promise<Omit<CommunitySearchResult, 'joined'>[]> {
+  async findPublic(): Promise<
+    Pick<
+      CommunitySearchResult,
+      'id' | 'name' | 'iconUrl' | 'coverUrl' | 'memberCount'
+    >[]
+  > {
     const communities = await this.prisma.community.findMany({
       where: { isPublic: true },
       orderBy: [{ memberships: { _count: 'desc' } }, { id: 'desc' }],
@@ -124,22 +146,67 @@ export class CommunitiesService {
       select: {
         id: true,
         name: true,
+        description: true,
         iconUrl: true,
         coverUrl: true,
         _count: { select: { memberships: true } },
         memberships: { where: { userId }, select: { userId: true } },
       },
     });
+    const ids = communities.map(({ id }) => id);
+
+    const [previews, friendships] = await Promise.all([
+      Promise.all(
+        ids.map((communityId) =>
+          this.prisma.membership.findMany({
+            where: { communityId },
+            orderBy: { joinedAt: 'asc' },
+            take: MEMBER_PREVIEW,
+            select: { user: person },
+          }),
+        ),
+      ),
+      this.prisma.friendship.findMany({
+        where: {
+          status: 'accepted',
+          OR: [{ requesterId: userId }, { addresseeId: userId }],
+        },
+        select: { requesterId: true, addresseeId: true },
+      }),
+    ]);
+    const friendIds = friendships.map(({ requesterId, addresseeId }) =>
+      requesterId === userId ? addresseeId : requesterId,
+    );
+    const friendMemberships =
+      friendIds.length === 0
+        ? []
+        : await this.prisma.membership.findMany({
+            where: { communityId: { in: ids }, userId: { in: friendIds } },
+            orderBy: { joinedAt: 'asc' },
+            select: { communityId: true, user: person },
+          });
 
     return communities.map(
-      ({ id, name, iconUrl, coverUrl, _count, memberships }) => ({
-        id,
-        name,
-        iconUrl,
-        coverUrl,
-        memberCount: _count.memberships,
-        joined: memberships.length > 0,
-      }),
+      (
+        { id, name, description, iconUrl, coverUrl, _count, memberships },
+        index,
+      ) => {
+        const mutuals = friendMemberships
+          .filter(({ communityId }) => communityId === id)
+          .map(({ user }) => user);
+        return {
+          id,
+          name,
+          description,
+          iconUrl,
+          coverUrl,
+          memberCount: _count.memberships,
+          joined: memberships.length > 0,
+          members: previews[index].map(({ user }) => user),
+          mutuals: mutuals.slice(0, MUTUAL_PREVIEW),
+          mutualCount: mutuals.length,
+        };
+      },
     );
   }
 
@@ -439,12 +506,17 @@ export class CommunitiesService {
   async update(
     userId: number,
     communityId: number,
-    { name, isPublic }: UpdateCommunityDto,
+    { name, isPublic, description }: UpdateCommunityDto,
   ): Promise<CommunityWithRole> {
     const role = await this.requireRole(userId, communityId, 'admin');
     const community = await this.prisma.community.update({
       where: { id: communityId },
-      data: { name: name?.trim(), isPublic },
+      data: {
+        name: name?.trim(),
+        isPublic,
+        description:
+          description === undefined ? undefined : description.trim() || null,
+      },
     });
 
     return { ...community, role };
