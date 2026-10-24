@@ -62,6 +62,7 @@ model Comment {
   parentId        Int?
   authorId        Int
   content         String
+  linkUrl         String?
   score           Int             @default(0)
   hiddenAt        DateTime?
   createdAt       DateTime        @default(now())

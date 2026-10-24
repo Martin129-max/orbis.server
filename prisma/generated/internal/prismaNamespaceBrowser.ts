@@ -206,6 +206,7 @@ export const CommentScalarFieldEnum = {
   parentId: 'parentId',
   authorId: 'authorId',
   content: 'content',
+  linkUrl: 'linkUrl',
   score: 'score',
   hiddenAt: 'hiddenAt',
   createdAt: 'createdAt'

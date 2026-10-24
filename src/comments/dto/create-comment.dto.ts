@@ -3,6 +3,7 @@ import {
   IsInt,
   IsOptional,
   IsString,
+  IsUrl,
   Max,
   MaxLength,
   Min,
@@ -27,4 +28,9 @@ export class CreateCommentDto {
   @IsString()
   @MaxLength(10000)
   content: string;
+
+  @IsOptional()
+  @MaxLength(2048)
+  @IsUrl({ protocols: ['http', 'https'], require_protocol: true })
+  linkUrl?: string;
 }

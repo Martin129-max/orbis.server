@@ -28,6 +28,7 @@ const commentSelect = {
   id: true,
   parentId: true,
   content: true,
+  linkUrl: true,
   score: true,
   hiddenAt: true,
   createdAt: true,
@@ -88,6 +89,7 @@ export class CommentsService {
       return {
         ...comment,
         content: hidden ? '' : comment.content,
+        linkUrl: hidden ? null : comment.linkUrl,
         myVote: mine.get(comment.id) ?? 0,
         hidden,
       };
@@ -96,7 +98,7 @@ export class CommentsService {
 
   async create(
     userId: number,
-    { type, id, parentId, content }: CreateCommentDto,
+    { type, id, parentId, content, linkUrl }: CreateCommentDto,
   ): Promise<CommentView> {
     const home = await targetOf(this.prisma, userId, type, id);
     await requireTargetAccess(this.prisma, userId, home);
@@ -114,7 +116,9 @@ export class CommentsService {
     }
 
     const { html, empty } = sanitizeRichText(content);
-    if (empty) throw new BadRequestException('Comment cannot be empty');
+    if (empty && !linkUrl) {
+      throw new BadRequestException('Comment cannot be empty');
+    }
 
     const increment = { commentCount: { increment: 1 } };
     const [comment] = await this.prisma.$transaction([
@@ -125,7 +129,8 @@ export class CommentsService {
           commentableId: id,
           parentId,
           authorId: userId,
-          content: html,
+          content: empty ? '' : html,
+          linkUrl: linkUrl ?? null,
         },
         select: commentSelect,
       }),

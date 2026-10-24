@@ -64,6 +64,7 @@ type SeedComment = Votes & {
   author: UserKey;
   ago: number;
   content: string;
+  linkUrl?: string;
   replies?: SeedComment[];
 };
 
@@ -370,6 +371,7 @@ const forums: Record<string, SeedThread[]> = {
           author: 'naruto',
           ago: days(2) - hours(1),
           content: `<p>Anything with ninjas. Obviously.</p>`,
+          linkUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           up: ['admin', 'tanjiro'],
           replies: [
             {
@@ -889,6 +891,7 @@ async function createComments(
         parentId,
         authorId: userIds[comment.author],
         content: comment.content,
+        linkUrl: comment.linkUrl,
         score: scoreOf(comment),
         createdAt: minutesAgo(comment.ago),
       },
