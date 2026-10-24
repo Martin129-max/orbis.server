@@ -41,6 +41,12 @@ const previewSelect = {
 
 const PREVIEW_COMMENTS = 3;
 
+function postBody({ content, linkUrl }: CreatePostDto) {
+  const { html, empty } = sanitizeRichText(content);
+  if (empty && !linkUrl) throw new BadRequestException('Post cannot be empty');
+  return { content: empty ? '' : html, linkUrl: linkUrl ?? null };
+}
+
 export type PreviewComment = Prisma.CommentGetPayload<{
   select: typeof previewSelect;
 }>;
@@ -453,7 +459,7 @@ export class PostsService {
   async createOnWall(
     username: string,
     authorId: number,
-    { content }: CreatePostDto,
+    body: CreatePostDto,
   ): Promise<PostItem> {
     const owner = await this.prisma.user.findUnique({
       where: { username: normalizeUsername(username) },
@@ -462,11 +468,8 @@ export class PostsService {
     if (!owner) throw new NotFoundException('User not found');
     await requireWallAccess(this.prisma, authorId, owner.id);
 
-    const { html, empty } = sanitizeRichText(content);
-    if (empty) throw new BadRequestException('Post cannot be empty');
-
     const post = await this.prisma.post.create({
-      data: { wallUserId: owner.id, authorId, content: html },
+      data: { wallUserId: owner.id, authorId, ...postBody(body) },
       include: postInclude,
     });
     await this.notifications.notify([
@@ -517,18 +520,15 @@ export class PostsService {
     mediaType: MediaType,
     mediaSourceId: string,
     authorId: number,
-    { content }: CreatePostDto,
+    body: CreatePostDto,
   ): Promise<PostItem> {
     if (!/^\d{1,12}$/.test(mediaSourceId)) {
       throw new NotFoundException('Title not found');
     }
     await getMedia(mediaType, mediaSourceId);
 
-    const { html, empty } = sanitizeRichText(content);
-    if (empty) throw new BadRequestException('Post cannot be empty');
-
     const post = await this.prisma.post.create({
-      data: { mediaType, mediaSourceId, authorId, content: html },
+      data: { mediaType, mediaSourceId, authorId, ...postBody(body) },
       include: postInclude,
     });
     return { ...post, type: 'post', liked: false, previewComments: [] };
@@ -537,13 +537,10 @@ export class PostsService {
   async create(
     communityId: number,
     authorId: number,
-    { content }: CreatePostDto,
+    body: CreatePostDto,
   ): Promise<PostItem> {
-    const { html, empty } = sanitizeRichText(content);
-    if (empty) throw new BadRequestException('Post cannot be empty');
-
     const post = await this.prisma.post.create({
-      data: { communityId, authorId, content: html },
+      data: { communityId, authorId, ...postBody(body) },
       include: postInclude,
     });
     return { ...post, type: 'post', liked: false, previewComments: [] };

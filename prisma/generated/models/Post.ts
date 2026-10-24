@@ -52,6 +52,7 @@ export type PostMinAggregateOutputType = {
   mediaSourceId: string | null
   authorId: number | null
   content: string | null
+  linkUrl: string | null
   commentCount: number | null
   likeCount: number | null
   hiddenAt: Date | null
@@ -66,6 +67,7 @@ export type PostMaxAggregateOutputType = {
   mediaSourceId: string | null
   authorId: number | null
   content: string | null
+  linkUrl: string | null
   commentCount: number | null
   likeCount: number | null
   hiddenAt: Date | null
@@ -80,6 +82,7 @@ export type PostCountAggregateOutputType = {
   mediaSourceId: number
   authorId: number
   content: number
+  linkUrl: number
   commentCount: number
   likeCount: number
   hiddenAt: number
@@ -114,6 +117,7 @@ export type PostMinAggregateInputType = {
   mediaSourceId?: true
   authorId?: true
   content?: true
+  linkUrl?: true
   commentCount?: true
   likeCount?: true
   hiddenAt?: true
@@ -128,6 +132,7 @@ export type PostMaxAggregateInputType = {
   mediaSourceId?: true
   authorId?: true
   content?: true
+  linkUrl?: true
   commentCount?: true
   likeCount?: true
   hiddenAt?: true
@@ -142,6 +147,7 @@ export type PostCountAggregateInputType = {
   mediaSourceId?: true
   authorId?: true
   content?: true
+  linkUrl?: true
   commentCount?: true
   likeCount?: true
   hiddenAt?: true
@@ -243,6 +249,7 @@ export type PostGroupByOutputType = {
   mediaSourceId: string | null
   authorId: number
   content: string
+  linkUrl: string | null
   commentCount: number
   likeCount: number
   hiddenAt: Date | null
@@ -280,6 +287,7 @@ export type PostWhereInput = {
   mediaSourceId?: Prisma.StringNullableFilter<"Post"> | string | null
   authorId?: Prisma.IntFilter<"Post"> | number
   content?: Prisma.StringFilter<"Post"> | string
+  linkUrl?: Prisma.StringNullableFilter<"Post"> | string | null
   commentCount?: Prisma.IntFilter<"Post"> | number
   likeCount?: Prisma.IntFilter<"Post"> | number
   hiddenAt?: Prisma.DateTimeNullableFilter<"Post"> | Date | string | null
@@ -297,6 +305,7 @@ export type PostOrderByWithRelationInput = {
   mediaSourceId?: Prisma.SortOrderInput | Prisma.SortOrder
   authorId?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  linkUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   commentCount?: Prisma.SortOrder
   likeCount?: Prisma.SortOrder
   hiddenAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -317,6 +326,7 @@ export type PostWhereUniqueInput = Prisma.AtLeast<{
   mediaSourceId?: Prisma.StringNullableFilter<"Post"> | string | null
   authorId?: Prisma.IntFilter<"Post"> | number
   content?: Prisma.StringFilter<"Post"> | string
+  linkUrl?: Prisma.StringNullableFilter<"Post"> | string | null
   commentCount?: Prisma.IntFilter<"Post"> | number
   likeCount?: Prisma.IntFilter<"Post"> | number
   hiddenAt?: Prisma.DateTimeNullableFilter<"Post"> | Date | string | null
@@ -334,6 +344,7 @@ export type PostOrderByWithAggregationInput = {
   mediaSourceId?: Prisma.SortOrderInput | Prisma.SortOrder
   authorId?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  linkUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   commentCount?: Prisma.SortOrder
   likeCount?: Prisma.SortOrder
   hiddenAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -356,6 +367,7 @@ export type PostScalarWhereWithAggregatesInput = {
   mediaSourceId?: Prisma.StringNullableWithAggregatesFilter<"Post"> | string | null
   authorId?: Prisma.IntWithAggregatesFilter<"Post"> | number
   content?: Prisma.StringWithAggregatesFilter<"Post"> | string
+  linkUrl?: Prisma.StringNullableWithAggregatesFilter<"Post"> | string | null
   commentCount?: Prisma.IntWithAggregatesFilter<"Post"> | number
   likeCount?: Prisma.IntWithAggregatesFilter<"Post"> | number
   hiddenAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Post"> | Date | string | null
@@ -366,6 +378,7 @@ export type PostCreateInput = {
   mediaType?: $Enums.MediaType | null
   mediaSourceId?: string | null
   content: string
+  linkUrl?: string | null
   commentCount?: number
   likeCount?: number
   hiddenAt?: Date | string | null
@@ -383,6 +396,7 @@ export type PostUncheckedCreateInput = {
   mediaSourceId?: string | null
   authorId: number
   content: string
+  linkUrl?: string | null
   commentCount?: number
   likeCount?: number
   hiddenAt?: Date | string | null
@@ -393,6 +407,7 @@ export type PostUpdateInput = {
   mediaType?: Prisma.NullableEnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType | null
   mediaSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -410,6 +425,7 @@ export type PostUncheckedUpdateInput = {
   mediaSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   authorId?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -424,6 +440,7 @@ export type PostCreateManyInput = {
   mediaSourceId?: string | null
   authorId: number
   content: string
+  linkUrl?: string | null
   commentCount?: number
   likeCount?: number
   hiddenAt?: Date | string | null
@@ -434,6 +451,7 @@ export type PostUpdateManyMutationInput = {
   mediaType?: Prisma.NullableEnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType | null
   mediaSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -448,6 +466,7 @@ export type PostUncheckedUpdateManyInput = {
   mediaSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   authorId?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -472,6 +491,7 @@ export type PostCountOrderByAggregateInput = {
   mediaSourceId?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  linkUrl?: Prisma.SortOrder
   commentCount?: Prisma.SortOrder
   likeCount?: Prisma.SortOrder
   hiddenAt?: Prisma.SortOrder
@@ -495,6 +515,7 @@ export type PostMaxOrderByAggregateInput = {
   mediaSourceId?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  linkUrl?: Prisma.SortOrder
   commentCount?: Prisma.SortOrder
   likeCount?: Prisma.SortOrder
   hiddenAt?: Prisma.SortOrder
@@ -509,6 +530,7 @@ export type PostMinOrderByAggregateInput = {
   mediaSourceId?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  linkUrl?: Prisma.SortOrder
   commentCount?: Prisma.SortOrder
   likeCount?: Prisma.SortOrder
   hiddenAt?: Prisma.SortOrder
@@ -658,6 +680,7 @@ export type PostCreateWithoutCommunityInput = {
   mediaType?: $Enums.MediaType | null
   mediaSourceId?: string | null
   content: string
+  linkUrl?: string | null
   commentCount?: number
   likeCount?: number
   hiddenAt?: Date | string | null
@@ -673,6 +696,7 @@ export type PostUncheckedCreateWithoutCommunityInput = {
   mediaSourceId?: string | null
   authorId: number
   content: string
+  linkUrl?: string | null
   commentCount?: number
   likeCount?: number
   hiddenAt?: Date | string | null
@@ -716,6 +740,7 @@ export type PostScalarWhereInput = {
   mediaSourceId?: Prisma.StringNullableFilter<"Post"> | string | null
   authorId?: Prisma.IntFilter<"Post"> | number
   content?: Prisma.StringFilter<"Post"> | string
+  linkUrl?: Prisma.StringNullableFilter<"Post"> | string | null
   commentCount?: Prisma.IntFilter<"Post"> | number
   likeCount?: Prisma.IntFilter<"Post"> | number
   hiddenAt?: Prisma.DateTimeNullableFilter<"Post"> | Date | string | null
@@ -726,6 +751,7 @@ export type PostCreateWithoutAuthorInput = {
   mediaType?: $Enums.MediaType | null
   mediaSourceId?: string | null
   content: string
+  linkUrl?: string | null
   commentCount?: number
   likeCount?: number
   hiddenAt?: Date | string | null
@@ -741,6 +767,7 @@ export type PostUncheckedCreateWithoutAuthorInput = {
   mediaType?: $Enums.MediaType | null
   mediaSourceId?: string | null
   content: string
+  linkUrl?: string | null
   commentCount?: number
   likeCount?: number
   hiddenAt?: Date | string | null
@@ -761,6 +788,7 @@ export type PostCreateWithoutWallUserInput = {
   mediaType?: $Enums.MediaType | null
   mediaSourceId?: string | null
   content: string
+  linkUrl?: string | null
   commentCount?: number
   likeCount?: number
   hiddenAt?: Date | string | null
@@ -776,6 +804,7 @@ export type PostUncheckedCreateWithoutWallUserInput = {
   mediaSourceId?: string | null
   authorId: number
   content: string
+  linkUrl?: string | null
   commentCount?: number
   likeCount?: number
   hiddenAt?: Date | string | null
@@ -831,6 +860,7 @@ export type PostCreateManyCommunityInput = {
   mediaSourceId?: string | null
   authorId: number
   content: string
+  linkUrl?: string | null
   commentCount?: number
   likeCount?: number
   hiddenAt?: Date | string | null
@@ -841,6 +871,7 @@ export type PostUpdateWithoutCommunityInput = {
   mediaType?: Prisma.NullableEnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType | null
   mediaSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -856,6 +887,7 @@ export type PostUncheckedUpdateWithoutCommunityInput = {
   mediaSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   authorId?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -869,6 +901,7 @@ export type PostUncheckedUpdateManyWithoutCommunityInput = {
   mediaSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   authorId?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -882,6 +915,7 @@ export type PostCreateManyAuthorInput = {
   mediaType?: $Enums.MediaType | null
   mediaSourceId?: string | null
   content: string
+  linkUrl?: string | null
   commentCount?: number
   likeCount?: number
   hiddenAt?: Date | string | null
@@ -895,6 +929,7 @@ export type PostCreateManyWallUserInput = {
   mediaSourceId?: string | null
   authorId: number
   content: string
+  linkUrl?: string | null
   commentCount?: number
   likeCount?: number
   hiddenAt?: Date | string | null
@@ -905,6 +940,7 @@ export type PostUpdateWithoutAuthorInput = {
   mediaType?: Prisma.NullableEnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType | null
   mediaSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -920,6 +956,7 @@ export type PostUncheckedUpdateWithoutAuthorInput = {
   mediaType?: Prisma.NullableEnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType | null
   mediaSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -933,6 +970,7 @@ export type PostUncheckedUpdateManyWithoutAuthorInput = {
   mediaType?: Prisma.NullableEnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType | null
   mediaSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -943,6 +981,7 @@ export type PostUpdateWithoutWallUserInput = {
   mediaType?: Prisma.NullableEnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType | null
   mediaSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -958,6 +997,7 @@ export type PostUncheckedUpdateWithoutWallUserInput = {
   mediaSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   authorId?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -971,6 +1011,7 @@ export type PostUncheckedUpdateManyWithoutWallUserInput = {
   mediaSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   authorId?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -987,6 +1028,7 @@ export type PostSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   mediaSourceId?: boolean
   authorId?: boolean
   content?: boolean
+  linkUrl?: boolean
   commentCount?: boolean
   likeCount?: boolean
   hiddenAt?: boolean
@@ -1004,6 +1046,7 @@ export type PostSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   mediaSourceId?: boolean
   authorId?: boolean
   content?: boolean
+  linkUrl?: boolean
   commentCount?: boolean
   likeCount?: boolean
   hiddenAt?: boolean
@@ -1021,6 +1064,7 @@ export type PostSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   mediaSourceId?: boolean
   authorId?: boolean
   content?: boolean
+  linkUrl?: boolean
   commentCount?: boolean
   likeCount?: boolean
   hiddenAt?: boolean
@@ -1038,13 +1082,14 @@ export type PostSelectScalar = {
   mediaSourceId?: boolean
   authorId?: boolean
   content?: boolean
+  linkUrl?: boolean
   commentCount?: boolean
   likeCount?: boolean
   hiddenAt?: boolean
   createdAt?: boolean
 }
 
-export type PostOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "communityId" | "wallUserId" | "mediaType" | "mediaSourceId" | "authorId" | "content" | "commentCount" | "likeCount" | "hiddenAt" | "createdAt", ExtArgs["result"]["post"]>
+export type PostOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "communityId" | "wallUserId" | "mediaType" | "mediaSourceId" | "authorId" | "content" | "linkUrl" | "commentCount" | "likeCount" | "hiddenAt" | "createdAt", ExtArgs["result"]["post"]>
 export type PostInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   community?: boolean | Prisma.Post$communityArgs<ExtArgs>
   wallUser?: boolean | Prisma.Post$wallUserArgs<ExtArgs>
@@ -1076,6 +1121,7 @@ export type $PostPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     mediaSourceId: string | null
     authorId: number
     content: string
+    linkUrl: string | null
     commentCount: number
     likeCount: number
     hiddenAt: Date | null
@@ -1513,6 +1559,7 @@ export interface PostFieldRefs {
   readonly mediaSourceId: Prisma.FieldRef<"Post", 'String'>
   readonly authorId: Prisma.FieldRef<"Post", 'Int'>
   readonly content: Prisma.FieldRef<"Post", 'String'>
+  readonly linkUrl: Prisma.FieldRef<"Post", 'String'>
   readonly commentCount: Prisma.FieldRef<"Post", 'Int'>
   readonly likeCount: Prisma.FieldRef<"Post", 'Int'>
   readonly hiddenAt: Prisma.FieldRef<"Post", 'DateTime'>

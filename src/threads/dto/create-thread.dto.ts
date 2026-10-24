@@ -1,4 +1,10 @@
-import { IsOptional, IsString, Matches, MaxLength } from 'class-validator';
+import {
+  IsOptional,
+  IsString,
+  IsUrl,
+  Matches,
+  MaxLength,
+} from 'class-validator';
 
 export class CreateThreadDto {
   @IsString()
@@ -10,4 +16,9 @@ export class CreateThreadDto {
   @IsString()
   @MaxLength(20000)
   content?: string;
+
+  @IsOptional()
+  @MaxLength(2048)
+  @IsUrl({ protocols: ['http', 'https'], require_protocol: true })
+  linkUrl?: string;
 }

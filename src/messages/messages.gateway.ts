@@ -14,14 +14,14 @@ export class MessagesGateway {
   @SubscribeMessage('typing')
   async typing(
     @ConnectedSocket() client: Socket,
-    @MessageBody() body: { userId?: unknown; typing?: unknown } | null,
+    @MessageBody() body: { conversationId?: unknown; typing?: unknown } | null,
   ) {
     const userId: number | undefined = client.data.userId;
-    const otherId = body?.userId;
-    if (userId === undefined || !Number.isInteger(otherId)) return;
+    const conversationId = body?.conversationId;
+    if (userId === undefined || !Number.isInteger(conversationId)) return;
 
     await this.messages
-      .typing(userId, otherId as number, body?.typing === true)
+      .typing(userId, conversationId as number, body?.typing === true)
       .catch(() => null);
   }
 }

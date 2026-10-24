@@ -101,7 +101,7 @@ export class ThreadsService {
   async create(
     userId: number,
     communityId: number,
-    { title, content = '' }: CreateThreadDto,
+    { title, content = '', linkUrl }: CreateThreadDto,
   ): Promise<ThreadSummary> {
     const { html, empty } = sanitizeRichText(content);
     const thread = await this.prisma.thread.create({
@@ -110,6 +110,7 @@ export class ThreadsService {
         authorId: userId,
         title: title.trim(),
         content: empty ? '' : html,
+        linkUrl: linkUrl ?? null,
       },
       include: threadInclude,
     });

@@ -5,19 +5,25 @@ enum ConversationStatus {
 
 model Conversation {
   id            Int                  @id @default(autoincrement())
-  userAId       Int
-  userBId       Int
+  isGroup       Boolean              @default(false)
+  name          String?
+  creatorId     Int?
+  userAId       Int?
+  userBId       Int?
   lastText      String               @default("")
   lastSenderId  Int?
+  lastSystem    Boolean              @default(false)
   lastMessageAt DateTime             @default(now())
   createdAt     DateTime             @default(now())
-  userA         User                 @relation("ConversationUserA", fields: [userAId], references: [id], onDelete: Cascade)
-  userB         User                 @relation("ConversationUserB", fields: [userBId], references: [id], onDelete: Cascade)
+  creator       User?                @relation("ConversationCreator", fields: [creatorId], references: [id], onDelete: SetNull)
+  userA         User?                @relation("ConversationUserA", fields: [userAId], references: [id], onDelete: Cascade)
+  userB         User?                @relation("ConversationUserB", fields: [userBId], references: [id], onDelete: Cascade)
   members       ConversationMember[]
   messages      Message[]
 
   @@unique([userAId, userBId])
   @@index([userBId])
+  @@index([creatorId])
 }
 
 model ConversationMember {
@@ -38,6 +44,7 @@ model Message {
   conversationId Int
   senderId       Int
   text           String
+  system         Boolean      @default(false)
   createdAt      DateTime     @default(now())
   conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   sender         User         @relation(fields: [senderId], references: [id], onDelete: Cascade)

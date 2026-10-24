@@ -193,3 +193,54 @@ describe('Feed content filters', () => {
     );
   });
 });
+
+describe('Creating posts with a link card', () => {
+  const create = jest.fn(({ data }) => ({ id: 9, ...data }));
+  const service = new PostsService(
+    { post: { create } } as unknown as PrismaService,
+    {} as ThreadsService,
+    {} as NotificationsService,
+    {} as LikesService,
+  );
+  const sanitize = jest.requireMock('../common/rich-text')
+    .sanitizeRichText as jest.Mock;
+
+  beforeEach(() => jest.clearAllMocks());
+
+  it('saves the link alongside the text', async () => {
+    sanitize.mockReturnValue({ html: '<p>Watch this</p>', empty: false });
+
+    await service.create(3, 1, {
+      content: '<p>Watch this</p>',
+      linkUrl: 'https://youtu.be/dQw4w9WgXcQ',
+    });
+
+    expect(create.mock.calls[0][0].data).toMatchObject({
+      content: '<p>Watch this</p>',
+      linkUrl: 'https://youtu.be/dQw4w9WgXcQ',
+    });
+  });
+
+  it('allows a post that is only a link card', async () => {
+    sanitize.mockReturnValue({ html: '<p></p>', empty: true });
+
+    await service.create(3, 1, {
+      content: '<p></p>',
+      linkUrl: 'https://example.com',
+    });
+
+    expect(create.mock.calls[0][0].data).toMatchObject({
+      content: '',
+      linkUrl: 'https://example.com',
+    });
+  });
+
+  it('still rejects empty posts without a link', async () => {
+    sanitize.mockReturnValue({ html: '<p></p>', empty: true });
+
+    await expect(
+      service.create(3, 1, { content: '<p></p>' }),
+    ).rejects.toBeInstanceOf(BadRequestException);
+    expect(create).not.toHaveBeenCalled();
+  });
+});

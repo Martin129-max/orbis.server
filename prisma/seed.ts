@@ -72,6 +72,7 @@ type SeedThread = Votes & {
   ago: number;
   title: string;
   content: string;
+  linkUrl?: string;
   comments?: SeedComment[];
 };
 
@@ -450,6 +451,7 @@ const forums: Record<string, SeedThread[]> = {
       ago: hours(8),
       title: 'Best fight scene of all time?',
       content: `<p>Asking for science. And training.</p>`,
+      linkUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
       up: ['naruto', 'tanjiro', 'spike'],
       comments: [
         {
@@ -806,6 +808,33 @@ const chats: SeedChat[] = [
   },
 ];
 
+type SeedGroup = {
+  name: string;
+  creator: UserKey;
+  members: UserKey[];
+  created: number;
+  messages: [UserKey, string, number][];
+  readAt: Partial<Record<UserKey, number>>;
+};
+
+const groups: SeedGroup[] = [
+  {
+    name: 'Straw Hat Watch Party',
+    creator: 'luffy',
+    members: ['admin', 'zoro', 'nami'],
+    created: 180,
+    messages: [
+      ['luffy', 'Episode night this Friday! Who’s in?', 170],
+      ['nami', 'I’m in, but someone else is buying snacks this time.', 165],
+      ['zoro', 'I’ll be there. Probably.', 160],
+      ['admin', 'Count me in, I’ll bring the projector 📽️', 150],
+      ['luffy', 'MEAT for snacks!!', 30],
+      ['nami', 'Zoro, I pinned the address. Don’t get lost.', 25],
+    ],
+    readAt: { luffy: 30, zoro: 160, admin: 150, nami: 25 },
+  },
+];
+
 function voters({ up = [], down = [] }: Votes) {
   return [...up, ...down];
 }
@@ -938,6 +967,7 @@ const titlePosts: {
   author: UserKey;
   ago: number;
   content: string;
+  linkUrl?: string;
   comments?: SeedComment[];
 }[] = [
   {
@@ -1014,8 +1044,27 @@ const wallPosts: {
   author: UserKey;
   ago: number;
   content: string;
+  linkUrl?: string;
   comments?: SeedComment[];
 }[] = [
+  {
+    wall: 'admin',
+    author: 'gojo',
+    ago: 20,
+    content:
+      '<p>Found the perfect theme song for the next club meetup. Trust me. 😎</p>',
+    linkUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+    comments: [
+      { author: 'admin', ago: 15, content: '<p>I should have known.</p>' },
+    ],
+  },
+  {
+    wall: 'luffy',
+    author: 'zoro',
+    ago: hours(3),
+    content: '<p>Someone wrote a whole encyclopedia page about us.</p>',
+    linkUrl: 'https://en.wikipedia.org/wiki/One_Piece',
+  },
   {
     wall: 'admin',
     author: 'admin',
@@ -1320,7 +1369,52 @@ async function createChats() {
     });
   }
 
-  return chats.length;
+  for (const group of groups) {
+    const lines: [UserKey, string, number, boolean][] = [
+      [group.creator, 'created the group', group.created, true],
+      ...group.messages.map(
+        ([author, text, minutes]) =>
+          [author, text, minutes, false] as [UserKey, string, number, boolean],
+      ),
+    ];
+    const [lastAuthor, lastText, lastMinutes, lastSystem] = lines.at(-1)!;
+
+    await prisma.conversation.create({
+      data: {
+        isGroup: true,
+        name: group.name,
+        creatorId: userIds[group.creator],
+        lastText,
+        lastSenderId: userIds[lastAuthor],
+        lastSystem,
+        lastMessageAt: minutesAgo(lastMinutes),
+        createdAt: minutesAgo(group.created),
+        messages: {
+          create: lines.map(([author, text, minutes, system]) => ({
+            senderId: userIds[author],
+            text,
+            system,
+            createdAt: minutesAgo(minutes),
+          })),
+        },
+        members: {
+          create: [group.creator, ...group.members].map((key) => {
+            const readMinutes = group.readAt[key] ?? group.created;
+            return {
+              userId: userIds[key],
+              readAt: minutesAgo(readMinutes),
+              unread: lines.filter(
+                ([author, , minutes, system]) =>
+                  !system && author !== key && minutes < readMinutes,
+              ).length,
+            };
+          }),
+        },
+      },
+    });
+  }
+
+  return chats.length + groups.length;
 }
 
 async function createNotifications() {
@@ -2030,6 +2124,7 @@ async function main() {
           authorId: userIds[thread.author],
           title: thread.title,
           content: thread.content,
+          linkUrl: thread.linkUrl,
           score: scoreOf(thread),
           createdAt: minutesAgo(thread.ago),
         },
@@ -2148,6 +2243,7 @@ async function main() {
         wallUserId: userIds[wallPost.wall],
         authorId: userIds[wallPost.author],
         content: wallPost.content,
+        linkUrl: wallPost.linkUrl,
         createdAt: minutesAgo(wallPost.ago),
       },
     });
@@ -2173,6 +2269,7 @@ async function main() {
         mediaSourceId,
         authorId: userIds[titlePost.author],
         content: titlePost.content,
+        linkUrl: titlePost.linkUrl,
         createdAt: minutesAgo(titlePost.ago),
       },
     });

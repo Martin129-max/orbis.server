@@ -22,6 +22,7 @@ model Post {
   mediaSourceId String?
   authorId      Int
   content       String
+  linkUrl       String?
   commentCount  Int        @default(0)
   likeCount     Int        @default(0)
   hiddenAt      DateTime?
@@ -41,6 +42,7 @@ model Thread {
   authorId     Int
   title        String
   content      String    @default("")
+  linkUrl      String?
   score        Int       @default(0)
   commentCount Int       @default(0)
   hiddenAt     DateTime?

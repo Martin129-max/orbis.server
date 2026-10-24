@@ -40,6 +40,7 @@ model User {
   railFolders          RailFolder[]
   likes                Like[]
   invites              Invite[]
+  createdConversations Conversation[]       @relation("ConversationCreator")
   conversationsAsA     Conversation[]       @relation("ConversationUserA")
   conversationsAsB     Conversation[]       @relation("ConversationUserB")
   conversations        ConversationMember[]

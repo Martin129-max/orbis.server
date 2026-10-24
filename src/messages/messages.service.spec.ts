@@ -1,30 +1,79 @@
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
 import { MessagesService } from './messages.service';
-import { MESSAGE_LIMIT } from './conversation';
+import { GROUP_MAX_MEMBERS, MESSAGE_LIMIT } from './conversation';
 import { PrismaService } from '../prisma.service';
 import { PresenceGateway } from '../friends/presence.gateway';
 
 const date = new Date('2026-10-24T12:00:00Z');
+const user = (id: number, username: string) => ({
+  id,
+  username,
+  name: null,
+  avatarUrl: null,
+});
 const users = {
-  1: { id: 1, username: 'admin', name: 'Admin', avatarUrl: null },
-  2: { id: 2, username: 'naruto', name: 'Naruto Uzumaki', avatarUrl: null },
+  1: user(1, 'admin'),
+  2: user(2, 'naruto'),
+  3: user(3, 'sasuke'),
+  4: user(4, 'sakura'),
 };
-const summary = { lastText: 'Hi', lastSenderId: 1, lastMessageAt: date };
+const member = (
+  id: number,
+  status: 'accepted' | 'request' = 'accepted',
+  readAt: Date | null = null,
+) => ({ userId: id, unread: 0, status, readAt, user: users[id] });
+
+function conversation(overrides: Record<string, unknown> = {}) {
+  return {
+    id: 5,
+    isGroup: false,
+    name: null,
+    creatorId: null,
+    lastText: 'Hi',
+    lastSenderId: 1,
+    lastSystem: false,
+    lastMessageAt: date,
+    userA: users[1],
+    userB: users[2],
+    members: [member(1), member(2)],
+    ...overrides,
+  };
+}
+
+const group = (members = [member(1), member(2), member(3)]) =>
+  conversation({
+    isGroup: true,
+    name: 'Team 7',
+    creatorId: 1,
+    userA: null,
+    userB: null,
+    members,
+  });
 
 describe('MessagesService', () => {
   const prisma = {
-    user: { findUnique: jest.fn(({ where: { id } }) => users[id] ?? null) },
-    friendship: { findFirst: jest.fn() },
+    user: {
+      findMany: jest.fn(({ where: { id } }) =>
+        id.in.map((key: number) => users[key]).filter(Boolean),
+      ),
+    },
+    friendship: { findMany: jest.fn() },
     conversation: {
       findUnique: jest.fn(),
       upsert: jest.fn(),
+      create: jest.fn(),
       update: jest.fn(),
     },
     conversationMember: {
       findMany: jest.fn(),
-      findUnique: jest.fn(),
       upsert: jest.fn(),
       update: jest.fn(),
+      updateMany: jest.fn(),
+      createMany: jest.fn(),
       delete: jest.fn(),
     },
     message: {
@@ -41,45 +90,38 @@ describe('MessagesService', () => {
     presence as unknown as PresenceGateway,
   );
 
-  function memberOf(status: 'accepted' | 'request' | null) {
-    prisma.conversation.findUnique.mockResolvedValue(
-      status ? { id: 5, members: [{ status }] } : null,
+  function friendsWith(...ids: number[]) {
+    prisma.friendship.findMany.mockResolvedValue(
+      ids.map((id) => ({ requesterId: 1, addresseeId: id })),
     );
   }
 
   beforeEach(() => {
     jest.clearAllMocks();
-    prisma.friendship.findFirst.mockResolvedValue(null);
-    prisma.conversation.upsert.mockResolvedValue({ id: 5 });
-    prisma.conversation.update.mockResolvedValue(summary);
-    prisma.conversationMember.findUnique.mockResolvedValue(null);
-    prisma.conversationMember.upsert.mockImplementation(({ create }) => ({
-      unread: create.unread ?? 0,
-      status: create.status ?? 'accepted',
-    }));
-    prisma.message.create.mockResolvedValue({
+    friendsWith();
+    prisma.conversation.findUnique.mockResolvedValue(conversation());
+    prisma.conversation.create.mockResolvedValue({ id: 5 });
+    prisma.message.create.mockImplementation(({ data }) => ({
       id: 9,
-      senderId: 1,
-      text: 'Hi',
+      conversationId: data.conversationId,
+      senderId: data.senderId,
+      text: data.text,
+      system: data.system,
       createdAt: date,
-    });
+      sender: users[data.senderId],
+    }));
     prisma.message.findFirst.mockResolvedValue(null);
   });
 
-  describe('send', () => {
+  describe('direct chats', () => {
     it('sends a first message to a non-friend as a request', async () => {
-      const sent = await service.send(1, 2, '  Hi  ');
+      prisma.conversation.findUnique.mockResolvedValueOnce(
+        conversation({ members: [member(1)] }),
+      );
+      const sent = await service.send(1, 5, '  Hi  ');
 
-      expect(sent).toEqual({
-        id: 9,
-        senderId: 1,
-        text: 'Hi',
-        sentAt: date.toISOString(),
-      });
-      expect(prisma.message.create).toHaveBeenCalledWith({
-        data: { conversationId: 5, senderId: 1, text: 'Hi' },
-      });
-      expect(prisma.conversationMember.upsert).toHaveBeenLastCalledWith(
+      expect(sent).toMatchObject({ senderId: 1, text: 'Hi', system: false });
+      expect(prisma.conversationMember.upsert).toHaveBeenCalledWith(
         expect.objectContaining({
           create: {
             conversationId: 5,
@@ -92,35 +134,16 @@ describe('MessagesService', () => {
       );
       expect(presence.notify).toHaveBeenCalledWith([2], 'message', {
         conversation: expect.objectContaining({
-          userId: 1,
-          username: 'admin',
-          status: 'request',
-          unread: 1,
-        }),
-        message: sent,
-      });
-      expect(presence.notify).toHaveBeenCalledWith([1], 'message', {
-        conversation: expect.objectContaining({
-          userId: 2,
-          status: 'accepted',
+          id: 5,
+          members: [expect.objectContaining({ userId: 1 })],
         }),
         message: sent,
       });
     });
 
-    it('delivers to the chat list between friends or accepted chats', async () => {
-      prisma.friendship.findFirst.mockResolvedValueOnce({ requesterId: 1 });
-      await service.send(1, 2, 'Hi');
-      expect(prisma.conversationMember.upsert).toHaveBeenLastCalledWith(
-        expect.objectContaining({
-          update: { status: 'accepted', unread: { increment: 1 } },
-        }),
-      );
-
-      prisma.conversationMember.findUnique.mockResolvedValueOnce({
-        status: 'accepted',
-      });
-      await service.send(1, 2, 'Again');
+    it('delivers straight to friends and accepted chats', async () => {
+      friendsWith(2);
+      await service.send(1, 5, 'Hi');
       expect(prisma.conversationMember.upsert).toHaveBeenLastCalledWith(
         expect.objectContaining({
           update: { status: 'accepted', unread: { increment: 1 } },
@@ -130,9 +153,7 @@ describe('MessagesService', () => {
 
     it(`keeps only the newest ${MESSAGE_LIMIT} messages`, async () => {
       prisma.message.findFirst.mockResolvedValueOnce({ id: 40 });
-
-      await service.send(1, 2, 'Hi');
-
+      await service.send(1, 5, 'Hi');
       expect(prisma.message.findFirst).toHaveBeenCalledWith(
         expect.objectContaining({
           skip: MESSAGE_LIMIT,
@@ -144,119 +165,212 @@ describe('MessagesService', () => {
       });
     });
 
-    it('rejects empty messages, yourself and missing users', async () => {
-      await expect(service.send(1, 2, '   ')).rejects.toBeInstanceOf(
+    it('rejects empty messages, non-members and unknown chats', async () => {
+      await expect(service.send(1, 5, '   ')).rejects.toBeInstanceOf(
         BadRequestException,
       );
-      await expect(service.send(1, 1, 'Hi')).rejects.toBeInstanceOf(
-        BadRequestException,
-      );
-      await expect(service.send(1, 99, 'Hi')).rejects.toBeInstanceOf(
+      await expect(service.send(4, 5, 'Hi')).rejects.toBeInstanceOf(
         NotFoundException,
       );
-      await expect(service.send(1, 2 ** 31, 'Hi')).rejects.toBeInstanceOf(
+      prisma.conversation.findUnique.mockResolvedValueOnce(null);
+      await expect(service.send(1, 6, 'Hi')).rejects.toBeInstanceOf(
         NotFoundException,
       );
       expect(prisma.message.create).not.toHaveBeenCalled();
     });
-  });
 
-  it('lists the inbox with the other person in each chat', async () => {
-    prisma.conversationMember.findMany.mockResolvedValue([
-      {
-        unread: 2,
-        status: 'accepted',
-        conversation: { ...summary, userA: users[1], userB: users[2] },
-      },
-    ]);
-
-    await expect(service.inbox(1)).resolves.toEqual([
-      expect.objectContaining({
-        userId: 2,
-        username: 'naruto',
-        unread: 2,
-        lastAt: date.toISOString(),
-      }),
-    ]);
-  });
-
-  it('returns pages oldest first with the other person’s read time', async () => {
-    prisma.conversation.findUnique.mockResolvedValue({
-      id: 5,
-      members: [
-        { userId: 1, readAt: null },
-        { userId: 2, readAt: date },
-      ],
-    });
-    prisma.message.findMany.mockResolvedValue([
-      { id: 3, senderId: 2, text: 'b', createdAt: date },
-      { id: 2, senderId: 1, text: 'a', createdAt: date },
-    ]);
-
-    const thread = await service.thread(1, 2, 4);
-
-    expect(prisma.message.findMany).toHaveBeenCalledWith(
-      expect.objectContaining({ where: { conversationId: 5, id: { lt: 4 } } }),
-    );
-    expect(thread.messages.map(({ id }) => id)).toEqual([2, 3]);
-    expect(thread).toMatchObject({
-      seenAt: date.toISOString(),
-      hasMore: false,
+    it('opens a direct chat with someone else only', async () => {
+      prisma.conversation.upsert.mockResolvedValue({ id: 5 });
+      await expect(service.direct(1, 2)).resolves.toMatchObject({ id: 5 });
+      await expect(service.direct(1, 1)).rejects.toBeInstanceOf(
+        BadRequestException,
+      );
+      await expect(service.direct(1, 99)).rejects.toBeInstanceOf(
+        NotFoundException,
+      );
     });
   });
 
-  it('marks chats read and tells the sender only for accepted chats', async () => {
-    memberOf('accepted');
-    await service.read(1, 2);
-    expect(presence.notify).toHaveBeenCalledWith(
-      [2],
-      'messages:read',
-      expect.objectContaining({ userId: 1 }),
-    );
+  describe('groups', () => {
+    beforeEach(() => {
+      prisma.conversation.findUnique.mockResolvedValue(group());
+    });
 
-    jest.clearAllMocks();
-    memberOf('request');
-    await service.read(1, 2);
-    expect(prisma.conversationMember.update).toHaveBeenCalledWith(
-      expect.objectContaining({ data: { unread: 0 } }),
-    );
-    expect(presence.notify).not.toHaveBeenCalledWith(
-      [2],
-      'messages:read',
-      expect.anything(),
-    );
+    it('creates a group with requests for people who aren’t the creator’s friends', async () => {
+      friendsWith(2);
+      await service.createGroup(1, [2, 3, 3, 1], ' Team 7 ');
+
+      expect(prisma.conversation.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            isGroup: true,
+            name: 'Team 7',
+            creatorId: 1,
+            members: {
+              create: [
+                expect.objectContaining({ userId: 1 }),
+                { userId: 2, status: 'accepted' },
+                { userId: 3, status: 'request' },
+              ],
+            },
+          }),
+        }),
+      );
+      expect(prisma.message.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            text: 'created the group',
+            system: true,
+          }),
+        }),
+      );
+    });
+
+    it(`needs at least two others and at most ${GROUP_MAX_MEMBERS} people`, async () => {
+      await expect(service.createGroup(1, [2])).rejects.toBeInstanceOf(
+        BadRequestException,
+      );
+      const crowd = Array.from({ length: GROUP_MAX_MEMBERS }, (_, i) => i + 2);
+      await expect(service.createGroup(1, crowd)).rejects.toBeInstanceOf(
+        BadRequestException,
+      );
+      expect(prisma.conversation.create).not.toHaveBeenCalled();
+    });
+
+    it('counts a group message as unread for everyone else', async () => {
+      await service.send(1, 5, 'Hey team');
+      expect(prisma.conversationMember.updateMany).toHaveBeenCalledWith({
+        where: { conversationId: 5, userId: { not: 1 } },
+        data: { unread: { increment: 1 } },
+      });
+      expect(presence.notify).toHaveBeenCalledTimes(3);
+    });
+
+    it('lets accepted members rename and add people, up to the cap', async () => {
+      await service.rename(1, 5, 'Squad');
+      expect(prisma.message.create).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            text: 'named the group “Squad”',
+            system: true,
+          }),
+        }),
+      );
+
+      await service.addMembers(1, 5, [4, 2]);
+      expect(prisma.conversationMember.createMany).toHaveBeenCalledWith({
+        data: [{ conversationId: 5, userId: 4, status: 'request' }],
+      });
+
+      prisma.conversation.findUnique.mockResolvedValue(
+        group([member(1), member(2, 'request'), member(3)]),
+      );
+      await expect(service.rename(2, 5, 'Mine')).rejects.toBeInstanceOf(
+        ForbiddenException,
+      );
+
+      const full = Array.from({ length: GROUP_MAX_MEMBERS }, (_, i) => ({
+        ...member(1),
+        userId: i + 1,
+      }));
+      prisma.conversation.findUnique.mockResolvedValue(group(full));
+      await expect(service.addMembers(1, 5, [99])).rejects.toBeInstanceOf(
+        BadRequestException,
+      );
+    });
+
+    it('lets anyone leave but only the creator remove others', async () => {
+      await service.removeMember(2, 5, 2);
+      expect(prisma.message.create).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({ text: 'left the group' }),
+        }),
+      );
+      expect(presence.notify).toHaveBeenCalledWith(
+        [2],
+        'conversation:removed',
+        {
+          id: 5,
+        },
+      );
+
+      await expect(service.removeMember(2, 5, 3)).rejects.toBeInstanceOf(
+        ForbiddenException,
+      );
+      await service.removeMember(1, 5, 3);
+      expect(prisma.message.create).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({ text: 'removed sasuke' }),
+        }),
+      );
+    });
+
+    it('relays typing and read receipts only to accepted members', async () => {
+      prisma.conversation.findUnique.mockResolvedValue(
+        group([member(1), member(2), member(3, 'request')]),
+      );
+      await service.typing(1, 5, true);
+      expect(presence.notify).toHaveBeenCalledWith([2], 'typing', {
+        conversationId: 5,
+        userId: 1,
+        typing: true,
+      });
+
+      await service.read(1, 5);
+      expect(presence.notify).toHaveBeenCalledWith(
+        [2],
+        'messages:read',
+        expect.objectContaining({ conversationId: 5, userId: 1 }),
+      );
+    });
+
+    it('returns history oldest first with each member’s read time', async () => {
+      prisma.conversation.findUnique.mockResolvedValue(
+        group([member(1), member(2, 'accepted', date), member(3)]),
+      );
+      prisma.message.findMany.mockResolvedValue([
+        {
+          id: 3,
+          senderId: 2,
+          text: 'b',
+          system: false,
+          createdAt: date,
+          sender: users[2],
+        },
+        {
+          id: 2,
+          senderId: 1,
+          text: 'a',
+          system: false,
+          createdAt: date,
+          sender: users[1],
+        },
+      ]);
+
+      const history = await service.history(1, 5, 4);
+
+      expect(history.messages.map(({ id }) => id)).toEqual([2, 3]);
+      expect(history.members).toEqual([
+        expect.objectContaining({ userId: 2, readAt: date.toISOString() }),
+        expect.objectContaining({ userId: 3, readAt: null }),
+      ]);
+    });
   });
 
   it('accepts and declines only pending requests', async () => {
-    memberOf('request');
-    await service.accept(1, 2);
+    prisma.conversation.findUnique.mockResolvedValue(
+      conversation({ members: [member(1, 'request'), member(2)] }),
+    );
+    await service.accept(1, 5);
     expect(prisma.conversationMember.update).toHaveBeenCalledWith(
       expect.objectContaining({ data: { status: 'accepted' } }),
     );
-    await service.decline(1, 2);
+    await service.decline(1, 5);
     expect(prisma.conversationMember.delete).toHaveBeenCalled();
 
-    memberOf('accepted');
-    await expect(service.accept(1, 2)).rejects.toBeInstanceOf(
+    prisma.conversation.findUnique.mockResolvedValue(conversation());
+    await expect(service.accept(1, 5)).rejects.toBeInstanceOf(
       NotFoundException,
     );
-    memberOf(null);
-    await expect(service.decline(1, 2)).rejects.toBeInstanceOf(
-      NotFoundException,
-    );
-  });
-
-  it('relays typing only into chats the other person has accepted', async () => {
-    memberOf('accepted');
-    await service.typing(1, 2, true);
-    expect(presence.notify).toHaveBeenCalledWith([2], 'typing', {
-      userId: 1,
-      typing: true,
-    });
-
-    jest.clearAllMocks();
-    memberOf('request');
-    await service.typing(1, 2, true);
-    expect(presence.notify).not.toHaveBeenCalled();
   });
 });

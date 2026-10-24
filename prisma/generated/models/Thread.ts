@@ -48,6 +48,7 @@ export type ThreadMinAggregateOutputType = {
   authorId: number | null
   title: string | null
   content: string | null
+  linkUrl: string | null
   score: number | null
   commentCount: number | null
   hiddenAt: Date | null
@@ -60,6 +61,7 @@ export type ThreadMaxAggregateOutputType = {
   authorId: number | null
   title: string | null
   content: string | null
+  linkUrl: string | null
   score: number | null
   commentCount: number | null
   hiddenAt: Date | null
@@ -72,6 +74,7 @@ export type ThreadCountAggregateOutputType = {
   authorId: number
   title: number
   content: number
+  linkUrl: number
   score: number
   commentCount: number
   hiddenAt: number
@@ -102,6 +105,7 @@ export type ThreadMinAggregateInputType = {
   authorId?: true
   title?: true
   content?: true
+  linkUrl?: true
   score?: true
   commentCount?: true
   hiddenAt?: true
@@ -114,6 +118,7 @@ export type ThreadMaxAggregateInputType = {
   authorId?: true
   title?: true
   content?: true
+  linkUrl?: true
   score?: true
   commentCount?: true
   hiddenAt?: true
@@ -126,6 +131,7 @@ export type ThreadCountAggregateInputType = {
   authorId?: true
   title?: true
   content?: true
+  linkUrl?: true
   score?: true
   commentCount?: true
   hiddenAt?: true
@@ -225,6 +231,7 @@ export type ThreadGroupByOutputType = {
   authorId: number
   title: string
   content: string
+  linkUrl: string | null
   score: number
   commentCount: number
   hiddenAt: Date | null
@@ -260,6 +267,7 @@ export type ThreadWhereInput = {
   authorId?: Prisma.IntFilter<"Thread"> | number
   title?: Prisma.StringFilter<"Thread"> | string
   content?: Prisma.StringFilter<"Thread"> | string
+  linkUrl?: Prisma.StringNullableFilter<"Thread"> | string | null
   score?: Prisma.IntFilter<"Thread"> | number
   commentCount?: Prisma.IntFilter<"Thread"> | number
   hiddenAt?: Prisma.DateTimeNullableFilter<"Thread"> | Date | string | null
@@ -274,6 +282,7 @@ export type ThreadOrderByWithRelationInput = {
   authorId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  linkUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   score?: Prisma.SortOrder
   commentCount?: Prisma.SortOrder
   hiddenAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -291,6 +300,7 @@ export type ThreadWhereUniqueInput = Prisma.AtLeast<{
   authorId?: Prisma.IntFilter<"Thread"> | number
   title?: Prisma.StringFilter<"Thread"> | string
   content?: Prisma.StringFilter<"Thread"> | string
+  linkUrl?: Prisma.StringNullableFilter<"Thread"> | string | null
   score?: Prisma.IntFilter<"Thread"> | number
   commentCount?: Prisma.IntFilter<"Thread"> | number
   hiddenAt?: Prisma.DateTimeNullableFilter<"Thread"> | Date | string | null
@@ -305,6 +315,7 @@ export type ThreadOrderByWithAggregationInput = {
   authorId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  linkUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   score?: Prisma.SortOrder
   commentCount?: Prisma.SortOrder
   hiddenAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -325,6 +336,7 @@ export type ThreadScalarWhereWithAggregatesInput = {
   authorId?: Prisma.IntWithAggregatesFilter<"Thread"> | number
   title?: Prisma.StringWithAggregatesFilter<"Thread"> | string
   content?: Prisma.StringWithAggregatesFilter<"Thread"> | string
+  linkUrl?: Prisma.StringNullableWithAggregatesFilter<"Thread"> | string | null
   score?: Prisma.IntWithAggregatesFilter<"Thread"> | number
   commentCount?: Prisma.IntWithAggregatesFilter<"Thread"> | number
   hiddenAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Thread"> | Date | string | null
@@ -334,6 +346,7 @@ export type ThreadScalarWhereWithAggregatesInput = {
 export type ThreadCreateInput = {
   title: string
   content?: string
+  linkUrl?: string | null
   score?: number
   commentCount?: number
   hiddenAt?: Date | string | null
@@ -348,6 +361,7 @@ export type ThreadUncheckedCreateInput = {
   authorId: number
   title: string
   content?: string
+  linkUrl?: string | null
   score?: number
   commentCount?: number
   hiddenAt?: Date | string | null
@@ -357,6 +371,7 @@ export type ThreadUncheckedCreateInput = {
 export type ThreadUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   score?: Prisma.IntFieldUpdateOperationsInput | number
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -371,6 +386,7 @@ export type ThreadUncheckedUpdateInput = {
   authorId?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   score?: Prisma.IntFieldUpdateOperationsInput | number
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -383,6 +399,7 @@ export type ThreadCreateManyInput = {
   authorId: number
   title: string
   content?: string
+  linkUrl?: string | null
   score?: number
   commentCount?: number
   hiddenAt?: Date | string | null
@@ -392,6 +409,7 @@ export type ThreadCreateManyInput = {
 export type ThreadUpdateManyMutationInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   score?: Prisma.IntFieldUpdateOperationsInput | number
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -404,6 +422,7 @@ export type ThreadUncheckedUpdateManyInput = {
   authorId?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   score?: Prisma.IntFieldUpdateOperationsInput | number
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -426,6 +445,7 @@ export type ThreadCountOrderByAggregateInput = {
   authorId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  linkUrl?: Prisma.SortOrder
   score?: Prisma.SortOrder
   commentCount?: Prisma.SortOrder
   hiddenAt?: Prisma.SortOrder
@@ -446,6 +466,7 @@ export type ThreadMaxOrderByAggregateInput = {
   authorId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  linkUrl?: Prisma.SortOrder
   score?: Prisma.SortOrder
   commentCount?: Prisma.SortOrder
   hiddenAt?: Prisma.SortOrder
@@ -458,6 +479,7 @@ export type ThreadMinOrderByAggregateInput = {
   authorId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  linkUrl?: Prisma.SortOrder
   score?: Prisma.SortOrder
   commentCount?: Prisma.SortOrder
   hiddenAt?: Prisma.SortOrder
@@ -559,6 +581,7 @@ export type ThreadUncheckedUpdateManyWithoutAuthorNestedInput = {
 export type ThreadCreateWithoutCommunityInput = {
   title: string
   content?: string
+  linkUrl?: string | null
   score?: number
   commentCount?: number
   hiddenAt?: Date | string | null
@@ -571,6 +594,7 @@ export type ThreadUncheckedCreateWithoutCommunityInput = {
   authorId: number
   title: string
   content?: string
+  linkUrl?: string | null
   score?: number
   commentCount?: number
   hiddenAt?: Date | string | null
@@ -612,6 +636,7 @@ export type ThreadScalarWhereInput = {
   authorId?: Prisma.IntFilter<"Thread"> | number
   title?: Prisma.StringFilter<"Thread"> | string
   content?: Prisma.StringFilter<"Thread"> | string
+  linkUrl?: Prisma.StringNullableFilter<"Thread"> | string | null
   score?: Prisma.IntFilter<"Thread"> | number
   commentCount?: Prisma.IntFilter<"Thread"> | number
   hiddenAt?: Prisma.DateTimeNullableFilter<"Thread"> | Date | string | null
@@ -621,6 +646,7 @@ export type ThreadScalarWhereInput = {
 export type ThreadCreateWithoutAuthorInput = {
   title: string
   content?: string
+  linkUrl?: string | null
   score?: number
   commentCount?: number
   hiddenAt?: Date | string | null
@@ -633,6 +659,7 @@ export type ThreadUncheckedCreateWithoutAuthorInput = {
   communityId: number
   title: string
   content?: string
+  linkUrl?: string | null
   score?: number
   commentCount?: number
   hiddenAt?: Date | string | null
@@ -670,6 +697,7 @@ export type ThreadCreateManyCommunityInput = {
   authorId: number
   title: string
   content?: string
+  linkUrl?: string | null
   score?: number
   commentCount?: number
   hiddenAt?: Date | string | null
@@ -679,6 +707,7 @@ export type ThreadCreateManyCommunityInput = {
 export type ThreadUpdateWithoutCommunityInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   score?: Prisma.IntFieldUpdateOperationsInput | number
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -691,6 +720,7 @@ export type ThreadUncheckedUpdateWithoutCommunityInput = {
   authorId?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   score?: Prisma.IntFieldUpdateOperationsInput | number
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -702,6 +732,7 @@ export type ThreadUncheckedUpdateManyWithoutCommunityInput = {
   authorId?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   score?: Prisma.IntFieldUpdateOperationsInput | number
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -713,6 +744,7 @@ export type ThreadCreateManyAuthorInput = {
   communityId: number
   title: string
   content?: string
+  linkUrl?: string | null
   score?: number
   commentCount?: number
   hiddenAt?: Date | string | null
@@ -722,6 +754,7 @@ export type ThreadCreateManyAuthorInput = {
 export type ThreadUpdateWithoutAuthorInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   score?: Prisma.IntFieldUpdateOperationsInput | number
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -734,6 +767,7 @@ export type ThreadUncheckedUpdateWithoutAuthorInput = {
   communityId?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   score?: Prisma.IntFieldUpdateOperationsInput | number
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -745,6 +779,7 @@ export type ThreadUncheckedUpdateManyWithoutAuthorInput = {
   communityId?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   score?: Prisma.IntFieldUpdateOperationsInput | number
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -759,6 +794,7 @@ export type ThreadSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   authorId?: boolean
   title?: boolean
   content?: boolean
+  linkUrl?: boolean
   score?: boolean
   commentCount?: boolean
   hiddenAt?: boolean
@@ -773,6 +809,7 @@ export type ThreadSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   authorId?: boolean
   title?: boolean
   content?: boolean
+  linkUrl?: boolean
   score?: boolean
   commentCount?: boolean
   hiddenAt?: boolean
@@ -787,6 +824,7 @@ export type ThreadSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   authorId?: boolean
   title?: boolean
   content?: boolean
+  linkUrl?: boolean
   score?: boolean
   commentCount?: boolean
   hiddenAt?: boolean
@@ -801,13 +839,14 @@ export type ThreadSelectScalar = {
   authorId?: boolean
   title?: boolean
   content?: boolean
+  linkUrl?: boolean
   score?: boolean
   commentCount?: boolean
   hiddenAt?: boolean
   createdAt?: boolean
 }
 
-export type ThreadOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "communityId" | "authorId" | "title" | "content" | "score" | "commentCount" | "hiddenAt" | "createdAt", ExtArgs["result"]["thread"]>
+export type ThreadOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "communityId" | "authorId" | "title" | "content" | "linkUrl" | "score" | "commentCount" | "hiddenAt" | "createdAt", ExtArgs["result"]["thread"]>
 export type ThreadInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   community?: boolean | Prisma.CommunityDefaultArgs<ExtArgs>
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -833,6 +872,7 @@ export type $ThreadPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     authorId: number
     title: string
     content: string
+    linkUrl: string | null
     score: number
     commentCount: number
     hiddenAt: Date | null
@@ -1267,6 +1307,7 @@ export interface ThreadFieldRefs {
   readonly authorId: Prisma.FieldRef<"Thread", 'Int'>
   readonly title: Prisma.FieldRef<"Thread", 'String'>
   readonly content: Prisma.FieldRef<"Thread", 'String'>
+  readonly linkUrl: Prisma.FieldRef<"Thread", 'String'>
   readonly score: Prisma.FieldRef<"Thread", 'Int'>
   readonly commentCount: Prisma.FieldRef<"Thread", 'Int'>
   readonly hiddenAt: Prisma.FieldRef<"Thread", 'DateTime'>

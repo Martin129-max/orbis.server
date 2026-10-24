@@ -2247,6 +2247,7 @@ export const PostScalarFieldEnum = {
   mediaSourceId: 'mediaSourceId',
   authorId: 'authorId',
   content: 'content',
+  linkUrl: 'linkUrl',
   commentCount: 'commentCount',
   likeCount: 'likeCount',
   hiddenAt: 'hiddenAt',
@@ -2262,6 +2263,7 @@ export const ThreadScalarFieldEnum = {
   authorId: 'authorId',
   title: 'title',
   content: 'content',
+  linkUrl: 'linkUrl',
   score: 'score',
   commentCount: 'commentCount',
   hiddenAt: 'hiddenAt',
@@ -2354,10 +2356,14 @@ export type LibraryActivityScalarFieldEnum = (typeof LibraryActivityScalarFieldE
 
 export const ConversationScalarFieldEnum = {
   id: 'id',
+  isGroup: 'isGroup',
+  name: 'name',
+  creatorId: 'creatorId',
   userAId: 'userAId',
   userBId: 'userBId',
   lastText: 'lastText',
   lastSenderId: 'lastSenderId',
+  lastSystem: 'lastSystem',
   lastMessageAt: 'lastMessageAt',
   createdAt: 'createdAt'
 } as const
@@ -2381,6 +2387,7 @@ export const MessageScalarFieldEnum = {
   conversationId: 'conversationId',
   senderId: 'senderId',
   text: 'text',
+  system: 'system',
   createdAt: 'createdAt'
 } as const
 

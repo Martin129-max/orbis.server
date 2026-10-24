@@ -6,6 +6,7 @@ import {
   HttpCode,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Query,
   Req,
@@ -13,12 +14,15 @@ import {
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt.guard';
 import { MINUTE, RateLimit } from '../common/throttle';
+import { AddMembersDto } from './dto/add-members.dto';
+import { CreateGroupDto } from './dto/create-group.dto';
+import { RenameGroupDto } from './dto/rename-group.dto';
 import { SendMessageDto } from './dto/send-message.dto';
 import {
+  ChatHistory,
   ChatMessage,
   InboxEntry,
   MessagesService,
-  Thread,
 } from './messages.service';
 
 @Controller('messages')
@@ -31,49 +35,90 @@ export class MessagesController {
     return this.messagesService.inbox(req.user.userId);
   }
 
-  @Get(':userId')
-  thread(
+  @RateLimit(30, MINUTE)
+  @Post('direct/:userId')
+  direct(
     @Req() req,
     @Param('userId', ParseIntPipe) userId: number,
+  ): Promise<InboxEntry> {
+    return this.messagesService.direct(req.user.userId, userId);
+  }
+
+  @RateLimit(10, MINUTE)
+  @Post('groups')
+  createGroup(
+    @Req() req,
+    @Body() { userIds, name }: CreateGroupDto,
+  ): Promise<InboxEntry> {
+    return this.messagesService.createGroup(req.user.userId, userIds, name);
+  }
+
+  @Get(':id')
+  history(
+    @Req() req,
+    @Param('id', ParseIntPipe) id: number,
     @Query('before', new ParseIntPipe({ optional: true })) before?: number,
-  ): Promise<Thread> {
-    return this.messagesService.thread(req.user.userId, userId, before);
+  ): Promise<ChatHistory> {
+    return this.messagesService.history(req.user.userId, id, before);
   }
 
   @RateLimit(60, MINUTE)
-  @Post(':userId')
+  @Post(':id')
   send(
     @Req() req,
-    @Param('userId', ParseIntPipe) userId: number,
+    @Param('id', ParseIntPipe) id: number,
     @Body() { text }: SendMessageDto,
   ): Promise<ChatMessage> {
-    return this.messagesService.send(req.user.userId, userId, text);
+    return this.messagesService.send(req.user.userId, id, text);
   }
 
-  @Post(':userId/read')
+  @Post(':id/read')
   @HttpCode(204)
-  read(
-    @Req() req,
-    @Param('userId', ParseIntPipe) userId: number,
-  ): Promise<void> {
-    return this.messagesService.read(req.user.userId, userId);
+  read(@Req() req, @Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.messagesService.read(req.user.userId, id);
   }
 
-  @Post(':userId/accept')
+  @Post(':id/accept')
   @HttpCode(204)
-  accept(
-    @Req() req,
-    @Param('userId', ParseIntPipe) userId: number,
-  ): Promise<void> {
-    return this.messagesService.accept(req.user.userId, userId);
+  accept(@Req() req, @Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.messagesService.accept(req.user.userId, id);
   }
 
-  @Delete(':userId')
+  @Delete(':id')
   @HttpCode(204)
-  decline(
+  decline(@Req() req, @Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.messagesService.decline(req.user.userId, id);
+  }
+
+  @RateLimit(20, MINUTE)
+  @Patch(':id')
+  @HttpCode(204)
+  rename(
     @Req() req,
+    @Param('id', ParseIntPipe) id: number,
+    @Body() { name }: RenameGroupDto,
+  ): Promise<void> {
+    return this.messagesService.rename(req.user.userId, id, name);
+  }
+
+  @RateLimit(20, MINUTE)
+  @Post(':id/members')
+  @HttpCode(204)
+  addMembers(
+    @Req() req,
+    @Param('id', ParseIntPipe) id: number,
+    @Body() { userIds }: AddMembersDto,
+  ): Promise<void> {
+    return this.messagesService.addMembers(req.user.userId, id, userIds);
+  }
+
+  @Delete(':id/members/:userId')
+  @HttpCode(204)
+  removeMember(
+    @Req() req,
+    @Param('id', ParseIntPipe) id: number,
     @Param('userId', ParseIntPipe) userId: number,
   ): Promise<void> {
-    return this.messagesService.decline(req.user.userId, userId);
+    return this.messagesService.removeMember(req.user.userId, id, userId);
   }
 }
