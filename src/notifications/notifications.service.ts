@@ -55,11 +55,22 @@ export class NotificationsService {
     );
     if (recipients.length === 0) return;
 
-    await this.prisma.notification.createMany({ data: recipients });
-    this.presence.notify(
-      [...new Set(recipients.map(({ userId }) => userId))],
-      'notifications:changed',
-    );
+    const created = await this.prisma.notification.createManyAndReturn({
+      data: recipients,
+      select: { ...notificationSelect, userId: true },
+    });
+    const byUser = new Map<
+      number,
+      Omit<(typeof created)[number], 'userId'>[]
+    >();
+    for (const { userId, ...item } of created) {
+      byUser.set(userId, [...(byUser.get(userId) ?? []), item]);
+    }
+    for (const [userId, items] of byUser) {
+      this.presence.notify([userId], 'notifications:changed', {
+        notifications: items,
+      });
+    }
   }
 
   async list(userId: number, { cursor, q, filter, unread }: NotificationQuery) {

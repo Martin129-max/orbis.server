@@ -104,18 +104,31 @@ export class ThreadsService {
     { title, content = '', linkUrl }: CreateThreadDto,
   ): Promise<ThreadSummary> {
     const { html, empty } = sanitizeRichText(content);
-    const thread = await this.prisma.thread.create({
-      data: {
-        communityId,
-        authorId: userId,
-        title: title.trim(),
-        content: empty ? '' : html,
-        linkUrl: linkUrl ?? null,
-      },
-      include: threadInclude,
+    const thread = await this.prisma.$transaction(async (tx) => {
+      const created = await tx.thread.create({
+        data: {
+          communityId,
+          authorId: userId,
+          title: title.trim(),
+          content: empty ? '' : html,
+          linkUrl: linkUrl ?? null,
+          score: 1,
+        },
+        include: threadInclude,
+      });
+      await tx.vote.create({
+        data: {
+          userId,
+          votableType: 'thread',
+          votableId: created.id,
+          communityId,
+          value: 1,
+        },
+      });
+      return created;
     });
 
-    return { ...thread, type: 'thread', myVote: 0 };
+    return { ...thread, type: 'thread', myVote: 1 };
   }
 
   async findOne(userId: number, id: number): Promise<ThreadSummary> {

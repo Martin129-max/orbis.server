@@ -43,7 +43,7 @@ model Thread {
   title        String
   content      String    @default("")
   linkUrl      String?
-  score        Int       @default(0)
+  score        Int       @default(1)
   commentCount Int       @default(0)
   hiddenAt     DateTime?
   createdAt    DateTime  @default(now())

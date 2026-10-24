@@ -6,14 +6,38 @@ jest.mock('../common/rich-text', () => ({ sanitizeRichText: jest.fn() }));
 
 describe('ThreadsService.create', () => {
   const create = jest.fn(({ data }) => ({ id: 4, ...data, commentCount: 0 }));
+  const voteCreate = jest.fn();
+  const prisma = {
+    thread: { create },
+    vote: { create: voteCreate },
+    $transaction: jest.fn((run) => run(prisma)),
+  };
   const service = new ThreadsService(
-    { thread: { create } } as unknown as PrismaService,
+    prisma as unknown as PrismaService,
     {} as VotesService,
   );
   const sanitize = jest.requireMock('../common/rich-text')
     .sanitizeRichText as jest.Mock;
 
   beforeEach(() => jest.clearAllMocks());
+
+  it('starts the thread at 1 with the author’s own upvote', async () => {
+    sanitize.mockReturnValue({ html: '', empty: true });
+
+    const thread = await service.create(1, 3, { title: 'Hello' });
+
+    expect(create.mock.calls[0][0].data.score).toBe(1);
+    expect(voteCreate).toHaveBeenCalledWith({
+      data: {
+        userId: 1,
+        votableType: 'thread',
+        votableId: 4,
+        communityId: 3,
+        value: 1,
+      },
+    });
+    expect(thread.myVote).toBe(1);
+  });
 
   it('saves the link card with the thread', async () => {
     sanitize.mockReturnValue({ html: '<p>Thoughts?</p>', empty: false });

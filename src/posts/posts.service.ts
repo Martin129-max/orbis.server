@@ -35,6 +35,7 @@ const postInclude = {
 const previewSelect = {
   id: true,
   content: true,
+  linkUrl: true,
   createdAt: true,
   author,
 } as const;
