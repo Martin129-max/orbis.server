@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -15,6 +16,7 @@ import {
 const CODE_ALPHABET =
   'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 const CODE_LENGTH = 8;
+const PERMANENT_CODE_LENGTH = 100;
 
 const creatorSelect = {
   select: { id: true, username: true, name: true, avatarUrl: true },
@@ -25,6 +27,8 @@ const inviteSelect = {
   maxUses: true,
   uses: true,
   expiresAt: true,
+  permanent: true,
+  disabledAt: true,
   createdAt: true,
   creator: creatorSelect,
 } as const;
@@ -50,9 +54,9 @@ export type InvitePreview = {
 
 const INVALID_INVITE = 'This invite is invalid or has expired';
 
-function generateCode() {
+function generateCode(length = CODE_LENGTH) {
   return Array.from(
-    { length: CODE_LENGTH },
+    { length },
     () => CODE_ALPHABET[randomInt(CODE_ALPHABET.length)],
   ).join('');
 }
@@ -95,6 +99,55 @@ export class InvitesService {
     }
   }
 
+  async createPermanent(
+    userId: number,
+    communityId: number,
+  ): Promise<CommunityInvite> {
+    const existing = await this.prisma.invite.findFirst({
+      where: { communityId, creatorId: userId, permanent: true },
+      select: inviteSelect,
+    });
+    if (existing) return existing;
+
+    for (let attempt = 0; ; attempt++) {
+      try {
+        return await this.prisma.invite.create({
+          data: {
+            code: generateCode(PERMANENT_CODE_LENGTH),
+            communityId,
+            creatorId: userId,
+            permanent: true,
+          },
+          select: inviteSelect,
+        });
+      } catch (e) {
+        if (!isUniqueViolation(e) || attempt === 4) throw e;
+      }
+    }
+  }
+
+  async setEnabled(
+    userId: number,
+    communityId: number,
+    code: string,
+    enabled: boolean,
+  ): Promise<CommunityInvite> {
+    const invite = await this.prisma.invite.findFirst({
+      where: { code, communityId, permanent: true },
+      select: { id: true, creatorId: true },
+    });
+    if (!invite) throw new NotFoundException('Invite not found');
+    if (invite.creatorId !== userId) {
+      await this.requireAdmin(userId, communityId);
+    }
+
+    return this.prisma.invite.update({
+      where: { id: invite.id },
+      data: { disabledAt: enabled ? null : new Date() },
+      select: inviteSelect,
+    });
+  }
+
   async findForCommunity(
     userId: number,
     communityId: number,
@@ -105,7 +158,7 @@ export class InvitesService {
       where: {
         communityId,
         ...(isAdmin ? {} : { creatorId: userId }),
-        ...this.usable(),
+        OR: [{ permanent: true }, this.usable()],
       },
       orderBy: { createdAt: 'desc' },
       select: inviteSelect,
@@ -115,9 +168,14 @@ export class InvitesService {
   async revoke(userId: number, communityId: number, code: string) {
     const invite = await this.prisma.invite.findFirst({
       where: { code, communityId },
-      select: { id: true, creatorId: true },
+      select: { id: true, creatorId: true, permanent: true },
     });
     if (!invite) throw new NotFoundException('Invite not found');
+    if (invite.permanent) {
+      throw new BadRequestException(
+        'A permanent invite can’t be deleted. Disable it instead.',
+      );
+    }
     if (invite.creatorId !== userId) {
       await this.requireAdmin(userId, communityId);
     }
@@ -188,6 +246,7 @@ export class InvitesService {
   private usable(): Prisma.InviteWhereInput {
     return {
       AND: [
+        { disabledAt: null },
         { OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }] },
         {
           OR: [

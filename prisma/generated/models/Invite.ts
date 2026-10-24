@@ -50,6 +50,8 @@ export type InviteMinAggregateOutputType = {
   maxUses: number | null
   uses: number | null
   expiresAt: Date | null
+  permanent: boolean | null
+  disabledAt: Date | null
   createdAt: Date | null
 }
 
@@ -61,6 +63,8 @@ export type InviteMaxAggregateOutputType = {
   maxUses: number | null
   uses: number | null
   expiresAt: Date | null
+  permanent: boolean | null
+  disabledAt: Date | null
   createdAt: Date | null
 }
 
@@ -72,6 +76,8 @@ export type InviteCountAggregateOutputType = {
   maxUses: number
   uses: number
   expiresAt: number
+  permanent: number
+  disabledAt: number
   createdAt: number
   _all: number
 }
@@ -101,6 +107,8 @@ export type InviteMinAggregateInputType = {
   maxUses?: true
   uses?: true
   expiresAt?: true
+  permanent?: true
+  disabledAt?: true
   createdAt?: true
 }
 
@@ -112,6 +120,8 @@ export type InviteMaxAggregateInputType = {
   maxUses?: true
   uses?: true
   expiresAt?: true
+  permanent?: true
+  disabledAt?: true
   createdAt?: true
 }
 
@@ -123,6 +133,8 @@ export type InviteCountAggregateInputType = {
   maxUses?: true
   uses?: true
   expiresAt?: true
+  permanent?: true
+  disabledAt?: true
   createdAt?: true
   _all?: true
 }
@@ -221,6 +233,8 @@ export type InviteGroupByOutputType = {
   maxUses: number | null
   uses: number
   expiresAt: Date | null
+  permanent: boolean
+  disabledAt: Date | null
   createdAt: Date
   _count: InviteCountAggregateOutputType | null
   _avg: InviteAvgAggregateOutputType | null
@@ -255,6 +269,8 @@ export type InviteWhereInput = {
   maxUses?: Prisma.IntNullableFilter<"Invite"> | number | null
   uses?: Prisma.IntFilter<"Invite"> | number
   expiresAt?: Prisma.DateTimeNullableFilter<"Invite"> | Date | string | null
+  permanent?: Prisma.BoolFilter<"Invite"> | boolean
+  disabledAt?: Prisma.DateTimeNullableFilter<"Invite"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Invite"> | Date | string
   community?: Prisma.XOR<Prisma.CommunityScalarRelationFilter, Prisma.CommunityWhereInput>
   creator?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -268,6 +284,8 @@ export type InviteOrderByWithRelationInput = {
   maxUses?: Prisma.SortOrderInput | Prisma.SortOrder
   uses?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  permanent?: Prisma.SortOrder
+  disabledAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   community?: Prisma.CommunityOrderByWithRelationInput
   creator?: Prisma.UserOrderByWithRelationInput
@@ -284,6 +302,8 @@ export type InviteWhereUniqueInput = Prisma.AtLeast<{
   maxUses?: Prisma.IntNullableFilter<"Invite"> | number | null
   uses?: Prisma.IntFilter<"Invite"> | number
   expiresAt?: Prisma.DateTimeNullableFilter<"Invite"> | Date | string | null
+  permanent?: Prisma.BoolFilter<"Invite"> | boolean
+  disabledAt?: Prisma.DateTimeNullableFilter<"Invite"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Invite"> | Date | string
   community?: Prisma.XOR<Prisma.CommunityScalarRelationFilter, Prisma.CommunityWhereInput>
   creator?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -297,6 +317,8 @@ export type InviteOrderByWithAggregationInput = {
   maxUses?: Prisma.SortOrderInput | Prisma.SortOrder
   uses?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  permanent?: Prisma.SortOrder
+  disabledAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.InviteCountOrderByAggregateInput
   _avg?: Prisma.InviteAvgOrderByAggregateInput
@@ -316,6 +338,8 @@ export type InviteScalarWhereWithAggregatesInput = {
   maxUses?: Prisma.IntNullableWithAggregatesFilter<"Invite"> | number | null
   uses?: Prisma.IntWithAggregatesFilter<"Invite"> | number
   expiresAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Invite"> | Date | string | null
+  permanent?: Prisma.BoolWithAggregatesFilter<"Invite"> | boolean
+  disabledAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Invite"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Invite"> | Date | string
 }
 
@@ -324,6 +348,8 @@ export type InviteCreateInput = {
   maxUses?: number | null
   uses?: number
   expiresAt?: Date | string | null
+  permanent?: boolean
+  disabledAt?: Date | string | null
   createdAt?: Date | string
   community: Prisma.CommunityCreateNestedOneWithoutInvitesInput
   creator: Prisma.UserCreateNestedOneWithoutInvitesInput
@@ -337,6 +363,8 @@ export type InviteUncheckedCreateInput = {
   maxUses?: number | null
   uses?: number
   expiresAt?: Date | string | null
+  permanent?: boolean
+  disabledAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -345,6 +373,8 @@ export type InviteUpdateInput = {
   maxUses?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   uses?: Prisma.IntFieldUpdateOperationsInput | number
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  permanent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   community?: Prisma.CommunityUpdateOneRequiredWithoutInvitesNestedInput
   creator?: Prisma.UserUpdateOneRequiredWithoutInvitesNestedInput
@@ -358,6 +388,8 @@ export type InviteUncheckedUpdateInput = {
   maxUses?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   uses?: Prisma.IntFieldUpdateOperationsInput | number
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  permanent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -369,6 +401,8 @@ export type InviteCreateManyInput = {
   maxUses?: number | null
   uses?: number
   expiresAt?: Date | string | null
+  permanent?: boolean
+  disabledAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -377,6 +411,8 @@ export type InviteUpdateManyMutationInput = {
   maxUses?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   uses?: Prisma.IntFieldUpdateOperationsInput | number
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  permanent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -388,6 +424,8 @@ export type InviteUncheckedUpdateManyInput = {
   maxUses?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   uses?: Prisma.IntFieldUpdateOperationsInput | number
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  permanent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -409,6 +447,8 @@ export type InviteCountOrderByAggregateInput = {
   maxUses?: Prisma.SortOrder
   uses?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
+  permanent?: Prisma.SortOrder
+  disabledAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -428,6 +468,8 @@ export type InviteMaxOrderByAggregateInput = {
   maxUses?: Prisma.SortOrder
   uses?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
+  permanent?: Prisma.SortOrder
+  disabledAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -439,6 +481,8 @@ export type InviteMinOrderByAggregateInput = {
   maxUses?: Prisma.SortOrder
   uses?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
+  permanent?: Prisma.SortOrder
+  disabledAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -543,6 +587,8 @@ export type InviteCreateWithoutCommunityInput = {
   maxUses?: number | null
   uses?: number
   expiresAt?: Date | string | null
+  permanent?: boolean
+  disabledAt?: Date | string | null
   createdAt?: Date | string
   creator: Prisma.UserCreateNestedOneWithoutInvitesInput
 }
@@ -554,6 +600,8 @@ export type InviteUncheckedCreateWithoutCommunityInput = {
   maxUses?: number | null
   uses?: number
   expiresAt?: Date | string | null
+  permanent?: boolean
+  disabledAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -594,6 +642,8 @@ export type InviteScalarWhereInput = {
   maxUses?: Prisma.IntNullableFilter<"Invite"> | number | null
   uses?: Prisma.IntFilter<"Invite"> | number
   expiresAt?: Prisma.DateTimeNullableFilter<"Invite"> | Date | string | null
+  permanent?: Prisma.BoolFilter<"Invite"> | boolean
+  disabledAt?: Prisma.DateTimeNullableFilter<"Invite"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Invite"> | Date | string
 }
 
@@ -602,6 +652,8 @@ export type InviteCreateWithoutCreatorInput = {
   maxUses?: number | null
   uses?: number
   expiresAt?: Date | string | null
+  permanent?: boolean
+  disabledAt?: Date | string | null
   createdAt?: Date | string
   community: Prisma.CommunityCreateNestedOneWithoutInvitesInput
 }
@@ -613,6 +665,8 @@ export type InviteUncheckedCreateWithoutCreatorInput = {
   maxUses?: number | null
   uses?: number
   expiresAt?: Date | string | null
+  permanent?: boolean
+  disabledAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -649,6 +703,8 @@ export type InviteCreateManyCommunityInput = {
   maxUses?: number | null
   uses?: number
   expiresAt?: Date | string | null
+  permanent?: boolean
+  disabledAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -657,6 +713,8 @@ export type InviteUpdateWithoutCommunityInput = {
   maxUses?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   uses?: Prisma.IntFieldUpdateOperationsInput | number
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  permanent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   creator?: Prisma.UserUpdateOneRequiredWithoutInvitesNestedInput
 }
@@ -668,6 +726,8 @@ export type InviteUncheckedUpdateWithoutCommunityInput = {
   maxUses?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   uses?: Prisma.IntFieldUpdateOperationsInput | number
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  permanent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -678,6 +738,8 @@ export type InviteUncheckedUpdateManyWithoutCommunityInput = {
   maxUses?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   uses?: Prisma.IntFieldUpdateOperationsInput | number
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  permanent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -688,6 +750,8 @@ export type InviteCreateManyCreatorInput = {
   maxUses?: number | null
   uses?: number
   expiresAt?: Date | string | null
+  permanent?: boolean
+  disabledAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -696,6 +760,8 @@ export type InviteUpdateWithoutCreatorInput = {
   maxUses?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   uses?: Prisma.IntFieldUpdateOperationsInput | number
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  permanent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   community?: Prisma.CommunityUpdateOneRequiredWithoutInvitesNestedInput
 }
@@ -707,6 +773,8 @@ export type InviteUncheckedUpdateWithoutCreatorInput = {
   maxUses?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   uses?: Prisma.IntFieldUpdateOperationsInput | number
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  permanent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -717,6 +785,8 @@ export type InviteUncheckedUpdateManyWithoutCreatorInput = {
   maxUses?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   uses?: Prisma.IntFieldUpdateOperationsInput | number
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  permanent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -730,6 +800,8 @@ export type InviteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   maxUses?: boolean
   uses?: boolean
   expiresAt?: boolean
+  permanent?: boolean
+  disabledAt?: boolean
   createdAt?: boolean
   community?: boolean | Prisma.CommunityDefaultArgs<ExtArgs>
   creator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -743,6 +815,8 @@ export type InviteSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   maxUses?: boolean
   uses?: boolean
   expiresAt?: boolean
+  permanent?: boolean
+  disabledAt?: boolean
   createdAt?: boolean
   community?: boolean | Prisma.CommunityDefaultArgs<ExtArgs>
   creator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -756,6 +830,8 @@ export type InviteSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   maxUses?: boolean
   uses?: boolean
   expiresAt?: boolean
+  permanent?: boolean
+  disabledAt?: boolean
   createdAt?: boolean
   community?: boolean | Prisma.CommunityDefaultArgs<ExtArgs>
   creator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -769,10 +845,12 @@ export type InviteSelectScalar = {
   maxUses?: boolean
   uses?: boolean
   expiresAt?: boolean
+  permanent?: boolean
+  disabledAt?: boolean
   createdAt?: boolean
 }
 
-export type InviteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "code" | "communityId" | "creatorId" | "maxUses" | "uses" | "expiresAt" | "createdAt", ExtArgs["result"]["invite"]>
+export type InviteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "code" | "communityId" | "creatorId" | "maxUses" | "uses" | "expiresAt" | "permanent" | "disabledAt" | "createdAt", ExtArgs["result"]["invite"]>
 export type InviteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   community?: boolean | Prisma.CommunityDefaultArgs<ExtArgs>
   creator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -800,6 +878,8 @@ export type $InvitePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     maxUses: number | null
     uses: number
     expiresAt: Date | null
+    permanent: boolean
+    disabledAt: Date | null
     createdAt: Date
   }, ExtArgs["result"]["invite"]>
   composites: {}
@@ -1233,6 +1313,8 @@ export interface InviteFieldRefs {
   readonly maxUses: Prisma.FieldRef<"Invite", 'Int'>
   readonly uses: Prisma.FieldRef<"Invite", 'Int'>
   readonly expiresAt: Prisma.FieldRef<"Invite", 'DateTime'>
+  readonly permanent: Prisma.FieldRef<"Invite", 'Boolean'>
+  readonly disabledAt: Prisma.FieldRef<"Invite", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Invite", 'DateTime'>
 }
     

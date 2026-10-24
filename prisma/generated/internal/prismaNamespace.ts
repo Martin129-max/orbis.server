@@ -2233,6 +2233,8 @@ export const InviteScalarFieldEnum = {
   maxUses: 'maxUses',
   uses: 'uses',
   expiresAt: 'expiresAt',
+  permanent: 'permanent',
+  disabledAt: 'disabledAt',
   createdAt: 'createdAt'
 } as const
 

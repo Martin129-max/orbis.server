@@ -1,3 +1,4 @@
+import { randomInt } from 'node:crypto';
 import {
   LibraryStatus,
   MediaType,
@@ -2098,6 +2099,22 @@ async function main() {
         },
       },
     });
+
+    if (community.name === 'Seasonal Anime Club') {
+      const alphabet =
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      await prisma.invite.create({
+        data: {
+          code: Array.from({ length: 100 }, () => alphabet[randomInt(62)]).join(
+            '',
+          ),
+          communityId: created.id,
+          creatorId: userIds[community.owner],
+          permanent: true,
+          uses: 3,
+        },
+      });
+    }
 
     for (const [index, [key, ago, content]] of community.posts.entries()) {
       const post = await prisma.post.create({

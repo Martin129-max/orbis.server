@@ -81,6 +81,8 @@ model Invite {
   maxUses     Int?
   uses        Int       @default(0)
   expiresAt   DateTime?
+  permanent   Boolean   @default(false)
+  disabledAt  DateTime?
   createdAt   DateTime  @default(now())
   community   Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
   creator     User      @relation(fields: [creatorId], references: [id], onDelete: Cascade)
