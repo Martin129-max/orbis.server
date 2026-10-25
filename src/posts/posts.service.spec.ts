@@ -47,6 +47,7 @@ describe('Feed content filters', () => {
     contentReport: { findMany: jest.fn() },
     user: { findUnique: jest.fn() },
     friendship: { findFirst: jest.fn() },
+    membership: { findMany: jest.fn() },
   };
   const threads = { withMyVotes: jest.fn() };
   const likes = { likedBy: jest.fn() };
@@ -65,6 +66,7 @@ describe('Feed content filters', () => {
     prisma.contentReport.findMany.mockResolvedValue([]);
     prisma.user.findUnique.mockResolvedValue(person);
     prisma.friendship.findFirst.mockResolvedValue(null);
+    prisma.membership.findMany.mockResolvedValue([]);
     threads.withMyVotes.mockImplementation((_userId, items) =>
       Promise.resolve(items),
     );
@@ -220,6 +222,22 @@ describe('Feed content filters', () => {
     );
   });
 
+  it('shows community authors by their nickname there', async () => {
+    prisma.post.findMany.mockResolvedValue([{ ...post, communityId: 5 }]);
+    prisma.membership.findMany.mockResolvedValue([
+      { communityId: 5, userId: person.id, nickname: 'Navigator' },
+    ]);
+
+    const { items } = await service.findForCommunity(
+      1,
+      5,
+      undefined,
+      'thread,activity',
+    );
+
+    expect(items[0].author).toEqual({ ...person, nickname: 'Navigator' });
+  });
+
   it('waits for at least two characters before searching a profile', async () => {
     expect(await service.searchProfile(1, 'reader', 'a')).toEqual([]);
     expect(prisma.post.findMany).not.toHaveBeenCalled();
@@ -237,9 +255,12 @@ describe('Feed content filters', () => {
 });
 
 describe('Creating posts with a link card', () => {
-  const create = jest.fn(({ data }) => ({ id: 9, ...data }));
+  const create = jest.fn(({ data }) => ({ id: 9, ...data, author: person }));
   const service = new PostsService(
-    { post: { create } } as unknown as PrismaService,
+    {
+      post: { create },
+      membership: { findMany: jest.fn().mockResolvedValue([]) },
+    } as unknown as PrismaService,
     {} as ThreadsService,
     {} as NotificationsService,
     {} as LikesService,

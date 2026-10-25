@@ -29,6 +29,7 @@ import { CreateCommunityDto } from './dto/create-community.dto';
 import { UpdateRailLayoutDto } from './dto/update-rail-layout.dto';
 import { SearchCommunitiesDto } from './dto/search-communities.dto';
 import { UpdateCommunityDto } from './dto/update-community.dto';
+import { UpdateNicknameDto } from './dto/update-nickname.dto';
 import { CommunityMemberGuard } from './community-member.guard';
 import { CommunityViewerGuard } from './community-viewer.guard';
 import { JwtAuthGuard } from '../auth/jwt.guard';
@@ -128,6 +129,21 @@ export class CommunitiesController {
       communityId,
       userId,
       false,
+    );
+  }
+
+  @RateLimit(20, MINUTE)
+  @Patch(':communityId/nickname')
+  @UseGuards(CommunityMemberGuard)
+  setNickname(
+    @Req() req,
+    @Param('communityId', ParseIntPipe) communityId: number,
+    @Body() { nickname }: UpdateNicknameDto,
+  ): Promise<{ nickname: string | null }> {
+    return this.communitiesService.setNickname(
+      req.user.userId,
+      communityId,
+      nickname ?? null,
     );
   }
 

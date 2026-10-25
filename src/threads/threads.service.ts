@@ -12,6 +12,7 @@ import { reportedBy, visibleTo } from '../moderation/visibility';
 import { requireViewAccess } from '../communities/require-membership';
 import { MAX_INT } from '../communities/community-member.guard';
 import { VotesService } from '../votes/votes.service';
+import { loadNicknames } from '../communities/nicknames';
 import { CreateThreadDto } from './dto/create-thread.dto';
 
 export const threadInclude = { author, community: communitySummary } as const;
@@ -92,7 +93,9 @@ export class ThreadsService {
     }
 
     return {
-      items: await this.withMyVotes(userId, threads.slice(0, PAGE_SIZE)),
+      items: await this.withNicknames(
+        await this.withMyVotes(userId, threads.slice(0, PAGE_SIZE)),
+      ),
       nextCursor:
         threads.length > PAGE_SIZE ? String(offset + PAGE_SIZE) : null,
     };
@@ -128,7 +131,10 @@ export class ThreadsService {
       return created;
     });
 
-    return { ...thread, type: 'thread', myVote: 1 };
+    const [created] = await this.withNicknames([
+      { ...thread, type: 'thread', myVote: 1 },
+    ]);
+    return created;
   }
 
   async findOne(userId: number, id: number): Promise<ThreadSummary> {
@@ -144,7 +150,23 @@ export class ThreadsService {
     }
     await requireViewAccess(this.prisma, userId, thread.communityId);
 
-    const [summary] = await this.withMyVotes(userId, [thread]);
+    const [summary] = await this.withNicknames(
+      await this.withMyVotes(userId, [thread]),
+    );
     return summary;
+  }
+
+  private async withNicknames(threads: ThreadSummary[]) {
+    const withNickname = await loadNicknames(
+      this.prisma,
+      threads.map((thread) => ({
+        communityId: thread.communityId,
+        userId: thread.author.id,
+      })),
+    );
+    return threads.map((thread) => ({
+      ...thread,
+      author: withNickname(thread.communityId, thread.author),
+    }));
   }
 }

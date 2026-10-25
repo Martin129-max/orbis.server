@@ -6,7 +6,7 @@ import { PresenceGateway } from '../friends/presence.gateway';
 describe('Community details', () => {
   const prisma = {
     community: { findUnique: jest.fn() },
-    membership: { findUnique: jest.fn() },
+    membership: { findUnique: jest.fn(), update: jest.fn() },
   };
   const service = new CommunitiesService(
     prisma as unknown as PrismaService,
@@ -65,5 +65,27 @@ describe('Community details', () => {
       id: 9,
       role: 'member',
     });
+  });
+
+  it('saves a trimmed nickname for the member', async () => {
+    prisma.membership.update.mockResolvedValue({ nickname: 'Navigator' });
+
+    await service.setNickname(4, 9, '  Navigator  ');
+
+    expect(prisma.membership.update).toHaveBeenCalledWith({
+      where: { userId_communityId: { userId: 4, communityId: 9 } },
+      data: { nickname: 'Navigator' },
+      select: { nickname: true },
+    });
+  });
+
+  it('clears a blank nickname', async () => {
+    prisma.membership.update.mockResolvedValue({ nickname: null });
+
+    await service.setNickname(4, 9, '   ');
+
+    expect(prisma.membership.update).toHaveBeenCalledWith(
+      expect.objectContaining({ data: { nickname: null } }),
+    );
   });
 });

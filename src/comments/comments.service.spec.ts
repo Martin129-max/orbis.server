@@ -33,6 +33,7 @@ describe('CommentsService.create', () => {
     post: { update: jest.fn() },
     thread: { findUnique: jest.fn() },
     user: { findUnique: jest.fn() },
+    membership: { findMany: jest.fn().mockResolvedValue([]) },
     $transaction: jest.fn((run) => run(prisma)),
   };
   const notifications = { notify: jest.fn() };

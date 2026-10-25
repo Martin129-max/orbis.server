@@ -17,6 +17,7 @@ import {
 import { MAX_INT } from '../communities/community-member.guard';
 import { VotesService } from '../votes/votes.service';
 import { reportedBy } from '../moderation/visibility';
+import { loadNicknames } from '../communities/nicknames';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import {
   NewNotification,
@@ -72,13 +73,17 @@ export class CommentsService {
       take: MAX_COMMENTS,
       select: commentSelect,
     });
-    const [mine, reported] = await Promise.all([
+    const [mine, reported, withNickname] = await Promise.all([
       this.votes.myVotes(
         userId,
         'comment',
         comments.map((comment) => comment.id),
       ),
       reportedBy(this.prisma, userId),
+      loadNicknames(
+        this.prisma,
+        comments.map((comment) => ({ communityId, userId: comment.author.id })),
+      ),
     ]);
     const reportedIds = new Set(reported.comment);
 
@@ -91,6 +96,7 @@ export class CommentsService {
           : null;
       return {
         ...comment,
+        author: withNickname(communityId, comment.author),
         content: hidden ? '' : comment.content,
         linkUrl: hidden ? null : comment.linkUrl,
         myVote: mine.get(comment.id) ?? 0,
@@ -156,7 +162,15 @@ export class CommentsService {
     });
 
     await this.notifyCommented(userId, home, parentAuthorId);
-    return { ...comment, myVote: 1, hidden: null };
+    const withNickname = await loadNicknames(this.prisma, [
+      { communityId: home.communityId, userId },
+    ]);
+    return {
+      ...comment,
+      author: withNickname(home.communityId, comment.author),
+      myVote: 1,
+      hidden: null,
+    };
   }
 
   private async notifyCommented(

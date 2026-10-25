@@ -5,11 +5,23 @@ import { VotesService } from '../votes/votes.service';
 jest.mock('../common/rich-text', () => ({ sanitizeRichText: jest.fn() }));
 
 describe('ThreadsService.create', () => {
-  const create = jest.fn(({ data }) => ({ id: 4, ...data, commentCount: 0 }));
+  const create = jest.fn(({ data }) => ({
+    id: 4,
+    ...data,
+    commentCount: 0,
+    author: {
+      id: data.authorId,
+      username: 'reader',
+      name: null,
+      avatarUrl: null,
+    },
+  }));
   const voteCreate = jest.fn();
+  const membershipFind = jest.fn().mockResolvedValue([]);
   const prisma = {
     thread: { create },
     vote: { create: voteCreate },
+    membership: { findMany: membershipFind },
     $transaction: jest.fn((run) => run(prisma)),
   };
   const service = new ThreadsService(
@@ -37,6 +49,17 @@ describe('ThreadsService.create', () => {
       },
     });
     expect(thread.myVote).toBe(1);
+  });
+
+  it('shows the author by their nickname in the community', async () => {
+    sanitize.mockReturnValue({ html: '', empty: true });
+    membershipFind.mockResolvedValueOnce([
+      { communityId: 3, userId: 1, nickname: 'Future Hokage' },
+    ]);
+
+    const thread = await service.create(1, 3, { title: 'Hello' });
+
+    expect(thread).toMatchObject({ author: { nickname: 'Future Hokage' } });
   });
 
   it('saves the link card with the thread', async () => {

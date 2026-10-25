@@ -30,6 +30,7 @@ import {
 import { LikesService } from '../likes/likes.service';
 import { getMedia } from '../library/library-api';
 import { reportedBy, visibleTo } from '../moderation/visibility';
+import { loadNicknames } from '../communities/nicknames';
 
 const postInclude = {
   author,
@@ -246,13 +247,29 @@ export class PostsService {
       ),
     ]);
 
+    const communityOf = (item: (typeof items)[number]) =>
+      item.type === 'activity' ? null : item.communityId;
+    const withNickname = await loadNicknames(
+      this.prisma,
+      items.flatMap((item, index) =>
+        [item.author, ...previews[index].map((comment) => comment.author)].map(
+          ({ id }) => ({ communityId: communityOf(item), userId: id }),
+        ),
+      ),
+    );
+
     return items.map((item, index) => {
-      const previewComments = previews[index];
-      if (item.type === 'thread') return { ...item, previewComments };
+      const communityId = communityOf(item);
+      const author = withNickname(communityId, item.author);
+      const previewComments = previews[index].map((comment) => ({
+        ...comment,
+        author: withNickname(communityId, comment.author),
+      }));
+      if (item.type === 'thread') return { ...item, author, previewComments };
       const liked = (item.type === 'post' ? likedPosts : likedActivities).has(
         item.id,
       );
-      return { ...item, liked, previewComments };
+      return { ...item, author, liked, previewComments };
     });
   }
 
@@ -656,6 +673,15 @@ export class PostsService {
       data: { communityId, authorId, ...postBody(body) },
       include: postInclude,
     });
-    return { ...post, type: 'post', liked: false, previewComments: [] };
+    const withNickname = await loadNicknames(this.prisma, [
+      { communityId, userId: authorId },
+    ]);
+    return {
+      ...post,
+      author: withNickname(communityId, post.author),
+      type: 'post',
+      liked: false,
+      previewComments: [],
+    };
   }
 }

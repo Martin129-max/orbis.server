@@ -270,6 +270,14 @@ export class CommunitiesService {
     }));
   }
 
+  setNickname(userId: number, communityId: number, nickname: string | null) {
+    return this.prisma.membership.update({
+      where: { userId_communityId: { userId, communityId } },
+      data: { nickname: nickname?.trim() || null },
+      select: { nickname: true },
+    });
+  }
+
   async assertCanManage(userId: number, communityId: number) {
     await this.requireRole(userId, communityId, 'admin');
   }
