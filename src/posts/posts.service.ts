@@ -117,6 +117,22 @@ const newestFirst = [{ createdAt: 'desc' as const }, { id: 'desc' as const }];
 
 const SEARCH_LIMIT = 8;
 
+function visibleCommunity(viewerId: number) {
+  return {
+    OR: [{ isPublic: true }, { memberships: { some: { userId: viewerId } } }],
+  };
+}
+
+function profilePosts(ownerId: number, viewerId: number) {
+  return {
+    OR: [
+      { wallUserId: ownerId },
+      { authorId: ownerId, communityId: null, mediaType: null },
+      { authorId: ownerId, community: visibleCommunity(viewerId) },
+    ],
+  };
+}
+
 function parseFeedCursor(raw?: string): FeedCursor | undefined {
   if (raw === undefined) return undefined;
 
@@ -428,32 +444,16 @@ export class PostsService {
   ): Promise<Page<FeedItem>> {
     const cursor = parseFeedCursor(rawCursor);
     const excluded = excludedTypes(exclude);
-    const owner = await this.prisma.user.findUnique({
-      where: { username: normalizeUsername(username) },
-      select: { id: true, isPublic: true },
-    });
-    if (!owner) throw new NotFoundException('User not found');
-    if (!(await canViewProfile(this.prisma, viewerId, owner))) {
-      throw new ForbiddenException('This profile is private');
-    }
+    const owner = await this.viewableProfile(viewerId, username);
 
     const reported = await reportedBy(this.prisma, viewerId);
-    const visibleCommunity = {
-      OR: [{ isPublic: true }, { memberships: { some: { userId: viewerId } } }],
-    };
     const [posts, threads, activities] = await Promise.all([
       excluded.has('post')
         ? []
         : this.prisma.post.findMany({
             where: {
               AND: [
-                {
-                  OR: [
-                    { wallUserId: owner.id },
-                    { authorId: owner.id, communityId: null, mediaType: null },
-                    { authorId: owner.id, community: visibleCommunity },
-                  ],
-                },
+                profilePosts(owner.id, viewerId),
                 olderThan(cursor, RANK.post),
                 visibleTo(viewerId, reported.post),
               ],
@@ -467,7 +467,7 @@ export class PostsService {
         : this.prisma.thread.findMany({
             where: {
               authorId: owner.id,
-              community: visibleCommunity,
+              community: visibleCommunity(viewerId),
               ...olderThan(cursor, RANK.thread),
               ...visibleTo(viewerId, reported.thread),
             },
@@ -508,6 +508,65 @@ export class PostsService {
     );
 
     return { items, nextCursor: nextCursor(merged, page) };
+  }
+
+  async searchProfile(
+    viewerId: number,
+    username: string,
+    rawQuery: string,
+  ): Promise<FeedItem[]> {
+    const owner = await this.viewableProfile(viewerId, username);
+    const query = rawQuery.trim().slice(0, 100);
+    if (query.length < 2) return [];
+
+    const reported = await reportedBy(this.prisma, viewerId);
+    const contains = { contains: query, mode: 'insensitive' as const };
+    const [threads, posts] = await Promise.all([
+      this.prisma.thread.findMany({
+        where: {
+          authorId: owner.id,
+          community: visibleCommunity(viewerId),
+          OR: [{ title: contains }, { content: contains }],
+          ...visibleTo(viewerId, reported.thread),
+        },
+        orderBy: newestFirst,
+        take: SEARCH_LIMIT,
+        include: threadInclude,
+      }),
+      this.prisma.post.findMany({
+        where: {
+          AND: [
+            profilePosts(owner.id, viewerId),
+            { content: contains },
+            visibleTo(viewerId, reported.post),
+          ],
+        },
+        orderBy: newestFirst,
+        take: SEARCH_LIMIT,
+        include: postInclude,
+      }),
+    ]);
+
+    const voted = await this.threads.withMyVotes(
+      viewerId,
+      threads.map((thread) => ({ ...thread, type: 'thread' as const })),
+    );
+    return this.engage(viewerId, [
+      ...voted,
+      ...posts.map((post) => ({ ...post, type: 'post' as const })),
+    ]);
+  }
+
+  private async viewableProfile(viewerId: number, username: string) {
+    const owner = await this.prisma.user.findUnique({
+      where: { username: normalizeUsername(username) },
+      select: { id: true, isPublic: true },
+    });
+    if (!owner) throw new NotFoundException('User not found');
+    if (!(await canViewProfile(this.prisma, viewerId, owner))) {
+      throw new ForbiddenException('This profile is private');
+    }
+    return owner;
   }
 
   async createOnWall(

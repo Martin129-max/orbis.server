@@ -35,6 +35,13 @@ export class UserPostsController {
     );
   }
 
+  @RateLimit(60, MINUTE)
+  @Get('search')
+  @AllowGuest()
+  search(@Req() req, @Param('username') username: string, @Query('q') q = '') {
+    return this.postsService.searchProfile(req.user.userId, username, q);
+  }
+
   @RateLimit(10, MINUTE)
   @Post()
   createOnWall(

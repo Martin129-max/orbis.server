@@ -1,4 +1,4 @@
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { PrismaService } from '../prisma.service';
 import { ThreadsService } from '../threads/threads.service';
@@ -46,6 +46,7 @@ describe('Feed content filters', () => {
     libraryActivity: { findMany: jest.fn() },
     contentReport: { findMany: jest.fn() },
     user: { findUnique: jest.fn() },
+    friendship: { findFirst: jest.fn() },
   };
   const threads = { withMyVotes: jest.fn() };
   const likes = { likedBy: jest.fn() };
@@ -63,6 +64,7 @@ describe('Feed content filters', () => {
     prisma.libraryActivity.findMany.mockResolvedValue([activity]);
     prisma.contentReport.findMany.mockResolvedValue([]);
     prisma.user.findUnique.mockResolvedValue(person);
+    prisma.friendship.findFirst.mockResolvedValue(null);
     threads.withMyVotes.mockImplementation((_userId, items) =>
       Promise.resolve(items),
     );
@@ -191,6 +193,46 @@ describe('Feed content filters', () => {
     expect(where.AND[1].OR).toEqual(
       expect.arrayContaining([expect.objectContaining({ id: { lt: 2 } })]),
     );
+  });
+
+  it('searches only the posts and threads a profile shows', async () => {
+    const result = await service.searchProfile(1, 'reader', ' Post ');
+
+    expect(result.map((item) => item.type)).toEqual(['thread', 'post']);
+    const postWhere = prisma.post.findMany.mock.calls[0][0].where;
+    expect(postWhere.AND[0].OR).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ wallUserId: person.id }),
+        expect.objectContaining({
+          authorId: person.id,
+          community: expect.any(Object),
+        }),
+      ]),
+    );
+    expect(postWhere.AND[1]).toEqual({
+      content: { contains: 'Post', mode: 'insensitive' },
+    });
+    expect(prisma.thread.findMany.mock.calls[0][0].where).toEqual(
+      expect.objectContaining({
+        authorId: person.id,
+        community: expect.any(Object),
+      }),
+    );
+  });
+
+  it('waits for at least two characters before searching a profile', async () => {
+    expect(await service.searchProfile(1, 'reader', 'a')).toEqual([]);
+    expect(prisma.post.findMany).not.toHaveBeenCalled();
+    expect(prisma.thread.findMany).not.toHaveBeenCalled();
+  });
+
+  it('refuses to search a private profile you can’t see', async () => {
+    prisma.user.findUnique.mockResolvedValue({ id: 4, isPublic: false });
+
+    await expect(service.searchProfile(1, 'secret', 'Post')).rejects.toThrow(
+      ForbiddenException,
+    );
+    expect(prisma.post.findMany).not.toHaveBeenCalled();
   });
 });
 
