@@ -2098,6 +2098,7 @@ async function main() {
         coverUrl: `/images/user-covers/${key}.webp`,
         backgroundUrl: `/images/user-backgrounds/${key}.webp`,
         isPublic: !privateProfiles.includes(key as Character),
+        status: key === 'gojo' ? 'busy' : key === 'nami' ? 'idle' : 'online',
         tourCompletedAt: minutesAgo(days(30)),
         checklistDismissedAt: minutesAgo(days(29)),
         completedTours: PAGE_TOURS,

@@ -4,6 +4,12 @@ enum Theme {
   dark
 }
 
+enum UserStatus {
+  online
+  idle
+  busy
+}
+
 model User {
   id                   Int                  @id @default(autoincrement())
   email                String               @unique
@@ -15,6 +21,7 @@ model User {
   password             String
   theme                Theme                @default(dark)
   appearOffline        Boolean              @default(false)
+  status               UserStatus           @default(online)
   isPublic             Boolean              @default(true)
   isAdmin              Boolean              @default(false)
   tourCompletedAt      DateTime?

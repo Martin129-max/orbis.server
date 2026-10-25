@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { AddFriendDto } from './dto/add-friend.dto';
-import { PresenceGateway } from './presence.gateway';
+import { PresenceGateway, PresenceStatus } from './presence.gateway';
 import { normalizeUsername } from '../users/username';
 import { NotificationsService } from '../notifications/notifications.service';
 
@@ -19,7 +19,7 @@ export type FriendUser = {
   avatarUrl: string | null;
 };
 
-export type Friend = FriendUser & { online: boolean };
+export type Friend = FriendUser & { online: boolean; status: PresenceStatus };
 
 export type FriendList = {
   friends: Friend[];
@@ -34,6 +34,7 @@ const person = {
     name: true,
     avatarUrl: true,
     appearOffline: true,
+    status: true,
   },
 } as const;
 
@@ -75,10 +76,8 @@ export class FriendsService {
       };
 
       if (friendship.status === 'accepted') {
-        list.friends.push({
-          ...user,
-          online: !other.appearOffline && this.presence.isOnline(other.id),
-        });
+        const status = this.presence.statusOf(other.id, other);
+        list.friends.push({ ...user, online: status !== 'offline', status });
       } else if (friendship.addresseeId === userId) {
         list.incoming.push(user);
       } else {

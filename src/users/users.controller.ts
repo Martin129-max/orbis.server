@@ -54,7 +54,10 @@ export class UsersController {
       updatePreferencesDto,
     );
 
-    if (updatePreferencesDto.appearOffline !== undefined) {
+    if (
+      updatePreferencesDto.appearOffline !== undefined ||
+      updatePreferencesDto.status !== undefined
+    ) {
       await this.presence.broadcastPresence(req.user.userId);
     }
 
@@ -161,15 +164,31 @@ export class UsersController {
     @Req() req,
     @Param('username') username: string,
   ): Promise<PublicProfile> {
-    const { appearOffline, friends, ...profile } =
-      await this.usersService.publicProfile(req.user.userId, username);
+    const {
+      appearOffline,
+      status: setting,
+      friends,
+      ...profile
+    } = await this.usersService.publicProfile(req.user.userId, username);
+    const status = this.presence.statusOf(profile.userId, {
+      appearOffline,
+      status: setting,
+    });
     return {
       ...profile,
-      online: !appearOffline && this.presence.isOnline(profile.userId),
-      friends: friends.map(({ appearOffline, ...friend }) => ({
-        ...friend,
-        online: !appearOffline && this.presence.isOnline(friend.userId),
-      })),
+      online: status !== 'offline',
+      status,
+      friends: friends.map(({ appearOffline, status, ...friend }) => {
+        const friendStatus = this.presence.statusOf(friend.userId, {
+          appearOffline,
+          status,
+        });
+        return {
+          ...friend,
+          online: friendStatus !== 'offline',
+          status: friendStatus,
+        };
+      }),
     };
   }
 }

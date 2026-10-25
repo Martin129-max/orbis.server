@@ -1,14 +1,20 @@
 import { JwtService } from '@nestjs/jwt';
 import {
+  ConnectedSocket,
+  MessageBody,
   OnGatewayConnection,
   OnGatewayDisconnect,
+  SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import type { UserStatus } from '../../prisma/generated/client';
 import { PrismaService } from '../prisma.service';
 
 const room = (userId: number) => `user:${userId}`;
+
+export type PresenceStatus = 'online' | 'idle' | 'busy' | 'offline';
 
 @WebSocketGateway({ cors: true })
 export class PresenceGateway
@@ -18,6 +24,7 @@ export class PresenceGateway
   server: Server;
 
   private connections = new Map<number, number>();
+  private idleConnections = new Map<number, number>();
 
   constructor(
     private jwt: JwtService,
@@ -40,27 +47,69 @@ export class PresenceGateway
     client.data.userId = userId;
     await client.join(room(userId));
 
+    const wasIdle = this.isIdle(userId);
     const count = (this.connections.get(userId) ?? 0) + 1;
     this.connections.set(userId, count);
-    if (count === 1) await this.broadcastPresence(userId);
+    if (count === 1 || wasIdle) await this.broadcastPresence(userId);
   }
 
   async handleDisconnect(client: Socket) {
     const userId: number | undefined = client.data.userId;
     if (userId === undefined) return;
 
+    const wasIdle = this.isIdle(userId);
+    if (client.data.idle) this.adjustIdle(userId, -1);
     const count = (this.connections.get(userId) ?? 1) - 1;
     if (count > 0) {
       this.connections.set(userId, count);
+      if (this.isIdle(userId) !== wasIdle) await this.broadcastPresence(userId);
       return;
     }
 
     this.connections.delete(userId);
+    this.idleConnections.delete(userId);
     await this.broadcastPresence(userId);
+  }
+
+  @SubscribeMessage('idle')
+  async setIdle(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() idle: unknown,
+  ) {
+    const userId: number | undefined = client.data.userId;
+    const next = idle === true;
+    if (userId === undefined || Boolean(client.data.idle) === next) return;
+
+    const wasIdle = this.isIdle(userId);
+    client.data.idle = next;
+    this.adjustIdle(userId, next ? 1 : -1);
+    if (this.isIdle(userId) !== wasIdle) await this.broadcastPresence(userId);
   }
 
   isOnline(userId: number) {
     return this.connections.has(userId);
+  }
+
+  isIdle(userId: number) {
+    const connections = this.connections.get(userId) ?? 0;
+    return (
+      connections > 0 && (this.idleConnections.get(userId) ?? 0) >= connections
+    );
+  }
+
+  statusOf(
+    userId: number,
+    { appearOffline, status }: { appearOffline: boolean; status: UserStatus },
+  ): PresenceStatus {
+    if (appearOffline || !this.isOnline(userId)) return 'offline';
+    if (status === 'busy') return 'busy';
+    return status === 'idle' || this.isIdle(userId) ? 'idle' : 'online';
+  }
+
+  private adjustIdle(userId: number, delta: number) {
+    const next = (this.idleConnections.get(userId) ?? 0) + delta;
+    if (next > 0) this.idleConnections.set(userId, next);
+    else this.idleConnections.delete(userId);
   }
 
   notify(userIds: number[], event: string, payload?: unknown) {
@@ -71,7 +120,7 @@ export class PresenceGateway
     const [user, friendships, coMembers] = await Promise.all([
       this.prisma.user.findUnique({
         where: { id: userId },
-        select: { appearOffline: true },
+        select: { appearOffline: true, status: true },
       }),
       this.prisma.friendship.findMany({
         where: {
@@ -98,9 +147,11 @@ export class PresenceGateway
     ]);
     if (!user || recipients.size === 0) return;
 
+    const status = this.statusOf(userId, user);
     this.server.to([...recipients].map(room)).emit('presence', {
       userId,
-      online: this.isOnline(userId) && !user.appearOffline,
+      online: status !== 'offline',
+      status,
     });
   }
 }

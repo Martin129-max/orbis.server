@@ -139,3 +139,12 @@ export const Theme = {
 } as const
 
 export type Theme = (typeof Theme)[keyof typeof Theme]
+
+
+export const UserStatus = {
+  online: 'online',
+  idle: 'idle',
+  busy: 'busy'
+} as const
+
+export type UserStatus = (typeof UserStatus)[keyof typeof UserStatus]

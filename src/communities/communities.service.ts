@@ -13,7 +13,7 @@ import { ADMINISTRATOR, CommunityRole, isAdministrator } from './permissions';
 import { MAX_INT } from './community-member.guard';
 import { Community as CommunityModel } from '../../prisma/generated/client';
 import { StorageService } from '../storage/storage.service';
-import { PresenceGateway } from '../friends/presence.gateway';
+import { PresenceGateway, PresenceStatus } from '../friends/presence.gateway';
 
 export type CommunityMember = {
   userId: number;
@@ -22,6 +22,7 @@ export type CommunityMember = {
   avatarUrl: string | null;
   coverUrl: string | null;
   online: boolean;
+  status: PresenceStatus;
   nickname: string | null;
   joinedAt: Date;
   isOwner: boolean;
@@ -440,6 +441,7 @@ export class CommunitiesService {
                 avatarUrl: true,
                 coverUrl: true,
                 appearOffline: true,
+                status: true,
               },
             },
             roles: { select: { role: { select: { permissions: true } } } },
@@ -460,6 +462,7 @@ export class CommunitiesService {
           avatarUrl: user.avatarUrl,
           coverUrl: user.coverUrl,
           online: !user.appearOffline && this.presence.isOnline(user.id),
+          status: this.presence.statusOf(user.id, user),
           nickname,
           joinedAt,
           isOwner,

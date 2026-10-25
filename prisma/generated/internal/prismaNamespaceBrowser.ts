@@ -411,6 +411,7 @@ export const UserScalarFieldEnum = {
   password: 'password',
   theme: 'theme',
   appearOffline: 'appearOffline',
+  status: 'status',
   isPublic: 'isPublic',
   isAdmin: 'isAdmin',
   tourCompletedAt: 'tourCompletedAt',

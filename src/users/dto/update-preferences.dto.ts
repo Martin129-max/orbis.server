@@ -1,5 +1,5 @@
 import { IsBoolean, IsIn, IsOptional } from 'class-validator';
-import { Theme } from '../../../prisma/generated/client';
+import { Theme, UserStatus } from '../../../prisma/generated/client';
 
 export class UpdatePreferencesDto {
   @IsOptional()
@@ -9,6 +9,10 @@ export class UpdatePreferencesDto {
   @IsOptional()
   @IsBoolean()
   appearOffline?: boolean;
+
+  @IsOptional()
+  @IsIn(Object.values(UserStatus))
+  status?: UserStatus;
 
   @IsOptional()
   @IsBoolean()

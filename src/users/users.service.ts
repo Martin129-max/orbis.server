@@ -13,11 +13,13 @@ import {
   LibraryStatus,
   MediaType,
   User as UserModel,
+  UserStatus,
 } from '../../prisma/generated/client';
 import { normalizeUsername } from './username';
 import { isHeadAdmin } from './head-admin';
 import { StorageService } from '../storage/storage.service';
 import { canViewProfile } from '../posts/wall-access';
+import type { PresenceStatus } from '../friends/presence.gateway';
 
 export type PublicUser = Omit<UserModel, 'password'>;
 
@@ -34,6 +36,7 @@ export type PublicProfile = {
   restricted: boolean;
   createdAt: Date;
   online: boolean;
+  status: PresenceStatus;
   friendCount: number;
   postCount: number;
   communityCount: number;
@@ -52,6 +55,7 @@ export type PublicProfile = {
     avatarUrl: string | null;
     coverUrl: string | null;
     online: boolean;
+    status: PresenceStatus;
   }[];
   library: {
     id: number;
@@ -89,6 +93,7 @@ export type Profile = Pick<
   | 'backgroundUrl'
   | 'theme'
   | 'appearOffline'
+  | 'status'
   | 'isPublic'
   | 'isAdmin'
   | 'createdAt'
@@ -145,6 +150,7 @@ const profile = {
   backgroundUrl: true,
   theme: true,
   appearOffline: true,
+  status: true,
   isPublic: true,
   isAdmin: true,
   createdAt: true,
@@ -192,11 +198,11 @@ export class UsersService {
 
   async updatePreferences(
     id: number,
-    { theme, appearOffline, isPublic }: UpdatePreferencesDto,
+    { theme, appearOffline, status, isPublic }: UpdatePreferencesDto,
   ): Promise<Profile> {
     const user = await this.prisma.user.update({
       where: { id },
-      data: { theme, appearOffline, isPublic },
+      data: { theme, appearOffline, status, isPublic },
       select: profile,
     });
 
@@ -287,10 +293,12 @@ export class UsersService {
     viewerId: number,
     username: string,
   ): Promise<
-    Omit<PublicProfile, 'online' | 'friends'> & {
+    Omit<PublicProfile, 'online' | 'status' | 'friends'> & {
       appearOffline: boolean;
-      friends: (Omit<PublicProfile['friends'][number], 'online'> & {
+      status: UserStatus;
+      friends: (Omit<PublicProfile['friends'][number], 'online' | 'status'> & {
         appearOffline: boolean;
+        status: UserStatus;
       })[];
     }
   > {
@@ -306,6 +314,7 @@ export class UsersService {
         email: true,
         isAdmin: true,
         appearOffline: true,
+        status: true,
         isPublic: true,
         createdAt: true,
         memberships: {
@@ -346,6 +355,7 @@ export class UsersService {
         isPublic: false,
         restricted: true,
         appearOffline: true,
+        status: 'online',
         createdAt: user.createdAt,
         friendCount: 0,
         postCount: 0,
@@ -364,6 +374,7 @@ export class UsersService {
         avatarUrl: true,
         coverUrl: true,
         appearOffline: true,
+        status: true,
       },
     } as const;
     const [friendships, posts, threads, library] = await Promise.all([
@@ -411,6 +422,7 @@ export class UsersService {
           avatarUrl: friend.avatarUrl,
           coverUrl: friend.coverUrl,
           appearOffline: friend.appearOffline,
+          status: friend.status,
         };
       }),
       postCount: posts + threads,
