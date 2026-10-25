@@ -13,6 +13,8 @@ Whenever you change anything database-related (a file in `prisma/schema/`, a mig
 
 Run `pnpm prisma:seed` afterwards to confirm it still works.
 
+Create the migration in the same change too: run `pnpm prisma:migrate <name>` right after editing `prisma/schema/`, and commit the new folder in `prisma/migrations/` together with the schema change. `pnpm run pull` rebuilds the local database from migrations only, so a schema change without its migration stops it for everyone.
+
 ### Seed Conventions
 
 - Characters and communities are anime-themed.
