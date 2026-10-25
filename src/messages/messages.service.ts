@@ -46,6 +46,7 @@ const messageSelect = {
   senderId: true,
   text: true,
   system: true,
+  editedAt: true,
   createdAt: true,
   sender: person,
   replyTo: {
@@ -95,6 +96,7 @@ export type ChatMessage = {
   text: string;
   system: boolean;
   sentAt: string;
+  editedAt: string | null;
   replyTo: ChatReply | null;
   reactions: ChatReaction[];
 };
@@ -151,6 +153,7 @@ function toMessage(message: LoadedMessage): ChatMessage {
     text: message.text,
     system: message.system,
     sentAt: message.createdAt.toISOString(),
+    editedAt: message.editedAt?.toISOString() ?? null,
     replyTo: replyTo && {
       id: replyTo.id,
       senderId: replyTo.senderId,
@@ -390,6 +393,54 @@ export class MessagesService {
     const sent = toMessage(message);
     await this.broadcast(id, sent);
     return sent;
+  }
+
+  async edit(
+    userId: number,
+    id: number,
+    messageId: number,
+    content: string,
+  ): Promise<ChatMessage> {
+    const text = content.trim();
+    if (!text) throw new BadRequestException('Message cannot be empty');
+    const { conversation } = await this.membership(userId, id);
+    if (messageId < 1 || messageId > MAX_INT) {
+      throw new NotFoundException('Message not found');
+    }
+    const target = await this.prisma.message.findFirst({
+      where: { id: messageId, conversationId: id, system: false },
+      select: { senderId: true },
+    });
+    if (!target) throw new NotFoundException('Message not found');
+    if (target.senderId !== userId) {
+      throw new ForbiddenException('You can only edit your own messages');
+    }
+
+    const message = toMessage(
+      await this.prisma.message.update({
+        where: { id: messageId },
+        data: { text, editedAt: new Date() },
+        select: messageSelect,
+      }),
+    );
+    const latest = await this.prisma.message.findFirst({
+      where: { conversationId: id },
+      orderBy: { id: 'desc' },
+      select: { id: true },
+    });
+    if (latest?.id === messageId) {
+      await this.prisma.conversation.update({
+        where: { id },
+        data: { lastText: text },
+      });
+      await this.broadcast(id);
+    }
+    this.presence.notify(
+      conversation.members.map((member) => member.userId),
+      'message:updated',
+      { conversationId: id, message },
+    );
+    return message;
   }
 
   async react(

@@ -22,6 +22,7 @@ import {
   postReportToDiscord,
 } from './discord';
 import { ReportStatus } from '../../prisma/generated/client';
+import { webUrl } from '../common/web-url';
 
 const boardLabels: Record<ReportStatus, string> = {
   todo: 'To do',
@@ -30,7 +31,6 @@ const boardLabels: Record<ReportStatus, string> = {
 };
 
 const WEBHOOK_KEY = 'reports.discordWebhook';
-const SITE_URL_KEY = 'reports.siteUrl';
 
 const reportSelect = {
   id: true,
@@ -294,49 +294,32 @@ export class ReportsService {
   }
 
   private async discordTarget(): Promise<DiscordTarget | null> {
-    const settings = await this.prisma.setting.findMany({
-      where: { key: { in: [WEBHOOK_KEY, SITE_URL_KEY] } },
+    const setting = await this.prisma.setting.findUnique({
+      where: { key: WEBHOOK_KEY },
     });
-    const value = (key: string) =>
-      settings.find((setting) => setting.key === key)?.value;
-    const webhookUrl = value(WEBHOOK_KEY);
-    const siteUrl = value(SITE_URL_KEY);
-    return webhookUrl && siteUrl ? { webhookUrl, siteUrl } : null;
+    return setting ? { webhookUrl: setting.value, siteUrl: webUrl() } : null;
   }
 
   async webhook(userId: number) {
     await this.requireHeadAdmin(userId);
     const target = await this.discordTarget();
-    return {
-      url: target?.webhookUrl ?? null,
-      siteUrl: target?.siteUrl ?? null,
-    };
+    return { url: target?.webhookUrl ?? null };
   }
 
-  async setWebhook(userId: number, url: string, siteUrl: string) {
+  async setWebhook(userId: number, url: string) {
     await this.requireHeadAdmin(userId);
-    const site = siteUrl.replace(/\/+$/, '');
-    await this.prisma.$transaction(
-      [
-        [WEBHOOK_KEY, url],
-        [SITE_URL_KEY, site],
-      ].map(([key, value]) =>
-        this.prisma.setting.upsert({
-          where: { key },
-          create: { key, value },
-          update: { value },
-        }),
-      ),
-    );
-    return { url, siteUrl: site };
+    await this.prisma.setting.upsert({
+      where: { key: WEBHOOK_KEY },
+      create: { key: WEBHOOK_KEY, value: url },
+      update: { value: url },
+    });
+    return { url };
   }
 
   async removeWebhook(userId: number) {
     await this.requireHeadAdmin(userId);
-    await this.prisma.setting.deleteMany({
-      where: { key: { in: [WEBHOOK_KEY, SITE_URL_KEY] } },
-    });
-    return { url: null, siteUrl: null };
+    await this.prisma.setting.deleteMany({ where: { key: WEBHOOK_KEY } });
+    return { url: null };
   }
 
   async findAll(userId: number, hidden: boolean) {

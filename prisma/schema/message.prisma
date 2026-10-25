@@ -46,6 +46,7 @@ model Message {
   text           String
   system         Boolean           @default(false)
   replyToId      Int?
+  editedAt       DateTime?
   createdAt      DateTime          @default(now())
   conversation   Conversation      @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   sender         User              @relation(fields: [senderId], references: [id], onDelete: Cascade)

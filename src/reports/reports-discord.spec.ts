@@ -28,6 +28,10 @@ const report = {
 };
 
 describe('Ticket activity snapshots', () => {
+  beforeAll(() => {
+    process.env.WEB_URL = 'https://orbis.test';
+  });
+
   const prisma = {
     user: { findUnique: jest.fn(), findUniqueOrThrow: jest.fn() },
     report: {
@@ -37,7 +41,7 @@ describe('Ticket activity snapshots', () => {
       create: jest.fn(),
     },
     reportComment: { create: jest.fn(), findMany: jest.fn() },
-    setting: { findMany: jest.fn() },
+    setting: { findUnique: jest.fn() },
   };
   const notifications = { notify: jest.fn() };
   const service = new ReportsService(
@@ -94,10 +98,10 @@ describe('Ticket activity snapshots', () => {
 
   it('posts the new ticket snapshot when a webhook is configured', async () => {
     prisma.report.create.mockResolvedValue(report);
-    prisma.setting.findMany.mockResolvedValue([
-      { key: 'reports.discordWebhook', value: 'https://discord.test/webhook' },
-      { key: 'reports.siteUrl', value: 'https://orbis.test' },
-    ]);
+    prisma.setting.findUnique.mockResolvedValue({
+      key: 'reports.discordWebhook',
+      value: 'https://discord.test/webhook',
+    });
     await expect(
       service.create(1, { category: 'bug', message: report.message }),
     ).resolves.toEqual({ id: 42 });
@@ -116,10 +120,10 @@ describe('Ticket activity snapshots', () => {
       .spyOn(Logger.prototype, 'warn')
       .mockImplementation(() => undefined);
     prisma.report.create.mockResolvedValue(report);
-    prisma.setting.findMany.mockResolvedValue([
-      { key: 'reports.discordWebhook', value: 'https://discord.test/webhook' },
-      { key: 'reports.siteUrl', value: 'https://orbis.test' },
-    ]);
+    prisma.setting.findUnique.mockResolvedValue({
+      key: 'reports.discordWebhook',
+      value: 'https://discord.test/webhook',
+    });
     jest
       .mocked(postReportToDiscord)
       .mockRejectedValueOnce(new Error('Delivery failed'));
@@ -133,7 +137,7 @@ describe('Ticket activity snapshots', () => {
 
   it('skips posting when the webhook is disabled', async () => {
     prisma.report.create.mockResolvedValue(report);
-    prisma.setting.findMany.mockResolvedValue([]);
+    prisma.setting.findUnique.mockResolvedValue(null);
     await service.create(1, { category: 'bug', message: report.message });
     await new Promise(setImmediate);
     expect(postReportToDiscord).not.toHaveBeenCalled();

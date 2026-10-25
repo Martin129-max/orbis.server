@@ -10,6 +10,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { randomInt } from 'node:crypto';
 import { AuthProvider, Prisma } from '../../../prisma/generated/client';
+import { webUrl } from '../../common/web-url';
 import { PrismaService } from '../../prisma.service';
 import { USERNAME_PATTERN } from '../../users/username';
 import { AuthService } from '../auth.service';
@@ -38,8 +39,7 @@ function stateSecret() {
 }
 
 function redirectUri(provider: AuthProvider) {
-  const web = (process.env.WEB_URL ?? 'http://localhost:3000').replace(/\/+$/, '');
-  return `${web}/auth/${provider}/callback`;
+  return `${webUrl()}/auth/${provider}/callback`;
 }
 
 function isUniqueViolation(error: unknown) {

@@ -16,6 +16,7 @@ import { JwtAuthGuard } from '../auth/jwt.guard';
 import { MINUTE, RateLimit } from '../common/throttle';
 import { AddMembersDto } from './dto/add-members.dto';
 import { CreateGroupDto } from './dto/create-group.dto';
+import { EditMessageDto } from './dto/edit-message.dto';
 import { ReactMessageDto } from './dto/react-message.dto';
 import { RenameGroupDto } from './dto/rename-group.dto';
 import { SendMessageDto } from './dto/send-message.dto';
@@ -71,6 +72,17 @@ export class MessagesController {
     @Body() { text, replyToId }: SendMessageDto,
   ): Promise<ChatMessage> {
     return this.messagesService.send(req.user.userId, id, text, replyToId);
+  }
+
+  @RateLimit(60, MINUTE)
+  @Patch(':id/messages/:messageId')
+  edit(
+    @Req() req,
+    @Param('id', ParseIntPipe) id: number,
+    @Param('messageId', ParseIntPipe) messageId: number,
+    @Body() { text }: EditMessageDto,
+  ): Promise<ChatMessage> {
+    return this.messagesService.edit(req.user.userId, id, messageId, text);
   }
 
   @RateLimit(120, MINUTE)

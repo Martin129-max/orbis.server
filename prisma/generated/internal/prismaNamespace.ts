@@ -2542,6 +2542,7 @@ export const MessageScalarFieldEnum = {
   text: 'text',
   system: 'system',
   replyToId: 'replyToId',
+  editedAt: 'editedAt',
   createdAt: 'createdAt'
 } as const
 

@@ -48,8 +48,8 @@ export class ReportsController {
   }
 
   @Put('webhook')
-  setWebhook(@Req() req, @Body() { url, siteUrl }: SetWebhookDto) {
-    return this.reportsService.setWebhook(req.user.userId, url, siteUrl);
+  setWebhook(@Req() req, @Body() { url }: SetWebhookDto) {
+    return this.reportsService.setWebhook(req.user.userId, url);
   }
 
   @Delete('webhook')

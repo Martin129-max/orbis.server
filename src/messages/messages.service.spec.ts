@@ -81,6 +81,7 @@ describe('MessagesService', () => {
       findFirst: jest.fn(),
       findMany: jest.fn(),
       findUniqueOrThrow: jest.fn(),
+      update: jest.fn(),
       deleteMany: jest.fn(),
     },
     messageReaction: {
@@ -478,6 +479,71 @@ describe('MessagesService', () => {
 
       await expect(service.react(1, 5, 99, '👍')).rejects.toThrow(
         NotFoundException,
+      );
+    });
+  });
+
+  describe('editing', () => {
+    const edited = (text: string) => ({
+      id: 3,
+      senderId: 1,
+      text,
+      system: false,
+      editedAt: date,
+      createdAt: date,
+      sender: users[1],
+      replyTo: null,
+      reactions: [],
+    });
+
+    it('edits your own message and tells everyone in the chat', async () => {
+      prisma.message.findFirst
+        .mockResolvedValueOnce({ senderId: 1 })
+        .mockResolvedValueOnce({ id: 8 });
+      prisma.message.update.mockResolvedValueOnce(edited('Ramen at 7'));
+
+      const message = await service.edit(1, 5, 3, '  Ramen at 7  ');
+
+      expect(prisma.message.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { id: 3 },
+          data: { text: 'Ramen at 7', editedAt: expect.any(Date) },
+        }),
+      );
+      expect(message).toMatchObject({ text: 'Ramen at 7', editedAt: date.toISOString() });
+      expect(presence.notify).toHaveBeenCalledWith([1, 2], 'message:updated', {
+        conversationId: 5,
+        message,
+      });
+      expect(prisma.conversation.update).not.toHaveBeenCalled();
+    });
+
+    it('updates the chat preview when the latest message is edited', async () => {
+      prisma.message.findFirst
+        .mockResolvedValueOnce({ senderId: 1 })
+        .mockResolvedValueOnce({ id: 3 });
+      prisma.message.update.mockResolvedValueOnce(edited('Ramen at 8'));
+
+      await service.edit(1, 5, 3, 'Ramen at 8');
+
+      expect(prisma.conversation.update).toHaveBeenCalledWith({
+        where: { id: 5 },
+        data: { lastText: 'Ramen at 8' },
+      });
+    });
+
+    it('refuses to edit someone else’s message', async () => {
+      prisma.message.findFirst.mockResolvedValueOnce({ senderId: 2 });
+
+      await expect(service.edit(1, 5, 3, 'Hi')).rejects.toThrow(
+        ForbiddenException,
+      );
+      expect(prisma.message.update).not.toHaveBeenCalled();
+    });
+
+    it('refuses an empty edit', async () => {
+      await expect(service.edit(1, 5, 3, '   ')).rejects.toThrow(
+        BadRequestException,
       );
     });
   });

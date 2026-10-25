@@ -1463,6 +1463,12 @@ async function createChats() {
         },
       });
     }
+    if (messages.length > 2) {
+      await prisma.message.update({
+        where: { id: messages[0].id },
+        data: { editedAt: new Date() },
+      });
+    }
     const last = messages.at(-1);
     const quoted =
       last &&
