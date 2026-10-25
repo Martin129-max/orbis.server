@@ -32,6 +32,7 @@ export type CommunityMember = {
 export type CommunityWithRole = CommunityModel & {
   role: CommunityRole | null;
   memberCount?: number;
+  live?: boolean;
 };
 
 const roleRank: Record<CommunityRole, number> = {
@@ -254,14 +255,44 @@ export class CommunitiesService {
     return community;
   }
 
-  async findForMember(userId: number): Promise<CommunityModel[]> {
+  async findForMember(
+    userId: number,
+  ): Promise<(CommunityModel & { live: boolean })[]> {
     const memberships = await this.prisma.membership.findMany({
       where: { userId },
       orderBy: [{ position: 'asc' }, { joinedAt: 'asc' }],
       include: { community: true },
     });
 
-    return memberships.map(({ community }) => community);
+    return memberships.map(({ community }) => ({
+      ...community,
+      live: this.presence.isCommunityLive(community.id),
+    }));
+  }
+
+  async assertCanManage(userId: number, communityId: number) {
+    await this.requireRole(userId, communityId, 'admin');
+  }
+
+  async connectTwitch(
+    userId: number,
+    communityId: number,
+    channel: { id: string; login: string },
+  ) {
+    await this.requireRole(userId, communityId, 'admin');
+    await this.prisma.community.update({
+      where: { id: communityId },
+      data: { twitchUserId: channel.id, twitchLogin: channel.login },
+    });
+  }
+
+  async disconnectTwitch(userId: number, communityId: number) {
+    await this.requireRole(userId, communityId, 'admin');
+    await this.prisma.community.update({
+      where: { id: communityId },
+      data: { twitchUserId: null, twitchLogin: null },
+    });
+    await this.presence.stopCommunityLive(communityId);
   }
 
   async nextRailPosition(userId: number): Promise<number> {
@@ -489,7 +520,12 @@ export class CommunitiesService {
     if (!community || (!role && !community.isPublic)) return null;
 
     const { _count, ...rest } = community;
-    return { ...rest, role, memberCount: _count.memberships };
+    return {
+      ...rest,
+      role,
+      memberCount: _count.memberships,
+      live: this.presence.isCommunityLive(id),
+    };
   }
 
   async roleOf(

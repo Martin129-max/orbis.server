@@ -6,6 +6,8 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { Prisma } from '../../../prisma/generated/client';
 import { PrismaService } from '../../prisma.service';
+import { CommunitiesService } from '../../communities/communities.service';
+import { PresenceGateway } from '../../friends/presence.gateway';
 import { AuthService } from '../auth.service';
 import { OAuthService } from './oauth.service';
 
@@ -17,6 +19,7 @@ describe('OAuthService', () => {
       findUnique: jest.fn(),
       create: jest.fn(),
       delete: jest.fn(),
+      updateMany: jest.fn(),
     },
     user: {
       findFirst: jest.fn(),
@@ -28,10 +31,14 @@ describe('OAuthService', () => {
   const auth = {
     generateToken: jest.fn((id: number) => ({ access_token: `token-${id}` })),
   };
+  const presence = { stopLive: jest.fn() };
+  const communities = { assertCanManage: jest.fn(), connectTwitch: jest.fn() };
   const service = new OAuthService(
     prisma as unknown as PrismaService,
     jwt,
     auth as unknown as AuthService,
+    presence as unknown as PresenceGateway,
+    communities as unknown as CommunitiesService,
   );
   const fetchMock = jest.fn();
 
@@ -70,6 +77,8 @@ describe('OAuthService', () => {
     process.env.JWT_SECRET = 'test-secret';
     process.env.DISCORD_CLIENT_ID = 'client';
     process.env.DISCORD_CLIENT_SECRET = 'secret';
+    process.env.TWITCH_CLIENT_ID = 'twitch-client';
+    process.env.TWITCH_CLIENT_SECRET = 'twitch-secret';
     global.fetch = fetchMock as unknown as typeof fetch;
   });
 
@@ -212,5 +221,58 @@ describe('OAuthService', () => {
     expect(prisma.oAuthAccount.delete).toHaveBeenCalledWith({
       where: { userId_provider: { userId: 5, provider: 'discord' } },
     });
+  });
+
+  it('hides a live stream right away when showing it is turned off', async () => {
+    prisma.oAuthAccount.updateMany.mockResolvedValueOnce({ count: 1 });
+
+    await service.setShowLive(5, 'twitch', false);
+
+    expect(prisma.oAuthAccount.updateMany).toHaveBeenCalledWith({
+      where: { userId: 5, provider: 'twitch' },
+      data: { showLive: false },
+    });
+    expect(presence.stopLive).toHaveBeenCalledWith(5);
+  });
+
+  it('only lets Twitch show when you’re live', async () => {
+    await expect(service.setShowLive(5, 'discord', true)).rejects.toThrow(
+      BadRequestException,
+    );
+  });
+
+  it('connects a Twitch channel to a community for its admins', async () => {
+    fetchMock
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ access_token: 'twitch-token' }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          data: [{ id: '77', login: 'seasonalclub', display_name: 'Seasonal Club' }],
+        }),
+      });
+    const url = await service.communityAuthorizeUrl(5, 'twitch', 12, NONCE);
+    const state = new URL(url).searchParams.get('state')!;
+
+    const result = await service.complete(
+      'twitch',
+      { code: 'code', state, nonce: NONCE },
+      5,
+    );
+
+    expect(communities.assertCanManage).toHaveBeenCalledWith(5, 12);
+    expect(communities.connectTwitch).toHaveBeenCalledWith(5, 12, {
+      id: '77',
+      login: 'seasonalclub',
+    });
+    expect(result).toEqual({ linked: 'twitch', communityId: 12 });
+  });
+
+  it('only lets communities connect Twitch', async () => {
+    await expect(
+      service.communityAuthorizeUrl(5, 'discord', 12, NONCE),
+    ).rejects.toThrow(BadRequestException);
   });
 });

@@ -11,6 +11,8 @@ import { JwtService } from '@nestjs/jwt';
 import { randomInt } from 'node:crypto';
 import { AuthProvider, Prisma } from '../../../prisma/generated/client';
 import { webUrl } from '../../common/web-url';
+import { CommunitiesService } from '../../communities/communities.service';
+import { PresenceGateway } from '../../friends/presence.gateway';
 import { PrismaService } from '../../prisma.service';
 import { USERNAME_PATTERN } from '../../users/username';
 import { AuthService } from '../auth.service';
@@ -22,14 +24,25 @@ import {
 
 export type OAuthResult =
   | { access_token: string }
-  | { linked: AuthProvider };
+  | { linked: AuthProvider }
+  | { linked: AuthProvider; communityId: number };
 
 export type OAuthConnections = {
   hasPassword: boolean;
-  connections: { provider: AuthProvider; username: string; connectedAt: Date }[];
+  connections: {
+    provider: AuthProvider;
+    username: string;
+    showLive: boolean;
+    connectedAt: Date;
+  }[];
 };
 
-type StateClaims = { provider: AuthProvider; nonce: string; uid: number | null };
+type StateClaims = {
+  provider: AuthProvider;
+  nonce: string;
+  uid: number | null;
+  communityId?: number | null;
+};
 
 const EXPIRED = 'That sign-in link expired. Please try again.';
 const NONCE_PATTERN = /^[A-Za-z0-9_-]{16,128}$/;
@@ -55,6 +68,8 @@ export class OAuthService {
     private prisma: PrismaService,
     private jwt: JwtService,
     private auth: AuthService,
+    private presence: PresenceGateway,
+    private communities: CommunitiesService,
   ) {}
 
   enabled(): AuthProvider[] {
@@ -65,11 +80,16 @@ export class OAuthService {
     );
   }
 
-  authorizeUrl(provider: AuthProvider, nonce: string, uid: number | null) {
+  authorizeUrl(
+    provider: AuthProvider,
+    nonce: string,
+    uid: number | null,
+    communityId: number | null = null,
+  ) {
     const config = this.configured(provider);
     if (!NONCE_PATTERN.test(nonce)) throw new BadRequestException(EXPIRED);
 
-    const claims: StateClaims = { provider, nonce, uid };
+    const claims: StateClaims = { provider, nonce, uid, communityId };
     const state = this.jwt.sign(claims, {
       secret: stateSecret(),
       expiresIn: '10m',
@@ -84,6 +104,19 @@ export class OAuthService {
     return `${config.authorizeUrl}?${params}`;
   }
 
+  async communityAuthorizeUrl(
+    userId: number,
+    provider: AuthProvider,
+    communityId: number,
+    nonce: string,
+  ) {
+    if (provider !== 'twitch') {
+      throw new BadRequestException('Communities can only connect Twitch');
+    }
+    await this.communities.assertCanManage(userId, communityId);
+    return this.authorizeUrl(provider, nonce, userId, communityId);
+  }
+
   async complete(
     provider: AuthProvider,
     { code, state, nonce }: { code: string; state: string; nonce: string },
@@ -91,6 +124,19 @@ export class OAuthService {
   ): Promise<OAuthResult> {
     const claims = this.verifyState(provider, state, nonce);
     const profile = await this.fetchProfile(provider, code);
+
+    if (typeof claims.communityId === 'number') {
+      if (claims.uid !== viewerId) {
+        throw new ForbiddenException(
+          'Log in to the account you’re connecting, then try again.',
+        );
+      }
+      await this.communities.connectTwitch(viewerId, claims.communityId, {
+        id: profile.id,
+        login: profile.username,
+      });
+      return { linked: provider, communityId: claims.communityId };
+    }
 
     if (claims.uid !== null) {
       if (claims.uid !== viewerId) {
@@ -113,7 +159,12 @@ export class OAuthService {
         password: true,
         oauthAccounts: {
           orderBy: { createdAt: 'asc' },
-          select: { provider: true, username: true, createdAt: true },
+          select: {
+            provider: true,
+            username: true,
+            showLive: true,
+            createdAt: true,
+          },
         },
       },
     });
@@ -122,9 +173,10 @@ export class OAuthService {
     return {
       hasPassword: user.password !== null,
       connections: user.oauthAccounts.map(
-        ({ provider, username, createdAt }) => ({
+        ({ provider, username, showLive, createdAt }) => ({
           provider,
           username,
+          showLive,
           connectedAt: createdAt,
         }),
       ),
@@ -146,6 +198,19 @@ export class OAuthService {
     await this.prisma.oAuthAccount.delete({
       where: { userId_provider: { userId, provider } },
     });
+    if (provider === 'twitch') await this.presence.stopLive(userId);
+  }
+
+  async setShowLive(userId: number, provider: AuthProvider, showLive: boolean) {
+    if (provider !== 'twitch') {
+      throw new BadRequestException('Only Twitch can show when you’re live');
+    }
+    const { count } = await this.prisma.oAuthAccount.updateMany({
+      where: { userId, provider },
+      data: { showLive },
+    });
+    if (count === 0) throw new NotFoundException('Twitch isn’t connected');
+    if (!showLive) await this.presence.stopLive(userId);
   }
 
   private configured(provider: AuthProvider) {

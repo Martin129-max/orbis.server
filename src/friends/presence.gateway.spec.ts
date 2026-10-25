@@ -54,6 +54,27 @@ describe('PresenceGateway', () => {
     expect(gateway.statusOf(7, { ...visible, status: 'idle' })).toBe('idle');
   });
 
+  it('shows a live stream even without a connection', async () => {
+    await gateway.updateLive(new Set([7]));
+
+    expect(gateway.statusOf(7, visible)).toBe('streaming');
+  });
+
+  it('keeps appear offline over a live stream', async () => {
+    await gateway.updateLive(new Set([7]));
+
+    expect(gateway.statusOf(7, { ...visible, appearOffline: true })).toBe(
+      'offline',
+    );
+  });
+
+  it('stops showing a stream once it ends', async () => {
+    await gateway.updateLive(new Set([7]));
+    await gateway.updateLive(new Set());
+
+    expect(gateway.statusOf(7, visible)).toBe('offline');
+  });
+
   it('is idle only when every connection is idle', async () => {
     const first = await connect();
     const second = await connect();

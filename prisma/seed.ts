@@ -2087,6 +2087,14 @@ async function main() {
       username: 'orbis_admin',
     },
   });
+  await prisma.oAuthAccount.create({
+    data: {
+      userId: admin.id,
+      provider: 'twitch',
+      providerAccountId: '200000001',
+      username: 'orbis_admin',
+    },
+  });
 
   const user = await prisma.user.create({
     data: {
@@ -2174,6 +2182,10 @@ async function main() {
     });
 
     if (community.name === 'Seasonal Anime Club') {
+      await prisma.community.update({
+        where: { id: created.id },
+        data: { twitchUserId: '300000001', twitchLogin: 'seasonalanimeclub' },
+      });
       const alphabet =
         'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
       await prisma.invite.create({

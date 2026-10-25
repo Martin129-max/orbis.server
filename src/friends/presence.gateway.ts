@@ -14,7 +14,7 @@ import { PrismaService } from '../prisma.service';
 
 const room = (userId: number) => `user:${userId}`;
 
-export type PresenceStatus = 'online' | 'idle' | 'busy' | 'offline';
+export type PresenceStatus = 'online' | 'idle' | 'busy' | 'streaming' | 'offline';
 
 @WebSocketGateway({ cors: true })
 export class PresenceGateway
@@ -25,6 +25,8 @@ export class PresenceGateway
 
   private connections = new Map<number, number>();
   private idleConnections = new Map<number, number>();
+  private live = new Set<number>();
+  private liveCommunities = new Set<number>();
 
   constructor(
     private jwt: JwtService,
@@ -101,9 +103,57 @@ export class PresenceGateway
     userId: number,
     { appearOffline, status }: { appearOffline: boolean; status: UserStatus },
   ): PresenceStatus {
-    if (appearOffline || !this.isOnline(userId)) return 'offline';
+    if (appearOffline) return 'offline';
+    if (this.live.has(userId)) return 'streaming';
+    if (!this.isOnline(userId)) return 'offline';
     if (status === 'busy') return 'busy';
     return status === 'idle' || this.isIdle(userId) ? 'idle' : 'online';
+  }
+
+  async updateLive(live: Set<number>) {
+    const changed = [...new Set([...this.live, ...live])].filter(
+      (userId) => this.live.has(userId) !== live.has(userId),
+    );
+    this.live = live;
+    for (const userId of changed) await this.broadcastPresence(userId);
+  }
+
+  async stopLive(userId: number) {
+    if (!this.live.delete(userId)) return;
+    await this.broadcastPresence(userId);
+  }
+
+  isCommunityLive(communityId: number) {
+    return this.liveCommunities.has(communityId);
+  }
+
+  async updateLiveCommunities(live: Set<number>) {
+    const changed = [...new Set([...this.liveCommunities, ...live])].filter(
+      (communityId) =>
+        this.liveCommunities.has(communityId) !== live.has(communityId),
+    );
+    this.liveCommunities = live;
+    for (const communityId of changed) {
+      await this.announceCommunityLive(communityId);
+    }
+  }
+
+  async stopCommunityLive(communityId: number) {
+    if (!this.liveCommunities.delete(communityId)) return;
+    await this.announceCommunityLive(communityId);
+  }
+
+  private async announceCommunityLive(communityId: number) {
+    const members = await this.prisma.membership.findMany({
+      where: { communityId },
+      select: { userId: true },
+    });
+    if (members.length === 0) return;
+    this.notify(
+      members.map((member) => member.userId),
+      'community:live',
+      { communityId, live: this.liveCommunities.has(communityId) },
+    );
   }
 
   private adjustIdle(userId: number, delta: number) {

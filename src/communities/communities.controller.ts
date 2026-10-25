@@ -52,7 +52,7 @@ export class CommunitiesController {
   }
 
   @Get()
-  findMine(@Req() req): Promise<CommunityModel[]> {
+  findMine(@Req() req): Promise<(CommunityModel & { live: boolean })[]> {
     return this.communitiesService.findForMember(req.user.userId);
   }
 
@@ -186,6 +186,16 @@ export class CommunitiesController {
       communityId,
       image,
     );
+  }
+
+  @Delete(':communityId/twitch')
+  @UseGuards(CommunityMemberGuard)
+  @HttpCode(204)
+  disconnectTwitch(
+    @Req() req,
+    @Param('communityId', ParseIntPipe) communityId: number,
+  ): Promise<void> {
+    return this.communitiesService.disconnectTwitch(req.user.userId, communityId);
   }
 
   @Delete(':communityId')

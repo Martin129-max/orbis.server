@@ -101,6 +101,8 @@ export const CommunityScalarFieldEnum = {
   iconUrl: 'iconUrl',
   coverUrl: 'coverUrl',
   backgroundUrl: 'backgroundUrl',
+  twitchUserId: 'twitchUserId',
+  twitchLogin: 'twitchLogin',
   ownerId: 'ownerId',
   isPublic: 'isPublic',
   createdAt: 'createdAt'
@@ -431,6 +433,7 @@ export const OAuthAccountScalarFieldEnum = {
   provider: 'provider',
   providerAccountId: 'providerAccountId',
   username: 'username',
+  showLive: 'showLive',
   createdAt: 'createdAt'
 } as const
 

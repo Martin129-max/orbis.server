@@ -10,11 +10,15 @@ import { OAuthService } from './oauth/oauth.service';
 import { UsersService } from '../users/users.service';
 import { PrismaService } from '../prisma.service';
 import { StorageModule } from '../storage/storage.module';
+import { PresenceModule } from '../friends/presence.module';
+import { CommunitiesModule } from '../communities/communities.module';
 
 @Module({
   imports: [
     PassportModule,
     StorageModule,
+    PresenceModule,
+    CommunitiesModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '7d' },

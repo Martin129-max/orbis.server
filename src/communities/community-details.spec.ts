@@ -11,7 +11,7 @@ describe('Community details', () => {
   const service = new CommunitiesService(
     prisma as unknown as PrismaService,
     {} as StorageService,
-    {} as PresenceGateway,
+    { isCommunityLive: () => false } as unknown as PresenceGateway,
   );
 
   beforeEach(() => {
@@ -33,6 +33,7 @@ describe('Community details', () => {
       isPublic: true,
       role: null,
       memberCount: 3,
+      live: false,
     });
   });
 

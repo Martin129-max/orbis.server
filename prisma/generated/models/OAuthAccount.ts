@@ -42,6 +42,7 @@ export type OAuthAccountMinAggregateOutputType = {
   provider: $Enums.AuthProvider | null
   providerAccountId: string | null
   username: string | null
+  showLive: boolean | null
   createdAt: Date | null
 }
 
@@ -51,6 +52,7 @@ export type OAuthAccountMaxAggregateOutputType = {
   provider: $Enums.AuthProvider | null
   providerAccountId: string | null
   username: string | null
+  showLive: boolean | null
   createdAt: Date | null
 }
 
@@ -60,6 +62,7 @@ export type OAuthAccountCountAggregateOutputType = {
   provider: number
   providerAccountId: number
   username: number
+  showLive: number
   createdAt: number
   _all: number
 }
@@ -81,6 +84,7 @@ export type OAuthAccountMinAggregateInputType = {
   provider?: true
   providerAccountId?: true
   username?: true
+  showLive?: true
   createdAt?: true
 }
 
@@ -90,6 +94,7 @@ export type OAuthAccountMaxAggregateInputType = {
   provider?: true
   providerAccountId?: true
   username?: true
+  showLive?: true
   createdAt?: true
 }
 
@@ -99,6 +104,7 @@ export type OAuthAccountCountAggregateInputType = {
   provider?: true
   providerAccountId?: true
   username?: true
+  showLive?: true
   createdAt?: true
   _all?: true
 }
@@ -195,6 +201,7 @@ export type OAuthAccountGroupByOutputType = {
   provider: $Enums.AuthProvider
   providerAccountId: string
   username: string
+  showLive: boolean
   createdAt: Date
   _count: OAuthAccountCountAggregateOutputType | null
   _avg: OAuthAccountAvgAggregateOutputType | null
@@ -227,6 +234,7 @@ export type OAuthAccountWhereInput = {
   provider?: Prisma.EnumAuthProviderFilter<"OAuthAccount"> | $Enums.AuthProvider
   providerAccountId?: Prisma.StringFilter<"OAuthAccount"> | string
   username?: Prisma.StringFilter<"OAuthAccount"> | string
+  showLive?: Prisma.BoolFilter<"OAuthAccount"> | boolean
   createdAt?: Prisma.DateTimeFilter<"OAuthAccount"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
@@ -237,6 +245,7 @@ export type OAuthAccountOrderByWithRelationInput = {
   provider?: Prisma.SortOrder
   providerAccountId?: Prisma.SortOrder
   username?: Prisma.SortOrder
+  showLive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
 }
@@ -252,6 +261,7 @@ export type OAuthAccountWhereUniqueInput = Prisma.AtLeast<{
   provider?: Prisma.EnumAuthProviderFilter<"OAuthAccount"> | $Enums.AuthProvider
   providerAccountId?: Prisma.StringFilter<"OAuthAccount"> | string
   username?: Prisma.StringFilter<"OAuthAccount"> | string
+  showLive?: Prisma.BoolFilter<"OAuthAccount"> | boolean
   createdAt?: Prisma.DateTimeFilter<"OAuthAccount"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id" | "provider_providerAccountId" | "userId_provider">
@@ -262,6 +272,7 @@ export type OAuthAccountOrderByWithAggregationInput = {
   provider?: Prisma.SortOrder
   providerAccountId?: Prisma.SortOrder
   username?: Prisma.SortOrder
+  showLive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.OAuthAccountCountOrderByAggregateInput
   _avg?: Prisma.OAuthAccountAvgOrderByAggregateInput
@@ -279,6 +290,7 @@ export type OAuthAccountScalarWhereWithAggregatesInput = {
   provider?: Prisma.EnumAuthProviderWithAggregatesFilter<"OAuthAccount"> | $Enums.AuthProvider
   providerAccountId?: Prisma.StringWithAggregatesFilter<"OAuthAccount"> | string
   username?: Prisma.StringWithAggregatesFilter<"OAuthAccount"> | string
+  showLive?: Prisma.BoolWithAggregatesFilter<"OAuthAccount"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"OAuthAccount"> | Date | string
 }
 
@@ -286,6 +298,7 @@ export type OAuthAccountCreateInput = {
   provider: $Enums.AuthProvider
   providerAccountId: string
   username: string
+  showLive?: boolean
   createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutOauthAccountsInput
 }
@@ -296,6 +309,7 @@ export type OAuthAccountUncheckedCreateInput = {
   provider: $Enums.AuthProvider
   providerAccountId: string
   username: string
+  showLive?: boolean
   createdAt?: Date | string
 }
 
@@ -303,6 +317,7 @@ export type OAuthAccountUpdateInput = {
   provider?: Prisma.EnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider
   providerAccountId?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
+  showLive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutOauthAccountsNestedInput
 }
@@ -313,6 +328,7 @@ export type OAuthAccountUncheckedUpdateInput = {
   provider?: Prisma.EnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider
   providerAccountId?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
+  showLive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -322,6 +338,7 @@ export type OAuthAccountCreateManyInput = {
   provider: $Enums.AuthProvider
   providerAccountId: string
   username: string
+  showLive?: boolean
   createdAt?: Date | string
 }
 
@@ -329,6 +346,7 @@ export type OAuthAccountUpdateManyMutationInput = {
   provider?: Prisma.EnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider
   providerAccountId?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
+  showLive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -338,6 +356,7 @@ export type OAuthAccountUncheckedUpdateManyInput = {
   provider?: Prisma.EnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider
   providerAccountId?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
+  showLive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -367,6 +386,7 @@ export type OAuthAccountCountOrderByAggregateInput = {
   provider?: Prisma.SortOrder
   providerAccountId?: Prisma.SortOrder
   username?: Prisma.SortOrder
+  showLive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -381,6 +401,7 @@ export type OAuthAccountMaxOrderByAggregateInput = {
   provider?: Prisma.SortOrder
   providerAccountId?: Prisma.SortOrder
   username?: Prisma.SortOrder
+  showLive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -390,6 +411,7 @@ export type OAuthAccountMinOrderByAggregateInput = {
   provider?: Prisma.SortOrder
   providerAccountId?: Prisma.SortOrder
   username?: Prisma.SortOrder
+  showLive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -448,6 +470,7 @@ export type OAuthAccountCreateWithoutUserInput = {
   provider: $Enums.AuthProvider
   providerAccountId: string
   username: string
+  showLive?: boolean
   createdAt?: Date | string
 }
 
@@ -456,6 +479,7 @@ export type OAuthAccountUncheckedCreateWithoutUserInput = {
   provider: $Enums.AuthProvider
   providerAccountId: string
   username: string
+  showLive?: boolean
   createdAt?: Date | string
 }
 
@@ -494,6 +518,7 @@ export type OAuthAccountScalarWhereInput = {
   provider?: Prisma.EnumAuthProviderFilter<"OAuthAccount"> | $Enums.AuthProvider
   providerAccountId?: Prisma.StringFilter<"OAuthAccount"> | string
   username?: Prisma.StringFilter<"OAuthAccount"> | string
+  showLive?: Prisma.BoolFilter<"OAuthAccount"> | boolean
   createdAt?: Prisma.DateTimeFilter<"OAuthAccount"> | Date | string
 }
 
@@ -502,6 +527,7 @@ export type OAuthAccountCreateManyUserInput = {
   provider: $Enums.AuthProvider
   providerAccountId: string
   username: string
+  showLive?: boolean
   createdAt?: Date | string
 }
 
@@ -509,6 +535,7 @@ export type OAuthAccountUpdateWithoutUserInput = {
   provider?: Prisma.EnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider
   providerAccountId?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
+  showLive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -517,6 +544,7 @@ export type OAuthAccountUncheckedUpdateWithoutUserInput = {
   provider?: Prisma.EnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider
   providerAccountId?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
+  showLive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -525,6 +553,7 @@ export type OAuthAccountUncheckedUpdateManyWithoutUserInput = {
   provider?: Prisma.EnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider
   providerAccountId?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
+  showLive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -536,6 +565,7 @@ export type OAuthAccountSelect<ExtArgs extends runtime.Types.Extensions.Internal
   provider?: boolean
   providerAccountId?: boolean
   username?: boolean
+  showLive?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["oAuthAccount"]>
@@ -546,6 +576,7 @@ export type OAuthAccountSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   provider?: boolean
   providerAccountId?: boolean
   username?: boolean
+  showLive?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["oAuthAccount"]>
@@ -556,6 +587,7 @@ export type OAuthAccountSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   provider?: boolean
   providerAccountId?: boolean
   username?: boolean
+  showLive?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["oAuthAccount"]>
@@ -566,10 +598,11 @@ export type OAuthAccountSelectScalar = {
   provider?: boolean
   providerAccountId?: boolean
   username?: boolean
+  showLive?: boolean
   createdAt?: boolean
 }
 
-export type OAuthAccountOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "provider" | "providerAccountId" | "username" | "createdAt", ExtArgs["result"]["oAuthAccount"]>
+export type OAuthAccountOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "provider" | "providerAccountId" | "username" | "showLive" | "createdAt", ExtArgs["result"]["oAuthAccount"]>
 export type OAuthAccountInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -591,6 +624,7 @@ export type $OAuthAccountPayload<ExtArgs extends runtime.Types.Extensions.Intern
     provider: $Enums.AuthProvider
     providerAccountId: string
     username: string
+    showLive: boolean
     createdAt: Date
   }, ExtArgs["result"]["oAuthAccount"]>
   composites: {}
@@ -1021,6 +1055,7 @@ export interface OAuthAccountFieldRefs {
   readonly provider: Prisma.FieldRef<"OAuthAccount", 'AuthProvider'>
   readonly providerAccountId: Prisma.FieldRef<"OAuthAccount", 'String'>
   readonly username: Prisma.FieldRef<"OAuthAccount", 'String'>
+  readonly showLive: Prisma.FieldRef<"OAuthAccount", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"OAuthAccount", 'DateTime'>
 }
     

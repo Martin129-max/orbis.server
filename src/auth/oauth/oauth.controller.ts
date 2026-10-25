@@ -6,6 +6,8 @@ import {
   HttpCode,
   Param,
   ParseEnumPipe,
+  ParseIntPipe,
+  Patch,
   Post,
   Query,
   Req,
@@ -16,6 +18,7 @@ import { MINUTE, RateLimit } from '../../common/throttle';
 import { AllowGuest } from '../allow-guest';
 import { JwtAuthGuard } from '../jwt.guard';
 import { CompleteOAuthDto } from './dto/complete-oauth.dto';
+import { UpdateConnectionDto } from './dto/update-connection.dto';
 import { OAuthConnections, OAuthResult, OAuthService } from './oauth.service';
 
 const provider = new ParseEnumPipe(AuthProvider);
@@ -46,12 +49,43 @@ export class OAuthController {
   }
 
   @RateLimit(30, MINUTE)
+  @Patch('connections/:provider')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(204)
+  updateConnection(
+    @Req() req,
+    @Param('provider', provider) name: AuthProvider,
+    @Body() { showLive }: UpdateConnectionDto,
+  ): Promise<void> {
+    return this.oauth.setShowLive(req.user.userId, name, showLive);
+  }
+
+  @RateLimit(30, MINUTE)
   @Get(':provider/url')
   url(
     @Param('provider', provider) name: AuthProvider,
     @Query('nonce') nonce = '',
   ) {
     return { url: this.oauth.authorizeUrl(name, nonce, null) };
+  }
+
+  @RateLimit(30, MINUTE)
+  @Get(':provider/community-url')
+  @UseGuards(JwtAuthGuard)
+  async communityUrl(
+    @Req() req,
+    @Param('provider', provider) name: AuthProvider,
+    @Query('communityId', ParseIntPipe) communityId: number,
+    @Query('nonce') nonce = '',
+  ) {
+    return {
+      url: await this.oauth.communityAuthorizeUrl(
+        req.user.userId,
+        name,
+        communityId,
+        nonce,
+      ),
+    };
   }
 
   @RateLimit(30, MINUTE)
