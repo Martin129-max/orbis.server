@@ -39,6 +39,18 @@ export class PostsController {
     );
   }
 
+  @RateLimit(60, MINUTE)
+  @Get('search')
+  @AllowGuest()
+  @UseGuards(CommunityViewerGuard)
+  search(
+    @Req() req,
+    @Param('communityId', ParseIntPipe) communityId: number,
+    @Query('q') q = '',
+  ) {
+    return this.postsService.searchCommunity(req.user.userId, communityId, q);
+  }
+
   @RateLimit(10, MINUTE)
   @Post()
   @UseGuards(CommunityMemberGuard)

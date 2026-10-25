@@ -115,6 +115,8 @@ type FeedCursor = { createdAt: Date; rank: number; id: number };
 
 const newestFirst = [{ createdAt: 'desc' as const }, { id: 'desc' as const }];
 
+const SEARCH_LIMIT = 8;
+
 function parseFeedCursor(raw?: string): FeedCursor | undefined {
   if (raw === undefined) return undefined;
 
@@ -287,6 +289,49 @@ export class PostsService {
       items: await this.engage(viewerId, page),
       nextCursor: nextCursor(merged, page),
     };
+  }
+
+  async searchCommunity(
+    viewerId: number,
+    communityId: number,
+    rawQuery: string,
+  ): Promise<FeedItem[]> {
+    const query = rawQuery.trim().slice(0, 100);
+    if (query.length < 2) return [];
+
+    const reported = await reportedBy(this.prisma, viewerId);
+    const contains = { contains: query, mode: 'insensitive' as const };
+    const [threads, posts] = await Promise.all([
+      this.prisma.thread.findMany({
+        where: {
+          communityId,
+          OR: [{ title: contains }, { content: contains }],
+          ...visibleTo(viewerId, reported.thread),
+        },
+        orderBy: newestFirst,
+        take: SEARCH_LIMIT,
+        include: threadInclude,
+      }),
+      this.prisma.post.findMany({
+        where: {
+          communityId,
+          content: contains,
+          ...visibleTo(viewerId, reported.post),
+        },
+        orderBy: newestFirst,
+        take: SEARCH_LIMIT,
+        include: postInclude,
+      }),
+    ]);
+
+    const voted = await this.threads.withMyVotes(
+      viewerId,
+      threads.map((thread) => ({ ...thread, type: 'thread' as const })),
+    );
+    return this.engage(viewerId, [
+      ...voted,
+      ...posts.map((post) => ({ ...post, type: 'post' as const })),
+    ]);
   }
 
   async findForMember(
