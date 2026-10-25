@@ -48,6 +48,13 @@ const messageSelect = {
   system: true,
   createdAt: true,
   sender: person,
+  replyTo: {
+    select: { id: true, senderId: true, text: true, sender: person },
+  },
+  reactions: {
+    select: { userId: true, emoji: true },
+    orderBy: { createdAt: 'asc' },
+  },
 } satisfies Prisma.MessageSelect;
 
 type Person = {
@@ -72,6 +79,15 @@ export type ChatPerson = {
   avatarUrl: string | null;
 };
 
+export type ChatReply = {
+  id: number;
+  senderId: number;
+  sender: ChatPerson;
+  text: string;
+};
+
+export type ChatReaction = { emoji: string; userIds: number[] };
+
 export type ChatMessage = {
   id: number;
   senderId: number;
@@ -79,6 +95,8 @@ export type ChatMessage = {
   text: string;
   system: boolean;
   sentAt: string;
+  replyTo: ChatReply | null;
+  reactions: ChatReaction[];
 };
 
 export type InboxEntry = {
@@ -116,7 +134,16 @@ function listNames(people: Person[]) {
     : names[0];
 }
 
+function reactionsOf(reactions: LoadedMessage['reactions']): ChatReaction[] {
+  const grouped = new Map<string, number[]>();
+  for (const { emoji, userId } of reactions) {
+    grouped.set(emoji, [...(grouped.get(emoji) ?? []), userId]);
+  }
+  return [...grouped].map(([emoji, userIds]) => ({ emoji, userIds }));
+}
+
 function toMessage(message: LoadedMessage): ChatMessage {
+  const { replyTo } = message;
   return {
     id: message.id,
     senderId: message.senderId,
@@ -124,6 +151,13 @@ function toMessage(message: LoadedMessage): ChatMessage {
     text: message.text,
     system: message.system,
     sentAt: message.createdAt.toISOString(),
+    replyTo: replyTo && {
+      id: replyTo.id,
+      senderId: replyTo.senderId,
+      sender: toPerson(replyTo.sender),
+      text: replyTo.text,
+    },
+    reactions: reactionsOf(message.reactions),
   };
 }
 
@@ -300,10 +334,20 @@ export class MessagesService {
     userId: number,
     id: number,
     content: string,
+    replyToId?: number,
   ): Promise<ChatMessage> {
     const text = content.trim();
     if (!text) throw new BadRequestException('Message cannot be empty');
     const { conversation } = await this.membership(userId, id);
+    if (replyToId !== undefined) {
+      const quoted = await this.prisma.message.findFirst({
+        where: { id: replyToId, conversationId: id, system: false },
+        select: { id: true },
+      });
+      if (!quoted) {
+        throw new BadRequestException('That message can’t be replied to');
+      }
+    }
 
     const other = conversation.isGroup
       ? null
@@ -335,7 +379,7 @@ export class MessagesService {
         });
       }
 
-      const message = await this.post(tx, id, userId, text, false);
+      const message = await this.post(tx, id, userId, text, false, replyToId);
       await tx.conversationMember.update({
         where: { conversationId_userId: { conversationId: id, userId } },
         data: { status: 'accepted', unread: 0, readAt: message.createdAt },
@@ -346,6 +390,51 @@ export class MessagesService {
     const sent = toMessage(message);
     await this.broadcast(id, sent);
     return sent;
+  }
+
+  async react(
+    userId: number,
+    id: number,
+    messageId: number,
+    emoji: string,
+  ): Promise<ChatMessage> {
+    const { conversation, mine } = await this.membership(userId, id);
+    if (mine.status !== 'accepted') {
+      throw new ForbiddenException('Accept the chat first');
+    }
+    if (messageId < 1 || messageId > MAX_INT) {
+      throw new NotFoundException('Message not found');
+    }
+    const target = await this.prisma.message.findFirst({
+      where: { id: messageId, conversationId: id, system: false },
+      select: { id: true, reactions: { where: { userId }, select: { emoji: true } } },
+    });
+    if (!target) throw new NotFoundException('Message not found');
+
+    if (target.reactions[0]?.emoji === emoji) {
+      await this.prisma.messageReaction.deleteMany({
+        where: { messageId, userId },
+      });
+    } else {
+      await this.prisma.messageReaction.upsert({
+        where: { messageId_userId: { messageId, userId } },
+        create: { messageId, userId, emoji },
+        update: { emoji, createdAt: new Date() },
+      });
+    }
+
+    const message = toMessage(
+      await this.prisma.message.findUniqueOrThrow({
+        where: { id: messageId },
+        select: messageSelect,
+      }),
+    );
+    this.presence.notify(
+      conversation.members.map((member) => member.userId),
+      'message:updated',
+      { conversationId: id, message },
+    );
+    return message;
   }
 
   async read(userId: number, id: number) {
@@ -503,9 +592,10 @@ export class MessagesService {
     senderId: number,
     text: string,
     system: boolean,
+    replyToId?: number,
   ) {
     const message = await tx.message.create({
-      data: { conversationId, senderId, text, system },
+      data: { conversationId, senderId, text, system, replyToId },
       select: { ...messageSelect, conversationId: true },
     });
     await tx.conversation.update({

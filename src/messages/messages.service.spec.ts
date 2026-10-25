@@ -80,6 +80,11 @@ describe('MessagesService', () => {
       create: jest.fn(),
       findFirst: jest.fn(),
       findMany: jest.fn(),
+      findUniqueOrThrow: jest.fn(),
+      deleteMany: jest.fn(),
+    },
+    messageReaction: {
+      upsert: jest.fn(),
       deleteMany: jest.fn(),
     },
     $transaction: jest.fn((run) => run(prisma)),
@@ -109,6 +114,8 @@ describe('MessagesService', () => {
       system: data.system,
       createdAt: date,
       sender: users[data.senderId],
+      replyTo: null,
+      reactions: [],
     }));
     prisma.message.findFirst.mockResolvedValue(null);
   });
@@ -336,6 +343,8 @@ describe('MessagesService', () => {
           system: false,
           createdAt: date,
           sender: users[2],
+          replyTo: null,
+          reactions: [],
         },
         {
           id: 2,
@@ -344,6 +353,8 @@ describe('MessagesService', () => {
           system: false,
           createdAt: date,
           sender: users[1],
+          replyTo: null,
+          reactions: [],
         },
       ]);
 
@@ -372,5 +383,102 @@ describe('MessagesService', () => {
     await expect(service.accept(1, 5)).rejects.toBeInstanceOf(
       NotFoundException,
     );
+  });
+
+  describe('replies', () => {
+    it('sends a reply to a message in the same chat', async () => {
+      friendsWith(2);
+      prisma.message.findFirst.mockResolvedValueOnce({ id: 3 });
+
+      await service.send(1, 5, 'Same here', 3);
+
+      expect(prisma.message.findFirst).toHaveBeenCalledWith({
+        where: { id: 3, conversationId: 5, system: false },
+        select: { id: true },
+      });
+      expect(prisma.message.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({ replyToId: 3 }),
+        }),
+      );
+    });
+
+    it('refuses to reply to a message outside the chat', async () => {
+      prisma.message.findFirst.mockResolvedValueOnce(null);
+
+      await expect(service.send(1, 5, 'Hi', 99)).rejects.toThrow(
+        BadRequestException,
+      );
+      expect(prisma.message.create).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('reactions', () => {
+    const reacted = (reactions: { userId: number; emoji: string }[]) => ({
+      id: 3,
+      senderId: 2,
+      text: 'Ramen later?',
+      system: false,
+      createdAt: date,
+      sender: users[2],
+      replyTo: null,
+      reactions,
+    });
+
+    it('adds a reaction and tells everyone in the chat', async () => {
+      prisma.message.findFirst.mockResolvedValueOnce({ id: 3, reactions: [] });
+      prisma.message.findUniqueOrThrow.mockResolvedValueOnce(
+        reacted([
+          { userId: 2, emoji: '❤️' },
+          { userId: 1, emoji: '❤️' },
+        ]),
+      );
+
+      const message = await service.react(1, 5, 3, '❤️');
+
+      expect(prisma.messageReaction.upsert).toHaveBeenCalledWith({
+        where: { messageId_userId: { messageId: 3, userId: 1 } },
+        create: { messageId: 3, userId: 1, emoji: '❤️' },
+        update: { emoji: '❤️', createdAt: expect.any(Date) },
+      });
+      expect(message.reactions).toEqual([{ emoji: '❤️', userIds: [2, 1] }]);
+      expect(presence.notify).toHaveBeenCalledWith([1, 2], 'message:updated', {
+        conversationId: 5,
+        message,
+      });
+    });
+
+    it('removes the reaction when the same emoji is picked again', async () => {
+      prisma.message.findFirst.mockResolvedValueOnce({
+        id: 3,
+        reactions: [{ emoji: '👍' }],
+      });
+      prisma.message.findUniqueOrThrow.mockResolvedValueOnce(reacted([]));
+
+      await service.react(1, 5, 3, '👍');
+
+      expect(prisma.messageReaction.deleteMany).toHaveBeenCalledWith({
+        where: { messageId: 3, userId: 1 },
+      });
+      expect(prisma.messageReaction.upsert).not.toHaveBeenCalled();
+    });
+
+    it('refuses reactions before the chat is accepted', async () => {
+      prisma.conversation.findUnique.mockResolvedValueOnce(
+        conversation({ members: [member(1, 'request'), member(2)] }),
+      );
+
+      await expect(service.react(1, 5, 3, '👍')).rejects.toThrow(
+        ForbiddenException,
+      );
+    });
+
+    it('refuses reactions on messages outside the chat', async () => {
+      prisma.message.findFirst.mockResolvedValueOnce(null);
+
+      await expect(service.react(1, 5, 99, '👍')).rejects.toThrow(
+        NotFoundException,
+      );
+    });
   });
 });

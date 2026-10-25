@@ -781,6 +781,12 @@ const chats: SeedChat[] = [
     messages: [
       ['naruto', 'Did you see the new chapter?? Believe it!', 95],
       ['admin', 'Not yet, no spoilers please 😅', 90],
+      [
+        'naruto',
+        'Fine, no spoilers. Just watch the new opening 👀 https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+        60,
+      ],
+      ['admin', 'Naruto. That is not the opening.', 55],
       ['naruto', 'Okay okay. Ramen later though?', 12],
       ['naruto', 'Ichiraku, my treat this time', 11],
     ],
@@ -792,6 +798,7 @@ const chats: SeedChat[] = [
       ['luffy', 'Are you coming to the Grand Line Crew watch party?', 300],
       ['admin', 'Wouldn’t miss it. Bringing snacks!', 290],
       ['luffy', 'MEAT. Bring meat.', 288],
+      ['admin', 'Brushing up before Friday https://en.wikipedia.org/wiki/One_Piece', 285],
       ['admin', 'Meat it is 🍖', 280],
     ],
   },
@@ -801,6 +808,11 @@ const chats: SeedChat[] = [
     messages: [
       ['admin', 'Thanks for helping moderate the Jujutsu community', 1500],
       ['gojo', 'Anytime. I’m the strongest moderator, after all.', 1490],
+      [
+        'gojo',
+        'This is what we use for the mod queue alerts https://github.com/discordjs/discord.js',
+        1480,
+      ],
     ],
   },
   {
@@ -833,6 +845,11 @@ const groups: SeedGroup[] = [
       ['nami', 'I’m in, but someone else is buying snacks this time.', 165],
       ['zoro', 'I’ll be there. Probably.', 160],
       ['admin', 'Count me in, I’ll bring the projector 📽️', 150],
+      [
+        'nami',
+        'Episode list so nobody argues about where we left off https://en.wikipedia.org/wiki/List_of_One_Piece_episodes',
+        100,
+      ],
       ['luffy', 'MEAT for snacks!!', 30],
       ['nami', 'Zoro, I pinned the address. Don’t get lost.', 25],
     ],
@@ -1421,6 +1438,41 @@ async function createChats() {
         },
       },
     });
+  }
+
+  const reactionEmojis = ['❤️', '😂', '👍', '😮'];
+  const seeded = await prisma.conversation.findMany({
+    select: {
+      members: { select: { userId: true } },
+      messages: {
+        where: { system: false },
+        orderBy: { id: 'asc' },
+        select: { id: true, senderId: true },
+      },
+    },
+  });
+  for (const { members, messages } of seeded) {
+    for (const [index, message] of messages.entries()) {
+      const reactor = members.find(({ userId }) => userId !== message.senderId);
+      if (index % 3 !== 1 || !reactor) continue;
+      await prisma.messageReaction.create({
+        data: {
+          messageId: message.id,
+          userId: reactor.userId,
+          emoji: reactionEmojis[index % reactionEmojis.length],
+        },
+      });
+    }
+    const last = messages.at(-1);
+    const quoted =
+      last &&
+      [...messages].reverse().find(({ senderId }) => senderId !== last.senderId);
+    if (last && quoted) {
+      await prisma.message.update({
+        where: { id: last.id },
+        data: { replyToId: quoted.id },
+      });
+    }
   }
 
   return chats.length + groups.length;

@@ -40,15 +40,32 @@ model ConversationMember {
 }
 
 model Message {
-  id             Int          @id @default(autoincrement())
+  id             Int               @id @default(autoincrement())
   conversationId Int
   senderId       Int
   text           String
-  system         Boolean      @default(false)
-  createdAt      DateTime     @default(now())
-  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  sender         User         @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  system         Boolean           @default(false)
+  replyToId      Int?
+  createdAt      DateTime          @default(now())
+  conversation   Conversation      @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender         User              @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  replyTo        Message?          @relation("MessageReplies", fields: [replyToId], references: [id], onDelete: SetNull)
+  replies        Message[]         @relation("MessageReplies")
+  reactions      MessageReaction[]
 
   @@index([conversationId, id])
   @@index([senderId])
+  @@index([replyToId])
+}
+
+model MessageReaction {
+  messageId Int
+  userId    Int
+  emoji     String
+  createdAt DateTime @default(now())
+  message   Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([messageId, userId])
+  @@index([userId])
 }

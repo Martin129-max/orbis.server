@@ -103,6 +103,11 @@ export type ConversationMember = Prisma.ConversationMemberModel
  */
 export type Message = Prisma.MessageModel
 /**
+ * Model MessageReaction
+ * 
+ */
+export type MessageReaction = Prisma.MessageReactionModel
+/**
  * Model Notification
  * 
  */
