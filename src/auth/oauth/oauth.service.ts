@@ -14,7 +14,7 @@ import { webUrl } from '../../common/web-url';
 import { CommunitiesService } from '../../communities/communities.service';
 import { PresenceGateway } from '../../friends/presence.gateway';
 import { PrismaService } from '../../prisma.service';
-import { USERNAME_PATTERN } from '../../users/username';
+import { normalizeUsername, USERNAME_PATTERN } from '../../users/username';
 import { AuthService } from '../auth.service';
 import {
   OAUTH_TIMEOUT_MS,
@@ -24,6 +24,7 @@ import {
 
 export type OAuthResult =
   | { access_token: string }
+  | { signup: { token: string; username: string } }
   | { linked: AuthProvider }
   | { linked: AuthProvider; communityId: number };
 
@@ -44,11 +45,24 @@ type StateClaims = {
   communityId?: number | null;
 };
 
+type SignupClaims = {
+  provider: AuthProvider;
+  id: string;
+  username: string;
+  displayName: string | null;
+  email: string;
+};
+
 const EXPIRED = 'That sign-in link expired. Please try again.';
+const SIGNUP_EXPIRED = 'That sign-up expired. Please start again';
 const NONCE_PATTERN = /^[A-Za-z0-9_-]{16,128}$/;
 
 function stateSecret() {
   return `${process.env.JWT_SECRET}:oauth-state`;
+}
+
+function signupSecret() {
+  return `${process.env.JWT_SECRET}:oauth-signup`;
 }
 
 function redirectUri(provider: AuthProvider) {
@@ -148,8 +162,78 @@ export class OAuthService {
       return { linked: provider };
     }
 
-    const user = await this.signIn(provider, profile);
-    return this.auth.generateToken(user.id, user.email);
+    const user = await this.existingUser(provider, profile);
+    if (user) return this.auth.generateToken(user.id, user.email);
+
+    const signup: SignupClaims = {
+      provider,
+      id: profile.id,
+      username: profile.username,
+      displayName: profile.displayName,
+      email: profile.email!,
+    };
+    return {
+      signup: {
+        token: this.jwt.sign(signup, {
+          secret: signupSecret(),
+          expiresIn: '30m',
+        }),
+        username: await this.freeUsername(profile.username),
+      },
+    };
+  }
+
+  async finishSignup(token: string, username: string) {
+    let claims: SignupClaims;
+    try {
+      claims = this.jwt.verify<SignupClaims>(token, { secret: signupSecret() });
+    } catch {
+      throw new BadRequestException(SIGNUP_EXPIRED);
+    }
+    const { provider, id, displayName, email } = claims;
+    const profile: OAuthProfile = {
+      id,
+      username: claims.username,
+      displayName,
+      email,
+      emailVerified: true,
+    };
+
+    const existing = await this.existingUser(provider, profile);
+    if (existing) return this.auth.generateToken(existing.id, existing.email);
+
+    const taken = () => new ConflictException('Username is already taken');
+    const normalized = normalizeUsername(username);
+    if (
+      await this.prisma.user.findUnique({
+        where: { username: normalized },
+        select: { id: true },
+      })
+    ) {
+      throw taken();
+    }
+
+    try {
+      const user = await this.prisma.user.create({
+        data: {
+          email,
+          username: normalized,
+          name: displayName,
+          oauthAccounts: {
+            create: {
+              provider,
+              providerAccountId: id,
+              username: claims.username,
+            },
+          },
+        },
+        select: { id: true, email: true },
+      });
+      return this.auth.generateToken(user.id, user.email);
+    } catch (error) {
+      if (isUniqueViolation(error)) throw taken();
+      throw error;
+    }
   }
 
   async connections(userId: number): Promise<OAuthConnections> {
@@ -262,7 +346,7 @@ export class OAuthService {
     }
   }
 
-  private async signIn(provider: AuthProvider, profile: OAuthProfile) {
+  private async existingUser(provider: AuthProvider, profile: OAuthProfile) {
     const { label } = oauthProviders[provider];
     const linked = await this.prisma.oAuthAccount.findUnique({
       where: {
@@ -301,15 +385,7 @@ export class OAuthService {
       return existing;
     }
 
-    return this.prisma.user.create({
-      data: {
-        email: profile.email,
-        username: await this.freeUsername(profile.username),
-        name: profile.displayName,
-        oauthAccounts: { create: account },
-      },
-      select: { id: true, email: true },
-    });
+    return null;
   }
 
   private async link(

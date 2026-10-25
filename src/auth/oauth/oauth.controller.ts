@@ -18,6 +18,7 @@ import { MINUTE, RateLimit } from '../../common/throttle';
 import { AllowGuest } from '../allow-guest';
 import { JwtAuthGuard } from '../jwt.guard';
 import { CompleteOAuthDto } from './dto/complete-oauth.dto';
+import { FinishOAuthSignupDto } from './dto/finish-oauth-signup.dto';
 import { UpdateConnectionDto } from './dto/update-connection.dto';
 import { OAuthConnections, OAuthResult, OAuthService } from './oauth.service';
 
@@ -97,6 +98,12 @@ export class OAuthController {
     @Query('nonce') nonce = '',
   ) {
     return { url: this.oauth.authorizeUrl(name, nonce, req.user.userId) };
+  }
+
+  @RateLimit(10, MINUTE)
+  @Post('signup')
+  finishSignup(@Body() { token, username }: FinishOAuthSignupDto) {
+    return this.oauth.finishSignup(token, username);
   }
 
   @RateLimit(10, MINUTE)

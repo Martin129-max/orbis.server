@@ -132,29 +132,75 @@ describe('OAuthService', () => {
     expect(prisma.user.create).not.toHaveBeenCalled();
   });
 
-  it('signs up a new account with a valid, free username', async () => {
+  async function startSignup() {
     discordUser();
-    prisma.user.create.mockResolvedValueOnce({
-      id: 9,
-      email: 'naruto@anime.test',
-    });
-
     const result = await service.complete(
       'discord',
       { code: 'code', state: stateFor(null), nonce: NONCE },
       0,
     );
+    if (!('signup' in result)) throw new Error('Expected a sign-up');
+    return result.signup;
+  }
+
+  it('asks a new account to pick a username before creating it', async () => {
+    const signup = await startSignup();
+
+    expect(signup.username).toBe('narutouzumaki');
+    expect(prisma.user.create).not.toHaveBeenCalled();
+  });
+
+  it('creates the account with the chosen username', async () => {
+    const { token } = await startSignup();
+    prisma.user.create.mockResolvedValueOnce({
+      id: 9,
+      email: 'naruto@anime.test',
+    });
+
+    const result = await service.finishSignup(token, 'Hokage_Naruto');
 
     expect(result).toEqual({ access_token: 'token-9' });
     expect(prisma.user.create).toHaveBeenCalledWith(
       expect.objectContaining({
-        data: expect.objectContaining({
+        data: {
           email: 'naruto@anime.test',
-          username: 'narutouzumaki',
+          username: 'hokage_naruto',
           name: 'Naruto',
-        }),
+          oauthAccounts: {
+            create: {
+              provider: 'discord',
+              providerAccountId: '42',
+              username: 'Naruto.Uzumaki',
+            },
+          },
+        },
       }),
     );
+  });
+
+  it('refuses a username someone already has', async () => {
+    const { token } = await startSignup();
+    prisma.user.findUnique.mockResolvedValueOnce({ id: 3 });
+
+    await expect(service.finishSignup(token, 'naruto')).rejects.toThrow(
+      ConflictException,
+    );
+    expect(prisma.user.create).not.toHaveBeenCalled();
+  });
+
+  it('refuses a sign-up it didn’t start', async () => {
+    const forged = new JwtService({ secret: 'other' }).sign({
+      provider: 'discord',
+      id: '42',
+      username: 'naruto',
+      displayName: null,
+      email: 'naruto@anime.test',
+    });
+
+    await expect(service.finishSignup(forged, 'naruto')).rejects.toThrow(
+      BadRequestException,
+    );
+    expect(prisma.user.create).not.toHaveBeenCalled();
   });
 
   it('rejects a state from another browser', async () => {
