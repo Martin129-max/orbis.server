@@ -6,6 +6,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt.guard';
+import { AllowGuest } from '../auth/allow-guest';
 import { MINUTE, RateLimit } from '../common/throttle';
 import { PreviewLinkDto } from './dto/preview-link.dto';
 import type { LinkMetadata } from './link-metadata';
@@ -18,6 +19,7 @@ export class LinksController {
 
   @RateLimit(60, MINUTE)
   @Get('preview')
+  @AllowGuest()
   async preview(@Query() { url }: PreviewLinkDto): Promise<LinkMetadata> {
     const preview = await this.linksService.preview(url);
     if (!preview) throw new NotFoundException('No preview for this link');

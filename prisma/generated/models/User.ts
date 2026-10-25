@@ -45,6 +45,7 @@ export type UserMinAggregateOutputType = {
   password: string | null
   theme: $Enums.Theme | null
   appearOffline: boolean | null
+  isPublic: boolean | null
   isAdmin: boolean | null
   tourCompletedAt: Date | null
   checklistDismissedAt: Date | null
@@ -62,6 +63,7 @@ export type UserMaxAggregateOutputType = {
   password: string | null
   theme: $Enums.Theme | null
   appearOffline: boolean | null
+  isPublic: boolean | null
   isAdmin: boolean | null
   tourCompletedAt: Date | null
   checklistDismissedAt: Date | null
@@ -79,6 +81,7 @@ export type UserCountAggregateOutputType = {
   password: number
   theme: number
   appearOffline: number
+  isPublic: number
   isAdmin: number
   tourCompletedAt: number
   checklistDismissedAt: number
@@ -107,6 +110,7 @@ export type UserMinAggregateInputType = {
   password?: true
   theme?: true
   appearOffline?: true
+  isPublic?: true
   isAdmin?: true
   tourCompletedAt?: true
   checklistDismissedAt?: true
@@ -124,6 +128,7 @@ export type UserMaxAggregateInputType = {
   password?: true
   theme?: true
   appearOffline?: true
+  isPublic?: true
   isAdmin?: true
   tourCompletedAt?: true
   checklistDismissedAt?: true
@@ -141,6 +146,7 @@ export type UserCountAggregateInputType = {
   password?: true
   theme?: true
   appearOffline?: true
+  isPublic?: true
   isAdmin?: true
   tourCompletedAt?: true
   checklistDismissedAt?: true
@@ -246,6 +252,7 @@ export type UserGroupByOutputType = {
   password: string
   theme: $Enums.Theme
   appearOffline: boolean
+  isPublic: boolean
   isAdmin: boolean
   tourCompletedAt: Date | null
   checklistDismissedAt: Date | null
@@ -287,6 +294,7 @@ export type UserWhereInput = {
   password?: Prisma.StringFilter<"User"> | string
   theme?: Prisma.EnumThemeFilter<"User"> | $Enums.Theme
   appearOffline?: Prisma.BoolFilter<"User"> | boolean
+  isPublic?: Prisma.BoolFilter<"User"> | boolean
   isAdmin?: Prisma.BoolFilter<"User"> | boolean
   tourCompletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   checklistDismissedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
@@ -330,6 +338,7 @@ export type UserOrderByWithRelationInput = {
   password?: Prisma.SortOrder
   theme?: Prisma.SortOrder
   appearOffline?: Prisma.SortOrder
+  isPublic?: Prisma.SortOrder
   isAdmin?: Prisma.SortOrder
   tourCompletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   checklistDismissedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -376,6 +385,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   password?: Prisma.StringFilter<"User"> | string
   theme?: Prisma.EnumThemeFilter<"User"> | $Enums.Theme
   appearOffline?: Prisma.BoolFilter<"User"> | boolean
+  isPublic?: Prisma.BoolFilter<"User"> | boolean
   isAdmin?: Prisma.BoolFilter<"User"> | boolean
   tourCompletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   checklistDismissedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
@@ -419,6 +429,7 @@ export type UserOrderByWithAggregationInput = {
   password?: Prisma.SortOrder
   theme?: Prisma.SortOrder
   appearOffline?: Prisma.SortOrder
+  isPublic?: Prisma.SortOrder
   isAdmin?: Prisma.SortOrder
   tourCompletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   checklistDismissedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -445,6 +456,7 @@ export type UserScalarWhereWithAggregatesInput = {
   password?: Prisma.StringWithAggregatesFilter<"User"> | string
   theme?: Prisma.EnumThemeWithAggregatesFilter<"User"> | $Enums.Theme
   appearOffline?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  isPublic?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   isAdmin?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   tourCompletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   checklistDismissedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
@@ -462,6 +474,7 @@ export type UserCreateInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -505,6 +518,7 @@ export type UserUncheckedCreateInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -547,6 +561,7 @@ export type UserUpdateInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -590,6 +605,7 @@ export type UserUncheckedUpdateInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -633,6 +649,7 @@ export type UserCreateManyInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -650,6 +667,7 @@ export type UserUpdateManyMutationInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -668,6 +686,7 @@ export type UserUncheckedUpdateManyInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -704,6 +723,7 @@ export type UserCountOrderByAggregateInput = {
   password?: Prisma.SortOrder
   theme?: Prisma.SortOrder
   appearOffline?: Prisma.SortOrder
+  isPublic?: Prisma.SortOrder
   isAdmin?: Prisma.SortOrder
   tourCompletedAt?: Prisma.SortOrder
   checklistDismissedAt?: Prisma.SortOrder
@@ -726,6 +746,7 @@ export type UserMaxOrderByAggregateInput = {
   password?: Prisma.SortOrder
   theme?: Prisma.SortOrder
   appearOffline?: Prisma.SortOrder
+  isPublic?: Prisma.SortOrder
   isAdmin?: Prisma.SortOrder
   tourCompletedAt?: Prisma.SortOrder
   checklistDismissedAt?: Prisma.SortOrder
@@ -743,6 +764,7 @@ export type UserMinOrderByAggregateInput = {
   password?: Prisma.SortOrder
   theme?: Prisma.SortOrder
   appearOffline?: Prisma.SortOrder
+  isPublic?: Prisma.SortOrder
   isAdmin?: Prisma.SortOrder
   tourCompletedAt?: Prisma.SortOrder
   checklistDismissedAt?: Prisma.SortOrder
@@ -1140,6 +1162,7 @@ export type UserCreateWithoutOwnedCommunitiesInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -1182,6 +1205,7 @@ export type UserUncheckedCreateWithoutOwnedCommunitiesInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -1239,6 +1263,7 @@ export type UserUpdateWithoutOwnedCommunitiesInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1281,6 +1306,7 @@ export type UserUncheckedUpdateWithoutOwnedCommunitiesInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1322,6 +1348,7 @@ export type UserCreateWithoutMembershipsInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -1364,6 +1391,7 @@ export type UserUncheckedCreateWithoutMembershipsInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -1421,6 +1449,7 @@ export type UserUpdateWithoutMembershipsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1463,6 +1492,7 @@ export type UserUncheckedUpdateWithoutMembershipsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1504,6 +1534,7 @@ export type UserCreateWithoutRailFoldersInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -1546,6 +1577,7 @@ export type UserUncheckedCreateWithoutRailFoldersInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -1603,6 +1635,7 @@ export type UserUpdateWithoutRailFoldersInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1645,6 +1678,7 @@ export type UserUncheckedUpdateWithoutRailFoldersInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1686,6 +1720,7 @@ export type UserCreateWithoutInvitesInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -1728,6 +1763,7 @@ export type UserUncheckedCreateWithoutInvitesInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -1785,6 +1821,7 @@ export type UserUpdateWithoutInvitesInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1827,6 +1864,7 @@ export type UserUncheckedUpdateWithoutInvitesInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1868,6 +1906,7 @@ export type UserCreateWithoutWallPostsInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -1910,6 +1949,7 @@ export type UserUncheckedCreateWithoutWallPostsInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -1956,6 +1996,7 @@ export type UserCreateWithoutPostsInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -1998,6 +2039,7 @@ export type UserUncheckedCreateWithoutPostsInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -2055,6 +2097,7 @@ export type UserUpdateWithoutWallPostsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2097,6 +2140,7 @@ export type UserUncheckedUpdateWithoutWallPostsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2149,6 +2193,7 @@ export type UserUpdateWithoutPostsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2191,6 +2236,7 @@ export type UserUncheckedUpdateWithoutPostsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2232,6 +2278,7 @@ export type UserCreateWithoutThreadsInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -2274,6 +2321,7 @@ export type UserUncheckedCreateWithoutThreadsInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -2331,6 +2379,7 @@ export type UserUpdateWithoutThreadsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2373,6 +2422,7 @@ export type UserUncheckedUpdateWithoutThreadsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2414,6 +2464,7 @@ export type UserCreateWithoutCommentsInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -2456,6 +2507,7 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -2513,6 +2565,7 @@ export type UserUpdateWithoutCommentsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2555,6 +2608,7 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2596,6 +2650,7 @@ export type UserCreateWithoutVotesInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -2638,6 +2693,7 @@ export type UserUncheckedCreateWithoutVotesInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -2695,6 +2751,7 @@ export type UserUpdateWithoutVotesInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2737,6 +2794,7 @@ export type UserUncheckedUpdateWithoutVotesInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2778,6 +2836,7 @@ export type UserCreateWithoutLikesInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -2820,6 +2879,7 @@ export type UserUncheckedCreateWithoutLikesInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -2877,6 +2937,7 @@ export type UserUpdateWithoutLikesInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2919,6 +2980,7 @@ export type UserUncheckedUpdateWithoutLikesInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2960,6 +3022,7 @@ export type UserCreateWithoutSentFriendshipsInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -3002,6 +3065,7 @@ export type UserUncheckedCreateWithoutSentFriendshipsInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -3048,6 +3112,7 @@ export type UserCreateWithoutReceivedFriendshipsInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -3090,6 +3155,7 @@ export type UserUncheckedCreateWithoutReceivedFriendshipsInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -3147,6 +3213,7 @@ export type UserUpdateWithoutSentFriendshipsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3189,6 +3256,7 @@ export type UserUncheckedUpdateWithoutSentFriendshipsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3241,6 +3309,7 @@ export type UserUpdateWithoutReceivedFriendshipsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3283,6 +3352,7 @@ export type UserUncheckedUpdateWithoutReceivedFriendshipsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3324,6 +3394,7 @@ export type UserCreateWithoutLibraryEntriesInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -3366,6 +3437,7 @@ export type UserUncheckedCreateWithoutLibraryEntriesInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -3423,6 +3495,7 @@ export type UserUpdateWithoutLibraryEntriesInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3465,6 +3538,7 @@ export type UserUncheckedUpdateWithoutLibraryEntriesInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3506,6 +3580,7 @@ export type UserCreateWithoutCreatedConversationsInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -3548,6 +3623,7 @@ export type UserUncheckedCreateWithoutCreatedConversationsInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -3594,6 +3670,7 @@ export type UserCreateWithoutConversationsAsAInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -3636,6 +3713,7 @@ export type UserUncheckedCreateWithoutConversationsAsAInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -3682,6 +3760,7 @@ export type UserCreateWithoutConversationsAsBInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -3724,6 +3803,7 @@ export type UserUncheckedCreateWithoutConversationsAsBInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -3781,6 +3861,7 @@ export type UserUpdateWithoutCreatedConversationsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3823,6 +3904,7 @@ export type UserUncheckedUpdateWithoutCreatedConversationsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3875,6 +3957,7 @@ export type UserUpdateWithoutConversationsAsAInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3917,6 +4000,7 @@ export type UserUncheckedUpdateWithoutConversationsAsAInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3969,6 +4053,7 @@ export type UserUpdateWithoutConversationsAsBInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4011,6 +4096,7 @@ export type UserUncheckedUpdateWithoutConversationsAsBInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4052,6 +4138,7 @@ export type UserCreateWithoutConversationsInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -4094,6 +4181,7 @@ export type UserUncheckedCreateWithoutConversationsInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -4151,6 +4239,7 @@ export type UserUpdateWithoutConversationsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4193,6 +4282,7 @@ export type UserUncheckedUpdateWithoutConversationsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4234,6 +4324,7 @@ export type UserCreateWithoutMessagesInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -4276,6 +4367,7 @@ export type UserUncheckedCreateWithoutMessagesInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -4333,6 +4425,7 @@ export type UserUpdateWithoutMessagesInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4375,6 +4468,7 @@ export type UserUncheckedUpdateWithoutMessagesInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4416,6 +4510,7 @@ export type UserCreateWithoutNotificationsInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -4458,6 +4553,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -4504,6 +4600,7 @@ export type UserCreateWithoutCausedNotificationsInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -4546,6 +4643,7 @@ export type UserUncheckedCreateWithoutCausedNotificationsInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -4603,6 +4701,7 @@ export type UserUpdateWithoutNotificationsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4645,6 +4744,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4697,6 +4797,7 @@ export type UserUpdateWithoutCausedNotificationsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4739,6 +4840,7 @@ export type UserUncheckedUpdateWithoutCausedNotificationsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4780,6 +4882,7 @@ export type UserCreateWithoutReportsInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -4822,6 +4925,7 @@ export type UserUncheckedCreateWithoutReportsInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -4868,6 +4972,7 @@ export type UserCreateWithoutAssignedReportsInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -4910,6 +5015,7 @@ export type UserUncheckedCreateWithoutAssignedReportsInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -4967,6 +5073,7 @@ export type UserUpdateWithoutReportsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5009,6 +5116,7 @@ export type UserUncheckedUpdateWithoutReportsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5061,6 +5169,7 @@ export type UserUpdateWithoutAssignedReportsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5103,6 +5212,7 @@ export type UserUncheckedUpdateWithoutAssignedReportsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5144,6 +5254,7 @@ export type UserCreateWithoutReportCommentsInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -5186,6 +5297,7 @@ export type UserUncheckedCreateWithoutReportCommentsInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -5243,6 +5355,7 @@ export type UserUpdateWithoutReportCommentsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5285,6 +5398,7 @@ export type UserUncheckedUpdateWithoutReportCommentsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5326,6 +5440,7 @@ export type UserCreateWithoutContentReportsInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -5368,6 +5483,7 @@ export type UserUncheckedCreateWithoutContentReportsInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -5414,6 +5530,7 @@ export type UserCreateWithoutResolvedReportsInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -5456,6 +5573,7 @@ export type UserUncheckedCreateWithoutResolvedReportsInput = {
   password: string
   theme?: $Enums.Theme
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: Date | string | null
   checklistDismissedAt?: Date | string | null
@@ -5513,6 +5631,7 @@ export type UserUpdateWithoutContentReportsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5555,6 +5674,7 @@ export type UserUncheckedUpdateWithoutContentReportsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5607,6 +5727,7 @@ export type UserUpdateWithoutResolvedReportsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5649,6 +5770,7 @@ export type UserUncheckedUpdateWithoutResolvedReportsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5938,6 +6060,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   password?: boolean
   theme?: boolean
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: boolean
   checklistDismissedAt?: boolean
@@ -5982,6 +6105,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   password?: boolean
   theme?: boolean
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: boolean
   checklistDismissedAt?: boolean
@@ -6000,6 +6124,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   password?: boolean
   theme?: boolean
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: boolean
   checklistDismissedAt?: boolean
@@ -6018,6 +6143,7 @@ export type UserSelectScalar = {
   password?: boolean
   theme?: boolean
   appearOffline?: boolean
+  isPublic?: boolean
   isAdmin?: boolean
   tourCompletedAt?: boolean
   checklistDismissedAt?: boolean
@@ -6025,7 +6151,7 @@ export type UserSelectScalar = {
   createdAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "username" | "name" | "avatarUrl" | "coverUrl" | "backgroundUrl" | "password" | "theme" | "appearOffline" | "isAdmin" | "tourCompletedAt" | "checklistDismissedAt" | "completedTours" | "createdAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "username" | "name" | "avatarUrl" | "coverUrl" | "backgroundUrl" | "password" | "theme" | "appearOffline" | "isPublic" | "isAdmin" | "tourCompletedAt" | "checklistDismissedAt" | "completedTours" | "createdAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   ownedCommunities?: boolean | Prisma.User$ownedCommunitiesArgs<ExtArgs>
   memberships?: boolean | Prisma.User$membershipsArgs<ExtArgs>
@@ -6097,6 +6223,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     password: string
     theme: $Enums.Theme
     appearOffline: boolean
+    isPublic: boolean
     isAdmin: boolean
     tourCompletedAt: Date | null
     checklistDismissedAt: Date | null
@@ -6560,6 +6687,7 @@ export interface UserFieldRefs {
   readonly password: Prisma.FieldRef<"User", 'String'>
   readonly theme: Prisma.FieldRef<"User", 'Theme'>
   readonly appearOffline: Prisma.FieldRef<"User", 'Boolean'>
+  readonly isPublic: Prisma.FieldRef<"User", 'Boolean'>
   readonly isAdmin: Prisma.FieldRef<"User", 'Boolean'>
   readonly tourCompletedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly checklistDismissedAt: Prisma.FieldRef<"User", 'DateTime'>

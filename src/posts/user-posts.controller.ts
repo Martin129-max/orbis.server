@@ -11,6 +11,7 @@ import {
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { JwtAuthGuard } from '../auth/jwt.guard';
+import { AllowGuest } from '../auth/allow-guest';
 import { RateLimit, MINUTE } from '../common/throttle';
 
 @Controller('users/:username/posts')
@@ -19,6 +20,7 @@ export class UserPostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Get()
+  @AllowGuest()
   findForProfile(
     @Req() req,
     @Param('username') username: string,

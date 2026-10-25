@@ -17,6 +17,7 @@ import {
 import { normalizeUsername } from './username';
 import { isHeadAdmin } from './head-admin';
 import { StorageService } from '../storage/storage.service';
+import { canViewProfile } from '../posts/wall-access';
 
 export type PublicUser = Omit<UserModel, 'password'>;
 
@@ -29,6 +30,8 @@ export type PublicProfile = {
   backgroundUrl: string | null;
   isAdmin: boolean;
   isHeadAdmin: boolean;
+  isPublic: boolean;
+  restricted: boolean;
   createdAt: Date;
   online: boolean;
   friendCount: number;
@@ -86,12 +89,50 @@ export type Profile = Pick<
   | 'backgroundUrl'
   | 'theme'
   | 'appearOffline'
+  | 'isPublic'
   | 'isAdmin'
   | 'createdAt'
 > & {
   userId: number;
   isHeadAdmin: boolean;
 };
+
+export type PublicUserSummary = {
+  userId: number;
+  username: string;
+  name: string | null;
+  avatarUrl: string | null;
+  coverUrl: string | null;
+  online: boolean;
+  activity: number;
+};
+
+export type ActiveUser = Omit<PublicUserSummary, 'online'> & {
+  appearOffline: boolean;
+};
+
+export const PUBLIC_USER_LIMIT = 12;
+
+const ACTIVITY_WINDOW_DAYS = 30;
+
+export function rankPublicUsers(
+  users: ActiveUser[],
+  isOnline: (userId: number) => boolean,
+  limit = PUBLIC_USER_LIMIT,
+): PublicUserSummary[] {
+  return users
+    .map(({ appearOffline, ...user }) => ({
+      ...user,
+      online: !appearOffline && isOnline(user.userId),
+    }))
+    .sort(
+      (a, b) =>
+        Number(b.online) - Number(a.online) ||
+        b.activity - a.activity ||
+        a.userId - b.userId,
+    )
+    .slice(0, limit);
+}
 
 const omitPassword = { password: true } as const;
 
@@ -104,6 +145,7 @@ const profile = {
   backgroundUrl: true,
   theme: true,
   appearOffline: true,
+  isPublic: true,
   isAdmin: true,
   createdAt: true,
 } as const;
@@ -150,11 +192,11 @@ export class UsersService {
 
   async updatePreferences(
     id: number,
-    { theme, appearOffline }: UpdatePreferencesDto,
+    { theme, appearOffline, isPublic }: UpdatePreferencesDto,
   ): Promise<Profile> {
     const user = await this.prisma.user.update({
       where: { id },
-      data: { theme, appearOffline },
+      data: { theme, appearOffline, isPublic },
       select: profile,
     });
 
@@ -214,6 +256,33 @@ export class UsersService {
     return toProfile(user);
   }
 
+  async activePublicUsers(): Promise<ActiveUser[]> {
+    const since = new Date(
+      Date.now() - ACTIVITY_WINDOW_DAYS * 24 * 60 * 60 * 1000,
+    );
+    const recent = { where: { createdAt: { gte: since } } };
+    const users = await this.prisma.user.findMany({
+      where: { isPublic: true },
+      select: {
+        id: true,
+        username: true,
+        name: true,
+        avatarUrl: true,
+        coverUrl: true,
+        appearOffline: true,
+        _count: {
+          select: { posts: recent, threads: recent, comments: recent },
+        },
+      },
+    });
+
+    return users.map(({ id, _count, ...user }) => ({
+      userId: id,
+      ...user,
+      activity: _count.posts + _count.threads + _count.comments,
+    }));
+  }
+
   async publicProfile(
     viewerId: number,
     username: string,
@@ -237,6 +306,7 @@ export class UsersService {
         email: true,
         isAdmin: true,
         appearOffline: true,
+        isPublic: true,
         createdAt: true,
         memberships: {
           orderBy: { joinedAt: 'asc' },
@@ -261,6 +331,30 @@ export class UsersService {
       },
     });
     if (!user) throw new NotFoundException('User not found');
+
+    if (!(await canViewProfile(this.prisma, viewerId, user))) {
+      const headAdmin = isHeadAdmin(user.email);
+      return {
+        userId: user.id,
+        username: user.username,
+        name: user.name,
+        avatarUrl: user.avatarUrl,
+        coverUrl: null,
+        backgroundUrl: null,
+        isAdmin: user.isAdmin || headAdmin,
+        isHeadAdmin: headAdmin,
+        isPublic: false,
+        restricted: true,
+        appearOffline: true,
+        createdAt: user.createdAt,
+        friendCount: 0,
+        postCount: 0,
+        communityCount: 0,
+        communities: [],
+        friends: [],
+        library: [],
+      };
+    }
 
     const friendUser = {
       select: {
@@ -305,6 +399,7 @@ export class UsersService {
       ...rest,
       isAdmin: rest.isAdmin || headAdmin,
       isHeadAdmin: headAdmin,
+      restricted: false,
       userId: id,
       friendCount: friendships.length,
       friends: friendships.map(({ requester, addressee }) => {

@@ -24,6 +24,7 @@ import {
 import { UpdateOnboardingDto } from './dto/update-onboarding.dto';
 import { UpdatePreferencesDto } from './dto/update-preferences.dto';
 import { JwtAuthGuard } from '../auth/jwt.guard';
+import { AllowGuest } from '../auth/allow-guest';
 import { PresenceGateway } from '../friends/presence.gateway';
 import { IMAGE_MAX_BYTES } from '../storage/storage.service';
 
@@ -154,6 +155,7 @@ export class UsersController {
   }
 
   @Get(':username')
+  @AllowGuest()
   @UseGuards(JwtAuthGuard)
   async publicProfile(
     @Req() req,

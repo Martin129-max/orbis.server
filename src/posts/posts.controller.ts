@@ -12,15 +12,19 @@ import {
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { JwtAuthGuard } from '../auth/jwt.guard';
+import { AllowGuest } from '../auth/allow-guest';
 import { CommunityMemberGuard } from '../communities/community-member.guard';
+import { CommunityViewerGuard } from '../communities/community-viewer.guard';
 import { RateLimit, MINUTE } from '../common/throttle';
 
 @Controller('communities/:communityId/posts')
-@UseGuards(JwtAuthGuard, CommunityMemberGuard)
+@UseGuards(JwtAuthGuard)
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Get()
+  @AllowGuest()
+  @UseGuards(CommunityViewerGuard)
   findAll(
     @Req() req,
     @Param('communityId', ParseIntPipe) communityId: number,
@@ -37,6 +41,7 @@ export class PostsController {
 
   @RateLimit(10, MINUTE)
   @Post()
+  @UseGuards(CommunityMemberGuard)
   create(
     @Req() req,
     @Param('communityId', ParseIntPipe) communityId: number,

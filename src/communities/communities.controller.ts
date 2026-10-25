@@ -30,7 +30,9 @@ import { UpdateRailLayoutDto } from './dto/update-rail-layout.dto';
 import { SearchCommunitiesDto } from './dto/search-communities.dto';
 import { UpdateCommunityDto } from './dto/update-community.dto';
 import { CommunityMemberGuard } from './community-member.guard';
+import { CommunityViewerGuard } from './community-viewer.guard';
 import { JwtAuthGuard } from '../auth/jwt.guard';
+import { AllowGuest } from '../auth/allow-guest';
 import { Community as CommunityModel } from '../../prisma/generated/client';
 import { IMAGE_MAX_BYTES } from '../storage/storage.service';
 import { DAY, MINUTE, RateLimit } from '../common/throttle';
@@ -91,7 +93,8 @@ export class CommunitiesController {
   }
 
   @Get(':communityId/members')
-  @UseGuards(CommunityMemberGuard)
+  @AllowGuest()
+  @UseGuards(CommunityViewerGuard)
   findMembers(
     @Param('communityId', ParseIntPipe) communityId: number,
   ): Promise<CommunityMember[]> {
@@ -129,6 +132,7 @@ export class CommunitiesController {
   }
 
   @Get(':communityId')
+  @AllowGuest()
   findOne(
     @Req() req,
     @Param('communityId', ParseIntPipe) communityId: number,

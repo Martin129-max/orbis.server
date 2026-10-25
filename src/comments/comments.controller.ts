@@ -11,6 +11,7 @@ import {
 import { CommentView, CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { JwtAuthGuard } from '../auth/jwt.guard';
+import { AllowGuest } from '../auth/allow-guest';
 import { RateLimit, MINUTE } from '../common/throttle';
 
 @Controller('comments')
@@ -19,6 +20,7 @@ export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 
   @Get()
+  @AllowGuest()
   findAll(
     @Req() req,
     @Query('type') type: string,

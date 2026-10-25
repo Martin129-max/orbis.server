@@ -9,7 +9,7 @@ import { author, communitySummary } from '../common/author';
 import { PAGE_SIZE, Page } from '../common/pagination';
 import { sanitizeRichText } from '../common/rich-text';
 import { reportedBy, visibleTo } from '../moderation/visibility';
-import { requireMembership } from '../communities/require-membership';
+import { requireViewAccess } from '../communities/require-membership';
 import { MAX_INT } from '../communities/community-member.guard';
 import { VotesService } from '../votes/votes.service';
 import { CreateThreadDto } from './dto/create-thread.dto';
@@ -142,7 +142,7 @@ export class ThreadsService {
     if (!thread || (thread.hiddenAt && thread.authorId !== userId)) {
       throw new NotFoundException('Thread not found');
     }
-    await requireMembership(this.prisma, userId, thread.communityId);
+    await requireViewAccess(this.prisma, userId, thread.communityId);
 
     const [summary] = await this.withMyVotes(userId, [thread]);
     return summary;

@@ -5,13 +5,14 @@ import {
 } from './threads.controller';
 import { ThreadsService } from './threads.service';
 import { CommunityMemberGuard } from '../communities/community-member.guard';
+import { CommunityViewerGuard } from '../communities/community-viewer.guard';
 import { PrismaService } from '../prisma.service';
 import { VotesModule } from '../votes/votes.module';
 
 @Module({
   imports: [VotesModule],
   controllers: [CommunityThreadsController, ThreadsController],
-  providers: [ThreadsService, CommunityMemberGuard, PrismaService],
+  providers: [ThreadsService, CommunityMemberGuard, CommunityViewerGuard, PrismaService],
   exports: [ThreadsService],
 })
 export class ThreadsModule {}

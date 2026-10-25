@@ -7,9 +7,10 @@ import { PrismaService } from '../prisma.service';
 import { CommentableType, Prisma } from '../../prisma/generated/client';
 import { author } from '../common/author';
 import { sanitizeRichText } from '../common/rich-text';
-import { requireMembership } from '../communities/require-membership';
+import { requireViewAccess } from '../communities/require-membership';
 import {
   EngagementTarget,
+  requireProfileView,
   requireTargetAccess,
   targetOf,
 } from '../posts/wall-access';
@@ -53,14 +54,16 @@ export class CommentsService {
     }
 
     const commentableType = type as CommentableType;
-    const { communityId } = await targetOf(
+    const { communityId, wallUserId } = await targetOf(
       this.prisma,
       userId,
       commentableType,
       id,
     );
     if (communityId !== null) {
-      await requireMembership(this.prisma, userId, communityId);
+      await requireViewAccess(this.prisma, userId, communityId);
+    } else if (wallUserId !== null) {
+      await requireProfileView(this.prisma, userId, wallUserId);
     }
 
     const comments = await this.prisma.comment.findMany({
@@ -121,8 +124,8 @@ export class CommentsService {
     }
 
     const increment = { commentCount: { increment: 1 } };
-    const [comment] = await this.prisma.$transaction([
-      this.prisma.comment.create({
+    const comment = await this.prisma.$transaction(async (tx) => {
+      const created = await tx.comment.create({
         data: {
           communityId: home.communityId,
           commentableType: type,
@@ -131,21 +134,29 @@ export class CommentsService {
           authorId: userId,
           content: empty ? '' : html,
           linkUrl: linkUrl ?? null,
+          score: 1,
         },
         select: commentSelect,
-      }),
-      type === 'post'
-        ? this.prisma.post.update({ where: { id }, data: increment })
+      });
+      await tx.vote.create({
+        data: {
+          userId,
+          votableType: 'comment',
+          votableId: created.id,
+          communityId: home.communityId,
+          value: 1,
+        },
+      });
+      await (type === 'post'
+        ? tx.post.update({ where: { id }, data: increment })
         : type === 'thread'
-          ? this.prisma.thread.update({ where: { id }, data: increment })
-          : this.prisma.libraryActivity.update({
-              where: { id },
-              data: increment,
-            }),
-    ]);
+          ? tx.thread.update({ where: { id }, data: increment })
+          : tx.libraryActivity.update({ where: { id }, data: increment }));
+      return created;
+    });
 
     await this.notifyCommented(userId, home, parentAuthorId);
-    return { ...comment, myVote: 0, hidden: null };
+    return { ...comment, myVote: 1, hidden: null };
   }
 
   private async notifyCommented(

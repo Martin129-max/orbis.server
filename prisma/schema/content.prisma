@@ -63,7 +63,7 @@ model Comment {
   authorId        Int
   content         String
   linkUrl         String?
-  score           Int             @default(0)
+  score           Int             @default(1)
   hiddenAt        DateTime?
   createdAt       DateTime        @default(now())
   community       Community?      @relation(fields: [communityId], references: [id], onDelete: Cascade)

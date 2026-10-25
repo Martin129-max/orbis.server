@@ -5,6 +5,7 @@ import { UserPostsController } from './user-posts.controller';
 import { MediaPostsController } from './media-posts.controller';
 import { PostsService } from './posts.service';
 import { CommunityMemberGuard } from '../communities/community-member.guard';
+import { CommunityViewerGuard } from '../communities/community-viewer.guard';
 import { PrismaService } from '../prisma.service';
 import { ThreadsModule } from '../threads/threads.module';
 import { NotificationsModule } from '../notifications/notifications.module';
@@ -18,6 +19,6 @@ import { LikesModule } from '../likes/likes.module';
     UserPostsController,
     MediaPostsController,
   ],
-  providers: [PostsService, CommunityMemberGuard, PrismaService],
+  providers: [PostsService, CommunityMemberGuard, CommunityViewerGuard, PrismaService],
 })
 export class PostsModule {}

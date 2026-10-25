@@ -12,16 +12,20 @@ import {
 import { ThreadSummary, ThreadsService } from './threads.service';
 import { CreateThreadDto } from './dto/create-thread.dto';
 import { JwtAuthGuard } from '../auth/jwt.guard';
+import { AllowGuest } from '../auth/allow-guest';
 import { CommunityMemberGuard } from '../communities/community-member.guard';
+import { CommunityViewerGuard } from '../communities/community-viewer.guard';
 import { Page } from '../common/pagination';
 import { RateLimit, MINUTE } from '../common/throttle';
 
 @Controller('communities/:communityId/threads')
-@UseGuards(JwtAuthGuard, CommunityMemberGuard)
+@UseGuards(JwtAuthGuard)
 export class CommunityThreadsController {
   constructor(private readonly threadsService: ThreadsService) {}
 
   @Get()
+  @AllowGuest()
+  @UseGuards(CommunityViewerGuard)
   findAll(
     @Req() req,
     @Param('communityId', ParseIntPipe) communityId: number,
@@ -33,6 +37,7 @@ export class CommunityThreadsController {
 
   @RateLimit(10, MINUTE)
   @Post()
+  @UseGuards(CommunityMemberGuard)
   create(
     @Req() req,
     @Param('communityId', ParseIntPipe) communityId: number,
@@ -52,6 +57,7 @@ export class ThreadsController {
   constructor(private readonly threadsService: ThreadsService) {}
 
   @Get(':threadId')
+  @AllowGuest()
   findOne(
     @Req() req,
     @Param('threadId', ParseIntPipe) threadId: number,

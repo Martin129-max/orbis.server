@@ -744,6 +744,8 @@ const postComments: Record<string, Record<number, SeedComment[]>> = {
   },
 };
 
+const privateProfiles: Character[] = ['levi', 'mikasa'];
+
 const friendships: [UserKey, UserKey, 'accepted' | 'pending'][] = [
   ['admin', 'naruto', 'accepted'],
   ['admin', 'luffy', 'accepted'],
@@ -884,6 +886,9 @@ async function createComments(
   let count = 0;
 
   for (const comment of comments) {
+    const votes = voters(comment).includes(comment.author)
+      ? comment
+      : { ...comment, up: [comment.author, ...(comment.up ?? [])] };
     const created = await prisma.comment.create({
       data: {
         communityId,
@@ -893,11 +898,11 @@ async function createComments(
         authorId: userIds[comment.author],
         content: comment.content,
         linkUrl: comment.linkUrl,
-        score: scoreOf(comment),
+        score: scoreOf(votes),
         createdAt: minutesAgo(comment.ago),
       },
     });
-    await createVotes(communityId, 'comment', created.id, comment);
+    await createVotes(communityId, 'comment', created.id, votes);
     count +=
       1 +
       (await createComments(
@@ -2040,6 +2045,7 @@ async function main() {
         avatarUrl: `/images/avatars/${key}.webp`,
         coverUrl: `/images/user-covers/${key}.webp`,
         backgroundUrl: `/images/user-backgrounds/${key}.webp`,
+        isPublic: !privateProfiles.includes(key as Character),
         tourCompletedAt: minutesAgo(days(30)),
         checklistDismissedAt: minutesAgo(days(29)),
         completedTours: PAGE_TOURS,

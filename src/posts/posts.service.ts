@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -21,7 +22,11 @@ import {
 } from '../threads/threads.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { NotificationsService } from '../notifications/notifications.service';
-import { friendsOf, requireWallAccess } from './wall-access';
+import {
+  canViewProfile,
+  friendsOf,
+  requireWallAccess,
+} from './wall-access';
 import { LikesService } from '../likes/likes.service';
 import { getMedia } from '../library/library-api';
 import { reportedBy, visibleTo } from '../moderation/visibility';
@@ -380,9 +385,12 @@ export class PostsService {
     const excluded = excludedTypes(exclude);
     const owner = await this.prisma.user.findUnique({
       where: { username: normalizeUsername(username) },
-      select: { id: true },
+      select: { id: true, isPublic: true },
     });
     if (!owner) throw new NotFoundException('User not found');
+    if (!(await canViewProfile(this.prisma, viewerId, owner))) {
+      throw new ForbiddenException('This profile is private');
+    }
 
     const reported = await reportedBy(this.prisma, viewerId);
     const visibleCommunity = {

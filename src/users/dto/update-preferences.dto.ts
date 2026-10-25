@@ -9,4 +9,8 @@ export class UpdatePreferencesDto {
   @IsOptional()
   @IsBoolean()
   appearOffline?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  isPublic?: boolean;
 }

@@ -41,6 +41,42 @@ export async function requireWallAccess(
   }
 }
 
+export async function canViewProfile(
+  prisma: PrismaService,
+  viewerId: number,
+  owner: { id: number; isPublic: boolean },
+) {
+  if (owner.isPublic || owner.id === viewerId) return true;
+
+  const friendship = await prisma.friendship.findFirst({
+    where: {
+      status: 'accepted',
+      OR: [
+        { requesterId: viewerId, addresseeId: owner.id },
+        { requesterId: owner.id, addresseeId: viewerId },
+      ],
+    },
+    select: { requesterId: true },
+  });
+
+  return friendship !== null;
+}
+
+export async function requireProfileView(
+  prisma: PrismaService,
+  viewerId: number,
+  ownerId: number,
+) {
+  const owner = await prisma.user.findUnique({
+    where: { id: ownerId },
+    select: { id: true, isPublic: true },
+  });
+
+  if (!owner || !(await canViewProfile(prisma, viewerId, owner))) {
+    throw new ForbiddenException('This profile is private');
+  }
+}
+
 export async function requirePostAccess(
   prisma: PrismaService,
   userId: number,
