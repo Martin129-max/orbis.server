@@ -130,7 +130,7 @@ export class LibraryService {
   list(userId: number): Promise<LibraryEntryView[]> {
     return this.prisma.libraryEntry.findMany({
       where: { userId },
-      orderBy: { createdAt: 'desc' },
+      orderBy: [{ updatedAt: 'desc' }, { id: 'desc' }],
       select: entrySelect,
     });
   }

@@ -130,3 +130,21 @@ describe('Adding library progress', () => {
     },
   );
 });
+
+describe('Listing the library', () => {
+  it('puts the most recently updated titles first', async () => {
+    const findMany = jest.fn().mockResolvedValue([]);
+    const service = new LibraryService({
+      libraryEntry: { findMany },
+    } as unknown as PrismaService);
+
+    await service.list(1);
+
+    expect(findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { userId: 1 },
+        orderBy: [{ updatedAt: 'desc' }, { id: 'desc' }],
+      }),
+    );
+  });
+});
