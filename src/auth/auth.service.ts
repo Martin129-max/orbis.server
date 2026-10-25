@@ -38,7 +38,7 @@ export class AuthService {
       ? await this.usersService.findByEmail(identifier)
       : await this.usersService.findByUsername(normalizeUsername(identifier));
 
-    if (!user) throw new UnauthorizedException();
+    if (!user?.password) throw new UnauthorizedException();
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) throw new UnauthorizedException();
@@ -46,7 +46,7 @@ export class AuthService {
     return this.generateToken(user.id, user.email);
   }
 
-  private generateToken(userId: number, email: string) {
+  generateToken(userId: number, email: string) {
     const payload = { sub: userId, email };
 
     return {

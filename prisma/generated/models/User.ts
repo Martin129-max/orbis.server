@@ -255,7 +255,7 @@ export type UserGroupByOutputType = {
   avatarUrl: string | null
   coverUrl: string | null
   backgroundUrl: string | null
-  password: string
+  password: string | null
   theme: $Enums.Theme
   appearOffline: boolean
   status: $Enums.UserStatus
@@ -298,7 +298,7 @@ export type UserWhereInput = {
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
   coverUrl?: Prisma.StringNullableFilter<"User"> | string | null
   backgroundUrl?: Prisma.StringNullableFilter<"User"> | string | null
-  password?: Prisma.StringFilter<"User"> | string
+  password?: Prisma.StringNullableFilter<"User"> | string | null
   theme?: Prisma.EnumThemeFilter<"User"> | $Enums.Theme
   appearOffline?: Prisma.BoolFilter<"User"> | boolean
   status?: Prisma.EnumUserStatusFilter<"User"> | $Enums.UserStatus
@@ -333,6 +333,7 @@ export type UserWhereInput = {
   conversationsAsB?: Prisma.ConversationListRelationFilter
   conversations?: Prisma.ConversationMemberListRelationFilter
   messages?: Prisma.MessageListRelationFilter
+  oauthAccounts?: Prisma.OAuthAccountListRelationFilter
   messageReactions?: Prisma.MessageReactionListRelationFilter
 }
 
@@ -344,7 +345,7 @@ export type UserOrderByWithRelationInput = {
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   coverUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   backgroundUrl?: Prisma.SortOrderInput | Prisma.SortOrder
-  password?: Prisma.SortOrder
+  password?: Prisma.SortOrderInput | Prisma.SortOrder
   theme?: Prisma.SortOrder
   appearOffline?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -379,6 +380,7 @@ export type UserOrderByWithRelationInput = {
   conversationsAsB?: Prisma.ConversationOrderByRelationAggregateInput
   conversations?: Prisma.ConversationMemberOrderByRelationAggregateInput
   messages?: Prisma.MessageOrderByRelationAggregateInput
+  oauthAccounts?: Prisma.OAuthAccountOrderByRelationAggregateInput
   messageReactions?: Prisma.MessageReactionOrderByRelationAggregateInput
 }
 
@@ -393,7 +395,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
   coverUrl?: Prisma.StringNullableFilter<"User"> | string | null
   backgroundUrl?: Prisma.StringNullableFilter<"User"> | string | null
-  password?: Prisma.StringFilter<"User"> | string
+  password?: Prisma.StringNullableFilter<"User"> | string | null
   theme?: Prisma.EnumThemeFilter<"User"> | $Enums.Theme
   appearOffline?: Prisma.BoolFilter<"User"> | boolean
   status?: Prisma.EnumUserStatusFilter<"User"> | $Enums.UserStatus
@@ -428,6 +430,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   conversationsAsB?: Prisma.ConversationListRelationFilter
   conversations?: Prisma.ConversationMemberListRelationFilter
   messages?: Prisma.MessageListRelationFilter
+  oauthAccounts?: Prisma.OAuthAccountListRelationFilter
   messageReactions?: Prisma.MessageReactionListRelationFilter
 }, "id" | "email" | "username">
 
@@ -439,7 +442,7 @@ export type UserOrderByWithAggregationInput = {
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   coverUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   backgroundUrl?: Prisma.SortOrderInput | Prisma.SortOrder
-  password?: Prisma.SortOrder
+  password?: Prisma.SortOrderInput | Prisma.SortOrder
   theme?: Prisma.SortOrder
   appearOffline?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -467,7 +470,7 @@ export type UserScalarWhereWithAggregatesInput = {
   avatarUrl?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   coverUrl?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   backgroundUrl?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
-  password?: Prisma.StringWithAggregatesFilter<"User"> | string
+  password?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   theme?: Prisma.EnumThemeWithAggregatesFilter<"User"> | $Enums.Theme
   appearOffline?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   status?: Prisma.EnumUserStatusWithAggregatesFilter<"User"> | $Enums.UserStatus
@@ -486,7 +489,7 @@ export type UserCreateInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -521,6 +524,7 @@ export type UserCreateInput = {
   conversationsAsB?: Prisma.ConversationCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionCreateNestedManyWithoutUserInput
 }
 
@@ -532,7 +536,7 @@ export type UserUncheckedCreateInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -567,6 +571,7 @@ export type UserUncheckedCreateInput = {
   conversationsAsB?: Prisma.ConversationUncheckedCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -577,7 +582,7 @@ export type UserUpdateInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -612,6 +617,7 @@ export type UserUpdateInput = {
   conversationsAsB?: Prisma.ConversationUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUpdateManyWithoutUserNestedInput
 }
 
@@ -623,7 +629,7 @@ export type UserUncheckedUpdateInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -658,6 +664,7 @@ export type UserUncheckedUpdateInput = {
   conversationsAsB?: Prisma.ConversationUncheckedUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -669,7 +676,7 @@ export type UserCreateManyInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -688,7 +695,7 @@ export type UserUpdateManyMutationInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -708,7 +715,7 @@ export type UserUncheckedUpdateManyInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -1199,6 +1206,20 @@ export type UserUpdatecompletedToursInput = {
   push?: string | string[]
 }
 
+export type UserCreateNestedOneWithoutOauthAccountsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutOauthAccountsInput, Prisma.UserUncheckedCreateWithoutOauthAccountsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOauthAccountsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutOauthAccountsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutOauthAccountsInput, Prisma.UserUncheckedCreateWithoutOauthAccountsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOauthAccountsInput
+  upsert?: Prisma.UserUpsertWithoutOauthAccountsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutOauthAccountsInput, Prisma.UserUpdateWithoutOauthAccountsInput>, Prisma.UserUncheckedUpdateWithoutOauthAccountsInput>
+}
+
 export type UserCreateWithoutOwnedCommunitiesInput = {
   email: string
   username: string
@@ -1206,7 +1227,7 @@ export type UserCreateWithoutOwnedCommunitiesInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -1240,6 +1261,7 @@ export type UserCreateWithoutOwnedCommunitiesInput = {
   conversationsAsB?: Prisma.ConversationCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionCreateNestedManyWithoutUserInput
 }
 
@@ -1251,7 +1273,7 @@ export type UserUncheckedCreateWithoutOwnedCommunitiesInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -1285,6 +1307,7 @@ export type UserUncheckedCreateWithoutOwnedCommunitiesInput = {
   conversationsAsB?: Prisma.ConversationUncheckedCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -1311,7 +1334,7 @@ export type UserUpdateWithoutOwnedCommunitiesInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -1345,6 +1368,7 @@ export type UserUpdateWithoutOwnedCommunitiesInput = {
   conversationsAsB?: Prisma.ConversationUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUpdateManyWithoutUserNestedInput
 }
 
@@ -1356,7 +1380,7 @@ export type UserUncheckedUpdateWithoutOwnedCommunitiesInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -1390,6 +1414,7 @@ export type UserUncheckedUpdateWithoutOwnedCommunitiesInput = {
   conversationsAsB?: Prisma.ConversationUncheckedUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -1400,7 +1425,7 @@ export type UserCreateWithoutMembershipsInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -1434,6 +1459,7 @@ export type UserCreateWithoutMembershipsInput = {
   conversationsAsB?: Prisma.ConversationCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionCreateNestedManyWithoutUserInput
 }
 
@@ -1445,7 +1471,7 @@ export type UserUncheckedCreateWithoutMembershipsInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -1479,6 +1505,7 @@ export type UserUncheckedCreateWithoutMembershipsInput = {
   conversationsAsB?: Prisma.ConversationUncheckedCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -1505,7 +1532,7 @@ export type UserUpdateWithoutMembershipsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -1539,6 +1566,7 @@ export type UserUpdateWithoutMembershipsInput = {
   conversationsAsB?: Prisma.ConversationUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUpdateManyWithoutUserNestedInput
 }
 
@@ -1550,7 +1578,7 @@ export type UserUncheckedUpdateWithoutMembershipsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -1584,6 +1612,7 @@ export type UserUncheckedUpdateWithoutMembershipsInput = {
   conversationsAsB?: Prisma.ConversationUncheckedUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -1594,7 +1623,7 @@ export type UserCreateWithoutRailFoldersInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -1628,6 +1657,7 @@ export type UserCreateWithoutRailFoldersInput = {
   conversationsAsB?: Prisma.ConversationCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionCreateNestedManyWithoutUserInput
 }
 
@@ -1639,7 +1669,7 @@ export type UserUncheckedCreateWithoutRailFoldersInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -1673,6 +1703,7 @@ export type UserUncheckedCreateWithoutRailFoldersInput = {
   conversationsAsB?: Prisma.ConversationUncheckedCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -1699,7 +1730,7 @@ export type UserUpdateWithoutRailFoldersInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -1733,6 +1764,7 @@ export type UserUpdateWithoutRailFoldersInput = {
   conversationsAsB?: Prisma.ConversationUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUpdateManyWithoutUserNestedInput
 }
 
@@ -1744,7 +1776,7 @@ export type UserUncheckedUpdateWithoutRailFoldersInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -1778,6 +1810,7 @@ export type UserUncheckedUpdateWithoutRailFoldersInput = {
   conversationsAsB?: Prisma.ConversationUncheckedUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -1788,7 +1821,7 @@ export type UserCreateWithoutInvitesInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -1822,6 +1855,7 @@ export type UserCreateWithoutInvitesInput = {
   conversationsAsB?: Prisma.ConversationCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionCreateNestedManyWithoutUserInput
 }
 
@@ -1833,7 +1867,7 @@ export type UserUncheckedCreateWithoutInvitesInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -1867,6 +1901,7 @@ export type UserUncheckedCreateWithoutInvitesInput = {
   conversationsAsB?: Prisma.ConversationUncheckedCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -1893,7 +1928,7 @@ export type UserUpdateWithoutInvitesInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -1927,6 +1962,7 @@ export type UserUpdateWithoutInvitesInput = {
   conversationsAsB?: Prisma.ConversationUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUpdateManyWithoutUserNestedInput
 }
 
@@ -1938,7 +1974,7 @@ export type UserUncheckedUpdateWithoutInvitesInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -1972,6 +2008,7 @@ export type UserUncheckedUpdateWithoutInvitesInput = {
   conversationsAsB?: Prisma.ConversationUncheckedUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -1982,7 +2019,7 @@ export type UserCreateWithoutWallPostsInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -2016,6 +2053,7 @@ export type UserCreateWithoutWallPostsInput = {
   conversationsAsB?: Prisma.ConversationCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionCreateNestedManyWithoutUserInput
 }
 
@@ -2027,7 +2065,7 @@ export type UserUncheckedCreateWithoutWallPostsInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -2061,6 +2099,7 @@ export type UserUncheckedCreateWithoutWallPostsInput = {
   conversationsAsB?: Prisma.ConversationUncheckedCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -2076,7 +2115,7 @@ export type UserCreateWithoutPostsInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -2110,6 +2149,7 @@ export type UserCreateWithoutPostsInput = {
   conversationsAsB?: Prisma.ConversationCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionCreateNestedManyWithoutUserInput
 }
 
@@ -2121,7 +2161,7 @@ export type UserUncheckedCreateWithoutPostsInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -2155,6 +2195,7 @@ export type UserUncheckedCreateWithoutPostsInput = {
   conversationsAsB?: Prisma.ConversationUncheckedCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -2181,7 +2222,7 @@ export type UserUpdateWithoutWallPostsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -2215,6 +2256,7 @@ export type UserUpdateWithoutWallPostsInput = {
   conversationsAsB?: Prisma.ConversationUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUpdateManyWithoutUserNestedInput
 }
 
@@ -2226,7 +2268,7 @@ export type UserUncheckedUpdateWithoutWallPostsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -2260,6 +2302,7 @@ export type UserUncheckedUpdateWithoutWallPostsInput = {
   conversationsAsB?: Prisma.ConversationUncheckedUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -2281,7 +2324,7 @@ export type UserUpdateWithoutPostsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -2315,6 +2358,7 @@ export type UserUpdateWithoutPostsInput = {
   conversationsAsB?: Prisma.ConversationUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUpdateManyWithoutUserNestedInput
 }
 
@@ -2326,7 +2370,7 @@ export type UserUncheckedUpdateWithoutPostsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -2360,6 +2404,7 @@ export type UserUncheckedUpdateWithoutPostsInput = {
   conversationsAsB?: Prisma.ConversationUncheckedUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -2370,7 +2415,7 @@ export type UserCreateWithoutThreadsInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -2404,6 +2449,7 @@ export type UserCreateWithoutThreadsInput = {
   conversationsAsB?: Prisma.ConversationCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionCreateNestedManyWithoutUserInput
 }
 
@@ -2415,7 +2461,7 @@ export type UserUncheckedCreateWithoutThreadsInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -2449,6 +2495,7 @@ export type UserUncheckedCreateWithoutThreadsInput = {
   conversationsAsB?: Prisma.ConversationUncheckedCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -2475,7 +2522,7 @@ export type UserUpdateWithoutThreadsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -2509,6 +2556,7 @@ export type UserUpdateWithoutThreadsInput = {
   conversationsAsB?: Prisma.ConversationUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUpdateManyWithoutUserNestedInput
 }
 
@@ -2520,7 +2568,7 @@ export type UserUncheckedUpdateWithoutThreadsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -2554,6 +2602,7 @@ export type UserUncheckedUpdateWithoutThreadsInput = {
   conversationsAsB?: Prisma.ConversationUncheckedUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -2564,7 +2613,7 @@ export type UserCreateWithoutCommentsInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -2598,6 +2647,7 @@ export type UserCreateWithoutCommentsInput = {
   conversationsAsB?: Prisma.ConversationCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionCreateNestedManyWithoutUserInput
 }
 
@@ -2609,7 +2659,7 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -2643,6 +2693,7 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   conversationsAsB?: Prisma.ConversationUncheckedCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -2669,7 +2720,7 @@ export type UserUpdateWithoutCommentsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -2703,6 +2754,7 @@ export type UserUpdateWithoutCommentsInput = {
   conversationsAsB?: Prisma.ConversationUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUpdateManyWithoutUserNestedInput
 }
 
@@ -2714,7 +2766,7 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -2748,6 +2800,7 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   conversationsAsB?: Prisma.ConversationUncheckedUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -2758,7 +2811,7 @@ export type UserCreateWithoutVotesInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -2792,6 +2845,7 @@ export type UserCreateWithoutVotesInput = {
   conversationsAsB?: Prisma.ConversationCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionCreateNestedManyWithoutUserInput
 }
 
@@ -2803,7 +2857,7 @@ export type UserUncheckedCreateWithoutVotesInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -2837,6 +2891,7 @@ export type UserUncheckedCreateWithoutVotesInput = {
   conversationsAsB?: Prisma.ConversationUncheckedCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -2863,7 +2918,7 @@ export type UserUpdateWithoutVotesInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -2897,6 +2952,7 @@ export type UserUpdateWithoutVotesInput = {
   conversationsAsB?: Prisma.ConversationUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUpdateManyWithoutUserNestedInput
 }
 
@@ -2908,7 +2964,7 @@ export type UserUncheckedUpdateWithoutVotesInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -2942,6 +2998,7 @@ export type UserUncheckedUpdateWithoutVotesInput = {
   conversationsAsB?: Prisma.ConversationUncheckedUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -2952,7 +3009,7 @@ export type UserCreateWithoutLikesInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -2986,6 +3043,7 @@ export type UserCreateWithoutLikesInput = {
   conversationsAsB?: Prisma.ConversationCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionCreateNestedManyWithoutUserInput
 }
 
@@ -2997,7 +3055,7 @@ export type UserUncheckedCreateWithoutLikesInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -3031,6 +3089,7 @@ export type UserUncheckedCreateWithoutLikesInput = {
   conversationsAsB?: Prisma.ConversationUncheckedCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -3057,7 +3116,7 @@ export type UserUpdateWithoutLikesInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -3091,6 +3150,7 @@ export type UserUpdateWithoutLikesInput = {
   conversationsAsB?: Prisma.ConversationUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUpdateManyWithoutUserNestedInput
 }
 
@@ -3102,7 +3162,7 @@ export type UserUncheckedUpdateWithoutLikesInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -3136,6 +3196,7 @@ export type UserUncheckedUpdateWithoutLikesInput = {
   conversationsAsB?: Prisma.ConversationUncheckedUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -3146,7 +3207,7 @@ export type UserCreateWithoutSentFriendshipsInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -3180,6 +3241,7 @@ export type UserCreateWithoutSentFriendshipsInput = {
   conversationsAsB?: Prisma.ConversationCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionCreateNestedManyWithoutUserInput
 }
 
@@ -3191,7 +3253,7 @@ export type UserUncheckedCreateWithoutSentFriendshipsInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -3225,6 +3287,7 @@ export type UserUncheckedCreateWithoutSentFriendshipsInput = {
   conversationsAsB?: Prisma.ConversationUncheckedCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -3240,7 +3303,7 @@ export type UserCreateWithoutReceivedFriendshipsInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -3274,6 +3337,7 @@ export type UserCreateWithoutReceivedFriendshipsInput = {
   conversationsAsB?: Prisma.ConversationCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionCreateNestedManyWithoutUserInput
 }
 
@@ -3285,7 +3349,7 @@ export type UserUncheckedCreateWithoutReceivedFriendshipsInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -3319,6 +3383,7 @@ export type UserUncheckedCreateWithoutReceivedFriendshipsInput = {
   conversationsAsB?: Prisma.ConversationUncheckedCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -3345,7 +3410,7 @@ export type UserUpdateWithoutSentFriendshipsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -3379,6 +3444,7 @@ export type UserUpdateWithoutSentFriendshipsInput = {
   conversationsAsB?: Prisma.ConversationUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUpdateManyWithoutUserNestedInput
 }
 
@@ -3390,7 +3456,7 @@ export type UserUncheckedUpdateWithoutSentFriendshipsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -3424,6 +3490,7 @@ export type UserUncheckedUpdateWithoutSentFriendshipsInput = {
   conversationsAsB?: Prisma.ConversationUncheckedUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -3445,7 +3512,7 @@ export type UserUpdateWithoutReceivedFriendshipsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -3479,6 +3546,7 @@ export type UserUpdateWithoutReceivedFriendshipsInput = {
   conversationsAsB?: Prisma.ConversationUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUpdateManyWithoutUserNestedInput
 }
 
@@ -3490,7 +3558,7 @@ export type UserUncheckedUpdateWithoutReceivedFriendshipsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -3524,6 +3592,7 @@ export type UserUncheckedUpdateWithoutReceivedFriendshipsInput = {
   conversationsAsB?: Prisma.ConversationUncheckedUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -3534,7 +3603,7 @@ export type UserCreateWithoutLibraryEntriesInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -3568,6 +3637,7 @@ export type UserCreateWithoutLibraryEntriesInput = {
   conversationsAsB?: Prisma.ConversationCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionCreateNestedManyWithoutUserInput
 }
 
@@ -3579,7 +3649,7 @@ export type UserUncheckedCreateWithoutLibraryEntriesInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -3613,6 +3683,7 @@ export type UserUncheckedCreateWithoutLibraryEntriesInput = {
   conversationsAsB?: Prisma.ConversationUncheckedCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -3639,7 +3710,7 @@ export type UserUpdateWithoutLibraryEntriesInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -3673,6 +3744,7 @@ export type UserUpdateWithoutLibraryEntriesInput = {
   conversationsAsB?: Prisma.ConversationUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUpdateManyWithoutUserNestedInput
 }
 
@@ -3684,7 +3756,7 @@ export type UserUncheckedUpdateWithoutLibraryEntriesInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -3718,6 +3790,7 @@ export type UserUncheckedUpdateWithoutLibraryEntriesInput = {
   conversationsAsB?: Prisma.ConversationUncheckedUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -3728,7 +3801,7 @@ export type UserCreateWithoutCreatedConversationsInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -3762,6 +3835,7 @@ export type UserCreateWithoutCreatedConversationsInput = {
   conversationsAsB?: Prisma.ConversationCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionCreateNestedManyWithoutUserInput
 }
 
@@ -3773,7 +3847,7 @@ export type UserUncheckedCreateWithoutCreatedConversationsInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -3807,6 +3881,7 @@ export type UserUncheckedCreateWithoutCreatedConversationsInput = {
   conversationsAsB?: Prisma.ConversationUncheckedCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -3822,7 +3897,7 @@ export type UserCreateWithoutConversationsAsAInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -3856,6 +3931,7 @@ export type UserCreateWithoutConversationsAsAInput = {
   conversationsAsB?: Prisma.ConversationCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionCreateNestedManyWithoutUserInput
 }
 
@@ -3867,7 +3943,7 @@ export type UserUncheckedCreateWithoutConversationsAsAInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -3901,6 +3977,7 @@ export type UserUncheckedCreateWithoutConversationsAsAInput = {
   conversationsAsB?: Prisma.ConversationUncheckedCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -3916,7 +3993,7 @@ export type UserCreateWithoutConversationsAsBInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -3950,6 +4027,7 @@ export type UserCreateWithoutConversationsAsBInput = {
   conversationsAsA?: Prisma.ConversationCreateNestedManyWithoutUserAInput
   conversations?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionCreateNestedManyWithoutUserInput
 }
 
@@ -3961,7 +4039,7 @@ export type UserUncheckedCreateWithoutConversationsAsBInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -3995,6 +4073,7 @@ export type UserUncheckedCreateWithoutConversationsAsBInput = {
   conversationsAsA?: Prisma.ConversationUncheckedCreateNestedManyWithoutUserAInput
   conversations?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -4021,7 +4100,7 @@ export type UserUpdateWithoutCreatedConversationsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -4055,6 +4134,7 @@ export type UserUpdateWithoutCreatedConversationsInput = {
   conversationsAsB?: Prisma.ConversationUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUpdateManyWithoutUserNestedInput
 }
 
@@ -4066,7 +4146,7 @@ export type UserUncheckedUpdateWithoutCreatedConversationsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -4100,6 +4180,7 @@ export type UserUncheckedUpdateWithoutCreatedConversationsInput = {
   conversationsAsB?: Prisma.ConversationUncheckedUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -4121,7 +4202,7 @@ export type UserUpdateWithoutConversationsAsAInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -4155,6 +4236,7 @@ export type UserUpdateWithoutConversationsAsAInput = {
   conversationsAsB?: Prisma.ConversationUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUpdateManyWithoutUserNestedInput
 }
 
@@ -4166,7 +4248,7 @@ export type UserUncheckedUpdateWithoutConversationsAsAInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -4200,6 +4282,7 @@ export type UserUncheckedUpdateWithoutConversationsAsAInput = {
   conversationsAsB?: Prisma.ConversationUncheckedUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -4221,7 +4304,7 @@ export type UserUpdateWithoutConversationsAsBInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -4255,6 +4338,7 @@ export type UserUpdateWithoutConversationsAsBInput = {
   conversationsAsA?: Prisma.ConversationUpdateManyWithoutUserANestedInput
   conversations?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUpdateManyWithoutUserNestedInput
 }
 
@@ -4266,7 +4350,7 @@ export type UserUncheckedUpdateWithoutConversationsAsBInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -4300,6 +4384,7 @@ export type UserUncheckedUpdateWithoutConversationsAsBInput = {
   conversationsAsA?: Prisma.ConversationUncheckedUpdateManyWithoutUserANestedInput
   conversations?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -4310,7 +4395,7 @@ export type UserCreateWithoutConversationsInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -4344,6 +4429,7 @@ export type UserCreateWithoutConversationsInput = {
   conversationsAsA?: Prisma.ConversationCreateNestedManyWithoutUserAInput
   conversationsAsB?: Prisma.ConversationCreateNestedManyWithoutUserBInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionCreateNestedManyWithoutUserInput
 }
 
@@ -4355,7 +4441,7 @@ export type UserUncheckedCreateWithoutConversationsInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -4389,6 +4475,7 @@ export type UserUncheckedCreateWithoutConversationsInput = {
   conversationsAsA?: Prisma.ConversationUncheckedCreateNestedManyWithoutUserAInput
   conversationsAsB?: Prisma.ConversationUncheckedCreateNestedManyWithoutUserBInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -4415,7 +4502,7 @@ export type UserUpdateWithoutConversationsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -4449,6 +4536,7 @@ export type UserUpdateWithoutConversationsInput = {
   conversationsAsA?: Prisma.ConversationUpdateManyWithoutUserANestedInput
   conversationsAsB?: Prisma.ConversationUpdateManyWithoutUserBNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUpdateManyWithoutUserNestedInput
 }
 
@@ -4460,7 +4548,7 @@ export type UserUncheckedUpdateWithoutConversationsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -4494,6 +4582,7 @@ export type UserUncheckedUpdateWithoutConversationsInput = {
   conversationsAsA?: Prisma.ConversationUncheckedUpdateManyWithoutUserANestedInput
   conversationsAsB?: Prisma.ConversationUncheckedUpdateManyWithoutUserBNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -4504,7 +4593,7 @@ export type UserCreateWithoutMessagesInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -4538,6 +4627,7 @@ export type UserCreateWithoutMessagesInput = {
   conversationsAsA?: Prisma.ConversationCreateNestedManyWithoutUserAInput
   conversationsAsB?: Prisma.ConversationCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
+  oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionCreateNestedManyWithoutUserInput
 }
 
@@ -4549,7 +4639,7 @@ export type UserUncheckedCreateWithoutMessagesInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -4583,6 +4673,7 @@ export type UserUncheckedCreateWithoutMessagesInput = {
   conversationsAsA?: Prisma.ConversationUncheckedCreateNestedManyWithoutUserAInput
   conversationsAsB?: Prisma.ConversationUncheckedCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -4609,7 +4700,7 @@ export type UserUpdateWithoutMessagesInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -4643,6 +4734,7 @@ export type UserUpdateWithoutMessagesInput = {
   conversationsAsA?: Prisma.ConversationUpdateManyWithoutUserANestedInput
   conversationsAsB?: Prisma.ConversationUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUpdateManyWithoutUserNestedInput
 }
 
@@ -4654,7 +4746,7 @@ export type UserUncheckedUpdateWithoutMessagesInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -4688,6 +4780,7 @@ export type UserUncheckedUpdateWithoutMessagesInput = {
   conversationsAsA?: Prisma.ConversationUncheckedUpdateManyWithoutUserANestedInput
   conversationsAsB?: Prisma.ConversationUncheckedUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -4698,7 +4791,7 @@ export type UserCreateWithoutMessageReactionsInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -4733,6 +4826,7 @@ export type UserCreateWithoutMessageReactionsInput = {
   conversationsAsB?: Prisma.ConversationCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutMessageReactionsInput = {
@@ -4743,7 +4837,7 @@ export type UserUncheckedCreateWithoutMessageReactionsInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -4778,6 +4872,7 @@ export type UserUncheckedCreateWithoutMessageReactionsInput = {
   conversationsAsB?: Prisma.ConversationUncheckedCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutMessageReactionsInput = {
@@ -4803,7 +4898,7 @@ export type UserUpdateWithoutMessageReactionsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -4838,6 +4933,7 @@ export type UserUpdateWithoutMessageReactionsInput = {
   conversationsAsB?: Prisma.ConversationUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMessageReactionsInput = {
@@ -4848,7 +4944,7 @@ export type UserUncheckedUpdateWithoutMessageReactionsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -4883,6 +4979,7 @@ export type UserUncheckedUpdateWithoutMessageReactionsInput = {
   conversationsAsB?: Prisma.ConversationUncheckedUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -4892,7 +4989,7 @@ export type UserCreateWithoutNotificationsInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -4926,6 +5023,7 @@ export type UserCreateWithoutNotificationsInput = {
   conversationsAsB?: Prisma.ConversationCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionCreateNestedManyWithoutUserInput
 }
 
@@ -4937,7 +5035,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -4971,6 +5069,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   conversationsAsB?: Prisma.ConversationUncheckedCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -4986,7 +5085,7 @@ export type UserCreateWithoutCausedNotificationsInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -5020,6 +5119,7 @@ export type UserCreateWithoutCausedNotificationsInput = {
   conversationsAsB?: Prisma.ConversationCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionCreateNestedManyWithoutUserInput
 }
 
@@ -5031,7 +5131,7 @@ export type UserUncheckedCreateWithoutCausedNotificationsInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -5065,6 +5165,7 @@ export type UserUncheckedCreateWithoutCausedNotificationsInput = {
   conversationsAsB?: Prisma.ConversationUncheckedCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -5091,7 +5192,7 @@ export type UserUpdateWithoutNotificationsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -5125,6 +5226,7 @@ export type UserUpdateWithoutNotificationsInput = {
   conversationsAsB?: Prisma.ConversationUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUpdateManyWithoutUserNestedInput
 }
 
@@ -5136,7 +5238,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -5170,6 +5272,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   conversationsAsB?: Prisma.ConversationUncheckedUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -5191,7 +5294,7 @@ export type UserUpdateWithoutCausedNotificationsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -5225,6 +5328,7 @@ export type UserUpdateWithoutCausedNotificationsInput = {
   conversationsAsB?: Prisma.ConversationUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUpdateManyWithoutUserNestedInput
 }
 
@@ -5236,7 +5340,7 @@ export type UserUncheckedUpdateWithoutCausedNotificationsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -5270,6 +5374,7 @@ export type UserUncheckedUpdateWithoutCausedNotificationsInput = {
   conversationsAsB?: Prisma.ConversationUncheckedUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -5280,7 +5385,7 @@ export type UserCreateWithoutReportsInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -5314,6 +5419,7 @@ export type UserCreateWithoutReportsInput = {
   conversationsAsB?: Prisma.ConversationCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionCreateNestedManyWithoutUserInput
 }
 
@@ -5325,7 +5431,7 @@ export type UserUncheckedCreateWithoutReportsInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -5359,6 +5465,7 @@ export type UserUncheckedCreateWithoutReportsInput = {
   conversationsAsB?: Prisma.ConversationUncheckedCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -5374,7 +5481,7 @@ export type UserCreateWithoutAssignedReportsInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -5408,6 +5515,7 @@ export type UserCreateWithoutAssignedReportsInput = {
   conversationsAsB?: Prisma.ConversationCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionCreateNestedManyWithoutUserInput
 }
 
@@ -5419,7 +5527,7 @@ export type UserUncheckedCreateWithoutAssignedReportsInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -5453,6 +5561,7 @@ export type UserUncheckedCreateWithoutAssignedReportsInput = {
   conversationsAsB?: Prisma.ConversationUncheckedCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -5479,7 +5588,7 @@ export type UserUpdateWithoutReportsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -5513,6 +5622,7 @@ export type UserUpdateWithoutReportsInput = {
   conversationsAsB?: Prisma.ConversationUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUpdateManyWithoutUserNestedInput
 }
 
@@ -5524,7 +5634,7 @@ export type UserUncheckedUpdateWithoutReportsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -5558,6 +5668,7 @@ export type UserUncheckedUpdateWithoutReportsInput = {
   conversationsAsB?: Prisma.ConversationUncheckedUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -5579,7 +5690,7 @@ export type UserUpdateWithoutAssignedReportsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -5613,6 +5724,7 @@ export type UserUpdateWithoutAssignedReportsInput = {
   conversationsAsB?: Prisma.ConversationUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUpdateManyWithoutUserNestedInput
 }
 
@@ -5624,7 +5736,7 @@ export type UserUncheckedUpdateWithoutAssignedReportsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -5658,6 +5770,7 @@ export type UserUncheckedUpdateWithoutAssignedReportsInput = {
   conversationsAsB?: Prisma.ConversationUncheckedUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -5668,7 +5781,7 @@ export type UserCreateWithoutReportCommentsInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -5702,6 +5815,7 @@ export type UserCreateWithoutReportCommentsInput = {
   conversationsAsB?: Prisma.ConversationCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionCreateNestedManyWithoutUserInput
 }
 
@@ -5713,7 +5827,7 @@ export type UserUncheckedCreateWithoutReportCommentsInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -5747,6 +5861,7 @@ export type UserUncheckedCreateWithoutReportCommentsInput = {
   conversationsAsB?: Prisma.ConversationUncheckedCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -5773,7 +5888,7 @@ export type UserUpdateWithoutReportCommentsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -5807,6 +5922,7 @@ export type UserUpdateWithoutReportCommentsInput = {
   conversationsAsB?: Prisma.ConversationUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUpdateManyWithoutUserNestedInput
 }
 
@@ -5818,7 +5934,7 @@ export type UserUncheckedUpdateWithoutReportCommentsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -5852,6 +5968,7 @@ export type UserUncheckedUpdateWithoutReportCommentsInput = {
   conversationsAsB?: Prisma.ConversationUncheckedUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -5862,7 +5979,7 @@ export type UserCreateWithoutContentReportsInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -5896,6 +6013,7 @@ export type UserCreateWithoutContentReportsInput = {
   conversationsAsB?: Prisma.ConversationCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionCreateNestedManyWithoutUserInput
 }
 
@@ -5907,7 +6025,7 @@ export type UserUncheckedCreateWithoutContentReportsInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -5941,6 +6059,7 @@ export type UserUncheckedCreateWithoutContentReportsInput = {
   conversationsAsB?: Prisma.ConversationUncheckedCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -5956,7 +6075,7 @@ export type UserCreateWithoutResolvedReportsInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -5990,6 +6109,7 @@ export type UserCreateWithoutResolvedReportsInput = {
   conversationsAsB?: Prisma.ConversationCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionCreateNestedManyWithoutUserInput
 }
 
@@ -6001,7 +6121,7 @@ export type UserUncheckedCreateWithoutResolvedReportsInput = {
   avatarUrl?: string | null
   coverUrl?: string | null
   backgroundUrl?: string | null
-  password: string
+  password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
   status?: $Enums.UserStatus
@@ -6035,6 +6155,7 @@ export type UserUncheckedCreateWithoutResolvedReportsInput = {
   conversationsAsB?: Prisma.ConversationUncheckedCreateNestedManyWithoutUserBInput
   conversations?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
   messageReactions?: Prisma.MessageReactionUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -6061,7 +6182,7 @@ export type UserUpdateWithoutContentReportsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -6095,6 +6216,7 @@ export type UserUpdateWithoutContentReportsInput = {
   conversationsAsB?: Prisma.ConversationUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUpdateManyWithoutUserNestedInput
 }
 
@@ -6106,7 +6228,7 @@ export type UserUncheckedUpdateWithoutContentReportsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -6140,6 +6262,7 @@ export type UserUncheckedUpdateWithoutContentReportsInput = {
   conversationsAsB?: Prisma.ConversationUncheckedUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -6161,7 +6284,7 @@ export type UserUpdateWithoutResolvedReportsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -6195,6 +6318,7 @@ export type UserUpdateWithoutResolvedReportsInput = {
   conversationsAsB?: Prisma.ConversationUpdateManyWithoutUserBNestedInput
   conversations?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
   messageReactions?: Prisma.MessageReactionUpdateManyWithoutUserNestedInput
 }
 
@@ -6206,7 +6330,7 @@ export type UserUncheckedUpdateWithoutResolvedReportsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
@@ -6229,6 +6353,205 @@ export type UserUncheckedUpdateWithoutResolvedReportsInput = {
   assignedReports?: Prisma.ReportUncheckedUpdateManyWithoutAssigneeNestedInput
   reportComments?: Prisma.ReportCommentUncheckedUpdateManyWithoutAuthorNestedInput
   contentReports?: Prisma.ContentReportUncheckedUpdateManyWithoutReporterNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  causedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
+  libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
+  railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
+  invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
+  createdConversations?: Prisma.ConversationUncheckedUpdateManyWithoutCreatorNestedInput
+  conversationsAsA?: Prisma.ConversationUncheckedUpdateManyWithoutUserANestedInput
+  conversationsAsB?: Prisma.ConversationUncheckedUpdateManyWithoutUserBNestedInput
+  conversations?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
+  messageReactions?: Prisma.MessageReactionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutOauthAccountsInput = {
+  email: string
+  username: string
+  name?: string | null
+  avatarUrl?: string | null
+  coverUrl?: string | null
+  backgroundUrl?: string | null
+  password?: string | null
+  theme?: $Enums.Theme
+  appearOffline?: boolean
+  status?: $Enums.UserStatus
+  isPublic?: boolean
+  isAdmin?: boolean
+  tourCompletedAt?: Date | string | null
+  checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
+  createdAt?: Date | string
+  ownedCommunities?: Prisma.CommunityCreateNestedManyWithoutOwnerInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
+  posts?: Prisma.PostCreateNestedManyWithoutAuthorInput
+  wallPosts?: Prisma.PostCreateNestedManyWithoutWallUserInput
+  sentFriendships?: Prisma.FriendshipCreateNestedManyWithoutRequesterInput
+  receivedFriendships?: Prisma.FriendshipCreateNestedManyWithoutAddresseeInput
+  threads?: Prisma.ThreadCreateNestedManyWithoutAuthorInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  votes?: Prisma.VoteCreateNestedManyWithoutUserInput
+  reports?: Prisma.ReportCreateNestedManyWithoutAuthorInput
+  assignedReports?: Prisma.ReportCreateNestedManyWithoutAssigneeInput
+  reportComments?: Prisma.ReportCommentCreateNestedManyWithoutAuthorInput
+  contentReports?: Prisma.ContentReportCreateNestedManyWithoutReporterInput
+  resolvedReports?: Prisma.ContentReportCreateNestedManyWithoutResolvedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  causedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
+  libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
+  railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
+  likes?: Prisma.LikeCreateNestedManyWithoutUserInput
+  invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
+  createdConversations?: Prisma.ConversationCreateNestedManyWithoutCreatorInput
+  conversationsAsA?: Prisma.ConversationCreateNestedManyWithoutUserAInput
+  conversationsAsB?: Prisma.ConversationCreateNestedManyWithoutUserBInput
+  conversations?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
+  messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  messageReactions?: Prisma.MessageReactionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutOauthAccountsInput = {
+  id?: number
+  email: string
+  username: string
+  name?: string | null
+  avatarUrl?: string | null
+  coverUrl?: string | null
+  backgroundUrl?: string | null
+  password?: string | null
+  theme?: $Enums.Theme
+  appearOffline?: boolean
+  status?: $Enums.UserStatus
+  isPublic?: boolean
+  isAdmin?: boolean
+  tourCompletedAt?: Date | string | null
+  checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
+  createdAt?: Date | string
+  ownedCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutOwnerInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
+  wallPosts?: Prisma.PostUncheckedCreateNestedManyWithoutWallUserInput
+  sentFriendships?: Prisma.FriendshipUncheckedCreateNestedManyWithoutRequesterInput
+  receivedFriendships?: Prisma.FriendshipUncheckedCreateNestedManyWithoutAddresseeInput
+  threads?: Prisma.ThreadUncheckedCreateNestedManyWithoutAuthorInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutUserInput
+  reports?: Prisma.ReportUncheckedCreateNestedManyWithoutAuthorInput
+  assignedReports?: Prisma.ReportUncheckedCreateNestedManyWithoutAssigneeInput
+  reportComments?: Prisma.ReportCommentUncheckedCreateNestedManyWithoutAuthorInput
+  contentReports?: Prisma.ContentReportUncheckedCreateNestedManyWithoutReporterInput
+  resolvedReports?: Prisma.ContentReportUncheckedCreateNestedManyWithoutResolvedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  causedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
+  libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
+  railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
+  invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
+  createdConversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutCreatorInput
+  conversationsAsA?: Prisma.ConversationUncheckedCreateNestedManyWithoutUserAInput
+  conversationsAsB?: Prisma.ConversationUncheckedCreateNestedManyWithoutUserBInput
+  conversations?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  messageReactions?: Prisma.MessageReactionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutOauthAccountsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutOauthAccountsInput, Prisma.UserUncheckedCreateWithoutOauthAccountsInput>
+}
+
+export type UserUpsertWithoutOauthAccountsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutOauthAccountsInput, Prisma.UserUncheckedUpdateWithoutOauthAccountsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutOauthAccountsInput, Prisma.UserUncheckedCreateWithoutOauthAccountsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutOauthAccountsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutOauthAccountsInput, Prisma.UserUncheckedUpdateWithoutOauthAccountsInput>
+}
+
+export type UserUpdateWithoutOauthAccountsInput = {
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
+  appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedCommunities?: Prisma.CommunityUpdateManyWithoutOwnerNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
+  posts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
+  wallPosts?: Prisma.PostUpdateManyWithoutWallUserNestedInput
+  sentFriendships?: Prisma.FriendshipUpdateManyWithoutRequesterNestedInput
+  receivedFriendships?: Prisma.FriendshipUpdateManyWithoutAddresseeNestedInput
+  threads?: Prisma.ThreadUpdateManyWithoutAuthorNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutUserNestedInput
+  reports?: Prisma.ReportUpdateManyWithoutAuthorNestedInput
+  assignedReports?: Prisma.ReportUpdateManyWithoutAssigneeNestedInput
+  reportComments?: Prisma.ReportCommentUpdateManyWithoutAuthorNestedInput
+  contentReports?: Prisma.ContentReportUpdateManyWithoutReporterNestedInput
+  resolvedReports?: Prisma.ContentReportUpdateManyWithoutResolvedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  causedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
+  libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
+  railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
+  invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
+  createdConversations?: Prisma.ConversationUpdateManyWithoutCreatorNestedInput
+  conversationsAsA?: Prisma.ConversationUpdateManyWithoutUserANestedInput
+  conversationsAsB?: Prisma.ConversationUpdateManyWithoutUserBNestedInput
+  conversations?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  messageReactions?: Prisma.MessageReactionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutOauthAccountsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
+  appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutOwnerNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
+  wallPosts?: Prisma.PostUncheckedUpdateManyWithoutWallUserNestedInput
+  sentFriendships?: Prisma.FriendshipUncheckedUpdateManyWithoutRequesterNestedInput
+  receivedFriendships?: Prisma.FriendshipUncheckedUpdateManyWithoutAddresseeNestedInput
+  threads?: Prisma.ThreadUncheckedUpdateManyWithoutAuthorNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutUserNestedInput
+  reports?: Prisma.ReportUncheckedUpdateManyWithoutAuthorNestedInput
+  assignedReports?: Prisma.ReportUncheckedUpdateManyWithoutAssigneeNestedInput
+  reportComments?: Prisma.ReportCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  contentReports?: Prisma.ContentReportUncheckedUpdateManyWithoutReporterNestedInput
+  resolvedReports?: Prisma.ContentReportUncheckedUpdateManyWithoutResolvedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
@@ -6274,6 +6597,7 @@ export type UserCountOutputType = {
   conversationsAsB: number
   conversations: number
   messages: number
+  oauthAccounts: number
   messageReactions: number
 }
 
@@ -6303,6 +6627,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   conversationsAsB?: boolean | UserCountOutputTypeCountConversationsAsBArgs
   conversations?: boolean | UserCountOutputTypeCountConversationsArgs
   messages?: boolean | UserCountOutputTypeCountMessagesArgs
+  oauthAccounts?: boolean | UserCountOutputTypeCountOauthAccountsArgs
   messageReactions?: boolean | UserCountOutputTypeCountMessageReactionsArgs
 }
 
@@ -6494,6 +6819,13 @@ export type UserCountOutputTypeCountMessagesArgs<ExtArgs extends runtime.Types.E
 /**
  * UserCountOutputType without action
  */
+export type UserCountOutputTypeCountOauthAccountsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.OAuthAccountWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
 export type UserCountOutputTypeCountMessageReactionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.MessageReactionWhereInput
 }
@@ -6542,6 +6874,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   conversationsAsB?: boolean | Prisma.User$conversationsAsBArgs<ExtArgs>
   conversations?: boolean | Prisma.User$conversationsArgs<ExtArgs>
   messages?: boolean | Prisma.User$messagesArgs<ExtArgs>
+  oauthAccounts?: boolean | Prisma.User$oauthAccountsArgs<ExtArgs>
   messageReactions?: boolean | Prisma.User$messageReactionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
@@ -6633,6 +6966,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   conversationsAsB?: boolean | Prisma.User$conversationsAsBArgs<ExtArgs>
   conversations?: boolean | Prisma.User$conversationsArgs<ExtArgs>
   messages?: boolean | Prisma.User$messagesArgs<ExtArgs>
+  oauthAccounts?: boolean | Prisma.User$oauthAccountsArgs<ExtArgs>
   messageReactions?: boolean | Prisma.User$messageReactionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -6667,6 +7001,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     conversationsAsB: Prisma.$ConversationPayload<ExtArgs>[]
     conversations: Prisma.$ConversationMemberPayload<ExtArgs>[]
     messages: Prisma.$MessagePayload<ExtArgs>[]
+    oauthAccounts: Prisma.$OAuthAccountPayload<ExtArgs>[]
     messageReactions: Prisma.$MessageReactionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -6677,7 +7012,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     avatarUrl: string | null
     coverUrl: string | null
     backgroundUrl: string | null
-    password: string
+    password: string | null
     theme: $Enums.Theme
     appearOffline: boolean
     status: $Enums.UserStatus
@@ -7106,6 +7441,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   conversationsAsB<T extends Prisma.User$conversationsAsBArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$conversationsAsBArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   conversations<T extends Prisma.User$conversationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$conversationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ConversationMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   messages<T extends Prisma.User$messagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  oauthAccounts<T extends Prisma.User$oauthAccountsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$oauthAccountsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OAuthAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   messageReactions<T extends Prisma.User$messageReactionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$messageReactionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessageReactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -8138,6 +8474,30 @@ export type User$messagesArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.MessageScalarFieldEnum | Prisma.MessageScalarFieldEnum[]
+}
+
+/**
+ * User.oauthAccounts
+ */
+export type User$oauthAccountsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the OAuthAccount
+   */
+  select?: Prisma.OAuthAccountSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the OAuthAccount
+   */
+  omit?: Prisma.OAuthAccountOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OAuthAccountInclude<ExtArgs> | null
+  where?: Prisma.OAuthAccountWhereInput
+  orderBy?: Prisma.OAuthAccountOrderByWithRelationInput | Prisma.OAuthAccountOrderByWithRelationInput[]
+  cursor?: Prisma.OAuthAccountWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.OAuthAccountScalarFieldEnum | Prisma.OAuthAccountScalarFieldEnum[]
 }
 
 /**

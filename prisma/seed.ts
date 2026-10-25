@@ -2073,6 +2073,14 @@ async function main() {
     },
   });
   userIds.admin = admin.id;
+  await prisma.oAuthAccount.create({
+    data: {
+      userId: admin.id,
+      provider: 'discord',
+      providerAccountId: '100000000000000001',
+      username: 'orbis_admin',
+    },
+  });
 
   const user = await prisma.user.create({
     data: {

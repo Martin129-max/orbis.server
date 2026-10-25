@@ -137,3 +137,8 @@ export type Setting = Prisma.SettingModel
  * 
  */
 export type User = Prisma.UserModel
+/**
+ * Model OAuthAccount
+ * 
+ */
+export type OAuthAccount = Prisma.OAuthAccountModel
