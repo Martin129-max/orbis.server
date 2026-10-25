@@ -3,7 +3,7 @@ import {
   HeadBucketCommand,
   PutBucketPolicyCommand,
 } from '@aws-sdk/client-s3';
-import { createS3Client } from '../src/storage/s3';
+import { createS3Client } from '../../src/storage/s3';
 
 const client = createS3Client();
 const bucket = process.env.BUCKET_NAME!;

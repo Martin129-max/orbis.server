@@ -35,7 +35,7 @@ setup)
     $IMAGE
   wait_for_storage
   pnpm run storage:bucket
-  echo "✅ Container created. You can now run: ./storage.sh start"
+  echo "✅ Container created. You can now run: ./scripts/development/storage.sh start"
   ;;
 
 start)
@@ -70,6 +70,6 @@ remove)
   ;;
 
 *)
-  echo "Usage: ./storage.sh {setup|start|stop|restart|status|logs|remove}"
+  echo "Usage: ./scripts/development/storage.sh {setup|start|stop|restart|status|logs|remove}"
   ;;
 esac

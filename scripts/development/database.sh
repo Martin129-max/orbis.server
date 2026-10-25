@@ -30,7 +30,7 @@ setup)
     -e POSTGRES_DB=$CONTAINER_NAME \
     -p $PORT:5432 \
     $IMAGE
-  echo "✅ Container created. You can now run: ./database.sh start"
+  echo "✅ Container created. You can now run: ./scripts/development/database.sh start"
   ;;
 
 start)
@@ -64,6 +64,6 @@ remove)
   ;;
 
 *)
-  echo "Usage: ./database.sh {setup|start|stop|restart|status|logs|remove}"
+  echo "Usage: ./scripts/development/database.sh {setup|start|stop|restart|status|logs|remove}"
   ;;
 esac
