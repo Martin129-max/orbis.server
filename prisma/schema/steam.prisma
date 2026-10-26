@@ -1,0 +1,24 @@
+model SteamAccount {
+  userId       Int       @id
+  steamId      String    @unique
+  personaName  String
+  trackGames   Boolean   @default(false)
+  gamesPrivate Boolean   @default(false)
+  baselineAt   DateTime?
+  checkedAt    DateTime?
+  createdAt    DateTime  @default(now())
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model SteamGame {
+  userId       Int
+  appId        String
+  minutes      Int       @default(0)
+  lastPlayedAt DateTime?
+  igdbId       String?
+  matchedAt    DateTime?
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, appId])
+  @@index([userId, igdbId])
+}

@@ -51,6 +51,8 @@ model User {
   notifications        Notification[]       @relation("NotificationRecipient")
   causedNotifications  Notification[]       @relation("NotificationActor")
   libraryEntries       LibraryEntry[]
+  steamAccount         SteamAccount?
+  steamGames           SteamGame[]
   railFolders          RailFolder[]
   likes                Like[]
   invites              Invite[]

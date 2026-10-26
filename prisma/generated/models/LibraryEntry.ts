@@ -56,6 +56,7 @@ export type LibraryEntryMinAggregateOutputType = {
   total: number | null
   isPublic: boolean | null
   isAdult: boolean | null
+  steamAppId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -74,6 +75,7 @@ export type LibraryEntryMaxAggregateOutputType = {
   total: number | null
   isPublic: boolean | null
   isAdult: boolean | null
+  steamAppId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -92,6 +94,7 @@ export type LibraryEntryCountAggregateOutputType = {
   total: number
   isPublic: number
   isAdult: number
+  steamAppId: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -128,6 +131,7 @@ export type LibraryEntryMinAggregateInputType = {
   total?: true
   isPublic?: true
   isAdult?: true
+  steamAppId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -146,6 +150,7 @@ export type LibraryEntryMaxAggregateInputType = {
   total?: true
   isPublic?: true
   isAdult?: true
+  steamAppId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -164,6 +169,7 @@ export type LibraryEntryCountAggregateInputType = {
   total?: true
   isPublic?: true
   isAdult?: true
+  steamAppId?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -269,6 +275,7 @@ export type LibraryEntryGroupByOutputType = {
   total: number | null
   isPublic: boolean
   isAdult: boolean
+  steamAppId: string | null
   createdAt: Date
   updatedAt: Date
   _count: LibraryEntryCountAggregateOutputType | null
@@ -310,6 +317,7 @@ export type LibraryEntryWhereInput = {
   total?: Prisma.IntNullableFilter<"LibraryEntry"> | number | null
   isPublic?: Prisma.BoolFilter<"LibraryEntry"> | boolean
   isAdult?: Prisma.BoolFilter<"LibraryEntry"> | boolean
+  steamAppId?: Prisma.StringNullableFilter<"LibraryEntry"> | string | null
   createdAt?: Prisma.DateTimeFilter<"LibraryEntry"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"LibraryEntry"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -330,6 +338,7 @@ export type LibraryEntryOrderByWithRelationInput = {
   total?: Prisma.SortOrderInput | Prisma.SortOrder
   isPublic?: Prisma.SortOrder
   isAdult?: Prisma.SortOrder
+  steamAppId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
@@ -354,6 +363,7 @@ export type LibraryEntryWhereUniqueInput = Prisma.AtLeast<{
   total?: Prisma.IntNullableFilter<"LibraryEntry"> | number | null
   isPublic?: Prisma.BoolFilter<"LibraryEntry"> | boolean
   isAdult?: Prisma.BoolFilter<"LibraryEntry"> | boolean
+  steamAppId?: Prisma.StringNullableFilter<"LibraryEntry"> | string | null
   createdAt?: Prisma.DateTimeFilter<"LibraryEntry"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"LibraryEntry"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -374,6 +384,7 @@ export type LibraryEntryOrderByWithAggregationInput = {
   total?: Prisma.SortOrderInput | Prisma.SortOrder
   isPublic?: Prisma.SortOrder
   isAdult?: Prisma.SortOrder
+  steamAppId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.LibraryEntryCountOrderByAggregateInput
@@ -400,6 +411,7 @@ export type LibraryEntryScalarWhereWithAggregatesInput = {
   total?: Prisma.IntNullableWithAggregatesFilter<"LibraryEntry"> | number | null
   isPublic?: Prisma.BoolWithAggregatesFilter<"LibraryEntry"> | boolean
   isAdult?: Prisma.BoolWithAggregatesFilter<"LibraryEntry"> | boolean
+  steamAppId?: Prisma.StringNullableWithAggregatesFilter<"LibraryEntry"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"LibraryEntry"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"LibraryEntry"> | Date | string
 }
@@ -416,6 +428,7 @@ export type LibraryEntryCreateInput = {
   total?: number | null
   isPublic?: boolean
   isAdult?: boolean
+  steamAppId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutLibraryEntriesInput
@@ -436,6 +449,7 @@ export type LibraryEntryUncheckedCreateInput = {
   total?: number | null
   isPublic?: boolean
   isAdult?: boolean
+  steamAppId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   activities?: Prisma.LibraryActivityUncheckedCreateNestedManyWithoutEntryInput
@@ -453,6 +467,7 @@ export type LibraryEntryUpdateInput = {
   total?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamAppId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutLibraryEntriesNestedInput
@@ -473,6 +488,7 @@ export type LibraryEntryUncheckedUpdateInput = {
   total?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamAppId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.LibraryActivityUncheckedUpdateManyWithoutEntryNestedInput
@@ -492,6 +508,7 @@ export type LibraryEntryCreateManyInput = {
   total?: number | null
   isPublic?: boolean
   isAdult?: boolean
+  steamAppId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -508,6 +525,7 @@ export type LibraryEntryUpdateManyMutationInput = {
   total?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamAppId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -526,6 +544,7 @@ export type LibraryEntryUncheckedUpdateManyInput = {
   total?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamAppId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -549,6 +568,7 @@ export type LibraryEntryCountOrderByAggregateInput = {
   total?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
   isAdult?: Prisma.SortOrder
+  steamAppId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -575,6 +595,7 @@ export type LibraryEntryMaxOrderByAggregateInput = {
   total?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
   isAdult?: Prisma.SortOrder
+  steamAppId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -593,6 +614,7 @@ export type LibraryEntryMinOrderByAggregateInput = {
   total?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
   isAdult?: Prisma.SortOrder
+  steamAppId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -696,6 +718,7 @@ export type LibraryEntryCreateWithoutActivitiesInput = {
   total?: number | null
   isPublic?: boolean
   isAdult?: boolean
+  steamAppId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutLibraryEntriesInput
@@ -715,6 +738,7 @@ export type LibraryEntryUncheckedCreateWithoutActivitiesInput = {
   total?: number | null
   isPublic?: boolean
   isAdult?: boolean
+  steamAppId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -747,6 +771,7 @@ export type LibraryEntryUpdateWithoutActivitiesInput = {
   total?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamAppId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutLibraryEntriesNestedInput
@@ -766,6 +791,7 @@ export type LibraryEntryUncheckedUpdateWithoutActivitiesInput = {
   total?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamAppId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -782,6 +808,7 @@ export type LibraryEntryCreateWithoutUserInput = {
   total?: number | null
   isPublic?: boolean
   isAdult?: boolean
+  steamAppId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   activities?: Prisma.LibraryActivityCreateNestedManyWithoutEntryInput
@@ -800,6 +827,7 @@ export type LibraryEntryUncheckedCreateWithoutUserInput = {
   total?: number | null
   isPublic?: boolean
   isAdult?: boolean
+  steamAppId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   activities?: Prisma.LibraryActivityUncheckedCreateNestedManyWithoutEntryInput
@@ -848,6 +876,7 @@ export type LibraryEntryScalarWhereInput = {
   total?: Prisma.IntNullableFilter<"LibraryEntry"> | number | null
   isPublic?: Prisma.BoolFilter<"LibraryEntry"> | boolean
   isAdult?: Prisma.BoolFilter<"LibraryEntry"> | boolean
+  steamAppId?: Prisma.StringNullableFilter<"LibraryEntry"> | string | null
   createdAt?: Prisma.DateTimeFilter<"LibraryEntry"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"LibraryEntry"> | Date | string
 }
@@ -865,6 +894,7 @@ export type LibraryEntryCreateManyUserInput = {
   total?: number | null
   isPublic?: boolean
   isAdult?: boolean
+  steamAppId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -881,6 +911,7 @@ export type LibraryEntryUpdateWithoutUserInput = {
   total?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamAppId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.LibraryActivityUpdateManyWithoutEntryNestedInput
@@ -899,6 +930,7 @@ export type LibraryEntryUncheckedUpdateWithoutUserInput = {
   total?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamAppId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.LibraryActivityUncheckedUpdateManyWithoutEntryNestedInput
@@ -917,6 +949,7 @@ export type LibraryEntryUncheckedUpdateManyWithoutUserInput = {
   total?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  steamAppId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -966,6 +999,7 @@ export type LibraryEntrySelect<ExtArgs extends runtime.Types.Extensions.Internal
   total?: boolean
   isPublic?: boolean
   isAdult?: boolean
+  steamAppId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -987,6 +1021,7 @@ export type LibraryEntrySelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   total?: boolean
   isPublic?: boolean
   isAdult?: boolean
+  steamAppId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1006,6 +1041,7 @@ export type LibraryEntrySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   total?: boolean
   isPublic?: boolean
   isAdult?: boolean
+  steamAppId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1025,11 +1061,12 @@ export type LibraryEntrySelectScalar = {
   total?: boolean
   isPublic?: boolean
   isAdult?: boolean
+  steamAppId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type LibraryEntryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "mediaId" | "mediaType" | "sourceId" | "title" | "coverImage" | "year" | "status" | "progress" | "total" | "isPublic" | "isAdult" | "createdAt" | "updatedAt", ExtArgs["result"]["libraryEntry"]>
+export type LibraryEntryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "mediaId" | "mediaType" | "sourceId" | "title" | "coverImage" | "year" | "status" | "progress" | "total" | "isPublic" | "isAdult" | "steamAppId" | "createdAt" | "updatedAt", ExtArgs["result"]["libraryEntry"]>
 export type LibraryEntryInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   activities?: boolean | Prisma.LibraryEntry$activitiesArgs<ExtArgs>
@@ -1062,6 +1099,7 @@ export type $LibraryEntryPayload<ExtArgs extends runtime.Types.Extensions.Intern
     total: number | null
     isPublic: boolean
     isAdult: boolean
+    steamAppId: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["libraryEntry"]>
@@ -1502,6 +1540,7 @@ export interface LibraryEntryFieldRefs {
   readonly total: Prisma.FieldRef<"LibraryEntry", 'Int'>
   readonly isPublic: Prisma.FieldRef<"LibraryEntry", 'Boolean'>
   readonly isAdult: Prisma.FieldRef<"LibraryEntry", 'Boolean'>
+  readonly steamAppId: Prisma.FieldRef<"LibraryEntry", 'String'>
   readonly createdAt: Prisma.FieldRef<"LibraryEntry", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"LibraryEntry", 'DateTime'>
 }

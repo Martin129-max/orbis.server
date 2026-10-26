@@ -333,6 +333,8 @@ export type UserWhereInput = {
   notifications?: Prisma.NotificationListRelationFilter
   causedNotifications?: Prisma.NotificationListRelationFilter
   libraryEntries?: Prisma.LibraryEntryListRelationFilter
+  steamAccount?: Prisma.XOR<Prisma.SteamAccountNullableScalarRelationFilter, Prisma.SteamAccountWhereInput> | null
+  steamGames?: Prisma.SteamGameListRelationFilter
   railFolders?: Prisma.RailFolderListRelationFilter
   likes?: Prisma.LikeListRelationFilter
   invites?: Prisma.InviteListRelationFilter
@@ -381,6 +383,8 @@ export type UserOrderByWithRelationInput = {
   notifications?: Prisma.NotificationOrderByRelationAggregateInput
   causedNotifications?: Prisma.NotificationOrderByRelationAggregateInput
   libraryEntries?: Prisma.LibraryEntryOrderByRelationAggregateInput
+  steamAccount?: Prisma.SteamAccountOrderByWithRelationInput
+  steamGames?: Prisma.SteamGameOrderByRelationAggregateInput
   railFolders?: Prisma.RailFolderOrderByRelationAggregateInput
   likes?: Prisma.LikeOrderByRelationAggregateInput
   invites?: Prisma.InviteOrderByRelationAggregateInput
@@ -432,6 +436,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   notifications?: Prisma.NotificationListRelationFilter
   causedNotifications?: Prisma.NotificationListRelationFilter
   libraryEntries?: Prisma.LibraryEntryListRelationFilter
+  steamAccount?: Prisma.XOR<Prisma.SteamAccountNullableScalarRelationFilter, Prisma.SteamAccountWhereInput> | null
+  steamGames?: Prisma.SteamGameListRelationFilter
   railFolders?: Prisma.RailFolderListRelationFilter
   likes?: Prisma.LikeListRelationFilter
   invites?: Prisma.InviteListRelationFilter
@@ -529,6 +535,8 @@ export type UserCreateInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
@@ -577,6 +585,8 @@ export type UserUncheckedCreateInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountUncheckedCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
@@ -624,6 +634,8 @@ export type UserUpdateInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
@@ -672,6 +684,8 @@ export type UserUncheckedUpdateInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUncheckedUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
@@ -1211,6 +1225,34 @@ export type UserUpdateOneWithoutResolvedReportsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutResolvedReportsInput, Prisma.UserUpdateWithoutResolvedReportsInput>, Prisma.UserUncheckedUpdateWithoutResolvedReportsInput>
 }
 
+export type UserCreateNestedOneWithoutSteamAccountInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSteamAccountInput, Prisma.UserUncheckedCreateWithoutSteamAccountInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSteamAccountInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutSteamAccountNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSteamAccountInput, Prisma.UserUncheckedCreateWithoutSteamAccountInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSteamAccountInput
+  upsert?: Prisma.UserUpsertWithoutSteamAccountInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSteamAccountInput, Prisma.UserUpdateWithoutSteamAccountInput>, Prisma.UserUncheckedUpdateWithoutSteamAccountInput>
+}
+
+export type UserCreateNestedOneWithoutSteamGamesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSteamGamesInput, Prisma.UserUncheckedCreateWithoutSteamGamesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSteamGamesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutSteamGamesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSteamGamesInput, Prisma.UserUncheckedCreateWithoutSteamGamesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSteamGamesInput
+  upsert?: Prisma.UserUpsertWithoutSteamGamesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSteamGamesInput, Prisma.UserUpdateWithoutSteamGamesInput>, Prisma.UserUncheckedUpdateWithoutSteamGamesInput>
+}
+
 export type UserCreatecompletedToursInput = {
   set: string[]
 }
@@ -1276,6 +1318,8 @@ export type UserCreateWithoutOwnedCommunitiesInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
@@ -1323,6 +1367,8 @@ export type UserUncheckedCreateWithoutOwnedCommunitiesInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountUncheckedCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
@@ -1385,6 +1431,8 @@ export type UserUpdateWithoutOwnedCommunitiesInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
@@ -1432,6 +1480,8 @@ export type UserUncheckedUpdateWithoutOwnedCommunitiesInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUncheckedUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
@@ -1478,6 +1528,8 @@ export type UserCreateWithoutMembershipsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
@@ -1525,6 +1577,8 @@ export type UserUncheckedCreateWithoutMembershipsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountUncheckedCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
@@ -1587,6 +1641,8 @@ export type UserUpdateWithoutMembershipsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
@@ -1634,6 +1690,8 @@ export type UserUncheckedUpdateWithoutMembershipsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUncheckedUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
@@ -1681,6 +1739,8 @@ export type UserCreateWithoutRailFoldersInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
   createdConversations?: Prisma.ConversationCreateNestedManyWithoutCreatorInput
@@ -1728,6 +1788,8 @@ export type UserUncheckedCreateWithoutRailFoldersInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountUncheckedCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
   createdConversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutCreatorInput
@@ -1790,6 +1852,8 @@ export type UserUpdateWithoutRailFoldersInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
   createdConversations?: Prisma.ConversationUpdateManyWithoutCreatorNestedInput
@@ -1837,6 +1901,8 @@ export type UserUncheckedUpdateWithoutRailFoldersInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUncheckedUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
   createdConversations?: Prisma.ConversationUncheckedUpdateManyWithoutCreatorNestedInput
@@ -1883,6 +1949,8 @@ export type UserCreateWithoutInvitesInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
   createdConversations?: Prisma.ConversationCreateNestedManyWithoutCreatorInput
@@ -1930,6 +1998,8 @@ export type UserUncheckedCreateWithoutInvitesInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountUncheckedCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
   createdConversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutCreatorInput
@@ -1992,6 +2062,8 @@ export type UserUpdateWithoutInvitesInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
   createdConversations?: Prisma.ConversationUpdateManyWithoutCreatorNestedInput
@@ -2039,6 +2111,8 @@ export type UserUncheckedUpdateWithoutInvitesInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUncheckedUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
   createdConversations?: Prisma.ConversationUncheckedUpdateManyWithoutCreatorNestedInput
@@ -2084,6 +2158,8 @@ export type UserCreateWithoutWallPostsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
@@ -2131,6 +2207,8 @@ export type UserUncheckedCreateWithoutWallPostsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountUncheckedCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
@@ -2182,6 +2260,8 @@ export type UserCreateWithoutPostsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
@@ -2229,6 +2309,8 @@ export type UserUncheckedCreateWithoutPostsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountUncheckedCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
@@ -2291,6 +2373,8 @@ export type UserUpdateWithoutWallPostsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
@@ -2338,6 +2422,8 @@ export type UserUncheckedUpdateWithoutWallPostsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUncheckedUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
@@ -2395,6 +2481,8 @@ export type UserUpdateWithoutPostsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
@@ -2442,6 +2530,8 @@ export type UserUncheckedUpdateWithoutPostsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUncheckedUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
@@ -2488,6 +2578,8 @@ export type UserCreateWithoutThreadsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
@@ -2535,6 +2627,8 @@ export type UserUncheckedCreateWithoutThreadsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountUncheckedCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
@@ -2597,6 +2691,8 @@ export type UserUpdateWithoutThreadsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
@@ -2644,6 +2740,8 @@ export type UserUncheckedUpdateWithoutThreadsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUncheckedUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
@@ -2690,6 +2788,8 @@ export type UserCreateWithoutCommentsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
@@ -2737,6 +2837,8 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountUncheckedCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
@@ -2799,6 +2901,8 @@ export type UserUpdateWithoutCommentsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
@@ -2846,6 +2950,8 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUncheckedUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
@@ -2892,6 +2998,8 @@ export type UserCreateWithoutVotesInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
@@ -2939,6 +3047,8 @@ export type UserUncheckedCreateWithoutVotesInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountUncheckedCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
@@ -3001,6 +3111,8 @@ export type UserUpdateWithoutVotesInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
@@ -3048,6 +3160,8 @@ export type UserUncheckedUpdateWithoutVotesInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUncheckedUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
@@ -3095,6 +3209,8 @@ export type UserCreateWithoutLikesInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
   createdConversations?: Prisma.ConversationCreateNestedManyWithoutCreatorInput
@@ -3142,6 +3258,8 @@ export type UserUncheckedCreateWithoutLikesInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountUncheckedCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
   createdConversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutCreatorInput
@@ -3204,6 +3322,8 @@ export type UserUpdateWithoutLikesInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
   createdConversations?: Prisma.ConversationUpdateManyWithoutCreatorNestedInput
@@ -3251,6 +3371,8 @@ export type UserUncheckedUpdateWithoutLikesInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUncheckedUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
   createdConversations?: Prisma.ConversationUncheckedUpdateManyWithoutCreatorNestedInput
@@ -3296,6 +3418,8 @@ export type UserCreateWithoutSentFriendshipsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
@@ -3343,6 +3467,8 @@ export type UserUncheckedCreateWithoutSentFriendshipsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountUncheckedCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
@@ -3394,6 +3520,8 @@ export type UserCreateWithoutReceivedFriendshipsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
@@ -3441,6 +3569,8 @@ export type UserUncheckedCreateWithoutReceivedFriendshipsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountUncheckedCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
@@ -3503,6 +3633,8 @@ export type UserUpdateWithoutSentFriendshipsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
@@ -3550,6 +3682,8 @@ export type UserUncheckedUpdateWithoutSentFriendshipsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUncheckedUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
@@ -3607,6 +3741,8 @@ export type UserUpdateWithoutReceivedFriendshipsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
@@ -3654,6 +3790,8 @@ export type UserUncheckedUpdateWithoutReceivedFriendshipsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUncheckedUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
@@ -3700,6 +3838,8 @@ export type UserCreateWithoutLibraryEntriesInput = {
   resolvedReports?: Prisma.ContentReportCreateNestedManyWithoutResolvedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
+  steamAccount?: Prisma.SteamAccountCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
@@ -3747,6 +3887,8 @@ export type UserUncheckedCreateWithoutLibraryEntriesInput = {
   resolvedReports?: Prisma.ContentReportUncheckedCreateNestedManyWithoutResolvedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
+  steamAccount?: Prisma.SteamAccountUncheckedCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
@@ -3809,6 +3951,8 @@ export type UserUpdateWithoutLibraryEntriesInput = {
   resolvedReports?: Prisma.ContentReportUpdateManyWithoutResolvedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
+  steamAccount?: Prisma.SteamAccountUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
@@ -3856,6 +4000,8 @@ export type UserUncheckedUpdateWithoutLibraryEntriesInput = {
   resolvedReports?: Prisma.ContentReportUncheckedUpdateManyWithoutResolvedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
+  steamAccount?: Prisma.SteamAccountUncheckedUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
@@ -3903,6 +4049,8 @@ export type UserCreateWithoutCreatedConversationsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
@@ -3950,6 +4098,8 @@ export type UserUncheckedCreateWithoutCreatedConversationsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountUncheckedCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
@@ -4001,6 +4151,8 @@ export type UserCreateWithoutConversationsAsAInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
@@ -4048,6 +4200,8 @@ export type UserUncheckedCreateWithoutConversationsAsAInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountUncheckedCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
@@ -4099,6 +4253,8 @@ export type UserCreateWithoutConversationsAsBInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
@@ -4146,6 +4302,8 @@ export type UserUncheckedCreateWithoutConversationsAsBInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountUncheckedCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
@@ -4208,6 +4366,8 @@ export type UserUpdateWithoutCreatedConversationsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
@@ -4255,6 +4415,8 @@ export type UserUncheckedUpdateWithoutCreatedConversationsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUncheckedUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
@@ -4312,6 +4474,8 @@ export type UserUpdateWithoutConversationsAsAInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
@@ -4359,6 +4523,8 @@ export type UserUncheckedUpdateWithoutConversationsAsAInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUncheckedUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
@@ -4416,6 +4582,8 @@ export type UserUpdateWithoutConversationsAsBInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
@@ -4463,6 +4631,8 @@ export type UserUncheckedUpdateWithoutConversationsAsBInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUncheckedUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
@@ -4509,6 +4679,8 @@ export type UserCreateWithoutConversationsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
@@ -4556,6 +4728,8 @@ export type UserUncheckedCreateWithoutConversationsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountUncheckedCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
@@ -4618,6 +4792,8 @@ export type UserUpdateWithoutConversationsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
@@ -4665,6 +4841,8 @@ export type UserUncheckedUpdateWithoutConversationsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUncheckedUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
@@ -4711,6 +4889,8 @@ export type UserCreateWithoutMessagesInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
@@ -4758,6 +4938,8 @@ export type UserUncheckedCreateWithoutMessagesInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountUncheckedCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
@@ -4820,6 +5002,8 @@ export type UserUpdateWithoutMessagesInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
@@ -4867,6 +5051,8 @@ export type UserUncheckedUpdateWithoutMessagesInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUncheckedUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
@@ -4913,6 +5099,8 @@ export type UserCreateWithoutMessageReactionsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
@@ -4960,6 +5148,8 @@ export type UserUncheckedCreateWithoutMessageReactionsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountUncheckedCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
@@ -5022,6 +5212,8 @@ export type UserUpdateWithoutMessageReactionsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
@@ -5069,6 +5261,8 @@ export type UserUncheckedUpdateWithoutMessageReactionsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUncheckedUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
@@ -5114,6 +5308,8 @@ export type UserCreateWithoutNotificationsInput = {
   resolvedReports?: Prisma.ContentReportCreateNestedManyWithoutResolvedByInput
   causedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
@@ -5161,6 +5357,8 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   resolvedReports?: Prisma.ContentReportUncheckedCreateNestedManyWithoutResolvedByInput
   causedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountUncheckedCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
@@ -5212,6 +5410,8 @@ export type UserCreateWithoutCausedNotificationsInput = {
   resolvedReports?: Prisma.ContentReportCreateNestedManyWithoutResolvedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
@@ -5259,6 +5459,8 @@ export type UserUncheckedCreateWithoutCausedNotificationsInput = {
   resolvedReports?: Prisma.ContentReportUncheckedCreateNestedManyWithoutResolvedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountUncheckedCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
@@ -5321,6 +5523,8 @@ export type UserUpdateWithoutNotificationsInput = {
   resolvedReports?: Prisma.ContentReportUpdateManyWithoutResolvedByNestedInput
   causedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
@@ -5368,6 +5572,8 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   resolvedReports?: Prisma.ContentReportUncheckedUpdateManyWithoutResolvedByNestedInput
   causedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUncheckedUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
@@ -5425,6 +5631,8 @@ export type UserUpdateWithoutCausedNotificationsInput = {
   resolvedReports?: Prisma.ContentReportUpdateManyWithoutResolvedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
@@ -5472,6 +5680,8 @@ export type UserUncheckedUpdateWithoutCausedNotificationsInput = {
   resolvedReports?: Prisma.ContentReportUncheckedUpdateManyWithoutResolvedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUncheckedUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
@@ -5518,6 +5728,8 @@ export type UserCreateWithoutReportsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
@@ -5565,6 +5777,8 @@ export type UserUncheckedCreateWithoutReportsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountUncheckedCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
@@ -5616,6 +5830,8 @@ export type UserCreateWithoutAssignedReportsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
@@ -5663,6 +5879,8 @@ export type UserUncheckedCreateWithoutAssignedReportsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountUncheckedCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
@@ -5725,6 +5943,8 @@ export type UserUpdateWithoutReportsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
@@ -5772,6 +5992,8 @@ export type UserUncheckedUpdateWithoutReportsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUncheckedUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
@@ -5829,6 +6051,8 @@ export type UserUpdateWithoutAssignedReportsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
@@ -5876,6 +6100,8 @@ export type UserUncheckedUpdateWithoutAssignedReportsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUncheckedUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
@@ -5922,6 +6148,8 @@ export type UserCreateWithoutReportCommentsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
@@ -5969,6 +6197,8 @@ export type UserUncheckedCreateWithoutReportCommentsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountUncheckedCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
@@ -6031,6 +6261,8 @@ export type UserUpdateWithoutReportCommentsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
@@ -6078,6 +6310,8 @@ export type UserUncheckedUpdateWithoutReportCommentsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUncheckedUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
@@ -6124,6 +6358,8 @@ export type UserCreateWithoutContentReportsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
@@ -6171,6 +6407,8 @@ export type UserUncheckedCreateWithoutContentReportsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountUncheckedCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
@@ -6222,6 +6460,8 @@ export type UserCreateWithoutResolvedReportsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
@@ -6269,6 +6509,8 @@ export type UserUncheckedCreateWithoutResolvedReportsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountUncheckedCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
@@ -6331,6 +6573,8 @@ export type UserUpdateWithoutContentReportsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
@@ -6378,6 +6622,8 @@ export type UserUncheckedUpdateWithoutContentReportsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUncheckedUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
@@ -6435,6 +6681,8 @@ export type UserUpdateWithoutResolvedReportsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
@@ -6482,6 +6730,428 @@ export type UserUncheckedUpdateWithoutResolvedReportsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUncheckedUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUncheckedUpdateManyWithoutUserNestedInput
+  railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
+  invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
+  createdConversations?: Prisma.ConversationUncheckedUpdateManyWithoutCreatorNestedInput
+  conversationsAsA?: Prisma.ConversationUncheckedUpdateManyWithoutUserANestedInput
+  conversationsAsB?: Prisma.ConversationUncheckedUpdateManyWithoutUserBNestedInput
+  conversations?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
+  messageReactions?: Prisma.MessageReactionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutSteamAccountInput = {
+  email: string
+  username: string
+  name?: string | null
+  avatarUrl?: string | null
+  coverUrl?: string | null
+  backgroundUrl?: string | null
+  password?: string | null
+  theme?: $Enums.Theme
+  appearOffline?: boolean
+  showNsfw?: boolean
+  status?: $Enums.UserStatus
+  isPublic?: boolean
+  isAdmin?: boolean
+  tourCompletedAt?: Date | string | null
+  checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
+  createdAt?: Date | string
+  ownedCommunities?: Prisma.CommunityCreateNestedManyWithoutOwnerInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
+  posts?: Prisma.PostCreateNestedManyWithoutAuthorInput
+  wallPosts?: Prisma.PostCreateNestedManyWithoutWallUserInput
+  sentFriendships?: Prisma.FriendshipCreateNestedManyWithoutRequesterInput
+  receivedFriendships?: Prisma.FriendshipCreateNestedManyWithoutAddresseeInput
+  threads?: Prisma.ThreadCreateNestedManyWithoutAuthorInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  votes?: Prisma.VoteCreateNestedManyWithoutUserInput
+  reports?: Prisma.ReportCreateNestedManyWithoutAuthorInput
+  assignedReports?: Prisma.ReportCreateNestedManyWithoutAssigneeInput
+  reportComments?: Prisma.ReportCommentCreateNestedManyWithoutAuthorInput
+  contentReports?: Prisma.ContentReportCreateNestedManyWithoutReporterInput
+  resolvedReports?: Prisma.ContentReportCreateNestedManyWithoutResolvedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  causedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
+  libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
+  steamGames?: Prisma.SteamGameCreateNestedManyWithoutUserInput
+  railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
+  likes?: Prisma.LikeCreateNestedManyWithoutUserInput
+  invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
+  createdConversations?: Prisma.ConversationCreateNestedManyWithoutCreatorInput
+  conversationsAsA?: Prisma.ConversationCreateNestedManyWithoutUserAInput
+  conversationsAsB?: Prisma.ConversationCreateNestedManyWithoutUserBInput
+  conversations?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
+  messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
+  messageReactions?: Prisma.MessageReactionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutSteamAccountInput = {
+  id?: number
+  email: string
+  username: string
+  name?: string | null
+  avatarUrl?: string | null
+  coverUrl?: string | null
+  backgroundUrl?: string | null
+  password?: string | null
+  theme?: $Enums.Theme
+  appearOffline?: boolean
+  showNsfw?: boolean
+  status?: $Enums.UserStatus
+  isPublic?: boolean
+  isAdmin?: boolean
+  tourCompletedAt?: Date | string | null
+  checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
+  createdAt?: Date | string
+  ownedCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutOwnerInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
+  wallPosts?: Prisma.PostUncheckedCreateNestedManyWithoutWallUserInput
+  sentFriendships?: Prisma.FriendshipUncheckedCreateNestedManyWithoutRequesterInput
+  receivedFriendships?: Prisma.FriendshipUncheckedCreateNestedManyWithoutAddresseeInput
+  threads?: Prisma.ThreadUncheckedCreateNestedManyWithoutAuthorInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutUserInput
+  reports?: Prisma.ReportUncheckedCreateNestedManyWithoutAuthorInput
+  assignedReports?: Prisma.ReportUncheckedCreateNestedManyWithoutAssigneeInput
+  reportComments?: Prisma.ReportCommentUncheckedCreateNestedManyWithoutAuthorInput
+  contentReports?: Prisma.ContentReportUncheckedCreateNestedManyWithoutReporterInput
+  resolvedReports?: Prisma.ContentReportUncheckedCreateNestedManyWithoutResolvedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  causedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
+  libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
+  steamGames?: Prisma.SteamGameUncheckedCreateNestedManyWithoutUserInput
+  railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
+  invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
+  createdConversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutCreatorInput
+  conversationsAsA?: Prisma.ConversationUncheckedCreateNestedManyWithoutUserAInput
+  conversationsAsB?: Prisma.ConversationUncheckedCreateNestedManyWithoutUserBInput
+  conversations?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
+  messageReactions?: Prisma.MessageReactionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutSteamAccountInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutSteamAccountInput, Prisma.UserUncheckedCreateWithoutSteamAccountInput>
+}
+
+export type UserUpsertWithoutSteamAccountInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutSteamAccountInput, Prisma.UserUncheckedUpdateWithoutSteamAccountInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutSteamAccountInput, Prisma.UserUncheckedCreateWithoutSteamAccountInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutSteamAccountInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutSteamAccountInput, Prisma.UserUncheckedUpdateWithoutSteamAccountInput>
+}
+
+export type UserUpdateWithoutSteamAccountInput = {
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
+  appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedCommunities?: Prisma.CommunityUpdateManyWithoutOwnerNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
+  posts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
+  wallPosts?: Prisma.PostUpdateManyWithoutWallUserNestedInput
+  sentFriendships?: Prisma.FriendshipUpdateManyWithoutRequesterNestedInput
+  receivedFriendships?: Prisma.FriendshipUpdateManyWithoutAddresseeNestedInput
+  threads?: Prisma.ThreadUpdateManyWithoutAuthorNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutUserNestedInput
+  reports?: Prisma.ReportUpdateManyWithoutAuthorNestedInput
+  assignedReports?: Prisma.ReportUpdateManyWithoutAssigneeNestedInput
+  reportComments?: Prisma.ReportCommentUpdateManyWithoutAuthorNestedInput
+  contentReports?: Prisma.ContentReportUpdateManyWithoutReporterNestedInput
+  resolvedReports?: Prisma.ContentReportUpdateManyWithoutResolvedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  causedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
+  libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUpdateManyWithoutUserNestedInput
+  railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
+  invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
+  createdConversations?: Prisma.ConversationUpdateManyWithoutCreatorNestedInput
+  conversationsAsA?: Prisma.ConversationUpdateManyWithoutUserANestedInput
+  conversationsAsB?: Prisma.ConversationUpdateManyWithoutUserBNestedInput
+  conversations?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
+  messageReactions?: Prisma.MessageReactionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutSteamAccountInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
+  appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutOwnerNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
+  wallPosts?: Prisma.PostUncheckedUpdateManyWithoutWallUserNestedInput
+  sentFriendships?: Prisma.FriendshipUncheckedUpdateManyWithoutRequesterNestedInput
+  receivedFriendships?: Prisma.FriendshipUncheckedUpdateManyWithoutAddresseeNestedInput
+  threads?: Prisma.ThreadUncheckedUpdateManyWithoutAuthorNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutUserNestedInput
+  reports?: Prisma.ReportUncheckedUpdateManyWithoutAuthorNestedInput
+  assignedReports?: Prisma.ReportUncheckedUpdateManyWithoutAssigneeNestedInput
+  reportComments?: Prisma.ReportCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  contentReports?: Prisma.ContentReportUncheckedUpdateManyWithoutReporterNestedInput
+  resolvedReports?: Prisma.ContentReportUncheckedUpdateManyWithoutResolvedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  causedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
+  libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUncheckedUpdateManyWithoutUserNestedInput
+  railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
+  invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
+  createdConversations?: Prisma.ConversationUncheckedUpdateManyWithoutCreatorNestedInput
+  conversationsAsA?: Prisma.ConversationUncheckedUpdateManyWithoutUserANestedInput
+  conversationsAsB?: Prisma.ConversationUncheckedUpdateManyWithoutUserBNestedInput
+  conversations?: Prisma.ConversationMemberUncheckedUpdateManyWithoutUserNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
+  messageReactions?: Prisma.MessageReactionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutSteamGamesInput = {
+  email: string
+  username: string
+  name?: string | null
+  avatarUrl?: string | null
+  coverUrl?: string | null
+  backgroundUrl?: string | null
+  password?: string | null
+  theme?: $Enums.Theme
+  appearOffline?: boolean
+  showNsfw?: boolean
+  status?: $Enums.UserStatus
+  isPublic?: boolean
+  isAdmin?: boolean
+  tourCompletedAt?: Date | string | null
+  checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
+  createdAt?: Date | string
+  ownedCommunities?: Prisma.CommunityCreateNestedManyWithoutOwnerInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
+  posts?: Prisma.PostCreateNestedManyWithoutAuthorInput
+  wallPosts?: Prisma.PostCreateNestedManyWithoutWallUserInput
+  sentFriendships?: Prisma.FriendshipCreateNestedManyWithoutRequesterInput
+  receivedFriendships?: Prisma.FriendshipCreateNestedManyWithoutAddresseeInput
+  threads?: Prisma.ThreadCreateNestedManyWithoutAuthorInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  votes?: Prisma.VoteCreateNestedManyWithoutUserInput
+  reports?: Prisma.ReportCreateNestedManyWithoutAuthorInput
+  assignedReports?: Prisma.ReportCreateNestedManyWithoutAssigneeInput
+  reportComments?: Prisma.ReportCommentCreateNestedManyWithoutAuthorInput
+  contentReports?: Prisma.ContentReportCreateNestedManyWithoutReporterInput
+  resolvedReports?: Prisma.ContentReportCreateNestedManyWithoutResolvedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  causedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
+  libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountCreateNestedOneWithoutUserInput
+  railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
+  likes?: Prisma.LikeCreateNestedManyWithoutUserInput
+  invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
+  createdConversations?: Prisma.ConversationCreateNestedManyWithoutCreatorInput
+  conversationsAsA?: Prisma.ConversationCreateNestedManyWithoutUserAInput
+  conversationsAsB?: Prisma.ConversationCreateNestedManyWithoutUserBInput
+  conversations?: Prisma.ConversationMemberCreateNestedManyWithoutUserInput
+  messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
+  messageReactions?: Prisma.MessageReactionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutSteamGamesInput = {
+  id?: number
+  email: string
+  username: string
+  name?: string | null
+  avatarUrl?: string | null
+  coverUrl?: string | null
+  backgroundUrl?: string | null
+  password?: string | null
+  theme?: $Enums.Theme
+  appearOffline?: boolean
+  showNsfw?: boolean
+  status?: $Enums.UserStatus
+  isPublic?: boolean
+  isAdmin?: boolean
+  tourCompletedAt?: Date | string | null
+  checklistDismissedAt?: Date | string | null
+  completedTours?: Prisma.UserCreatecompletedToursInput | string[]
+  createdAt?: Date | string
+  ownedCommunities?: Prisma.CommunityUncheckedCreateNestedManyWithoutOwnerInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
+  wallPosts?: Prisma.PostUncheckedCreateNestedManyWithoutWallUserInput
+  sentFriendships?: Prisma.FriendshipUncheckedCreateNestedManyWithoutRequesterInput
+  receivedFriendships?: Prisma.FriendshipUncheckedCreateNestedManyWithoutAddresseeInput
+  threads?: Prisma.ThreadUncheckedCreateNestedManyWithoutAuthorInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutUserInput
+  reports?: Prisma.ReportUncheckedCreateNestedManyWithoutAuthorInput
+  assignedReports?: Prisma.ReportUncheckedCreateNestedManyWithoutAssigneeInput
+  reportComments?: Prisma.ReportCommentUncheckedCreateNestedManyWithoutAuthorInput
+  contentReports?: Prisma.ContentReportUncheckedCreateNestedManyWithoutReporterInput
+  resolvedReports?: Prisma.ContentReportUncheckedCreateNestedManyWithoutResolvedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  causedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
+  libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountUncheckedCreateNestedOneWithoutUserInput
+  railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
+  invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
+  createdConversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutCreatorInput
+  conversationsAsA?: Prisma.ConversationUncheckedCreateNestedManyWithoutUserAInput
+  conversationsAsB?: Prisma.ConversationUncheckedCreateNestedManyWithoutUserBInput
+  conversations?: Prisma.ConversationMemberUncheckedCreateNestedManyWithoutUserInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
+  messageReactions?: Prisma.MessageReactionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutSteamGamesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutSteamGamesInput, Prisma.UserUncheckedCreateWithoutSteamGamesInput>
+}
+
+export type UserUpsertWithoutSteamGamesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutSteamGamesInput, Prisma.UserUncheckedUpdateWithoutSteamGamesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutSteamGamesInput, Prisma.UserUncheckedCreateWithoutSteamGamesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutSteamGamesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutSteamGamesInput, Prisma.UserUncheckedUpdateWithoutSteamGamesInput>
+}
+
+export type UserUpdateWithoutSteamGamesInput = {
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
+  appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedCommunities?: Prisma.CommunityUpdateManyWithoutOwnerNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
+  posts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
+  wallPosts?: Prisma.PostUpdateManyWithoutWallUserNestedInput
+  sentFriendships?: Prisma.FriendshipUpdateManyWithoutRequesterNestedInput
+  receivedFriendships?: Prisma.FriendshipUpdateManyWithoutAddresseeNestedInput
+  threads?: Prisma.ThreadUpdateManyWithoutAuthorNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutUserNestedInput
+  reports?: Prisma.ReportUpdateManyWithoutAuthorNestedInput
+  assignedReports?: Prisma.ReportUpdateManyWithoutAssigneeNestedInput
+  reportComments?: Prisma.ReportCommentUpdateManyWithoutAuthorNestedInput
+  contentReports?: Prisma.ContentReportUpdateManyWithoutReporterNestedInput
+  resolvedReports?: Prisma.ContentReportUpdateManyWithoutResolvedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  causedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
+  libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUpdateOneWithoutUserNestedInput
+  railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
+  invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
+  createdConversations?: Prisma.ConversationUpdateManyWithoutCreatorNestedInput
+  conversationsAsA?: Prisma.ConversationUpdateManyWithoutUserANestedInput
+  conversationsAsB?: Prisma.ConversationUpdateManyWithoutUserBNestedInput
+  conversations?: Prisma.ConversationMemberUpdateManyWithoutUserNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
+  messageReactions?: Prisma.MessageReactionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutSteamGamesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
+  appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  tourCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checklistDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedTours?: Prisma.UserUpdatecompletedToursInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedCommunities?: Prisma.CommunityUncheckedUpdateManyWithoutOwnerNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
+  wallPosts?: Prisma.PostUncheckedUpdateManyWithoutWallUserNestedInput
+  sentFriendships?: Prisma.FriendshipUncheckedUpdateManyWithoutRequesterNestedInput
+  receivedFriendships?: Prisma.FriendshipUncheckedUpdateManyWithoutAddresseeNestedInput
+  threads?: Prisma.ThreadUncheckedUpdateManyWithoutAuthorNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutUserNestedInput
+  reports?: Prisma.ReportUncheckedUpdateManyWithoutAuthorNestedInput
+  assignedReports?: Prisma.ReportUncheckedUpdateManyWithoutAssigneeNestedInput
+  reportComments?: Prisma.ReportCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  contentReports?: Prisma.ContentReportUncheckedUpdateManyWithoutReporterNestedInput
+  resolvedReports?: Prisma.ContentReportUncheckedUpdateManyWithoutResolvedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  causedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
+  libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUncheckedUpdateOneWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
@@ -6529,6 +7199,8 @@ export type UserCreateWithoutOauthAccountsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteCreateNestedManyWithoutCreatorInput
@@ -6576,6 +7248,8 @@ export type UserUncheckedCreateWithoutOauthAccountsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   causedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   libraryEntries?: Prisma.LibraryEntryUncheckedCreateNestedManyWithoutUserInput
+  steamAccount?: Prisma.SteamAccountUncheckedCreateNestedOneWithoutUserInput
+  steamGames?: Prisma.SteamGameUncheckedCreateNestedManyWithoutUserInput
   railFolders?: Prisma.RailFolderUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
   invites?: Prisma.InviteUncheckedCreateNestedManyWithoutCreatorInput
@@ -6638,6 +7312,8 @@ export type UserUpdateWithoutOauthAccountsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUpdateManyWithoutCreatorNestedInput
@@ -6685,6 +7361,8 @@ export type UserUncheckedUpdateWithoutOauthAccountsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   causedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   libraryEntries?: Prisma.LibraryEntryUncheckedUpdateManyWithoutUserNestedInput
+  steamAccount?: Prisma.SteamAccountUncheckedUpdateOneWithoutUserNestedInput
+  steamGames?: Prisma.SteamGameUncheckedUpdateManyWithoutUserNestedInput
   railFolders?: Prisma.RailFolderUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
   invites?: Prisma.InviteUncheckedUpdateManyWithoutCreatorNestedInput
@@ -6719,6 +7397,7 @@ export type UserCountOutputType = {
   notifications: number
   causedNotifications: number
   libraryEntries: number
+  steamGames: number
   railFolders: number
   likes: number
   invites: number
@@ -6749,6 +7428,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
   causedNotifications?: boolean | UserCountOutputTypeCountCausedNotificationsArgs
   libraryEntries?: boolean | UserCountOutputTypeCountLibraryEntriesArgs
+  steamGames?: boolean | UserCountOutputTypeCountSteamGamesArgs
   railFolders?: boolean | UserCountOutputTypeCountRailFoldersArgs
   likes?: boolean | UserCountOutputTypeCountLikesArgs
   invites?: boolean | UserCountOutputTypeCountInvitesArgs
@@ -6893,6 +7573,13 @@ export type UserCountOutputTypeCountLibraryEntriesArgs<ExtArgs extends runtime.T
 /**
  * UserCountOutputType without action
  */
+export type UserCountOutputTypeCountSteamGamesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SteamGameWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
 export type UserCountOutputTypeCountRailFoldersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.RailFolderWhereInput
 }
@@ -6997,6 +7684,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   causedNotifications?: boolean | Prisma.User$causedNotificationsArgs<ExtArgs>
   libraryEntries?: boolean | Prisma.User$libraryEntriesArgs<ExtArgs>
+  steamAccount?: boolean | Prisma.User$steamAccountArgs<ExtArgs>
+  steamGames?: boolean | Prisma.User$steamGamesArgs<ExtArgs>
   railFolders?: boolean | Prisma.User$railFoldersArgs<ExtArgs>
   likes?: boolean | Prisma.User$likesArgs<ExtArgs>
   invites?: boolean | Prisma.User$invitesArgs<ExtArgs>
@@ -7092,6 +7781,8 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   causedNotifications?: boolean | Prisma.User$causedNotificationsArgs<ExtArgs>
   libraryEntries?: boolean | Prisma.User$libraryEntriesArgs<ExtArgs>
+  steamAccount?: boolean | Prisma.User$steamAccountArgs<ExtArgs>
+  steamGames?: boolean | Prisma.User$steamGamesArgs<ExtArgs>
   railFolders?: boolean | Prisma.User$railFoldersArgs<ExtArgs>
   likes?: boolean | Prisma.User$likesArgs<ExtArgs>
   invites?: boolean | Prisma.User$invitesArgs<ExtArgs>
@@ -7127,6 +7818,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     notifications: Prisma.$NotificationPayload<ExtArgs>[]
     causedNotifications: Prisma.$NotificationPayload<ExtArgs>[]
     libraryEntries: Prisma.$LibraryEntryPayload<ExtArgs>[]
+    steamAccount: Prisma.$SteamAccountPayload<ExtArgs> | null
+    steamGames: Prisma.$SteamGamePayload<ExtArgs>[]
     railFolders: Prisma.$RailFolderPayload<ExtArgs>[]
     likes: Prisma.$LikePayload<ExtArgs>[]
     invites: Prisma.$InvitePayload<ExtArgs>[]
@@ -7568,6 +8261,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   notifications<T extends Prisma.User$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   causedNotifications<T extends Prisma.User$causedNotificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$causedNotificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   libraryEntries<T extends Prisma.User$libraryEntriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$libraryEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LibraryEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  steamAccount<T extends Prisma.User$steamAccountArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$steamAccountArgs<ExtArgs>>): Prisma.Prisma__SteamAccountClient<runtime.Types.Result.GetResult<Prisma.$SteamAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  steamGames<T extends Prisma.User$steamGamesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$steamGamesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SteamGamePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   railFolders<T extends Prisma.User$railFoldersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$railFoldersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RailFolderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   likes<T extends Prisma.User$likesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$likesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   invites<T extends Prisma.User$invitesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$invitesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -8418,6 +9113,49 @@ export type User$libraryEntriesArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   distinct?: Prisma.LibraryEntryScalarFieldEnum | Prisma.LibraryEntryScalarFieldEnum[]
+}
+
+/**
+ * User.steamAccount
+ */
+export type User$steamAccountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SteamAccount
+   */
+  select?: Prisma.SteamAccountSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SteamAccount
+   */
+  omit?: Prisma.SteamAccountOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SteamAccountInclude<ExtArgs> | null
+  where?: Prisma.SteamAccountWhereInput
+}
+
+/**
+ * User.steamGames
+ */
+export type User$steamGamesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SteamGame
+   */
+  select?: Prisma.SteamGameSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SteamGame
+   */
+  omit?: Prisma.SteamGameOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SteamGameInclude<ExtArgs> | null
+  where?: Prisma.SteamGameWhereInput
+  orderBy?: Prisma.SteamGameOrderByWithRelationInput | Prisma.SteamGameOrderByWithRelationInput[]
+  cursor?: Prisma.SteamGameWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SteamGameScalarFieldEnum | Prisma.SteamGameScalarFieldEnum[]
 }
 
 /**

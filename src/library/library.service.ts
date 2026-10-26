@@ -15,6 +15,7 @@ import { AddLibraryEntryDto } from './dto/add-library-entry.dto';
 import { UpdateLibraryEntryDto } from './dto/update-library-entry.dto';
 import { getMedia, Media, searchMedia } from './library-api';
 import { nsfwEntries, showsNsfw } from '../users/nsfw';
+import { loadSteamLinks, SteamLink } from '../steam/steam-links';
 
 const PROGRESS_MERGE_WINDOW = 5 * 60 * 1000;
 
@@ -30,13 +31,16 @@ const entrySelect = {
   progress: true,
   total: true,
   isPublic: true,
+  steamAppId: true,
   createdAt: true,
   updatedAt: true,
 } as const;
 
-export type LibraryEntryView = Prisma.LibraryEntryGetPayload<{
-  select: typeof entrySelect;
-}>;
+type EntryRow = Prisma.LibraryEntryGetPayload<{ select: typeof entrySelect }>;
+
+export type LibraryEntryView = Omit<EntryRow, 'steamAppId'> & {
+  steam: SteamLink | null;
+};
 
 function totalOf(media: Media) {
   const count =
@@ -130,13 +134,13 @@ export class LibraryService {
       genres: media.genres ?? [],
       source: media.source ?? null,
       details: media.details ?? {},
-      entry,
+      entry: entry && (await this.toView(userId, entry)),
       members: others.map(({ status, user }) => ({ status, user })),
     };
   }
 
   async list(userId: number): Promise<LibraryEntryView[]> {
-    return this.prisma.libraryEntry.findMany({
+    const entries = await this.prisma.libraryEntry.findMany({
       where: {
         userId,
         ...nsfwEntries(await showsNsfw(this.prisma, userId)),
@@ -144,6 +148,7 @@ export class LibraryService {
       orderBy: [{ updatedAt: 'desc' }, { id: 'desc' }],
       select: entrySelect,
     });
+    return this.toViews(userId, entries);
   }
 
   async add(
@@ -162,6 +167,13 @@ export class LibraryService {
       await showsNsfw(this.prisma, userId),
     );
     const total = totalOf(media);
+    const steam =
+      type === 'game'
+        ? await this.prisma.steamGame.findFirst({
+            where: { userId, igdbId: media.sourceId },
+            select: { appId: true },
+          })
+        : null;
     const initialProgress =
       type === 'game'
         ? 0
@@ -170,7 +182,7 @@ export class LibraryService {
           : Math.min(progress, total ?? progress);
 
     try {
-      return await this.prisma.libraryEntry.create({
+      const entry = await this.prisma.libraryEntry.create({
         data: {
           userId,
           mediaId: media.id,
@@ -184,10 +196,12 @@ export class LibraryService {
           total,
           isPublic,
           isAdult: media.isAdult ?? false,
+          steamAppId: steam?.appId ?? null,
           activities: { create: { status } },
         },
         select: entrySelect,
       });
+      return await this.toView(userId, entry);
     } catch (e) {
       if (
         e instanceof Prisma.PrismaClientKnownRequestError &&
@@ -256,7 +270,7 @@ export class LibraryService {
         updated.progress,
       );
     }
-    return updated;
+    return this.toView(userId, updated);
   }
 
   private async logProgress(
@@ -330,5 +344,24 @@ export class LibraryService {
       select: { id: true },
     });
     if (!entry) throw new NotFoundException('Library entry not found');
+  }
+
+  private async toViews(
+    userId: number,
+    entries: EntryRow[],
+  ): Promise<LibraryEntryView[]> {
+    const steamOf = await loadSteamLinks(
+      this.prisma,
+      entries.map((entry) => ({ userId, appId: entry.steamAppId })),
+    );
+    return entries.map(({ steamAppId, ...entry }) => ({
+      ...entry,
+      steam: steamOf(userId, steamAppId),
+    }));
+  }
+
+  private async toView(userId: number, entry: EntryRow) {
+    const [view] = await this.toViews(userId, [entry]);
+    return view;
   }
 }

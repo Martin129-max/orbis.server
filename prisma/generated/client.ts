@@ -153,6 +153,16 @@ export type ContentReport = Prisma.ContentReportModel
  */
 export type Setting = Prisma.SettingModel
 /**
+ * Model SteamAccount
+ * 
+ */
+export type SteamAccount = Prisma.SteamAccountModel
+/**
+ * Model SteamGame
+ * 
+ */
+export type SteamGame = Prisma.SteamGameModel
+/**
  * Model User
  * 
  */

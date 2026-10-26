@@ -26,6 +26,7 @@ import { UpdatePreferencesDto } from './dto/update-preferences.dto';
 import { JwtAuthGuard } from '../auth/jwt.guard';
 import { AllowGuest } from '../auth/allow-guest';
 import { PresenceGateway } from '../friends/presence.gateway';
+import { SteamSyncService } from '../library/steam-sync.service';
 import { IMAGE_MAX_BYTES } from '../storage/storage.service';
 
 @Controller('users')
@@ -33,6 +34,7 @@ export class UsersController {
   constructor(
     private readonly usersService: UsersService,
     private readonly presence: PresenceGateway,
+    private readonly steamSync: SteamSyncService,
   ) {}
 
   @Get()
@@ -170,6 +172,7 @@ export class UsersController {
       friends,
       ...profile
     } = await this.usersService.publicProfile(req.user.userId, username);
+    if (!profile.restricted) void this.steamSync.refresh(profile.userId);
     const status = this.presence.statusOf(profile.userId, {
       appearOffline,
       status: setting,

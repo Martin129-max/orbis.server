@@ -20,9 +20,11 @@ const media: Media = {
 describe('Adding library progress', () => {
   const create = jest.fn();
   const findUser = jest.fn();
+  const findSteamGame = jest.fn().mockResolvedValue(null);
   const service = new LibraryService({
     libraryEntry: { create },
     user: { findUnique: findUser },
+    steamGame: { findFirst: findSteamGame },
   } as unknown as PrismaService);
   beforeEach(() => {
     jest.clearAllMocks();
@@ -171,12 +173,38 @@ describe('Listing the library', () => {
 describe('Adding 18+ titles', () => {
   const create = jest.fn(({ data }) => Promise.resolve({ id: 7, ...data }));
   const findUser = jest.fn();
+  const findSteamGame = jest.fn().mockResolvedValue(null);
+  const steamGames = jest.fn().mockResolvedValue([]);
   const service = new LibraryService({
     libraryEntry: { create },
     user: { findUnique: findUser },
+    steamGame: { findFirst: findSteamGame, findMany: steamGames },
   } as unknown as PrismaService);
 
   beforeEach(() => jest.clearAllMocks());
+
+  it('links a game you own on Steam and shows your playtime', async () => {
+    findUser.mockResolvedValue({ showNsfw: false });
+    jest.mocked(getMedia).mockResolvedValue({
+      ...media,
+      id: 'GAME_14593',
+      type: 'GAME',
+      sourceId: '14593',
+    });
+    findSteamGame.mockResolvedValueOnce({ appId: '367520' });
+    steamGames.mockResolvedValueOnce([
+      { userId: 1, appId: '367520', minutes: 754 },
+    ]);
+
+    const entry = await service.add(1, { type: 'game', sourceId: '14593' });
+
+    expect(findSteamGame).toHaveBeenCalledWith({
+      where: { userId: 1, igdbId: '14593' },
+      select: { appId: true },
+    });
+    expect(create.mock.calls[0][0].data.steamAppId).toBe('367520');
+    expect(entry.steam).toEqual({ appId: '367520', minutes: 754 });
+  });
 
   it('asks for 18+ titles and remembers them when NSFW is on', async () => {
     findUser.mockResolvedValue({ showNsfw: true });

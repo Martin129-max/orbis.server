@@ -32,6 +32,7 @@ import { getMedia } from '../library/library-api';
 import { reportedBy, visibleTo } from '../moderation/visibility';
 import { loadNicknames } from '../communities/nicknames';
 import { nsfwEntries, showsNsfw } from '../users/nsfw';
+import { loadSteamLinks, SteamLink } from '../steam/steam-links';
 
 const postInclude = {
   author,
@@ -75,6 +76,7 @@ const activityInclude = {
       title: true,
       coverImage: true,
       year: true,
+      steamAppId: true,
       user: author,
     },
   },
@@ -89,6 +91,7 @@ type RawActivity = {
   author: Prisma.UserGetPayload<typeof author>;
   status: LibraryStatus;
   progress: { from: number; to: number } | null;
+  steamAppId: string | null;
   media: {
     type: 'anime' | 'manga' | 'game';
     sourceId: string;
@@ -98,7 +101,8 @@ type RawActivity = {
   };
 };
 
-export type ActivityItem = RawActivity & Engagement & { liked: boolean };
+export type ActivityItem = RawActivity &
+  Engagement & { liked: boolean; steam: SteamLink | null };
 
 export type FeedItem = PostItem | (ThreadSummary & Engagement) | ActivityItem;
 
@@ -191,6 +195,7 @@ function toActivity(
       activity.progressTo === null
         ? null
         : { from: activity.progressFrom!, to: activity.progressTo },
+    steamAppId: entry.steamAppId,
     media: {
       type: entry.mediaType,
       sourceId: entry.sourceId,
@@ -259,6 +264,15 @@ export class PostsService {
       ),
     );
 
+    const steamOf = await loadSteamLinks(
+      this.prisma,
+      items.flatMap((item) =>
+        item.type === 'activity'
+          ? [{ userId: item.author.id, appId: item.steamAppId }]
+          : [],
+      ),
+    );
+
     return items.map((item, index) => {
       const communityId = communityOf(item);
       const author = withNickname(communityId, item.author);
@@ -270,6 +284,10 @@ export class PostsService {
       const liked = (item.type === 'post' ? likedPosts : likedActivities).has(
         item.id,
       );
+      if (item.type === 'activity') {
+        const steam = steamOf(item.author.id, item.steamAppId);
+        return { ...item, author, liked, previewComments, steam };
+      }
       return { ...item, author, liked, previewComments };
     });
   }

@@ -74,6 +74,8 @@ export const ModelName = {
   ReportComment: 'ReportComment',
   ContentReport: 'ContentReport',
   Setting: 'Setting',
+  SteamAccount: 'SteamAccount',
+  SteamGame: 'SteamGame',
   User: 'User',
   OAuthAccount: 'OAuthAccount'
 } as const
@@ -266,6 +268,7 @@ export const LibraryEntryScalarFieldEnum = {
   total: 'total',
   isPublic: 'isPublic',
   isAdult: 'isAdult',
+  steamAppId: 'steamAppId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -403,6 +406,32 @@ export const SettingScalarFieldEnum = {
 } as const
 
 export type SettingScalarFieldEnum = (typeof SettingScalarFieldEnum)[keyof typeof SettingScalarFieldEnum]
+
+
+export const SteamAccountScalarFieldEnum = {
+  userId: 'userId',
+  steamId: 'steamId',
+  personaName: 'personaName',
+  trackGames: 'trackGames',
+  gamesPrivate: 'gamesPrivate',
+  baselineAt: 'baselineAt',
+  checkedAt: 'checkedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type SteamAccountScalarFieldEnum = (typeof SteamAccountScalarFieldEnum)[keyof typeof SteamAccountScalarFieldEnum]
+
+
+export const SteamGameScalarFieldEnum = {
+  userId: 'userId',
+  appId: 'appId',
+  minutes: 'minutes',
+  lastPlayedAt: 'lastPlayedAt',
+  igdbId: 'igdbId',
+  matchedAt: 'matchedAt'
+} as const
+
+export type SteamGameScalarFieldEnum = (typeof SteamGameScalarFieldEnum)[keyof typeof SteamGameScalarFieldEnum]
 
 
 export const UserScalarFieldEnum = {

@@ -407,6 +407,8 @@ export const ModelName = {
   ReportComment: 'ReportComment',
   ContentReport: 'ContentReport',
   Setting: 'Setting',
+  SteamAccount: 'SteamAccount',
+  SteamGame: 'SteamGame',
   User: 'User',
   OAuthAccount: 'OAuthAccount'
 } as const
@@ -424,7 +426,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "community" | "membership" | "railFolder" | "role" | "membershipRole" | "invite" | "post" | "thread" | "comment" | "vote" | "like" | "friendship" | "libraryEntry" | "libraryActivity" | "conversation" | "conversationMember" | "message" | "messageReaction" | "notification" | "report" | "reportComment" | "contentReport" | "setting" | "user" | "oAuthAccount"
+    modelProps: "community" | "membership" | "railFolder" | "role" | "membershipRole" | "invite" | "post" | "thread" | "comment" | "vote" | "like" | "friendship" | "libraryEntry" | "libraryActivity" | "conversation" | "conversationMember" | "message" | "messageReaction" | "notification" | "report" | "reportComment" | "contentReport" | "setting" | "steamAccount" | "steamGame" | "user" | "oAuthAccount"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2130,6 +2132,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    SteamAccount: {
+      payload: Prisma.$SteamAccountPayload<ExtArgs>
+      fields: Prisma.SteamAccountFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SteamAccountFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SteamAccountPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SteamAccountFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SteamAccountPayload>
+        }
+        findFirst: {
+          args: Prisma.SteamAccountFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SteamAccountPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SteamAccountFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SteamAccountPayload>
+        }
+        findMany: {
+          args: Prisma.SteamAccountFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SteamAccountPayload>[]
+        }
+        create: {
+          args: Prisma.SteamAccountCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SteamAccountPayload>
+        }
+        createMany: {
+          args: Prisma.SteamAccountCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SteamAccountCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SteamAccountPayload>[]
+        }
+        delete: {
+          args: Prisma.SteamAccountDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SteamAccountPayload>
+        }
+        update: {
+          args: Prisma.SteamAccountUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SteamAccountPayload>
+        }
+        deleteMany: {
+          args: Prisma.SteamAccountDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SteamAccountUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SteamAccountUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SteamAccountPayload>[]
+        }
+        upsert: {
+          args: Prisma.SteamAccountUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SteamAccountPayload>
+        }
+        aggregate: {
+          args: Prisma.SteamAccountAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSteamAccount>
+        }
+        groupBy: {
+          args: Prisma.SteamAccountGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SteamAccountGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SteamAccountCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SteamAccountCountAggregateOutputType> | number
+        }
+      }
+    }
+    SteamGame: {
+      payload: Prisma.$SteamGamePayload<ExtArgs>
+      fields: Prisma.SteamGameFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SteamGameFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SteamGamePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SteamGameFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SteamGamePayload>
+        }
+        findFirst: {
+          args: Prisma.SteamGameFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SteamGamePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SteamGameFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SteamGamePayload>
+        }
+        findMany: {
+          args: Prisma.SteamGameFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SteamGamePayload>[]
+        }
+        create: {
+          args: Prisma.SteamGameCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SteamGamePayload>
+        }
+        createMany: {
+          args: Prisma.SteamGameCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SteamGameCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SteamGamePayload>[]
+        }
+        delete: {
+          args: Prisma.SteamGameDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SteamGamePayload>
+        }
+        update: {
+          args: Prisma.SteamGameUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SteamGamePayload>
+        }
+        deleteMany: {
+          args: Prisma.SteamGameDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SteamGameUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SteamGameUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SteamGamePayload>[]
+        }
+        upsert: {
+          args: Prisma.SteamGameUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SteamGamePayload>
+        }
+        aggregate: {
+          args: Prisma.SteamGameAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSteamGame>
+        }
+        groupBy: {
+          args: Prisma.SteamGameGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SteamGameGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SteamGameCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SteamGameCountAggregateOutputType> | number
+        }
+      }
+    }
     User: {
       payload: Prisma.$UserPayload<ExtArgs>
       fields: Prisma.UserFieldRefs
@@ -2489,6 +2639,7 @@ export const LibraryEntryScalarFieldEnum = {
   total: 'total',
   isPublic: 'isPublic',
   isAdult: 'isAdult',
+  steamAppId: 'steamAppId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -2626,6 +2777,32 @@ export const SettingScalarFieldEnum = {
 } as const
 
 export type SettingScalarFieldEnum = (typeof SettingScalarFieldEnum)[keyof typeof SettingScalarFieldEnum]
+
+
+export const SteamAccountScalarFieldEnum = {
+  userId: 'userId',
+  steamId: 'steamId',
+  personaName: 'personaName',
+  trackGames: 'trackGames',
+  gamesPrivate: 'gamesPrivate',
+  baselineAt: 'baselineAt',
+  checkedAt: 'checkedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type SteamAccountScalarFieldEnum = (typeof SteamAccountScalarFieldEnum)[keyof typeof SteamAccountScalarFieldEnum]
+
+
+export const SteamGameScalarFieldEnum = {
+  userId: 'userId',
+  appId: 'appId',
+  minutes: 'minutes',
+  lastPlayedAt: 'lastPlayedAt',
+  igdbId: 'igdbId',
+  matchedAt: 'matchedAt'
+} as const
+
+export type SteamGameScalarFieldEnum = (typeof SteamGameScalarFieldEnum)[keyof typeof SteamGameScalarFieldEnum]
 
 
 export const UserScalarFieldEnum = {
@@ -3097,6 +3274,8 @@ export type GlobalOmitConfig = {
   reportComment?: Prisma.ReportCommentOmit
   contentReport?: Prisma.ContentReportOmit
   setting?: Prisma.SettingOmit
+  steamAccount?: Prisma.SteamAccountOmit
+  steamGame?: Prisma.SteamGameOmit
   user?: Prisma.UserOmit
   oAuthAccount?: Prisma.OAuthAccountOmit
 }

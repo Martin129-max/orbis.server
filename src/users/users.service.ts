@@ -7,6 +7,7 @@ import {
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma.service';
 import { nsfwEntries, showsNsfw } from './nsfw';
+import { loadSteamLinks, SteamLink } from '../steam/steam-links';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePreferencesDto } from './dto/update-preferences.dto';
 import { UpdateOnboardingDto } from './dto/update-onboarding.dto';
@@ -67,6 +68,7 @@ export type PublicProfile = {
     status: LibraryStatus;
     progress: number;
     total: number | null;
+    steam: SteamLink | null;
   }[];
 };
 
@@ -407,9 +409,14 @@ export class UsersService {
           status: true,
           progress: true,
           total: true,
+          steamAppId: true,
         },
       }),
     ]);
+    const steamOf = await loadSteamLinks(
+      this.prisma,
+      library.map((entry) => ({ userId: user.id, appId: entry.steamAppId })),
+    );
 
     const { memberships, id, email, ...rest } = user;
     const headAdmin = isHeadAdmin(email);
@@ -434,7 +441,10 @@ export class UsersService {
       }),
       postCount: posts + threads,
       communityCount: memberships.length,
-      library,
+      library: library.map(({ steamAppId, ...entry }) => ({
+        ...entry,
+        steam: steamOf(user.id, steamAppId),
+      })),
       communities: memberships
         .map(({ community }) => community)
         .filter(

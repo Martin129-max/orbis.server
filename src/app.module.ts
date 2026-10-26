@@ -19,6 +19,7 @@ import { StatsModule } from './stats/stats.module';
 import { ReportsModule } from './reports/reports.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { LibraryModule } from './library/library.module';
+import { SteamModule } from './steam/steam.module';
 import { InvitesModule } from './invites/invites.module';
 import { AdminModule } from './admin/admin.module';
 import { ModerationModule } from './moderation/moderation.module';
@@ -47,6 +48,7 @@ import { PrismaService } from './prisma.service';
     ReportsModule,
     NotificationsModule,
     LibraryModule,
+    SteamModule,
     InvitesModule,
     AdminModule,
     ModerationModule,

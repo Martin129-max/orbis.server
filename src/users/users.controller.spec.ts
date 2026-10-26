@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { PresenceGateway } from '../friends/presence.gateway';
+import { SteamSyncService } from '../library/steam-sync.service';
 
 describe('UsersController', () => {
   let controller: UsersController;
@@ -12,6 +13,7 @@ describe('UsersController', () => {
       providers: [
         { provide: UsersService, useValue: {} },
         { provide: PresenceGateway, useValue: {} },
+        { provide: SteamSyncService, useValue: {} },
       ],
     }).compile();
 

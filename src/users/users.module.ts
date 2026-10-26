@@ -5,9 +5,10 @@ import { UsersService } from './users.service';
 import { PrismaService } from '../prisma.service';
 import { FriendsModule } from '../friends/friends.module';
 import { StorageModule } from '../storage/storage.module';
+import { LibraryModule } from '../library/library.module';
 
 @Module({
-  imports: [FriendsModule, StorageModule],
+  imports: [FriendsModule, StorageModule, LibraryModule],
   controllers: [UsersController, PublicUsersController],
   providers: [UsersService, PrismaService],
 })

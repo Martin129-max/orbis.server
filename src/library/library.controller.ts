@@ -17,13 +17,17 @@ import { JwtAuthGuard } from '../auth/jwt.guard';
 import { AddLibraryEntryDto } from './dto/add-library-entry.dto';
 import { UpdateLibraryEntryDto } from './dto/update-library-entry.dto';
 import { LibraryService } from './library.service';
+import { SteamSyncService } from './steam-sync.service';
 import { MediaType } from '../../prisma/generated/client';
 import { RateLimit, MINUTE } from '../common/throttle';
 
 @Controller('library')
 @UseGuards(JwtAuthGuard)
 export class LibraryController {
-  constructor(private readonly libraryService: LibraryService) {}
+  constructor(
+    private readonly libraryService: LibraryService,
+    private readonly steamSync: SteamSyncService,
+  ) {}
 
   @RateLimit(60, MINUTE)
   @Get('search')
@@ -41,7 +45,8 @@ export class LibraryController {
   }
 
   @Get()
-  list(@Req() req) {
+  async list(@Req() req) {
+    await this.steamSync.refresh(req.user.userId, { waitMs: 2_000 });
     return this.libraryService.list(req.user.userId);
   }
 
