@@ -117,6 +117,7 @@ export const MembershipScalarFieldEnum = {
   userId: 'userId',
   communityId: 'communityId',
   nickname: 'nickname',
+  showLibraryUpdates: 'showLibraryUpdates',
   position: 'position',
   folderId: 'folderId',
   joinedAt: 'joinedAt'

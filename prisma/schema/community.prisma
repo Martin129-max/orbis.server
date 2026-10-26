@@ -23,16 +23,17 @@ model Community {
 }
 
 model Membership {
-  userId      Int
-  communityId Int
-  nickname    String?
-  position    Int              @default(0)
-  folderId    Int?
-  joinedAt    DateTime         @default(now())
-  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  community   Community        @relation(fields: [communityId], references: [id], onDelete: Cascade)
-  folder      RailFolder?      @relation(fields: [folderId], references: [id], onDelete: SetNull)
-  roles       MembershipRole[]
+  userId             Int
+  communityId        Int
+  nickname           String?
+  showLibraryUpdates Boolean          @default(true)
+  position           Int              @default(0)
+  folderId           Int?
+  joinedAt           DateTime         @default(now())
+  user               User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  community          Community        @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  folder             RailFolder?      @relation(fields: [folderId], references: [id], onDelete: SetNull)
+  roles              MembershipRole[]
 
   @@id([userId, communityId])
   @@index([communityId])

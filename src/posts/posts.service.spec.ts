@@ -238,6 +238,27 @@ describe('Feed content filters', () => {
     expect(items[0].author).toEqual({ ...person, nickname: 'Navigator' });
   });
 
+  it('leaves out library updates members hid from a community', async () => {
+    await service.findForCommunity(1, 9);
+    expect(
+      prisma.libraryActivity.findMany.mock.calls[0][0].where.entry.user,
+    ).toEqual({
+      memberships: { some: { communityId: 9, showLibraryUpdates: true } },
+    });
+
+    await service.findForMember(1);
+    expect(
+      prisma.libraryActivity.findMany.mock.calls[1][0].where.entry.user,
+    ).toEqual({
+      memberships: {
+        some: {
+          showLibraryUpdates: true,
+          community: { memberships: { some: { userId: 1 } } },
+        },
+      },
+    });
+  });
+
   it('hides 18+ library updates unless the viewer turned NSFW on', async () => {
     await service.findForMember(1);
     expect(

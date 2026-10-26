@@ -29,6 +29,7 @@ import { CreateCommunityDto } from './dto/create-community.dto';
 import { UpdateRailLayoutDto } from './dto/update-rail-layout.dto';
 import { SearchCommunitiesDto } from './dto/search-communities.dto';
 import { UpdateCommunityDto } from './dto/update-community.dto';
+import { UpdateLibraryUpdatesDto } from './dto/update-library-updates.dto';
 import { UpdateNicknameDto } from './dto/update-nickname.dto';
 import { CommunityMemberGuard } from './community-member.guard';
 import { CommunityViewerGuard } from './community-viewer.guard';
@@ -144,6 +145,21 @@ export class CommunitiesController {
       req.user.userId,
       communityId,
       nickname ?? null,
+    );
+  }
+
+  @RateLimit(20, MINUTE)
+  @Patch(':communityId/library-updates')
+  @UseGuards(CommunityMemberGuard)
+  setShowLibraryUpdates(
+    @Req() req,
+    @Param('communityId', ParseIntPipe) communityId: number,
+    @Body() { show }: UpdateLibraryUpdatesDto,
+  ): Promise<{ showLibraryUpdates: boolean }> {
+    return this.communitiesService.setShowLibraryUpdates(
+      req.user.userId,
+      communityId,
+      show,
     );
   }
 

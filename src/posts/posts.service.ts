@@ -323,7 +323,11 @@ export class PostsService {
               entry: {
                 isPublic: true,
                 ...nsfw,
-                user: { memberships: { some: { communityId } } },
+                user: {
+                  memberships: {
+                    some: { communityId, showLibraryUpdates: true },
+                  },
+                },
               },
               ...olderThan(cursor, RANK.activity),
             },
@@ -442,7 +446,10 @@ export class PostsService {
                 ...nsfw,
                 user: {
                   memberships: {
-                    some: { community: { memberships: { some: { userId } } } },
+                    some: {
+                      showLibraryUpdates: true,
+                      community: { memberships: { some: { userId } } },
+                    },
                   },
                 },
               },

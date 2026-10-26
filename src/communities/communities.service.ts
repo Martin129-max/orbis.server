@@ -36,6 +36,7 @@ export type CommunityWithRole = CommunityModel & {
   memberCount?: number;
   live?: boolean;
   nextStream?: NextStream | null;
+  showLibraryUpdates?: boolean;
 };
 
 const roleRank: Record<CommunityRole, number> = {
@@ -282,6 +283,18 @@ export class CommunitiesService {
     });
   }
 
+  setShowLibraryUpdates(
+    userId: number,
+    communityId: number,
+    showLibraryUpdates: boolean,
+  ) {
+    return this.prisma.membership.update({
+      where: { userId_communityId: { userId, communityId } },
+      data: { showLibraryUpdates },
+      select: { showLibraryUpdates: true },
+    });
+  }
+
   async assertCanManage(userId: number, communityId: number) {
     await this.requireRole(userId, communityId, 'admin');
   }
@@ -523,12 +536,16 @@ export class CommunitiesService {
   }
 
   async findOne(userId: number, id: number): Promise<CommunityWithRole | null> {
-    const [community, role] = await Promise.all([
+    const [community, role, membership] = await Promise.all([
       this.prisma.community.findUnique({
         where: { id },
         include: { _count: { select: { memberships: true } } },
       }),
       this.roleOf(userId, id),
+      this.prisma.membership.findUnique({
+        where: { userId_communityId: { userId, communityId: id } },
+        select: { showLibraryUpdates: true },
+      }),
     ]);
     if (!community || (!role && !community.isPublic)) return null;
 
@@ -541,6 +558,7 @@ export class CommunitiesService {
       nextStream: rest.twitchUserId
         ? await this.twitch.nextStream(rest.twitchUserId)
         : null,
+      ...(role && { showLibraryUpdates: membership?.showLibraryUpdates }),
     };
   }
 

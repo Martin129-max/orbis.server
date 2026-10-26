@@ -92,6 +92,38 @@ describe('Community details', () => {
     });
   });
 
+  it('tells a member whether their library updates show there', async () => {
+    prisma.community.findUnique.mockResolvedValue({
+      id: 9,
+      name: 'Reading club',
+      isPublic: true,
+      _count: { memberships: 3 },
+    });
+    prisma.membership.findUnique.mockResolvedValue({
+      community: { ownerId: 2 },
+      roles: [],
+      showLibraryUpdates: false,
+    });
+
+    await expect(service.findOne(1, 9)).resolves.toMatchObject({
+      role: 'member',
+      showLibraryUpdates: false,
+    });
+  });
+
+  it('saves whether a member’s library updates show in the community', async () => {
+    prisma.membership.update.mockResolvedValue({ showLibraryUpdates: false });
+
+    await expect(service.setShowLibraryUpdates(4, 9, false)).resolves.toEqual({
+      showLibraryUpdates: false,
+    });
+    expect(prisma.membership.update).toHaveBeenCalledWith({
+      where: { userId_communityId: { userId: 4, communityId: 9 } },
+      data: { showLibraryUpdates: false },
+      select: { showLibraryUpdates: true },
+    });
+  });
+
   it('saves a trimmed nickname for the member', async () => {
     prisma.membership.update.mockResolvedValue({ nickname: 'Navigator' });
 
