@@ -101,9 +101,11 @@ describe('PresenceGateway', () => {
     expect(gateway.statusOf(7, visible)).toBe('offline');
   });
 
-  it('shares the Steam game someone is playing, unless they appear offline', async () => {
+  it('shares the Steam game someone is playing only while they are online', async () => {
     await gateway.updatePlaying(new Map([[7, 'NBA 2K26']]));
+    expect(gateway.playingOf(7, visible)).toBeNull();
 
+    await connect();
     expect(gateway.playingOf(7, visible)).toBe('NBA 2K26');
     expect(
       gateway.playingOf(7, { ...visible, appearOffline: true }),
@@ -116,6 +118,7 @@ describe('PresenceGateway', () => {
   it('tells friends when someone starts playing a game', async () => {
     const emit = jest.fn();
     gateway.server = { to: jest.fn(() => ({ emit })) } as unknown as Server;
+    await connect();
     prisma.user.findUnique.mockResolvedValueOnce(visible);
     prisma.friendship.findMany.mockResolvedValueOnce([
       { requesterId: 7, addresseeId: 8 },
@@ -125,8 +128,8 @@ describe('PresenceGateway', () => {
 
     expect(emit).toHaveBeenCalledWith('presence', {
       userId: 7,
-      online: false,
-      status: 'offline',
+      online: true,
+      status: 'online',
       playing: 'NBA 2K26',
     });
   });

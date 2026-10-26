@@ -111,8 +111,13 @@ export class PresenceGateway
     return status === 'idle' || this.isIdle(userId) ? 'idle' : 'online';
   }
 
-  playingOf(userId: number, { appearOffline }: { appearOffline: boolean }) {
-    return appearOffline ? null : (this.playing.get(userId) ?? null);
+  playingOf(
+    userId: number,
+    user: { appearOffline: boolean; status: UserStatus },
+  ) {
+    return this.statusOf(userId, user) === 'offline'
+      ? null
+      : (this.playing.get(userId) ?? null);
   }
 
   async updatePlaying(playing: Map<number, string>) {
