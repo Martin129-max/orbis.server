@@ -21,4 +21,8 @@ export class UpdatePreferencesDto {
   @IsOptional()
   @IsBoolean()
   showNsfw?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  showChangelog?: boolean;
 }

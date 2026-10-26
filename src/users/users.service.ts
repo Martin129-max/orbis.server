@@ -100,6 +100,7 @@ export type Profile = Pick<
   | 'status'
   | 'isPublic'
   | 'showNsfw'
+  | 'showChangelog'
   | 'isAdmin'
   | 'createdAt'
 > & {
@@ -158,6 +159,7 @@ const profile = {
   status: true,
   isPublic: true,
   showNsfw: true,
+  showChangelog: true,
   isAdmin: true,
   createdAt: true,
 } as const;
@@ -204,11 +206,18 @@ export class UsersService {
 
   async updatePreferences(
     id: number,
-    { theme, appearOffline, status, isPublic, showNsfw }: UpdatePreferencesDto,
+    {
+      theme,
+      appearOffline,
+      status,
+      isPublic,
+      showNsfw,
+      showChangelog,
+    }: UpdatePreferencesDto,
   ): Promise<Profile> {
     const user = await this.prisma.user.update({
       where: { id },
-      data: { theme, appearOffline, status, isPublic, showNsfw },
+      data: { theme, appearOffline, status, isPublic, showNsfw, showChangelog },
       select: profile,
     });
 

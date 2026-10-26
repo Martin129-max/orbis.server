@@ -2822,6 +2822,7 @@ export const UserScalarFieldEnum = {
   theme: 'theme',
   appearOffline: 'appearOffline',
   showNsfw: 'showNsfw',
+  showChangelog: 'showChangelog',
   status: 'status',
   isPublic: 'isPublic',
   isAdmin: 'isAdmin',
