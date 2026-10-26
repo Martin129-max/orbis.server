@@ -22,6 +22,10 @@ Create the migration in the same change too: run `pnpm prisma:migrate <name>` ri
 - `user@user.com` (username `user`, password `123456`) is a normal, non-admin user who signed up recently. Leave its tour and new-user checklist unfinished (`tourCompletedAt` and `checklistDismissedAt` stay null) so the onboarding experience can be tried by logging in as it.
 - Character accounts use `<character>@anime.test` with the username `<character>` and the password `password`.
 
+## Search
+
+The site has one search modal (see "Keep Search Up to Date" in `web/AGENTS.md`). When you add or change content people could look for by name or text, add or update its search endpoint in the same change. Use the same visibility rules as wherever that content is listed: private communities and profiles, reported or hidden content (`visibleTo` and `reportedBy`), and the viewer's NSFW setting. Require at least two characters, cap the query length and the number of results, and rate-limit the route. `PostsService.searchFeed` (`GET /feed/search`) is the example to follow.
+
 ## Image Uploads
 
 Every uploaded image must go through `StorageService.uploadImage` (`src/storage/storage.service.ts`), never a direct `PutObjectCommand`. It rejects files over 10 MB (`IMAGE_MAX_BYTES`), fixes the orientation, shrinks the image to fit a maximum size without enlarging it, and converts it to WebP, so nothing is stored as uploaded.

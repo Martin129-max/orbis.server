@@ -123,6 +123,21 @@ const newestFirst = [{ createdAt: 'desc' as const }, { id: 'desc' as const }];
 
 const SEARCH_LIMIT = 8;
 
+function inMyCommunities(userId: number) {
+  return { community: { memberships: { some: { userId } } } };
+}
+
+function homePosts(userId: number) {
+  return {
+    OR: [
+      inMyCommunities(userId),
+      { wallUserId: userId },
+      { authorId: userId, communityId: null, mediaType: null },
+      { wallUser: friendsOf(userId) },
+    ],
+  };
+}
+
 function visibleCommunity(viewerId: number) {
   return {
     OR: [{ isPublic: true }, { memberships: { some: { userId: viewerId } } }],
@@ -392,6 +407,47 @@ export class PostsService {
     ]);
   }
 
+  async searchFeed(viewerId: number, rawQuery: string): Promise<FeedItem[]> {
+    const query = rawQuery.trim().slice(0, 100);
+    if (query.length < 2) return [];
+
+    const reported = await reportedBy(this.prisma, viewerId);
+    const contains = { contains: query, mode: 'insensitive' as const };
+    const [threads, posts] = await Promise.all([
+      this.prisma.thread.findMany({
+        where: {
+          ...inMyCommunities(viewerId),
+          OR: [{ title: contains }, { content: contains }],
+          ...visibleTo(viewerId, reported.thread),
+        },
+        orderBy: newestFirst,
+        take: SEARCH_LIMIT,
+        include: threadInclude,
+      }),
+      this.prisma.post.findMany({
+        where: {
+          AND: [
+            homePosts(viewerId),
+            { content: contains },
+            visibleTo(viewerId, reported.post),
+          ],
+        },
+        orderBy: newestFirst,
+        take: SEARCH_LIMIT,
+        include: postInclude,
+      }),
+    ]);
+
+    const voted = await this.threads.withMyVotes(
+      viewerId,
+      threads.map((thread) => ({ ...thread, type: 'thread' as const })),
+    );
+    return this.engage(viewerId, [
+      ...voted,
+      ...posts.map((post) => ({ ...post, type: 'post' as const })),
+    ]);
+  }
+
   async findForMember(
     userId: number,
     rawCursor?: string,
@@ -399,7 +455,6 @@ export class PostsService {
   ): Promise<Page<FeedItem>> {
     const cursor = parseFeedCursor(rawCursor);
     const excluded = excludedTypes(exclude);
-    const member = { community: { memberships: { some: { userId } } } };
     const reported = await reportedBy(this.prisma, userId);
     const nsfw = nsfwEntries(await showsNsfw(this.prisma, userId));
 
@@ -409,14 +464,7 @@ export class PostsService {
         : this.prisma.post.findMany({
             where: {
               AND: [
-                {
-                  OR: [
-                    member,
-                    { wallUserId: userId },
-                    { authorId: userId, communityId: null, mediaType: null },
-                    { wallUser: friendsOf(userId) },
-                  ],
-                },
+                homePosts(userId),
                 olderThan(cursor, RANK.post),
                 visibleTo(userId, reported.post),
               ],
@@ -429,7 +477,7 @@ export class PostsService {
         ? []
         : this.prisma.thread.findMany({
             where: {
-              ...member,
+              ...inMyCommunities(userId),
               ...olderThan(cursor, RANK.thread),
               ...visibleTo(userId, reported.thread),
             },

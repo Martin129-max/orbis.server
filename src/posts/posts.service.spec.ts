@@ -238,6 +238,32 @@ describe('Feed content filters', () => {
     expect(items[0].author).toEqual({ ...person, nickname: 'Navigator' });
   });
 
+  it('searches posts and threads from the same places as the home feed', async () => {
+    await service.searchFeed(1, '  frieren ');
+    await service.findForMember(1);
+
+    const contains = { contains: 'frieren', mode: 'insensitive' };
+    const [searchPosts, feedPosts] = prisma.post.findMany.mock.calls.map(
+      ([args]) => args.where.AND,
+    );
+    expect(searchPosts[0]).toEqual(feedPosts[0]);
+    expect(searchPosts).toContainEqual({ content: contains });
+
+    const [searchThreads, feedThreads] = prisma.thread.findMany.mock.calls.map(
+      ([args]) => args.where,
+    );
+    expect(searchThreads.community).toEqual(feedThreads.community);
+    expect(searchThreads.OR).toEqual([
+      { title: contains },
+      { content: contains },
+    ]);
+  });
+
+  it('waits for at least two characters before searching everywhere', async () => {
+    expect(await service.searchFeed(1, 'a')).toEqual([]);
+    expect(prisma.post.findMany).not.toHaveBeenCalled();
+  });
+
   it('leaves out library updates members hid from a community', async () => {
     await service.findForCommunity(1, 9);
     expect(
