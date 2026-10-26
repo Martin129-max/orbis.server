@@ -29,11 +29,15 @@ export type AggregateSteamGame = {
 export type SteamGameAvgAggregateOutputType = {
   userId: number | null
   minutes: number | null
+  achieved: number | null
+  achievementTotal: number | null
 }
 
 export type SteamGameSumAggregateOutputType = {
   userId: number | null
   minutes: number | null
+  achieved: number | null
+  achievementTotal: number | null
 }
 
 export type SteamGameMinAggregateOutputType = {
@@ -43,6 +47,9 @@ export type SteamGameMinAggregateOutputType = {
   lastPlayedAt: Date | null
   igdbId: string | null
   matchedAt: Date | null
+  achieved: number | null
+  achievementTotal: number | null
+  achievementsAt: Date | null
 }
 
 export type SteamGameMaxAggregateOutputType = {
@@ -52,6 +59,9 @@ export type SteamGameMaxAggregateOutputType = {
   lastPlayedAt: Date | null
   igdbId: string | null
   matchedAt: Date | null
+  achieved: number | null
+  achievementTotal: number | null
+  achievementsAt: Date | null
 }
 
 export type SteamGameCountAggregateOutputType = {
@@ -61,6 +71,9 @@ export type SteamGameCountAggregateOutputType = {
   lastPlayedAt: number
   igdbId: number
   matchedAt: number
+  achieved: number
+  achievementTotal: number
+  achievementsAt: number
   _all: number
 }
 
@@ -68,11 +81,15 @@ export type SteamGameCountAggregateOutputType = {
 export type SteamGameAvgAggregateInputType = {
   userId?: true
   minutes?: true
+  achieved?: true
+  achievementTotal?: true
 }
 
 export type SteamGameSumAggregateInputType = {
   userId?: true
   minutes?: true
+  achieved?: true
+  achievementTotal?: true
 }
 
 export type SteamGameMinAggregateInputType = {
@@ -82,6 +99,9 @@ export type SteamGameMinAggregateInputType = {
   lastPlayedAt?: true
   igdbId?: true
   matchedAt?: true
+  achieved?: true
+  achievementTotal?: true
+  achievementsAt?: true
 }
 
 export type SteamGameMaxAggregateInputType = {
@@ -91,6 +111,9 @@ export type SteamGameMaxAggregateInputType = {
   lastPlayedAt?: true
   igdbId?: true
   matchedAt?: true
+  achieved?: true
+  achievementTotal?: true
+  achievementsAt?: true
 }
 
 export type SteamGameCountAggregateInputType = {
@@ -100,6 +123,9 @@ export type SteamGameCountAggregateInputType = {
   lastPlayedAt?: true
   igdbId?: true
   matchedAt?: true
+  achieved?: true
+  achievementTotal?: true
+  achievementsAt?: true
   _all?: true
 }
 
@@ -196,6 +222,9 @@ export type SteamGameGroupByOutputType = {
   lastPlayedAt: Date | null
   igdbId: string | null
   matchedAt: Date | null
+  achieved: number | null
+  achievementTotal: number | null
+  achievementsAt: Date | null
   _count: SteamGameCountAggregateOutputType | null
   _avg: SteamGameAvgAggregateOutputType | null
   _sum: SteamGameSumAggregateOutputType | null
@@ -228,6 +257,9 @@ export type SteamGameWhereInput = {
   lastPlayedAt?: Prisma.DateTimeNullableFilter<"SteamGame"> | Date | string | null
   igdbId?: Prisma.StringNullableFilter<"SteamGame"> | string | null
   matchedAt?: Prisma.DateTimeNullableFilter<"SteamGame"> | Date | string | null
+  achieved?: Prisma.IntNullableFilter<"SteamGame"> | number | null
+  achievementTotal?: Prisma.IntNullableFilter<"SteamGame"> | number | null
+  achievementsAt?: Prisma.DateTimeNullableFilter<"SteamGame"> | Date | string | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
 
@@ -238,6 +270,9 @@ export type SteamGameOrderByWithRelationInput = {
   lastPlayedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   igdbId?: Prisma.SortOrderInput | Prisma.SortOrder
   matchedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  achieved?: Prisma.SortOrderInput | Prisma.SortOrder
+  achievementTotal?: Prisma.SortOrderInput | Prisma.SortOrder
+  achievementsAt?: Prisma.SortOrderInput | Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
 }
 
@@ -252,6 +287,9 @@ export type SteamGameWhereUniqueInput = Prisma.AtLeast<{
   lastPlayedAt?: Prisma.DateTimeNullableFilter<"SteamGame"> | Date | string | null
   igdbId?: Prisma.StringNullableFilter<"SteamGame"> | string | null
   matchedAt?: Prisma.DateTimeNullableFilter<"SteamGame"> | Date | string | null
+  achieved?: Prisma.IntNullableFilter<"SteamGame"> | number | null
+  achievementTotal?: Prisma.IntNullableFilter<"SteamGame"> | number | null
+  achievementsAt?: Prisma.DateTimeNullableFilter<"SteamGame"> | Date | string | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "userId_appId">
 
@@ -262,6 +300,9 @@ export type SteamGameOrderByWithAggregationInput = {
   lastPlayedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   igdbId?: Prisma.SortOrderInput | Prisma.SortOrder
   matchedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  achieved?: Prisma.SortOrderInput | Prisma.SortOrder
+  achievementTotal?: Prisma.SortOrderInput | Prisma.SortOrder
+  achievementsAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.SteamGameCountOrderByAggregateInput
   _avg?: Prisma.SteamGameAvgOrderByAggregateInput
   _max?: Prisma.SteamGameMaxOrderByAggregateInput
@@ -279,6 +320,9 @@ export type SteamGameScalarWhereWithAggregatesInput = {
   lastPlayedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"SteamGame"> | Date | string | null
   igdbId?: Prisma.StringNullableWithAggregatesFilter<"SteamGame"> | string | null
   matchedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"SteamGame"> | Date | string | null
+  achieved?: Prisma.IntNullableWithAggregatesFilter<"SteamGame"> | number | null
+  achievementTotal?: Prisma.IntNullableWithAggregatesFilter<"SteamGame"> | number | null
+  achievementsAt?: Prisma.DateTimeNullableWithAggregatesFilter<"SteamGame"> | Date | string | null
 }
 
 export type SteamGameCreateInput = {
@@ -287,6 +331,9 @@ export type SteamGameCreateInput = {
   lastPlayedAt?: Date | string | null
   igdbId?: string | null
   matchedAt?: Date | string | null
+  achieved?: number | null
+  achievementTotal?: number | null
+  achievementsAt?: Date | string | null
   user: Prisma.UserCreateNestedOneWithoutSteamGamesInput
 }
 
@@ -297,6 +344,9 @@ export type SteamGameUncheckedCreateInput = {
   lastPlayedAt?: Date | string | null
   igdbId?: string | null
   matchedAt?: Date | string | null
+  achieved?: number | null
+  achievementTotal?: number | null
+  achievementsAt?: Date | string | null
 }
 
 export type SteamGameUpdateInput = {
@@ -305,6 +355,9 @@ export type SteamGameUpdateInput = {
   lastPlayedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   igdbId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   matchedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achieved?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  achievementTotal?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  achievementsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutSteamGamesNestedInput
 }
 
@@ -315,6 +368,9 @@ export type SteamGameUncheckedUpdateInput = {
   lastPlayedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   igdbId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   matchedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achieved?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  achievementTotal?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  achievementsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type SteamGameCreateManyInput = {
@@ -324,6 +380,9 @@ export type SteamGameCreateManyInput = {
   lastPlayedAt?: Date | string | null
   igdbId?: string | null
   matchedAt?: Date | string | null
+  achieved?: number | null
+  achievementTotal?: number | null
+  achievementsAt?: Date | string | null
 }
 
 export type SteamGameUpdateManyMutationInput = {
@@ -332,6 +391,9 @@ export type SteamGameUpdateManyMutationInput = {
   lastPlayedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   igdbId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   matchedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achieved?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  achievementTotal?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  achievementsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type SteamGameUncheckedUpdateManyInput = {
@@ -341,6 +403,9 @@ export type SteamGameUncheckedUpdateManyInput = {
   lastPlayedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   igdbId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   matchedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achieved?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  achievementTotal?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  achievementsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type SteamGameUserIdAppIdCompoundUniqueInput = {
@@ -355,11 +420,16 @@ export type SteamGameCountOrderByAggregateInput = {
   lastPlayedAt?: Prisma.SortOrder
   igdbId?: Prisma.SortOrder
   matchedAt?: Prisma.SortOrder
+  achieved?: Prisma.SortOrder
+  achievementTotal?: Prisma.SortOrder
+  achievementsAt?: Prisma.SortOrder
 }
 
 export type SteamGameAvgOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   minutes?: Prisma.SortOrder
+  achieved?: Prisma.SortOrder
+  achievementTotal?: Prisma.SortOrder
 }
 
 export type SteamGameMaxOrderByAggregateInput = {
@@ -369,6 +439,9 @@ export type SteamGameMaxOrderByAggregateInput = {
   lastPlayedAt?: Prisma.SortOrder
   igdbId?: Prisma.SortOrder
   matchedAt?: Prisma.SortOrder
+  achieved?: Prisma.SortOrder
+  achievementTotal?: Prisma.SortOrder
+  achievementsAt?: Prisma.SortOrder
 }
 
 export type SteamGameMinOrderByAggregateInput = {
@@ -378,11 +451,16 @@ export type SteamGameMinOrderByAggregateInput = {
   lastPlayedAt?: Prisma.SortOrder
   igdbId?: Prisma.SortOrder
   matchedAt?: Prisma.SortOrder
+  achieved?: Prisma.SortOrder
+  achievementTotal?: Prisma.SortOrder
+  achievementsAt?: Prisma.SortOrder
 }
 
 export type SteamGameSumOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   minutes?: Prisma.SortOrder
+  achieved?: Prisma.SortOrder
+  achievementTotal?: Prisma.SortOrder
 }
 
 export type SteamGameListRelationFilter = {
@@ -443,6 +521,9 @@ export type SteamGameCreateWithoutUserInput = {
   lastPlayedAt?: Date | string | null
   igdbId?: string | null
   matchedAt?: Date | string | null
+  achieved?: number | null
+  achievementTotal?: number | null
+  achievementsAt?: Date | string | null
 }
 
 export type SteamGameUncheckedCreateWithoutUserInput = {
@@ -451,6 +532,9 @@ export type SteamGameUncheckedCreateWithoutUserInput = {
   lastPlayedAt?: Date | string | null
   igdbId?: string | null
   matchedAt?: Date | string | null
+  achieved?: number | null
+  achievementTotal?: number | null
+  achievementsAt?: Date | string | null
 }
 
 export type SteamGameCreateOrConnectWithoutUserInput = {
@@ -489,6 +573,9 @@ export type SteamGameScalarWhereInput = {
   lastPlayedAt?: Prisma.DateTimeNullableFilter<"SteamGame"> | Date | string | null
   igdbId?: Prisma.StringNullableFilter<"SteamGame"> | string | null
   matchedAt?: Prisma.DateTimeNullableFilter<"SteamGame"> | Date | string | null
+  achieved?: Prisma.IntNullableFilter<"SteamGame"> | number | null
+  achievementTotal?: Prisma.IntNullableFilter<"SteamGame"> | number | null
+  achievementsAt?: Prisma.DateTimeNullableFilter<"SteamGame"> | Date | string | null
 }
 
 export type SteamGameCreateManyUserInput = {
@@ -497,6 +584,9 @@ export type SteamGameCreateManyUserInput = {
   lastPlayedAt?: Date | string | null
   igdbId?: string | null
   matchedAt?: Date | string | null
+  achieved?: number | null
+  achievementTotal?: number | null
+  achievementsAt?: Date | string | null
 }
 
 export type SteamGameUpdateWithoutUserInput = {
@@ -505,6 +595,9 @@ export type SteamGameUpdateWithoutUserInput = {
   lastPlayedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   igdbId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   matchedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achieved?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  achievementTotal?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  achievementsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type SteamGameUncheckedUpdateWithoutUserInput = {
@@ -513,6 +606,9 @@ export type SteamGameUncheckedUpdateWithoutUserInput = {
   lastPlayedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   igdbId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   matchedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achieved?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  achievementTotal?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  achievementsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type SteamGameUncheckedUpdateManyWithoutUserInput = {
@@ -521,6 +617,9 @@ export type SteamGameUncheckedUpdateManyWithoutUserInput = {
   lastPlayedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   igdbId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   matchedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  achieved?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  achievementTotal?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  achievementsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -532,6 +631,9 @@ export type SteamGameSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   lastPlayedAt?: boolean
   igdbId?: boolean
   matchedAt?: boolean
+  achieved?: boolean
+  achievementTotal?: boolean
+  achievementsAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["steamGame"]>
 
@@ -542,6 +644,9 @@ export type SteamGameSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   lastPlayedAt?: boolean
   igdbId?: boolean
   matchedAt?: boolean
+  achieved?: boolean
+  achievementTotal?: boolean
+  achievementsAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["steamGame"]>
 
@@ -552,6 +657,9 @@ export type SteamGameSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   lastPlayedAt?: boolean
   igdbId?: boolean
   matchedAt?: boolean
+  achieved?: boolean
+  achievementTotal?: boolean
+  achievementsAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["steamGame"]>
 
@@ -562,9 +670,12 @@ export type SteamGameSelectScalar = {
   lastPlayedAt?: boolean
   igdbId?: boolean
   matchedAt?: boolean
+  achieved?: boolean
+  achievementTotal?: boolean
+  achievementsAt?: boolean
 }
 
-export type SteamGameOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"userId" | "appId" | "minutes" | "lastPlayedAt" | "igdbId" | "matchedAt", ExtArgs["result"]["steamGame"]>
+export type SteamGameOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"userId" | "appId" | "minutes" | "lastPlayedAt" | "igdbId" | "matchedAt" | "achieved" | "achievementTotal" | "achievementsAt", ExtArgs["result"]["steamGame"]>
 export type SteamGameInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -587,6 +698,9 @@ export type $SteamGamePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     lastPlayedAt: Date | null
     igdbId: string | null
     matchedAt: Date | null
+    achieved: number | null
+    achievementTotal: number | null
+    achievementsAt: Date | null
   }, ExtArgs["result"]["steamGame"]>
   composites: {}
 }
@@ -1017,6 +1131,9 @@ export interface SteamGameFieldRefs {
   readonly lastPlayedAt: Prisma.FieldRef<"SteamGame", 'DateTime'>
   readonly igdbId: Prisma.FieldRef<"SteamGame", 'String'>
   readonly matchedAt: Prisma.FieldRef<"SteamGame", 'DateTime'>
+  readonly achieved: Prisma.FieldRef<"SteamGame", 'Int'>
+  readonly achievementTotal: Prisma.FieldRef<"SteamGame", 'Int'>
+  readonly achievementsAt: Prisma.FieldRef<"SteamGame", 'DateTime'>
 }
     
 

@@ -58,7 +58,14 @@ export async function searchMedia(q: string, adult: boolean) {
   return results;
 }
 
-export type SteamMatch = { sourceId: string; title: string };
+export type SteamMatch = {
+  id: string;
+  sourceId: string;
+  title: string;
+  coverImage: string | null;
+  year: number | null;
+  isAdult: boolean;
+};
 
 export async function matchSteamGames(appIds: string[]) {
   const { results } = await request<{ results: Record<string, SteamMatch> }>(

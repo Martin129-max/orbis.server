@@ -175,10 +175,12 @@ describe('Adding 18+ titles', () => {
   const findUser = jest.fn();
   const findSteamGame = jest.fn().mockResolvedValue(null);
   const steamGames = jest.fn().mockResolvedValue([]);
+  const steamAccounts = jest.fn().mockResolvedValue([]);
   const service = new LibraryService({
     libraryEntry: { create },
     user: { findUnique: findUser },
     steamGame: { findFirst: findSteamGame, findMany: steamGames },
+    steamAccount: { findMany: steamAccounts },
   } as unknown as PrismaService);
 
   beforeEach(() => jest.clearAllMocks());
@@ -193,7 +195,16 @@ describe('Adding 18+ titles', () => {
     });
     findSteamGame.mockResolvedValueOnce({ appId: '367520' });
     steamGames.mockResolvedValueOnce([
-      { userId: 1, appId: '367520', minutes: 754 },
+      {
+        userId: 1,
+        appId: '367520',
+        minutes: 754,
+        achieved: 12,
+        achievementTotal: 63,
+      },
+    ]);
+    steamAccounts.mockResolvedValueOnce([
+      { userId: 1, steamId: '76561197960287930' },
     ]);
 
     const entry = await service.add(1, { type: 'game', sourceId: '14593' });
@@ -203,7 +214,12 @@ describe('Adding 18+ titles', () => {
       select: { appId: true },
     });
     expect(create.mock.calls[0][0].data.steamAppId).toBe('367520');
-    expect(entry.steam).toEqual({ appId: '367520', minutes: 754 });
+    expect(entry.steam).toEqual({
+      appId: '367520',
+      minutes: 754,
+      steamId: '76561197960287930',
+      achievements: { achieved: 12, total: 63 },
+    });
   });
 
   it('asks for 18+ titles and remembers them when NSFW is on', async () => {

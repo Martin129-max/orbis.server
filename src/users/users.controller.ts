@@ -190,6 +190,7 @@ export class UsersController {
           ...friend,
           online: friendStatus !== 'offline',
           status: friendStatus,
+          playing: this.presence.playingOf(friend.userId, { appearOffline }),
         };
       }),
     };

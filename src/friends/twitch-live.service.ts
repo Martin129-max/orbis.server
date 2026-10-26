@@ -13,12 +13,33 @@ import { PresenceGateway } from './presence.gateway';
 
 const POLL_MS = 60_000;
 const BATCH_SIZE = 100;
+const SCHEDULE_TTL_MS = 10 * 60_000;
+const SCHEDULE_RETRY_MS = 60_000;
+const SCHEDULE_TIMEOUT_MS = 3_000;
+const SCHEDULE_SEGMENTS = 10;
+
+export type NextStream = {
+  startsAt: string;
+  endsAt: string | null;
+  title: string | null;
+};
+
+type ScheduleSegment = {
+  start_time: string;
+  end_time: string | null;
+  title: string;
+  canceled_until: string | null;
+};
 
 @Injectable()
 export class TwitchLiveService implements OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(TwitchLiveService.name);
   private timer?: NodeJS.Timeout;
   private appToken: { value: string; expiresAt: number } | null = null;
+  private schedules = new Map<
+    string,
+    { value: NextStream | null; expiresAt: number }
+  >();
 
   constructor(
     private prisma: PrismaService,
@@ -83,6 +104,84 @@ export class TwitchLiveService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
+  async nextStream(broadcasterId: string): Promise<NextStream | null> {
+    const cached = this.schedules.get(broadcasterId);
+    if (cached && cached.expiresAt > Date.now()) return cached.value;
+
+    const credentials = this.credentials();
+    if (!credentials) return null;
+
+    try {
+      const value = await this.schedule(broadcasterId, credentials);
+      this.schedules.set(broadcasterId, {
+        value,
+        expiresAt: Math.min(
+          Date.now() + SCHEDULE_TTL_MS,
+          value ? Date.parse(value.startsAt) : Infinity,
+        ),
+      });
+      return value;
+    } catch (error) {
+      this.logger.warn(
+        `Twitch schedule check failed: ${(error as Error).message}`,
+      );
+      const value = cached?.value ?? null;
+      this.schedules.set(broadcasterId, {
+        value,
+        expiresAt: Date.now() + SCHEDULE_RETRY_MS,
+      });
+      return value;
+    }
+  }
+
+  private async schedule(
+    broadcasterId: string,
+    credentials: { clientId: string; clientSecret: string },
+  ): Promise<NextStream | null> {
+    const params = new URLSearchParams({
+      broadcaster_id: broadcasterId,
+      first: String(SCHEDULE_SEGMENTS),
+    });
+    const response = await fetch(
+      `https://api.twitch.tv/helix/schedule?${params}`,
+      {
+        headers: {
+          Authorization: `Bearer ${await this.token(credentials)}`,
+          'Client-Id': credentials.clientId,
+        },
+        signal: AbortSignal.timeout(SCHEDULE_TIMEOUT_MS),
+      },
+    );
+    if (response.status === 404) return null;
+    if (response.status === 401) this.appToken = null;
+    if (!response.ok) {
+      throw new Error(`Schedule request failed with ${response.status}`);
+    }
+
+    const { data } = (await response.json()) as {
+      data: {
+        segments: ScheduleSegment[] | null;
+        vacation: { start_time: string; end_time: string } | null;
+      };
+    };
+    const onVacation = (start: number) =>
+      data.vacation !== null &&
+      start >= Date.parse(data.vacation.start_time) &&
+      start < Date.parse(data.vacation.end_time);
+    const next = (data.segments ?? []).find(
+      (segment) =>
+        !segment.canceled_until && !onVacation(Date.parse(segment.start_time)),
+    );
+
+    return next
+      ? {
+          startsAt: next.start_time,
+          endsAt: next.end_time ?? null,
+          title: next.title || null,
+        }
+      : null;
+  }
+
   private credentials() {
     const clientId = oauthProviders.twitch.clientId();
     const clientSecret = oauthProviders.twitch.clientSecret();
@@ -95,15 +194,19 @@ export class TwitchLiveService implements OnModuleInit, OnModuleDestroy {
 
     const params = new URLSearchParams({ first: String(BATCH_SIZE) });
     ids.forEach((id) => params.append('user_id', id));
-    const response = await fetch(`https://api.twitch.tv/helix/streams?${params}`, {
-      headers: {
-        Authorization: `Bearer ${await this.token(credentials)}`,
-        'Client-Id': credentials.clientId,
+    const response = await fetch(
+      `https://api.twitch.tv/helix/streams?${params}`,
+      {
+        headers: {
+          Authorization: `Bearer ${await this.token(credentials)}`,
+          'Client-Id': credentials.clientId,
+        },
+        signal: AbortSignal.timeout(OAUTH_TIMEOUT_MS),
       },
-      signal: AbortSignal.timeout(OAUTH_TIMEOUT_MS),
-    });
+    );
     if (response.status === 401) this.appToken = null;
-    if (!response.ok) throw new Error(`Streams request failed with ${response.status}`);
+    if (!response.ok)
+      throw new Error(`Streams request failed with ${response.status}`);
 
     const { data } = (await response.json()) as {
       data: { user_id: string; type: string }[];
@@ -134,7 +237,8 @@ export class TwitchLiveService implements OnModuleInit, OnModuleDestroy {
       }),
       signal: AbortSignal.timeout(OAUTH_TIMEOUT_MS),
     });
-    if (!response.ok) throw new Error(`Token request failed with ${response.status}`);
+    if (!response.ok)
+      throw new Error(`Token request failed with ${response.status}`);
 
     const { access_token: value, expires_in: expiresIn } =
       (await response.json()) as { access_token: string; expires_in: number };

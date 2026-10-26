@@ -58,6 +58,7 @@ export type PublicProfile = {
     coverUrl: string | null;
     online: boolean;
     status: PresenceStatus;
+    playing: string | null;
   }[];
   library: {
     id: number;
@@ -301,7 +302,10 @@ export class UsersService {
     Omit<PublicProfile, 'online' | 'status' | 'friends'> & {
       appearOffline: boolean;
       status: UserStatus;
-      friends: (Omit<PublicProfile['friends'][number], 'online' | 'status'> & {
+      friends: (Omit<
+        PublicProfile['friends'][number],
+        'online' | 'status' | 'playing'
+      > & {
         appearOffline: boolean;
         status: UserStatus;
       })[];

@@ -1,6 +1,11 @@
 import { PrismaService } from '../prisma.service';
 
-export type SteamLink = { appId: string; minutes: number };
+export type SteamLink = {
+  appId: string;
+  minutes: number;
+  steamId: string;
+  achievements: { achieved: number; total: number } | null;
+};
 
 type SteamRef = { userId: number; appId: string | null };
 
@@ -17,23 +22,46 @@ export async function loadSteamLinks(
     (ref): ref is { userId: number; appId: string } =>
       typeof ref.appId === 'string',
   );
-  const rows =
+  const userIds = [...new Set(linked.map((ref) => ref.userId))];
+  const [rows, accounts] =
     linked.length === 0
-      ? []
-      : await prisma.steamGame.findMany({
-          where: {
-            userId: { in: [...new Set(linked.map((ref) => ref.userId))] },
-            appId: { in: [...new Set(linked.map((ref) => ref.appId))] },
-          },
-          select: { userId: true, appId: true, minutes: true },
-        });
-  const minutes = new Map(
-    rows.map((row) => [`${row.userId}:${row.appId}`, row.minutes]),
+      ? [[], []]
+      : await Promise.all([
+          prisma.steamGame.findMany({
+            where: {
+              userId: { in: userIds },
+              appId: { in: [...new Set(linked.map((ref) => ref.appId))] },
+            },
+            select: {
+              userId: true,
+              appId: true,
+              minutes: true,
+              achieved: true,
+              achievementTotal: true,
+            },
+          }),
+          prisma.steamAccount.findMany({
+            where: { userId: { in: userIds } },
+            select: { userId: true, steamId: true },
+          }),
+        ]);
+  const games = new Map(rows.map((row) => [`${row.userId}:${row.appId}`, row]));
+  const steamIds = new Map(
+    accounts.map((account) => [account.userId, account.steamId]),
   );
 
   return (userId, appId) => {
     if (!appId) return null;
-    const played = minutes.get(`${userId}:${appId}`);
-    return played === undefined ? null : { appId, minutes: played };
+    const game = games.get(`${userId}:${appId}`);
+    const steamId = steamIds.get(userId);
+    if (!game || !steamId) return null;
+    return {
+      appId,
+      minutes: game.minutes,
+      steamId,
+      achievements: game.achievementTotal
+        ? { achieved: game.achieved ?? 0, total: game.achievementTotal }
+        : null,
+    };
   };
 }

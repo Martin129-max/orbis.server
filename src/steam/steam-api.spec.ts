@@ -1,4 +1,10 @@
-import { getOwnedGames, STEAM_OPENID, verifyOpenId } from './steam-api';
+import {
+  getAchievements,
+  getOwnedGames,
+  getPlayingGames,
+  STEAM_OPENID,
+  verifyOpenId,
+} from './steam-api';
 
 const RETURN_TO = 'http://localhost:3000/auth/steam/callback';
 const STEAM_ID = '76561198000000001';
@@ -87,6 +93,67 @@ describe('Steam API', () => {
       },
       { appId: '413150', minutes: 0, lastPlayedAt: null },
     ]);
+  });
+
+  it('reads which game each player is in', async () => {
+    fetchMock.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        response: {
+          players: [
+            { steamid: 'a', gameextrainfo: 'NBA 2K26' },
+            { steamid: 'b' },
+          ],
+        },
+      }),
+    });
+
+    await expect(getPlayingGames(['a', 'b'])).resolves.toEqual(
+      new Map([['a', 'NBA 2K26']]),
+    );
+    expect(fetchMock.mock.calls[0][0]).toContain('steamids=a%2Cb');
+  });
+
+  it('counts unlocked achievements', async () => {
+    fetchMock.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        playerstats: {
+          success: true,
+          achievements: [{ achieved: 1 }, { achieved: 0 }, { achieved: 1 }],
+        },
+      }),
+    });
+
+    await expect(getAchievements(STEAM_ID, '367520')).resolves.toEqual({
+      achieved: 2,
+      total: 3,
+    });
+  });
+
+  it('treats games without stats as having no achievements', async () => {
+    fetchMock.mockResolvedValueOnce({
+      ok: false,
+      status: 400,
+      json: async () => ({
+        playerstats: { success: false, error: 'Requested app has no stats' },
+      }),
+    });
+
+    await expect(getAchievements(STEAM_ID, '108600')).resolves.toEqual({
+      achieved: 0,
+      total: 0,
+    });
+  });
+
+  it('fails when Steam won’t share achievements', async () => {
+    fetchMock.mockResolvedValueOnce({
+      ok: false,
+      status: 403,
+      json: async () => ({ playerstats: { success: false } }),
+    });
+
+    await expect(getAchievements(STEAM_ID, '367520')).rejects.toThrow('403');
   });
 
   it('treats hidden game details as private', async () => {

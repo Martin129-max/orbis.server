@@ -2,16 +2,19 @@ import { CommunitiesService } from './communities.service';
 import { PrismaService } from '../prisma.service';
 import { StorageService } from '../storage/storage.service';
 import { PresenceGateway } from '../friends/presence.gateway';
+import { TwitchLiveService } from '../friends/twitch-live.service';
 
 describe('Community details', () => {
   const prisma = {
     community: { findUnique: jest.fn() },
     membership: { findUnique: jest.fn(), update: jest.fn() },
   };
+  const twitch = { nextStream: jest.fn() };
   const service = new CommunitiesService(
     prisma as unknown as PrismaService,
     {} as StorageService,
     { isCommunityLive: () => false } as unknown as PresenceGateway,
+    twitch as unknown as TwitchLiveService,
   );
 
   beforeEach(() => {
@@ -34,7 +37,29 @@ describe('Community details', () => {
       role: null,
       memberCount: 3,
       live: false,
+      nextStream: null,
     });
+    expect(twitch.nextStream).not.toHaveBeenCalled();
+  });
+
+  it('includes the next scheduled stream for a community linked to Twitch', async () => {
+    const nextStream = {
+      startsAt: '2026-10-27T18:00:00Z',
+      endsAt: '2026-10-27T20:00:00Z',
+      title: 'Watch party',
+    };
+    prisma.community.findUnique.mockResolvedValue({
+      id: 9,
+      name: 'Reading club',
+      isPublic: true,
+      twitchUserId: '141981764',
+      _count: { memberships: 3 },
+    });
+    prisma.membership.findUnique.mockResolvedValue(null);
+    twitch.nextStream.mockResolvedValue(nextStream);
+
+    await expect(service.findOne(1, 9)).resolves.toMatchObject({ nextStream });
+    expect(twitch.nextStream).toHaveBeenCalledWith('141981764');
   });
 
   it('does not return private community details to a non-member', async () => {

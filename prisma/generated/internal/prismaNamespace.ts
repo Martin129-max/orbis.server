@@ -2785,6 +2785,7 @@ export const SteamAccountScalarFieldEnum = {
   personaName: 'personaName',
   trackGames: 'trackGames',
   gamesPrivate: 'gamesPrivate',
+  showPlaying: 'showPlaying',
   baselineAt: 'baselineAt',
   checkedAt: 'checkedAt',
   createdAt: 'createdAt'
@@ -2799,7 +2800,10 @@ export const SteamGameScalarFieldEnum = {
   minutes: 'minutes',
   lastPlayedAt: 'lastPlayedAt',
   igdbId: 'igdbId',
-  matchedAt: 'matchedAt'
+  matchedAt: 'matchedAt',
+  achieved: 'achieved',
+  achievementTotal: 'achievementTotal',
+  achievementsAt: 'achievementsAt'
 } as const
 
 export type SteamGameScalarFieldEnum = (typeof SteamGameScalarFieldEnum)[keyof typeof SteamGameScalarFieldEnum]

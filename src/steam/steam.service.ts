@@ -10,6 +10,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { Prisma } from '../../prisma/generated/client';
 import { webUrl } from '../common/web-url';
+import { PresenceGateway } from '../friends/presence.gateway';
 import { SteamSyncService } from '../library/steam-sync.service';
 import { PrismaService } from '../prisma.service';
 import { ConnectSteamDto } from './dto/connect-steam.dto';
@@ -26,10 +27,12 @@ export type SteamStatus = {
     steamId: string;
     personaName: string;
     trackGames: boolean;
+    showPlaying: boolean;
     gamesPrivate: boolean;
     connectedAt: Date;
     games: number;
     matched: number;
+    importable: number;
   } | null;
 };
 
@@ -53,6 +56,7 @@ export class SteamService {
     private prisma: PrismaService,
     private jwt: JwtService,
     private steamSync: SteamSyncService,
+    private presence: PresenceGateway,
   ) {}
 
   async status(userId: number): Promise<SteamStatus> {
@@ -63,20 +67,33 @@ export class SteamService {
         steamId: true,
         personaName: true,
         trackGames: true,
+        showPlaying: true,
         gamesPrivate: true,
         createdAt: true,
       },
     });
     if (!account) return { enabled, account: null };
 
-    const [games, matched] = await Promise.all([
+    const [games, matched, played, entries] = await Promise.all([
       this.prisma.steamGame.count({ where: { userId } }),
       this.prisma.steamGame.count({ where: { userId, igdbId: { not: null } } }),
+      this.prisma.steamGame.findMany({
+        where: { userId, minutes: { gt: 0 }, igdbId: { not: null } },
+        select: { igdbId: true },
+      }),
+      this.prisma.libraryEntry.findMany({
+        where: { userId, mediaType: 'game' },
+        select: { sourceId: true },
+      }),
     ]);
+    const owned = new Set(entries.map((entry) => entry.sourceId));
+    const importable = new Set(
+      played.map((game) => game.igdbId!).filter((igdbId) => !owned.has(igdbId)),
+    ).size;
     const { createdAt, ...rest } = account;
     return {
       enabled,
-      account: { ...rest, connectedAt: createdAt, games, matched },
+      account: { ...rest, connectedAt: createdAt, games, matched, importable },
     };
   }
 
@@ -155,13 +172,27 @@ export class SteamService {
     return this.status(userId);
   }
 
-  async setTrackGames(userId: number, trackGames: boolean) {
+  async updateSettings(
+    userId: number,
+    changes: { trackGames?: boolean; showPlaying?: boolean },
+  ) {
     const { count } = await this.prisma.steamAccount.updateMany({
       where: { userId },
-      data: { trackGames },
+      data: changes,
     });
     if (count === 0) throw new NotFoundException('Steam isn’t connected');
+    if (changes.showPlaying === false) await this.presence.stopPlaying(userId);
     return this.status(userId);
+  }
+
+  async importPlayed(userId: number) {
+    const account = await this.prisma.steamAccount.findUnique({
+      where: { userId },
+      select: { userId: true },
+    });
+    if (!account) throw new NotFoundException('Steam isn’t connected');
+    const imported = await this.steamSync.importPlayed(userId);
+    return { imported, status: await this.status(userId) };
   }
 
   async disconnect(userId: number) {
@@ -171,6 +202,7 @@ export class SteamService {
     });
     if (!account) throw new NotFoundException('Steam isn’t connected');
     await this.clear(userId);
+    await this.presence.stopPlaying(userId);
   }
 
   private clear(userId: number) {

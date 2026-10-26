@@ -81,6 +81,17 @@ export async function getPersonaName(steamId: string) {
   return data.response.players[0]?.personaname ?? steamId;
 }
 
+export async function getPlayingGames(steamIds: string[]) {
+  const data = await getJson<{
+    response: { players: { steamid: string; gameextrainfo?: string }[] };
+  }>('/ISteamUser/GetPlayerSummaries/v2/', { steamids: steamIds.join(',') });
+  return new Map(
+    data.response.players.flatMap((player) =>
+      player.gameextrainfo ? [[player.steamid, player.gameextrainfo]] : [],
+    ),
+  );
+}
+
 export async function getOwnedGames(
   steamId: string,
 ): Promise<SteamOwnedGame[] | null> {
@@ -107,4 +118,38 @@ export async function getOwnedGames(
       ? new Date(game.rtime_last_played * 1000)
       : null,
   }));
+}
+
+const NO_STATS = 'Requested app has no stats';
+
+export async function getAchievements(steamId: string, appId: string) {
+  const query = new URLSearchParams({
+    key: steamApiKey() ?? '',
+    steamid: steamId,
+    appid: appId,
+  });
+  const response = await fetch(
+    `${STEAM_API}/ISteamUserStats/GetPlayerAchievements/v1/?${query}`,
+    { signal: AbortSignal.timeout(TIMEOUT_MS) },
+  );
+  const stats = (
+    (await response.json().catch(() => null)) as {
+      playerstats?: {
+        success?: boolean;
+        error?: string;
+        achievements?: { achieved: number }[];
+      };
+    } | null
+  )?.playerstats;
+  if (stats?.error === NO_STATS) return { achieved: 0, total: 0 };
+  if (!response.ok || !stats?.success) {
+    throw new Error(`Steam request failed with ${response.status}`);
+  }
+
+  const achievements = stats.achievements ?? [];
+  return {
+    achieved: achievements.filter((achievement) => achievement.achieved === 1)
+      .length,
+    total: achievements.length,
+  };
 }

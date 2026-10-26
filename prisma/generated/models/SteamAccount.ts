@@ -40,6 +40,7 @@ export type SteamAccountMinAggregateOutputType = {
   personaName: string | null
   trackGames: boolean | null
   gamesPrivate: boolean | null
+  showPlaying: boolean | null
   baselineAt: Date | null
   checkedAt: Date | null
   createdAt: Date | null
@@ -51,6 +52,7 @@ export type SteamAccountMaxAggregateOutputType = {
   personaName: string | null
   trackGames: boolean | null
   gamesPrivate: boolean | null
+  showPlaying: boolean | null
   baselineAt: Date | null
   checkedAt: Date | null
   createdAt: Date | null
@@ -62,6 +64,7 @@ export type SteamAccountCountAggregateOutputType = {
   personaName: number
   trackGames: number
   gamesPrivate: number
+  showPlaying: number
   baselineAt: number
   checkedAt: number
   createdAt: number
@@ -83,6 +86,7 @@ export type SteamAccountMinAggregateInputType = {
   personaName?: true
   trackGames?: true
   gamesPrivate?: true
+  showPlaying?: true
   baselineAt?: true
   checkedAt?: true
   createdAt?: true
@@ -94,6 +98,7 @@ export type SteamAccountMaxAggregateInputType = {
   personaName?: true
   trackGames?: true
   gamesPrivate?: true
+  showPlaying?: true
   baselineAt?: true
   checkedAt?: true
   createdAt?: true
@@ -105,6 +110,7 @@ export type SteamAccountCountAggregateInputType = {
   personaName?: true
   trackGames?: true
   gamesPrivate?: true
+  showPlaying?: true
   baselineAt?: true
   checkedAt?: true
   createdAt?: true
@@ -203,6 +209,7 @@ export type SteamAccountGroupByOutputType = {
   personaName: string
   trackGames: boolean
   gamesPrivate: boolean
+  showPlaying: boolean
   baselineAt: Date | null
   checkedAt: Date | null
   createdAt: Date
@@ -237,6 +244,7 @@ export type SteamAccountWhereInput = {
   personaName?: Prisma.StringFilter<"SteamAccount"> | string
   trackGames?: Prisma.BoolFilter<"SteamAccount"> | boolean
   gamesPrivate?: Prisma.BoolFilter<"SteamAccount"> | boolean
+  showPlaying?: Prisma.BoolFilter<"SteamAccount"> | boolean
   baselineAt?: Prisma.DateTimeNullableFilter<"SteamAccount"> | Date | string | null
   checkedAt?: Prisma.DateTimeNullableFilter<"SteamAccount"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"SteamAccount"> | Date | string
@@ -249,6 +257,7 @@ export type SteamAccountOrderByWithRelationInput = {
   personaName?: Prisma.SortOrder
   trackGames?: Prisma.SortOrder
   gamesPrivate?: Prisma.SortOrder
+  showPlaying?: Prisma.SortOrder
   baselineAt?: Prisma.SortOrderInput | Prisma.SortOrder
   checkedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -264,6 +273,7 @@ export type SteamAccountWhereUniqueInput = Prisma.AtLeast<{
   personaName?: Prisma.StringFilter<"SteamAccount"> | string
   trackGames?: Prisma.BoolFilter<"SteamAccount"> | boolean
   gamesPrivate?: Prisma.BoolFilter<"SteamAccount"> | boolean
+  showPlaying?: Prisma.BoolFilter<"SteamAccount"> | boolean
   baselineAt?: Prisma.DateTimeNullableFilter<"SteamAccount"> | Date | string | null
   checkedAt?: Prisma.DateTimeNullableFilter<"SteamAccount"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"SteamAccount"> | Date | string
@@ -276,6 +286,7 @@ export type SteamAccountOrderByWithAggregationInput = {
   personaName?: Prisma.SortOrder
   trackGames?: Prisma.SortOrder
   gamesPrivate?: Prisma.SortOrder
+  showPlaying?: Prisma.SortOrder
   baselineAt?: Prisma.SortOrderInput | Prisma.SortOrder
   checkedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -295,6 +306,7 @@ export type SteamAccountScalarWhereWithAggregatesInput = {
   personaName?: Prisma.StringWithAggregatesFilter<"SteamAccount"> | string
   trackGames?: Prisma.BoolWithAggregatesFilter<"SteamAccount"> | boolean
   gamesPrivate?: Prisma.BoolWithAggregatesFilter<"SteamAccount"> | boolean
+  showPlaying?: Prisma.BoolWithAggregatesFilter<"SteamAccount"> | boolean
   baselineAt?: Prisma.DateTimeNullableWithAggregatesFilter<"SteamAccount"> | Date | string | null
   checkedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"SteamAccount"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"SteamAccount"> | Date | string
@@ -305,6 +317,7 @@ export type SteamAccountCreateInput = {
   personaName: string
   trackGames?: boolean
   gamesPrivate?: boolean
+  showPlaying?: boolean
   baselineAt?: Date | string | null
   checkedAt?: Date | string | null
   createdAt?: Date | string
@@ -317,6 +330,7 @@ export type SteamAccountUncheckedCreateInput = {
   personaName: string
   trackGames?: boolean
   gamesPrivate?: boolean
+  showPlaying?: boolean
   baselineAt?: Date | string | null
   checkedAt?: Date | string | null
   createdAt?: Date | string
@@ -327,6 +341,7 @@ export type SteamAccountUpdateInput = {
   personaName?: Prisma.StringFieldUpdateOperationsInput | string
   trackGames?: Prisma.BoolFieldUpdateOperationsInput | boolean
   gamesPrivate?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
   baselineAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checkedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -339,6 +354,7 @@ export type SteamAccountUncheckedUpdateInput = {
   personaName?: Prisma.StringFieldUpdateOperationsInput | string
   trackGames?: Prisma.BoolFieldUpdateOperationsInput | boolean
   gamesPrivate?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
   baselineAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checkedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -350,6 +366,7 @@ export type SteamAccountCreateManyInput = {
   personaName: string
   trackGames?: boolean
   gamesPrivate?: boolean
+  showPlaying?: boolean
   baselineAt?: Date | string | null
   checkedAt?: Date | string | null
   createdAt?: Date | string
@@ -360,6 +377,7 @@ export type SteamAccountUpdateManyMutationInput = {
   personaName?: Prisma.StringFieldUpdateOperationsInput | string
   trackGames?: Prisma.BoolFieldUpdateOperationsInput | boolean
   gamesPrivate?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
   baselineAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checkedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -371,6 +389,7 @@ export type SteamAccountUncheckedUpdateManyInput = {
   personaName?: Prisma.StringFieldUpdateOperationsInput | string
   trackGames?: Prisma.BoolFieldUpdateOperationsInput | boolean
   gamesPrivate?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
   baselineAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checkedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -382,6 +401,7 @@ export type SteamAccountCountOrderByAggregateInput = {
   personaName?: Prisma.SortOrder
   trackGames?: Prisma.SortOrder
   gamesPrivate?: Prisma.SortOrder
+  showPlaying?: Prisma.SortOrder
   baselineAt?: Prisma.SortOrder
   checkedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -397,6 +417,7 @@ export type SteamAccountMaxOrderByAggregateInput = {
   personaName?: Prisma.SortOrder
   trackGames?: Prisma.SortOrder
   gamesPrivate?: Prisma.SortOrder
+  showPlaying?: Prisma.SortOrder
   baselineAt?: Prisma.SortOrder
   checkedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -408,6 +429,7 @@ export type SteamAccountMinOrderByAggregateInput = {
   personaName?: Prisma.SortOrder
   trackGames?: Prisma.SortOrder
   gamesPrivate?: Prisma.SortOrder
+  showPlaying?: Prisma.SortOrder
   baselineAt?: Prisma.SortOrder
   checkedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -459,6 +481,7 @@ export type SteamAccountCreateWithoutUserInput = {
   personaName: string
   trackGames?: boolean
   gamesPrivate?: boolean
+  showPlaying?: boolean
   baselineAt?: Date | string | null
   checkedAt?: Date | string | null
   createdAt?: Date | string
@@ -469,6 +492,7 @@ export type SteamAccountUncheckedCreateWithoutUserInput = {
   personaName: string
   trackGames?: boolean
   gamesPrivate?: boolean
+  showPlaying?: boolean
   baselineAt?: Date | string | null
   checkedAt?: Date | string | null
   createdAt?: Date | string
@@ -495,6 +519,7 @@ export type SteamAccountUpdateWithoutUserInput = {
   personaName?: Prisma.StringFieldUpdateOperationsInput | string
   trackGames?: Prisma.BoolFieldUpdateOperationsInput | boolean
   gamesPrivate?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
   baselineAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checkedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -505,6 +530,7 @@ export type SteamAccountUncheckedUpdateWithoutUserInput = {
   personaName?: Prisma.StringFieldUpdateOperationsInput | string
   trackGames?: Prisma.BoolFieldUpdateOperationsInput | boolean
   gamesPrivate?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
   baselineAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checkedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -518,6 +544,7 @@ export type SteamAccountSelect<ExtArgs extends runtime.Types.Extensions.Internal
   personaName?: boolean
   trackGames?: boolean
   gamesPrivate?: boolean
+  showPlaying?: boolean
   baselineAt?: boolean
   checkedAt?: boolean
   createdAt?: boolean
@@ -530,6 +557,7 @@ export type SteamAccountSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   personaName?: boolean
   trackGames?: boolean
   gamesPrivate?: boolean
+  showPlaying?: boolean
   baselineAt?: boolean
   checkedAt?: boolean
   createdAt?: boolean
@@ -542,6 +570,7 @@ export type SteamAccountSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   personaName?: boolean
   trackGames?: boolean
   gamesPrivate?: boolean
+  showPlaying?: boolean
   baselineAt?: boolean
   checkedAt?: boolean
   createdAt?: boolean
@@ -554,12 +583,13 @@ export type SteamAccountSelectScalar = {
   personaName?: boolean
   trackGames?: boolean
   gamesPrivate?: boolean
+  showPlaying?: boolean
   baselineAt?: boolean
   checkedAt?: boolean
   createdAt?: boolean
 }
 
-export type SteamAccountOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"userId" | "steamId" | "personaName" | "trackGames" | "gamesPrivate" | "baselineAt" | "checkedAt" | "createdAt", ExtArgs["result"]["steamAccount"]>
+export type SteamAccountOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"userId" | "steamId" | "personaName" | "trackGames" | "gamesPrivate" | "showPlaying" | "baselineAt" | "checkedAt" | "createdAt", ExtArgs["result"]["steamAccount"]>
 export type SteamAccountInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -581,6 +611,7 @@ export type $SteamAccountPayload<ExtArgs extends runtime.Types.Extensions.Intern
     personaName: string
     trackGames: boolean
     gamesPrivate: boolean
+    showPlaying: boolean
     baselineAt: Date | null
     checkedAt: Date | null
     createdAt: Date
@@ -1013,6 +1044,7 @@ export interface SteamAccountFieldRefs {
   readonly personaName: Prisma.FieldRef<"SteamAccount", 'String'>
   readonly trackGames: Prisma.FieldRef<"SteamAccount", 'Boolean'>
   readonly gamesPrivate: Prisma.FieldRef<"SteamAccount", 'Boolean'>
+  readonly showPlaying: Prisma.FieldRef<"SteamAccount", 'Boolean'>
   readonly baselineAt: Prisma.FieldRef<"SteamAccount", 'DateTime'>
   readonly checkedAt: Prisma.FieldRef<"SteamAccount", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"SteamAccount", 'DateTime'>

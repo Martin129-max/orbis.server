@@ -82,3 +82,83 @@ describe('TwitchLiveService', () => {
     expect(presence.updateLiveCommunities).toHaveBeenCalledWith(new Set([12]));
   });
 });
+
+describe('Twitch stream schedule', () => {
+  const fetchMock = jest.fn();
+  const tokenResponse = {
+    ok: true,
+    json: async () => ({ access_token: 'app-token', expires_in: 3600 }),
+  };
+  let service: TwitchLiveService;
+
+  beforeAll(() => {
+    process.env.TWITCH_CLIENT_ID = 'client';
+    process.env.TWITCH_CLIENT_SECRET = 'secret';
+    global.fetch = fetchMock as unknown as typeof fetch;
+  });
+
+  beforeEach(() => {
+    fetchMock.mockReset();
+    service = new TwitchLiveService({} as PrismaService, {} as PresenceGateway);
+  });
+
+  it('finds the next stream, skipping canceled and vacation days', async () => {
+    fetchMock.mockResolvedValueOnce(tokenResponse).mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        data: {
+          segments: [
+            {
+              start_time: '2099-01-01T18:00:00Z',
+              end_time: '2099-01-01T20:00:00Z',
+              title: 'Canceled',
+              canceled_until: '2099-01-01T20:00:00Z',
+            },
+            {
+              start_time: '2099-01-03T18:00:00Z',
+              end_time: '2099-01-03T20:00:00Z',
+              title: 'Away',
+              canceled_until: null,
+            },
+            {
+              start_time: '2099-01-08T18:00:00Z',
+              end_time: '2099-01-08T20:00:00Z',
+              title: 'Watch party',
+              canceled_until: null,
+            },
+          ],
+          vacation: {
+            start_time: '2099-01-02T00:00:00Z',
+            end_time: '2099-01-05T00:00:00Z',
+          },
+        },
+      }),
+    });
+
+    const expected = {
+      startsAt: '2099-01-08T18:00:00Z',
+      endsAt: '2099-01-08T20:00:00Z',
+      title: 'Watch party',
+    };
+    await expect(service.nextStream('141981764')).resolves.toEqual(expected);
+    expect(fetchMock.mock.calls[1][0]).toContain('broadcaster_id=141981764');
+
+    await expect(service.nextStream('141981764')).resolves.toEqual(expected);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it('returns nothing for a channel without a schedule', async () => {
+    fetchMock
+      .mockResolvedValueOnce(tokenResponse)
+      .mockResolvedValueOnce({ ok: false, status: 404 });
+
+    await expect(service.nextStream('141981764')).resolves.toBeNull();
+  });
+
+  it('returns nothing when Twitch can’t be reached', async () => {
+    fetchMock.mockRejectedValue(new Error('offline'));
+
+    await expect(service.nextStream('141981764')).resolves.toBeNull();
+  });
+});

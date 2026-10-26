@@ -1,5 +1,6 @@
 import { BadRequestException, ForbiddenException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { PresenceGateway } from '../friends/presence.gateway';
 import { SteamSyncService } from '../library/steam-sync.service';
 import { PrismaService } from '../prisma.service';
 import { verifyOpenId } from './steam-api';
@@ -19,14 +20,20 @@ const NONCE = 'nonce-0123456789abcdef';
 
 describe('Connecting Steam', () => {
   const prisma = {
-    steamAccount: { findUnique: jest.fn(), upsert: jest.fn() },
+    steamAccount: {
+      findUnique: jest.fn(),
+      upsert: jest.fn(),
+      updateMany: jest.fn(),
+    },
     steamGame: { count: jest.fn().mockResolvedValue(0) },
   };
   const steamSync = { refresh: jest.fn() };
+  const presence = { stopPlaying: jest.fn() };
   const service = new SteamService(
     prisma as unknown as PrismaService,
     new JwtService(),
     steamSync as unknown as SteamSyncService,
+    presence as unknown as PresenceGateway,
   );
 
   function stateFor(userId: number) {
@@ -88,5 +95,18 @@ describe('Connecting Steam', () => {
       waitMs: expect.any(Number),
       force: true,
     });
+  });
+
+  it('stops sharing the current game when that is turned off', async () => {
+    prisma.steamAccount.updateMany.mockResolvedValue({ count: 1 });
+    prisma.steamAccount.findUnique.mockResolvedValue(null);
+
+    await service.updateSettings(1, { showPlaying: false });
+
+    expect(prisma.steamAccount.updateMany).toHaveBeenCalledWith({
+      where: { userId: 1 },
+      data: { showPlaying: false },
+    });
+    expect(presence.stopPlaying).toHaveBeenCalledWith(1);
   });
 });

@@ -38,13 +38,22 @@ export class SteamController {
     return this.steam.connect(req.user.userId, body);
   }
 
+  @RateLimit(5, MINUTE)
+  @Post('import')
+  importPlayed(@Req() req): Promise<{ imported: number; status: SteamStatus }> {
+    return this.steam.importPlayed(req.user.userId);
+  }
+
   @RateLimit(30, MINUTE)
   @Patch()
   update(
     @Req() req,
-    @Body() { trackGames }: UpdateSteamDto,
+    @Body() { trackGames, showPlaying }: UpdateSteamDto,
   ): Promise<SteamStatus> {
-    return this.steam.setTrackGames(req.user.userId, trackGames);
+    return this.steam.updateSettings(req.user.userId, {
+      trackGames,
+      showPlaying,
+    });
   }
 
   @Delete()

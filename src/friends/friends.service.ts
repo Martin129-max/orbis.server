@@ -19,7 +19,11 @@ export type FriendUser = {
   avatarUrl: string | null;
 };
 
-export type Friend = FriendUser & { online: boolean; status: PresenceStatus };
+export type Friend = FriendUser & {
+  online: boolean;
+  status: PresenceStatus;
+  playing: string | null;
+};
 
 export type FriendList = {
   friends: Friend[];
@@ -77,7 +81,12 @@ export class FriendsService {
 
       if (friendship.status === 'accepted') {
         const status = this.presence.statusOf(other.id, other);
-        list.friends.push({ ...user, online: status !== 'offline', status });
+        list.friends.push({
+          ...user,
+          online: status !== 'offline',
+          status,
+          playing: this.presence.playingOf(other.id, other),
+        });
       } else if (friendship.addresseeId === userId) {
         list.incoming.push(user);
       } else {

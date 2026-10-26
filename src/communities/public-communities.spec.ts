@@ -6,6 +6,7 @@ import { PublicCommunitiesController } from './public-communities.controller';
 import { PrismaService } from '../prisma.service';
 import { StorageService } from '../storage/storage.service';
 import { PresenceGateway } from '../friends/presence.gateway';
+import { TwitchLiveService } from '../friends/twitch-live.service';
 
 describe('Public landing communities', () => {
   const prisma = { community: { findMany: jest.fn() } };
@@ -13,6 +14,7 @@ describe('Public landing communities', () => {
     prisma as unknown as PrismaService,
     {} as StorageService,
     {} as PresenceGateway,
+    {} as TwitchLiveService,
   );
   let app: INestApplication;
 

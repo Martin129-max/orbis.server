@@ -1,5 +1,5 @@
 import { JwtService } from '@nestjs/jwt';
-import { Socket } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { PrismaService } from '../prisma.service';
 import { PresenceGateway } from './presence.gateway';
 
@@ -99,5 +99,35 @@ describe('PresenceGateway', () => {
 
     await gateway.handleDisconnect(idle);
     expect(gateway.statusOf(7, visible)).toBe('offline');
+  });
+
+  it('shares the Steam game someone is playing, unless they appear offline', async () => {
+    await gateway.updatePlaying(new Map([[7, 'NBA 2K26']]));
+
+    expect(gateway.playingOf(7, visible)).toBe('NBA 2K26');
+    expect(
+      gateway.playingOf(7, { ...visible, appearOffline: true }),
+    ).toBeNull();
+
+    await gateway.stopPlaying(7);
+    expect(gateway.playingOf(7, visible)).toBeNull();
+  });
+
+  it('tells friends when someone starts playing a game', async () => {
+    const emit = jest.fn();
+    gateway.server = { to: jest.fn(() => ({ emit })) } as unknown as Server;
+    prisma.user.findUnique.mockResolvedValueOnce(visible);
+    prisma.friendship.findMany.mockResolvedValueOnce([
+      { requesterId: 7, addresseeId: 8 },
+    ]);
+
+    await gateway.updatePlaying(new Map([[7, 'NBA 2K26']]));
+
+    expect(emit).toHaveBeenCalledWith('presence', {
+      userId: 7,
+      online: false,
+      status: 'offline',
+      playing: 'NBA 2K26',
+    });
   });
 });

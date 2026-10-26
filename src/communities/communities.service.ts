@@ -14,6 +14,7 @@ import { MAX_INT } from './community-member.guard';
 import { Community as CommunityModel } from '../../prisma/generated/client';
 import { StorageService } from '../storage/storage.service';
 import { PresenceGateway, PresenceStatus } from '../friends/presence.gateway';
+import { NextStream, TwitchLiveService } from '../friends/twitch-live.service';
 
 export type CommunityMember = {
   userId: number;
@@ -23,6 +24,7 @@ export type CommunityMember = {
   coverUrl: string | null;
   online: boolean;
   status: PresenceStatus;
+  playing: string | null;
   nickname: string | null;
   joinedAt: Date;
   isOwner: boolean;
@@ -33,6 +35,7 @@ export type CommunityWithRole = CommunityModel & {
   role: CommunityRole | null;
   memberCount?: number;
   live?: boolean;
+  nextStream?: NextStream | null;
 };
 
 const roleRank: Record<CommunityRole, number> = {
@@ -94,6 +97,7 @@ export class CommunitiesService {
     private prisma: PrismaService,
     private storage: StorageService,
     private presence: PresenceGateway,
+    private twitch: TwitchLiveService,
   ) {}
 
   async requireRoomToJoin(userId: number) {
@@ -502,6 +506,7 @@ export class CommunitiesService {
           coverUrl: user.coverUrl,
           online: !user.appearOffline && this.presence.isOnline(user.id),
           status: this.presence.statusOf(user.id, user),
+          playing: this.presence.playingOf(user.id, user),
           nickname,
           joinedAt,
           isOwner,
@@ -533,6 +538,9 @@ export class CommunitiesService {
       role,
       memberCount: _count.memberships,
       live: this.presence.isCommunityLive(id),
+      nextStream: rest.twitchUserId
+        ? await this.twitch.nextStream(rest.twitchUserId)
+        : null,
     };
   }
 

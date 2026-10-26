@@ -26,6 +26,7 @@ export class PresenceGateway
   private connections = new Map<number, number>();
   private idleConnections = new Map<number, number>();
   private live = new Set<number>();
+  private playing = new Map<number, string>();
   private liveCommunities = new Set<number>();
 
   constructor(
@@ -108,6 +109,23 @@ export class PresenceGateway
     if (!this.isOnline(userId)) return 'offline';
     if (status === 'busy') return 'busy';
     return status === 'idle' || this.isIdle(userId) ? 'idle' : 'online';
+  }
+
+  playingOf(userId: number, { appearOffline }: { appearOffline: boolean }) {
+    return appearOffline ? null : (this.playing.get(userId) ?? null);
+  }
+
+  async updatePlaying(playing: Map<number, string>) {
+    const changed = [
+      ...new Set([...this.playing.keys(), ...playing.keys()]),
+    ].filter((userId) => this.playing.get(userId) !== playing.get(userId));
+    this.playing = playing;
+    for (const userId of changed) await this.broadcastPresence(userId);
+  }
+
+  async stopPlaying(userId: number) {
+    if (!this.playing.delete(userId)) return;
+    await this.broadcastPresence(userId);
   }
 
   async updateLive(live: Set<number>) {
@@ -202,6 +220,7 @@ export class PresenceGateway
       userId,
       online: status !== 'offline',
       status,
+      playing: this.playingOf(userId, user),
     });
   }
 }
