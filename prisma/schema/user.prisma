@@ -26,6 +26,7 @@ model User {
   password             String?
   theme                Theme                @default(dark)
   appearOffline        Boolean              @default(false)
+  showNsfw             Boolean              @default(false)
   status               UserStatus           @default(online)
   isPublic             Boolean              @default(true)
   isAdmin              Boolean              @default(false)

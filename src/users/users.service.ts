@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma.service';
+import { nsfwEntries, showsNsfw } from './nsfw';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePreferencesDto } from './dto/update-preferences.dto';
 import { UpdateOnboardingDto } from './dto/update-onboarding.dto';
@@ -95,6 +96,7 @@ export type Profile = Pick<
   | 'appearOffline'
   | 'status'
   | 'isPublic'
+  | 'showNsfw'
   | 'isAdmin'
   | 'createdAt'
 > & {
@@ -152,6 +154,7 @@ const profile = {
   appearOffline: true,
   status: true,
   isPublic: true,
+  showNsfw: true,
   isAdmin: true,
   createdAt: true,
 } as const;
@@ -198,11 +201,11 @@ export class UsersService {
 
   async updatePreferences(
     id: number,
-    { theme, appearOffline, status, isPublic }: UpdatePreferencesDto,
+    { theme, appearOffline, status, isPublic, showNsfw }: UpdatePreferencesDto,
   ): Promise<Profile> {
     const user = await this.prisma.user.update({
       where: { id },
-      data: { theme, appearOffline, status, isPublic },
+      data: { theme, appearOffline, status, isPublic, showNsfw },
       select: profile,
     });
 
@@ -389,7 +392,11 @@ export class UsersService {
       this.prisma.post.count({ where: { authorId: user.id } }),
       this.prisma.thread.count({ where: { authorId: user.id } }),
       this.prisma.libraryEntry.findMany({
-        where: { userId: user.id, isPublic: true },
+        where: {
+          userId: user.id,
+          isPublic: true,
+          ...nsfwEntries(await showsNsfw(this.prisma, viewerId)),
+        },
         orderBy: { updatedAt: 'desc' },
         select: {
           id: true,

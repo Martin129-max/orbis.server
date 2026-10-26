@@ -2488,6 +2488,7 @@ export const LibraryEntryScalarFieldEnum = {
   progress: 'progress',
   total: 'total',
   isPublic: 'isPublic',
+  isAdult: 'isAdult',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -2638,6 +2639,7 @@ export const UserScalarFieldEnum = {
   password: 'password',
   theme: 'theme',
   appearOffline: 'appearOffline',
+  showNsfw: 'showNsfw',
   status: 'status',
   isPublic: 'isPublic',
   isAdmin: 'isAdmin',

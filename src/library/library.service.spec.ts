@@ -19,11 +19,14 @@ const media: Media = {
 
 describe('Adding library progress', () => {
   const create = jest.fn();
+  const findUser = jest.fn();
   const service = new LibraryService({
     libraryEntry: { create },
+    user: { findUnique: findUser },
   } as unknown as PrismaService);
   beforeEach(() => {
     jest.clearAllMocks();
+    findUser.mockResolvedValue({ showNsfw: false });
     jest.mocked(getMedia).mockResolvedValue(media);
     create.mockImplementation(({ data }) =>
       Promise.resolve({ id: 7, ...data }),
@@ -132,11 +135,17 @@ describe('Adding library progress', () => {
 });
 
 describe('Listing the library', () => {
+  const findMany = jest.fn().mockResolvedValue([]);
+  const findUser = jest.fn();
+  const service = new LibraryService({
+    libraryEntry: { findMany },
+    user: { findUnique: findUser },
+  } as unknown as PrismaService);
+
+  beforeEach(() => jest.clearAllMocks());
+
   it('puts the most recently updated titles first', async () => {
-    const findMany = jest.fn().mockResolvedValue([]);
-    const service = new LibraryService({
-      libraryEntry: { findMany },
-    } as unknown as PrismaService);
+    findUser.mockResolvedValue({ showNsfw: true });
 
     await service.list(1);
 
@@ -146,5 +155,45 @@ describe('Listing the library', () => {
         orderBy: [{ updatedAt: 'desc' }, { id: 'desc' }],
       }),
     );
+  });
+
+  it('hides 18+ titles unless NSFW is turned on', async () => {
+    findUser.mockResolvedValue({ showNsfw: false });
+
+    await service.list(1);
+
+    expect(findMany).toHaveBeenCalledWith(
+      expect.objectContaining({ where: { userId: 1, isAdult: false } }),
+    );
+  });
+});
+
+describe('Adding 18+ titles', () => {
+  const create = jest.fn(({ data }) => Promise.resolve({ id: 7, ...data }));
+  const findUser = jest.fn();
+  const service = new LibraryService({
+    libraryEntry: { create },
+    user: { findUnique: findUser },
+  } as unknown as PrismaService);
+
+  beforeEach(() => jest.clearAllMocks());
+
+  it('asks for 18+ titles and remembers them when NSFW is on', async () => {
+    findUser.mockResolvedValue({ showNsfw: true });
+    jest.mocked(getMedia).mockResolvedValue({ ...media, isAdult: true });
+
+    const entry = await service.add(1, { type: 'anime', sourceId: '1' });
+
+    expect(getMedia).toHaveBeenCalledWith('anime', '1', true);
+    expect(entry).toMatchObject({ isAdult: true });
+  });
+
+  it('keeps 18+ titles out when NSFW is off', async () => {
+    findUser.mockResolvedValue({ showNsfw: false });
+    jest.mocked(getMedia).mockResolvedValue(media);
+
+    await service.add(1, { type: 'anime', sourceId: '1' });
+
+    expect(getMedia).toHaveBeenCalledWith('anime', '1', false);
   });
 });

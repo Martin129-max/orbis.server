@@ -31,6 +31,7 @@ import { LikesService } from '../likes/likes.service';
 import { getMedia } from '../library/library-api';
 import { reportedBy, visibleTo } from '../moderation/visibility';
 import { loadNicknames } from '../communities/nicknames';
+import { nsfwEntries, showsNsfw } from '../users/nsfw';
 
 const postInclude = {
   author,
@@ -282,6 +283,7 @@ export class PostsService {
     const cursor = parseFeedCursor(rawCursor);
     const excluded = excludedTypes(exclude);
     const reported = await reportedBy(this.prisma, viewerId);
+    const nsfw = nsfwEntries(await showsNsfw(this.prisma, viewerId));
 
     const [posts, activities] = await Promise.all([
       excluded.has('post')
@@ -302,6 +304,7 @@ export class PostsService {
             where: {
               entry: {
                 isPublic: true,
+                ...nsfw,
                 user: { memberships: { some: { communityId } } },
               },
               ...olderThan(cursor, RANK.activity),
@@ -376,6 +379,7 @@ export class PostsService {
     const excluded = excludedTypes(exclude);
     const member = { community: { memberships: { some: { userId } } } };
     const reported = await reportedBy(this.prisma, userId);
+    const nsfw = nsfwEntries(await showsNsfw(this.prisma, userId));
 
     const [posts, threads, activities] = await Promise.all([
       excluded.has('post')
@@ -417,6 +421,7 @@ export class PostsService {
             where: {
               entry: {
                 isPublic: true,
+                ...nsfw,
                 user: {
                   memberships: {
                     some: { community: { memberships: { some: { userId } } } },
@@ -464,6 +469,7 @@ export class PostsService {
     const owner = await this.viewableProfile(viewerId, username);
 
     const reported = await reportedBy(this.prisma, viewerId);
+    const nsfw = nsfwEntries(await showsNsfw(this.prisma, viewerId));
     const [posts, threads, activities] = await Promise.all([
       excluded.has('post')
         ? []
@@ -496,7 +502,7 @@ export class PostsService {
         ? []
         : this.prisma.libraryActivity.findMany({
             where: {
-              entry: { userId: owner.id, isPublic: true },
+              entry: { userId: owner.id, isPublic: true, ...nsfw },
               ...olderThan(cursor, RANK.activity),
             },
             orderBy: newestFirst,
@@ -655,7 +661,11 @@ export class PostsService {
     if (!/^\d{1,12}$/.test(mediaSourceId)) {
       throw new NotFoundException('Title not found');
     }
-    await getMedia(mediaType, mediaSourceId);
+    await getMedia(
+      mediaType,
+      mediaSourceId,
+      await showsNsfw(this.prisma, authorId),
+    );
 
     const post = await this.prisma.post.create({
       data: { mediaType, mediaSourceId, authorId, ...postBody(body) },

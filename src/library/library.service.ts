@@ -14,6 +14,7 @@ import { author } from '../common/author';
 import { AddLibraryEntryDto } from './dto/add-library-entry.dto';
 import { UpdateLibraryEntryDto } from './dto/update-library-entry.dto';
 import { getMedia, Media, searchMedia } from './library-api';
+import { nsfwEntries, showsNsfw } from '../users/nsfw';
 
 const PROGRESS_MERGE_WINDOW = 5 * 60 * 1000;
 
@@ -65,7 +66,10 @@ export class LibraryService {
       throw new BadRequestException('Search for 2 to 100 characters');
     }
 
-    const results = await searchMedia(query);
+    const results = await searchMedia(
+      query,
+      await showsNsfw(this.prisma, userId),
+    );
     const all = [...results.anime, ...results.manga, ...results.game];
     const saved = await this.prisma.libraryEntry.findMany({
       where: { userId, mediaId: { in: all.map(({ id }) => id) } },
@@ -90,7 +94,11 @@ export class LibraryService {
       throw new NotFoundException('Title not found');
     }
 
-    const media = await getMedia(type, sourceId);
+    const media = await getMedia(
+      type,
+      sourceId,
+      await showsNsfw(this.prisma, userId),
+    );
     const [entry, others] = await Promise.all([
       this.prisma.libraryEntry.findUnique({
         where: { userId_mediaId: { userId, mediaId: media.id } },
@@ -127,9 +135,12 @@ export class LibraryService {
     };
   }
 
-  list(userId: number): Promise<LibraryEntryView[]> {
+  async list(userId: number): Promise<LibraryEntryView[]> {
     return this.prisma.libraryEntry.findMany({
-      where: { userId },
+      where: {
+        userId,
+        ...nsfwEntries(await showsNsfw(this.prisma, userId)),
+      },
       orderBy: [{ updatedAt: 'desc' }, { id: 'desc' }],
       select: entrySelect,
     });
@@ -145,7 +156,11 @@ export class LibraryService {
       progress = 0,
     }: AddLibraryEntryDto,
   ): Promise<LibraryEntryView> {
-    const media = await getMedia(type, sourceId);
+    const media = await getMedia(
+      type,
+      sourceId,
+      await showsNsfw(this.prisma, userId),
+    );
     const total = totalOf(media);
     const initialProgress =
       type === 'game'
@@ -168,6 +183,7 @@ export class LibraryService {
           progress: initialProgress,
           total,
           isPublic,
+          isAdult: media.isAdult ?? false,
           activities: { create: { status } },
         },
         select: entrySelect,

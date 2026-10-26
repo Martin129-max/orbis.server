@@ -238,6 +238,19 @@ describe('Feed content filters', () => {
     expect(items[0].author).toEqual({ ...person, nickname: 'Navigator' });
   });
 
+  it('hides 18+ library updates unless the viewer turned NSFW on', async () => {
+    await service.findForMember(1);
+    expect(
+      prisma.libraryActivity.findMany.mock.calls[0][0].where.entry,
+    ).toMatchObject({ isAdult: false });
+
+    prisma.user.findUnique.mockResolvedValue({ ...person, showNsfw: true });
+    await service.findForMember(1);
+    expect(
+      prisma.libraryActivity.findMany.mock.calls[1][0].where.entry,
+    ).not.toHaveProperty('isAdult');
+  });
+
   it('waits for at least two characters before searching a profile', async () => {
     expect(await service.searchProfile(1, 'reader', 'a')).toEqual([]);
     expect(prisma.post.findMany).not.toHaveBeenCalled();

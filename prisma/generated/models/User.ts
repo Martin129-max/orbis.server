@@ -45,6 +45,7 @@ export type UserMinAggregateOutputType = {
   password: string | null
   theme: $Enums.Theme | null
   appearOffline: boolean | null
+  showNsfw: boolean | null
   status: $Enums.UserStatus | null
   isPublic: boolean | null
   isAdmin: boolean | null
@@ -64,6 +65,7 @@ export type UserMaxAggregateOutputType = {
   password: string | null
   theme: $Enums.Theme | null
   appearOffline: boolean | null
+  showNsfw: boolean | null
   status: $Enums.UserStatus | null
   isPublic: boolean | null
   isAdmin: boolean | null
@@ -83,6 +85,7 @@ export type UserCountAggregateOutputType = {
   password: number
   theme: number
   appearOffline: number
+  showNsfw: number
   status: number
   isPublic: number
   isAdmin: number
@@ -113,6 +116,7 @@ export type UserMinAggregateInputType = {
   password?: true
   theme?: true
   appearOffline?: true
+  showNsfw?: true
   status?: true
   isPublic?: true
   isAdmin?: true
@@ -132,6 +136,7 @@ export type UserMaxAggregateInputType = {
   password?: true
   theme?: true
   appearOffline?: true
+  showNsfw?: true
   status?: true
   isPublic?: true
   isAdmin?: true
@@ -151,6 +156,7 @@ export type UserCountAggregateInputType = {
   password?: true
   theme?: true
   appearOffline?: true
+  showNsfw?: true
   status?: true
   isPublic?: true
   isAdmin?: true
@@ -258,6 +264,7 @@ export type UserGroupByOutputType = {
   password: string | null
   theme: $Enums.Theme
   appearOffline: boolean
+  showNsfw: boolean
   status: $Enums.UserStatus
   isPublic: boolean
   isAdmin: boolean
@@ -301,6 +308,7 @@ export type UserWhereInput = {
   password?: Prisma.StringNullableFilter<"User"> | string | null
   theme?: Prisma.EnumThemeFilter<"User"> | $Enums.Theme
   appearOffline?: Prisma.BoolFilter<"User"> | boolean
+  showNsfw?: Prisma.BoolFilter<"User"> | boolean
   status?: Prisma.EnumUserStatusFilter<"User"> | $Enums.UserStatus
   isPublic?: Prisma.BoolFilter<"User"> | boolean
   isAdmin?: Prisma.BoolFilter<"User"> | boolean
@@ -348,6 +356,7 @@ export type UserOrderByWithRelationInput = {
   password?: Prisma.SortOrderInput | Prisma.SortOrder
   theme?: Prisma.SortOrder
   appearOffline?: Prisma.SortOrder
+  showNsfw?: Prisma.SortOrder
   status?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
   isAdmin?: Prisma.SortOrder
@@ -398,6 +407,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   password?: Prisma.StringNullableFilter<"User"> | string | null
   theme?: Prisma.EnumThemeFilter<"User"> | $Enums.Theme
   appearOffline?: Prisma.BoolFilter<"User"> | boolean
+  showNsfw?: Prisma.BoolFilter<"User"> | boolean
   status?: Prisma.EnumUserStatusFilter<"User"> | $Enums.UserStatus
   isPublic?: Prisma.BoolFilter<"User"> | boolean
   isAdmin?: Prisma.BoolFilter<"User"> | boolean
@@ -445,6 +455,7 @@ export type UserOrderByWithAggregationInput = {
   password?: Prisma.SortOrderInput | Prisma.SortOrder
   theme?: Prisma.SortOrder
   appearOffline?: Prisma.SortOrder
+  showNsfw?: Prisma.SortOrder
   status?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
   isAdmin?: Prisma.SortOrder
@@ -473,6 +484,7 @@ export type UserScalarWhereWithAggregatesInput = {
   password?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   theme?: Prisma.EnumThemeWithAggregatesFilter<"User"> | $Enums.Theme
   appearOffline?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  showNsfw?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   status?: Prisma.EnumUserStatusWithAggregatesFilter<"User"> | $Enums.UserStatus
   isPublic?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   isAdmin?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
@@ -492,6 +504,7 @@ export type UserCreateInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -539,6 +552,7 @@ export type UserUncheckedCreateInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -585,6 +599,7 @@ export type UserUpdateInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -632,6 +647,7 @@ export type UserUncheckedUpdateInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -679,6 +695,7 @@ export type UserCreateManyInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -698,6 +715,7 @@ export type UserUpdateManyMutationInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -718,6 +736,7 @@ export type UserUncheckedUpdateManyInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -756,6 +775,7 @@ export type UserCountOrderByAggregateInput = {
   password?: Prisma.SortOrder
   theme?: Prisma.SortOrder
   appearOffline?: Prisma.SortOrder
+  showNsfw?: Prisma.SortOrder
   status?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
   isAdmin?: Prisma.SortOrder
@@ -780,6 +800,7 @@ export type UserMaxOrderByAggregateInput = {
   password?: Prisma.SortOrder
   theme?: Prisma.SortOrder
   appearOffline?: Prisma.SortOrder
+  showNsfw?: Prisma.SortOrder
   status?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
   isAdmin?: Prisma.SortOrder
@@ -799,6 +820,7 @@ export type UserMinOrderByAggregateInput = {
   password?: Prisma.SortOrder
   theme?: Prisma.SortOrder
   appearOffline?: Prisma.SortOrder
+  showNsfw?: Prisma.SortOrder
   status?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
   isAdmin?: Prisma.SortOrder
@@ -1230,6 +1252,7 @@ export type UserCreateWithoutOwnedCommunitiesInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -1276,6 +1299,7 @@ export type UserUncheckedCreateWithoutOwnedCommunitiesInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -1337,6 +1361,7 @@ export type UserUpdateWithoutOwnedCommunitiesInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1383,6 +1408,7 @@ export type UserUncheckedUpdateWithoutOwnedCommunitiesInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1428,6 +1454,7 @@ export type UserCreateWithoutMembershipsInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -1474,6 +1501,7 @@ export type UserUncheckedCreateWithoutMembershipsInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -1535,6 +1563,7 @@ export type UserUpdateWithoutMembershipsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1581,6 +1610,7 @@ export type UserUncheckedUpdateWithoutMembershipsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1626,6 +1656,7 @@ export type UserCreateWithoutRailFoldersInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -1672,6 +1703,7 @@ export type UserUncheckedCreateWithoutRailFoldersInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -1733,6 +1765,7 @@ export type UserUpdateWithoutRailFoldersInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1779,6 +1812,7 @@ export type UserUncheckedUpdateWithoutRailFoldersInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1824,6 +1858,7 @@ export type UserCreateWithoutInvitesInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -1870,6 +1905,7 @@ export type UserUncheckedCreateWithoutInvitesInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -1931,6 +1967,7 @@ export type UserUpdateWithoutInvitesInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1977,6 +2014,7 @@ export type UserUncheckedUpdateWithoutInvitesInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2022,6 +2060,7 @@ export type UserCreateWithoutWallPostsInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -2068,6 +2107,7 @@ export type UserUncheckedCreateWithoutWallPostsInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -2118,6 +2158,7 @@ export type UserCreateWithoutPostsInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -2164,6 +2205,7 @@ export type UserUncheckedCreateWithoutPostsInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -2225,6 +2267,7 @@ export type UserUpdateWithoutWallPostsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2271,6 +2314,7 @@ export type UserUncheckedUpdateWithoutWallPostsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2327,6 +2371,7 @@ export type UserUpdateWithoutPostsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2373,6 +2418,7 @@ export type UserUncheckedUpdateWithoutPostsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2418,6 +2464,7 @@ export type UserCreateWithoutThreadsInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -2464,6 +2511,7 @@ export type UserUncheckedCreateWithoutThreadsInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -2525,6 +2573,7 @@ export type UserUpdateWithoutThreadsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2571,6 +2620,7 @@ export type UserUncheckedUpdateWithoutThreadsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2616,6 +2666,7 @@ export type UserCreateWithoutCommentsInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -2662,6 +2713,7 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -2723,6 +2775,7 @@ export type UserUpdateWithoutCommentsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2769,6 +2822,7 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2814,6 +2868,7 @@ export type UserCreateWithoutVotesInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -2860,6 +2915,7 @@ export type UserUncheckedCreateWithoutVotesInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -2921,6 +2977,7 @@ export type UserUpdateWithoutVotesInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2967,6 +3024,7 @@ export type UserUncheckedUpdateWithoutVotesInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3012,6 +3070,7 @@ export type UserCreateWithoutLikesInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -3058,6 +3117,7 @@ export type UserUncheckedCreateWithoutLikesInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -3119,6 +3179,7 @@ export type UserUpdateWithoutLikesInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3165,6 +3226,7 @@ export type UserUncheckedUpdateWithoutLikesInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3210,6 +3272,7 @@ export type UserCreateWithoutSentFriendshipsInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -3256,6 +3319,7 @@ export type UserUncheckedCreateWithoutSentFriendshipsInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -3306,6 +3370,7 @@ export type UserCreateWithoutReceivedFriendshipsInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -3352,6 +3417,7 @@ export type UserUncheckedCreateWithoutReceivedFriendshipsInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -3413,6 +3479,7 @@ export type UserUpdateWithoutSentFriendshipsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3459,6 +3526,7 @@ export type UserUncheckedUpdateWithoutSentFriendshipsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3515,6 +3583,7 @@ export type UserUpdateWithoutReceivedFriendshipsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3561,6 +3630,7 @@ export type UserUncheckedUpdateWithoutReceivedFriendshipsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3606,6 +3676,7 @@ export type UserCreateWithoutLibraryEntriesInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -3652,6 +3723,7 @@ export type UserUncheckedCreateWithoutLibraryEntriesInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -3713,6 +3785,7 @@ export type UserUpdateWithoutLibraryEntriesInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3759,6 +3832,7 @@ export type UserUncheckedUpdateWithoutLibraryEntriesInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3804,6 +3878,7 @@ export type UserCreateWithoutCreatedConversationsInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -3850,6 +3925,7 @@ export type UserUncheckedCreateWithoutCreatedConversationsInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -3900,6 +3976,7 @@ export type UserCreateWithoutConversationsAsAInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -3946,6 +4023,7 @@ export type UserUncheckedCreateWithoutConversationsAsAInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -3996,6 +4074,7 @@ export type UserCreateWithoutConversationsAsBInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -4042,6 +4121,7 @@ export type UserUncheckedCreateWithoutConversationsAsBInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -4103,6 +4183,7 @@ export type UserUpdateWithoutCreatedConversationsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4149,6 +4230,7 @@ export type UserUncheckedUpdateWithoutCreatedConversationsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4205,6 +4287,7 @@ export type UserUpdateWithoutConversationsAsAInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4251,6 +4334,7 @@ export type UserUncheckedUpdateWithoutConversationsAsAInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4307,6 +4391,7 @@ export type UserUpdateWithoutConversationsAsBInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4353,6 +4438,7 @@ export type UserUncheckedUpdateWithoutConversationsAsBInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4398,6 +4484,7 @@ export type UserCreateWithoutConversationsInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -4444,6 +4531,7 @@ export type UserUncheckedCreateWithoutConversationsInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -4505,6 +4593,7 @@ export type UserUpdateWithoutConversationsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4551,6 +4640,7 @@ export type UserUncheckedUpdateWithoutConversationsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4596,6 +4686,7 @@ export type UserCreateWithoutMessagesInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -4642,6 +4733,7 @@ export type UserUncheckedCreateWithoutMessagesInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -4703,6 +4795,7 @@ export type UserUpdateWithoutMessagesInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4749,6 +4842,7 @@ export type UserUncheckedUpdateWithoutMessagesInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4794,6 +4888,7 @@ export type UserCreateWithoutMessageReactionsInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -4840,6 +4935,7 @@ export type UserUncheckedCreateWithoutMessageReactionsInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -4901,6 +4997,7 @@ export type UserUpdateWithoutMessageReactionsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4947,6 +5044,7 @@ export type UserUncheckedUpdateWithoutMessageReactionsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4992,6 +5090,7 @@ export type UserCreateWithoutNotificationsInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -5038,6 +5137,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -5088,6 +5188,7 @@ export type UserCreateWithoutCausedNotificationsInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -5134,6 +5235,7 @@ export type UserUncheckedCreateWithoutCausedNotificationsInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -5195,6 +5297,7 @@ export type UserUpdateWithoutNotificationsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -5241,6 +5344,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -5297,6 +5401,7 @@ export type UserUpdateWithoutCausedNotificationsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -5343,6 +5448,7 @@ export type UserUncheckedUpdateWithoutCausedNotificationsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -5388,6 +5494,7 @@ export type UserCreateWithoutReportsInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -5434,6 +5541,7 @@ export type UserUncheckedCreateWithoutReportsInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -5484,6 +5592,7 @@ export type UserCreateWithoutAssignedReportsInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -5530,6 +5639,7 @@ export type UserUncheckedCreateWithoutAssignedReportsInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -5591,6 +5701,7 @@ export type UserUpdateWithoutReportsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -5637,6 +5748,7 @@ export type UserUncheckedUpdateWithoutReportsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -5693,6 +5805,7 @@ export type UserUpdateWithoutAssignedReportsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -5739,6 +5852,7 @@ export type UserUncheckedUpdateWithoutAssignedReportsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -5784,6 +5898,7 @@ export type UserCreateWithoutReportCommentsInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -5830,6 +5945,7 @@ export type UserUncheckedCreateWithoutReportCommentsInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -5891,6 +6007,7 @@ export type UserUpdateWithoutReportCommentsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -5937,6 +6054,7 @@ export type UserUncheckedUpdateWithoutReportCommentsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -5982,6 +6100,7 @@ export type UserCreateWithoutContentReportsInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -6028,6 +6147,7 @@ export type UserUncheckedCreateWithoutContentReportsInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -6078,6 +6198,7 @@ export type UserCreateWithoutResolvedReportsInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -6124,6 +6245,7 @@ export type UserUncheckedCreateWithoutResolvedReportsInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -6185,6 +6307,7 @@ export type UserUpdateWithoutContentReportsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -6231,6 +6354,7 @@ export type UserUncheckedUpdateWithoutContentReportsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -6287,6 +6411,7 @@ export type UserUpdateWithoutResolvedReportsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -6333,6 +6458,7 @@ export type UserUncheckedUpdateWithoutResolvedReportsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -6378,6 +6504,7 @@ export type UserCreateWithoutOauthAccountsInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -6424,6 +6551,7 @@ export type UserUncheckedCreateWithoutOauthAccountsInput = {
   password?: string | null
   theme?: $Enums.Theme
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: $Enums.UserStatus
   isPublic?: boolean
   isAdmin?: boolean
@@ -6485,6 +6613,7 @@ export type UserUpdateWithoutOauthAccountsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -6531,6 +6660,7 @@ export type UserUncheckedUpdateWithoutOauthAccountsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.EnumThemeFieldUpdateOperationsInput | $Enums.Theme
   appearOffline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showNsfw?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -6842,6 +6972,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   password?: boolean
   theme?: boolean
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: boolean
   isPublic?: boolean
   isAdmin?: boolean
@@ -6890,6 +7021,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   password?: boolean
   theme?: boolean
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: boolean
   isPublic?: boolean
   isAdmin?: boolean
@@ -6910,6 +7042,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   password?: boolean
   theme?: boolean
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: boolean
   isPublic?: boolean
   isAdmin?: boolean
@@ -6930,6 +7063,7 @@ export type UserSelectScalar = {
   password?: boolean
   theme?: boolean
   appearOffline?: boolean
+  showNsfw?: boolean
   status?: boolean
   isPublic?: boolean
   isAdmin?: boolean
@@ -6939,7 +7073,7 @@ export type UserSelectScalar = {
   createdAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "username" | "name" | "avatarUrl" | "coverUrl" | "backgroundUrl" | "password" | "theme" | "appearOffline" | "status" | "isPublic" | "isAdmin" | "tourCompletedAt" | "checklistDismissedAt" | "completedTours" | "createdAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "username" | "name" | "avatarUrl" | "coverUrl" | "backgroundUrl" | "password" | "theme" | "appearOffline" | "showNsfw" | "status" | "isPublic" | "isAdmin" | "tourCompletedAt" | "checklistDismissedAt" | "completedTours" | "createdAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   ownedCommunities?: boolean | Prisma.User$ownedCommunitiesArgs<ExtArgs>
   memberships?: boolean | Prisma.User$membershipsArgs<ExtArgs>
@@ -7015,6 +7149,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     password: string | null
     theme: $Enums.Theme
     appearOffline: boolean
+    showNsfw: boolean
     status: $Enums.UserStatus
     isPublic: boolean
     isAdmin: boolean
@@ -7482,6 +7617,7 @@ export interface UserFieldRefs {
   readonly password: Prisma.FieldRef<"User", 'String'>
   readonly theme: Prisma.FieldRef<"User", 'Theme'>
   readonly appearOffline: Prisma.FieldRef<"User", 'Boolean'>
+  readonly showNsfw: Prisma.FieldRef<"User", 'Boolean'>
   readonly status: Prisma.FieldRef<"User", 'UserStatus'>
   readonly isPublic: Prisma.FieldRef<"User", 'Boolean'>
   readonly isAdmin: Prisma.FieldRef<"User", 'Boolean'>

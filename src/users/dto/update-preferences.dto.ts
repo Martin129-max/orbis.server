@@ -17,4 +17,8 @@ export class UpdatePreferencesDto {
   @IsOptional()
   @IsBoolean()
   isPublic?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  showNsfw?: boolean;
 }
