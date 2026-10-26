@@ -8,6 +8,8 @@ import { randomInt } from 'node:crypto';
 import { PrismaService } from '../prisma.service';
 import { CommunitiesService } from '../communities/communities.service';
 import { CreateInviteDto } from './dto/create-invite.dto';
+import { buildInviteCard } from './invite-card';
+import { webUrl } from '../common/web-url';
 import {
   Community as CommunityModel,
   Prisma,
@@ -124,6 +126,31 @@ export class InvitesService {
         if (!isUniqueViolation(e) || attempt === 4) throw e;
       }
     }
+  }
+
+  async card(userId: number, communityId: number): Promise<Uint8Array> {
+    const invite = await this.createPermanent(userId, communityId);
+    if (invite.disabledAt) {
+      throw new BadRequestException(
+        'Turn the QR back on before printing the card',
+      );
+    }
+
+    const community = await this.prisma.community.findUnique({
+      where: { id: communityId },
+      select: {
+        name: true,
+        iconUrl: true,
+        coverUrl: true,
+        backgroundUrl: true,
+      },
+    });
+    if (!community) throw new NotFoundException('Community not found');
+
+    return buildInviteCard({
+      ...community,
+      qrUrl: `${webUrl()}/qr/${invite.code}`,
+    });
   }
 
   async setEnabled(

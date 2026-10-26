@@ -9,6 +9,7 @@ import {
   Patch,
   Post,
   Req,
+  StreamableFile,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -70,6 +71,17 @@ export class InvitesController {
     @Param('communityId', ParseIntPipe) communityId: number,
   ): Promise<CommunityInvite> {
     return this.invitesService.createPermanent(req.user.userId, communityId);
+  }
+
+  @RateLimit(30, HOUR)
+  @Get('communities/:communityId/invites/permanent/card')
+  @UseGuards(JwtAuthGuard, CommunityMemberGuard)
+  async card(
+    @Req() req,
+    @Param('communityId', ParseIntPipe) communityId: number,
+  ): Promise<StreamableFile> {
+    const pdf = await this.invitesService.card(req.user.userId, communityId);
+    return new StreamableFile(pdf, { type: 'application/pdf' });
   }
 
   @RateLimit(60, HOUR)
