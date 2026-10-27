@@ -159,6 +159,24 @@ export class UsersController {
     return this.usersService.setAdmin(req.user.userId, username, false);
   }
 
+  @Put(':username/verified')
+  @UseGuards(JwtAuthGuard)
+  verify(
+    @Req() req,
+    @Param('username') username: string,
+  ): Promise<{ isVerified: boolean }> {
+    return this.usersService.setVerified(req.user.userId, username, true);
+  }
+
+  @Delete(':username/verified')
+  @UseGuards(JwtAuthGuard)
+  unverify(
+    @Req() req,
+    @Param('username') username: string,
+  ): Promise<{ isVerified: boolean }> {
+    return this.usersService.setVerified(req.user.userId, username, false);
+  }
+
   @Get(':username')
   @AllowGuest()
   @UseGuards(JwtAuthGuard)

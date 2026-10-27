@@ -133,6 +133,30 @@ export class CommunitiesController {
     );
   }
 
+  @Put(':communityId/verified')
+  verify(
+    @Req() req,
+    @Param('communityId', ParseIntPipe) communityId: number,
+  ): Promise<{ isVerified: boolean }> {
+    return this.communitiesService.setVerified(
+      req.user.userId,
+      communityId,
+      true,
+    );
+  }
+
+  @Delete(':communityId/verified')
+  unverify(
+    @Req() req,
+    @Param('communityId', ParseIntPipe) communityId: number,
+  ): Promise<{ isVerified: boolean }> {
+    return this.communitiesService.setVerified(
+      req.user.userId,
+      communityId,
+      false,
+    );
+  }
+
   @RateLimit(20, MINUTE)
   @Patch(':communityId/nickname')
   @UseGuards(CommunityMemberGuard)

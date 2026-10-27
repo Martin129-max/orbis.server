@@ -47,6 +47,7 @@ export type CommunityMinAggregateOutputType = {
   twitchLogin: string | null
   ownerId: number | null
   isPublic: boolean | null
+  isVerified: boolean | null
   createdAt: Date | null
 }
 
@@ -61,6 +62,7 @@ export type CommunityMaxAggregateOutputType = {
   twitchLogin: string | null
   ownerId: number | null
   isPublic: boolean | null
+  isVerified: boolean | null
   createdAt: Date | null
 }
 
@@ -75,6 +77,7 @@ export type CommunityCountAggregateOutputType = {
   twitchLogin: number
   ownerId: number
   isPublic: number
+  isVerified: number
   createdAt: number
   _all: number
 }
@@ -101,6 +104,7 @@ export type CommunityMinAggregateInputType = {
   twitchLogin?: true
   ownerId?: true
   isPublic?: true
+  isVerified?: true
   createdAt?: true
 }
 
@@ -115,6 +119,7 @@ export type CommunityMaxAggregateInputType = {
   twitchLogin?: true
   ownerId?: true
   isPublic?: true
+  isVerified?: true
   createdAt?: true
 }
 
@@ -129,6 +134,7 @@ export type CommunityCountAggregateInputType = {
   twitchLogin?: true
   ownerId?: true
   isPublic?: true
+  isVerified?: true
   createdAt?: true
   _all?: true
 }
@@ -230,6 +236,7 @@ export type CommunityGroupByOutputType = {
   twitchLogin: string | null
   ownerId: number
   isPublic: boolean
+  isVerified: boolean
   createdAt: Date
   _count: CommunityCountAggregateOutputType | null
   _avg: CommunityAvgAggregateOutputType | null
@@ -267,6 +274,7 @@ export type CommunityWhereInput = {
   twitchLogin?: Prisma.StringNullableFilter<"Community"> | string | null
   ownerId?: Prisma.IntFilter<"Community"> | number
   isPublic?: Prisma.BoolFilter<"Community"> | boolean
+  isVerified?: Prisma.BoolFilter<"Community"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Community"> | Date | string
   owner?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   memberships?: Prisma.MembershipListRelationFilter
@@ -289,6 +297,7 @@ export type CommunityOrderByWithRelationInput = {
   twitchLogin?: Prisma.SortOrderInput | Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
+  isVerified?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   owner?: Prisma.UserOrderByWithRelationInput
   memberships?: Prisma.MembershipOrderByRelationAggregateInput
@@ -314,6 +323,7 @@ export type CommunityWhereUniqueInput = Prisma.AtLeast<{
   twitchLogin?: Prisma.StringNullableFilter<"Community"> | string | null
   ownerId?: Prisma.IntFilter<"Community"> | number
   isPublic?: Prisma.BoolFilter<"Community"> | boolean
+  isVerified?: Prisma.BoolFilter<"Community"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Community"> | Date | string
   owner?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   memberships?: Prisma.MembershipListRelationFilter
@@ -336,6 +346,7 @@ export type CommunityOrderByWithAggregationInput = {
   twitchLogin?: Prisma.SortOrderInput | Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
+  isVerified?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.CommunityCountOrderByAggregateInput
   _avg?: Prisma.CommunityAvgOrderByAggregateInput
@@ -358,6 +369,7 @@ export type CommunityScalarWhereWithAggregatesInput = {
   twitchLogin?: Prisma.StringNullableWithAggregatesFilter<"Community"> | string | null
   ownerId?: Prisma.IntWithAggregatesFilter<"Community"> | number
   isPublic?: Prisma.BoolWithAggregatesFilter<"Community"> | boolean
+  isVerified?: Prisma.BoolWithAggregatesFilter<"Community"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Community"> | Date | string
 }
 
@@ -370,6 +382,7 @@ export type CommunityCreateInput = {
   twitchUserId?: string | null
   twitchLogin?: string | null
   isPublic?: boolean
+  isVerified?: boolean
   createdAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedCommunitiesInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutCommunityInput
@@ -392,6 +405,7 @@ export type CommunityUncheckedCreateInput = {
   twitchLogin?: string | null
   ownerId: number
   isPublic?: boolean
+  isVerified?: boolean
   createdAt?: Date | string
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutCommunityInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutCommunityInput
@@ -411,6 +425,7 @@ export type CommunityUpdateInput = {
   twitchUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twitchLogin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedCommunitiesNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutCommunityNestedInput
@@ -433,6 +448,7 @@ export type CommunityUncheckedUpdateInput = {
   twitchLogin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerId?: Prisma.IntFieldUpdateOperationsInput | number
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutCommunityNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutCommunityNestedInput
@@ -454,6 +470,7 @@ export type CommunityCreateManyInput = {
   twitchLogin?: string | null
   ownerId: number
   isPublic?: boolean
+  isVerified?: boolean
   createdAt?: Date | string
 }
 
@@ -466,6 +483,7 @@ export type CommunityUpdateManyMutationInput = {
   twitchUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twitchLogin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -480,6 +498,7 @@ export type CommunityUncheckedUpdateManyInput = {
   twitchLogin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerId?: Prisma.IntFieldUpdateOperationsInput | number
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -494,6 +513,7 @@ export type CommunityCountOrderByAggregateInput = {
   twitchLogin?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
+  isVerified?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -513,6 +533,7 @@ export type CommunityMaxOrderByAggregateInput = {
   twitchLogin?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
+  isVerified?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -527,6 +548,7 @@ export type CommunityMinOrderByAggregateInput = {
   twitchLogin?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
+  isVerified?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -734,6 +756,7 @@ export type CommunityCreateWithoutMembershipsInput = {
   twitchUserId?: string | null
   twitchLogin?: string | null
   isPublic?: boolean
+  isVerified?: boolean
   createdAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedCommunitiesInput
   roles?: Prisma.RoleCreateNestedManyWithoutCommunityInput
@@ -755,6 +778,7 @@ export type CommunityUncheckedCreateWithoutMembershipsInput = {
   twitchLogin?: string | null
   ownerId: number
   isPublic?: boolean
+  isVerified?: boolean
   createdAt?: Date | string
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutCommunityInput
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutCommunityInput
@@ -789,6 +813,7 @@ export type CommunityUpdateWithoutMembershipsInput = {
   twitchUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twitchLogin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedCommunitiesNestedInput
   roles?: Prisma.RoleUpdateManyWithoutCommunityNestedInput
@@ -810,6 +835,7 @@ export type CommunityUncheckedUpdateWithoutMembershipsInput = {
   twitchLogin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerId?: Prisma.IntFieldUpdateOperationsInput | number
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roles?: Prisma.RoleUncheckedUpdateManyWithoutCommunityNestedInput
   posts?: Prisma.PostUncheckedUpdateManyWithoutCommunityNestedInput
@@ -828,6 +854,7 @@ export type CommunityCreateWithoutRolesInput = {
   twitchUserId?: string | null
   twitchLogin?: string | null
   isPublic?: boolean
+  isVerified?: boolean
   createdAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedCommunitiesInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutCommunityInput
@@ -849,6 +876,7 @@ export type CommunityUncheckedCreateWithoutRolesInput = {
   twitchLogin?: string | null
   ownerId: number
   isPublic?: boolean
+  isVerified?: boolean
   createdAt?: Date | string
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutCommunityInput
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutCommunityInput
@@ -883,6 +911,7 @@ export type CommunityUpdateWithoutRolesInput = {
   twitchUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twitchLogin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedCommunitiesNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutCommunityNestedInput
@@ -904,6 +933,7 @@ export type CommunityUncheckedUpdateWithoutRolesInput = {
   twitchLogin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerId?: Prisma.IntFieldUpdateOperationsInput | number
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutCommunityNestedInput
   posts?: Prisma.PostUncheckedUpdateManyWithoutCommunityNestedInput
@@ -922,6 +952,7 @@ export type CommunityCreateWithoutInvitesInput = {
   twitchUserId?: string | null
   twitchLogin?: string | null
   isPublic?: boolean
+  isVerified?: boolean
   createdAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedCommunitiesInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutCommunityInput
@@ -943,6 +974,7 @@ export type CommunityUncheckedCreateWithoutInvitesInput = {
   twitchLogin?: string | null
   ownerId: number
   isPublic?: boolean
+  isVerified?: boolean
   createdAt?: Date | string
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutCommunityInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutCommunityInput
@@ -977,6 +1009,7 @@ export type CommunityUpdateWithoutInvitesInput = {
   twitchUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twitchLogin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedCommunitiesNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutCommunityNestedInput
@@ -998,6 +1031,7 @@ export type CommunityUncheckedUpdateWithoutInvitesInput = {
   twitchLogin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerId?: Prisma.IntFieldUpdateOperationsInput | number
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutCommunityNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutCommunityNestedInput
@@ -1016,6 +1050,7 @@ export type CommunityCreateWithoutPostsInput = {
   twitchUserId?: string | null
   twitchLogin?: string | null
   isPublic?: boolean
+  isVerified?: boolean
   createdAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedCommunitiesInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutCommunityInput
@@ -1037,6 +1072,7 @@ export type CommunityUncheckedCreateWithoutPostsInput = {
   twitchLogin?: string | null
   ownerId: number
   isPublic?: boolean
+  isVerified?: boolean
   createdAt?: Date | string
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutCommunityInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutCommunityInput
@@ -1071,6 +1107,7 @@ export type CommunityUpdateWithoutPostsInput = {
   twitchUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twitchLogin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedCommunitiesNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutCommunityNestedInput
@@ -1092,6 +1129,7 @@ export type CommunityUncheckedUpdateWithoutPostsInput = {
   twitchLogin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerId?: Prisma.IntFieldUpdateOperationsInput | number
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutCommunityNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutCommunityNestedInput
@@ -1110,6 +1148,7 @@ export type CommunityCreateWithoutThreadsInput = {
   twitchUserId?: string | null
   twitchLogin?: string | null
   isPublic?: boolean
+  isVerified?: boolean
   createdAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedCommunitiesInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutCommunityInput
@@ -1131,6 +1170,7 @@ export type CommunityUncheckedCreateWithoutThreadsInput = {
   twitchLogin?: string | null
   ownerId: number
   isPublic?: boolean
+  isVerified?: boolean
   createdAt?: Date | string
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutCommunityInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutCommunityInput
@@ -1165,6 +1205,7 @@ export type CommunityUpdateWithoutThreadsInput = {
   twitchUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twitchLogin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedCommunitiesNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutCommunityNestedInput
@@ -1186,6 +1227,7 @@ export type CommunityUncheckedUpdateWithoutThreadsInput = {
   twitchLogin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerId?: Prisma.IntFieldUpdateOperationsInput | number
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutCommunityNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutCommunityNestedInput
@@ -1204,6 +1246,7 @@ export type CommunityCreateWithoutCommentsInput = {
   twitchUserId?: string | null
   twitchLogin?: string | null
   isPublic?: boolean
+  isVerified?: boolean
   createdAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedCommunitiesInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutCommunityInput
@@ -1225,6 +1268,7 @@ export type CommunityUncheckedCreateWithoutCommentsInput = {
   twitchLogin?: string | null
   ownerId: number
   isPublic?: boolean
+  isVerified?: boolean
   createdAt?: Date | string
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutCommunityInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutCommunityInput
@@ -1259,6 +1303,7 @@ export type CommunityUpdateWithoutCommentsInput = {
   twitchUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twitchLogin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedCommunitiesNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutCommunityNestedInput
@@ -1280,6 +1325,7 @@ export type CommunityUncheckedUpdateWithoutCommentsInput = {
   twitchLogin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerId?: Prisma.IntFieldUpdateOperationsInput | number
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutCommunityNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutCommunityNestedInput
@@ -1298,6 +1344,7 @@ export type CommunityCreateWithoutVotesInput = {
   twitchUserId?: string | null
   twitchLogin?: string | null
   isPublic?: boolean
+  isVerified?: boolean
   createdAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedCommunitiesInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutCommunityInput
@@ -1319,6 +1366,7 @@ export type CommunityUncheckedCreateWithoutVotesInput = {
   twitchLogin?: string | null
   ownerId: number
   isPublic?: boolean
+  isVerified?: boolean
   createdAt?: Date | string
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutCommunityInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutCommunityInput
@@ -1353,6 +1401,7 @@ export type CommunityUpdateWithoutVotesInput = {
   twitchUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twitchLogin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedCommunitiesNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutCommunityNestedInput
@@ -1374,6 +1423,7 @@ export type CommunityUncheckedUpdateWithoutVotesInput = {
   twitchLogin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerId?: Prisma.IntFieldUpdateOperationsInput | number
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutCommunityNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutCommunityNestedInput
@@ -1392,6 +1442,7 @@ export type CommunityCreateWithoutOwnerInput = {
   twitchUserId?: string | null
   twitchLogin?: string | null
   isPublic?: boolean
+  isVerified?: boolean
   createdAt?: Date | string
   memberships?: Prisma.MembershipCreateNestedManyWithoutCommunityInput
   roles?: Prisma.RoleCreateNestedManyWithoutCommunityInput
@@ -1412,6 +1463,7 @@ export type CommunityUncheckedCreateWithoutOwnerInput = {
   twitchUserId?: string | null
   twitchLogin?: string | null
   isPublic?: boolean
+  isVerified?: boolean
   createdAt?: Date | string
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutCommunityInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutCommunityInput
@@ -1462,6 +1514,7 @@ export type CommunityScalarWhereInput = {
   twitchLogin?: Prisma.StringNullableFilter<"Community"> | string | null
   ownerId?: Prisma.IntFilter<"Community"> | number
   isPublic?: Prisma.BoolFilter<"Community"> | boolean
+  isVerified?: Prisma.BoolFilter<"Community"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Community"> | Date | string
 }
 
@@ -1475,6 +1528,7 @@ export type CommunityCreateManyOwnerInput = {
   twitchUserId?: string | null
   twitchLogin?: string | null
   isPublic?: boolean
+  isVerified?: boolean
   createdAt?: Date | string
 }
 
@@ -1487,6 +1541,7 @@ export type CommunityUpdateWithoutOwnerInput = {
   twitchUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twitchLogin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   memberships?: Prisma.MembershipUpdateManyWithoutCommunityNestedInput
   roles?: Prisma.RoleUpdateManyWithoutCommunityNestedInput
@@ -1507,6 +1562,7 @@ export type CommunityUncheckedUpdateWithoutOwnerInput = {
   twitchUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twitchLogin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutCommunityNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutCommunityNestedInput
@@ -1527,6 +1583,7 @@ export type CommunityUncheckedUpdateManyWithoutOwnerInput = {
   twitchUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twitchLogin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -1626,6 +1683,7 @@ export type CommunitySelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   twitchLogin?: boolean
   ownerId?: boolean
   isPublic?: boolean
+  isVerified?: boolean
   createdAt?: boolean
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   memberships?: boolean | Prisma.Community$membershipsArgs<ExtArgs>
@@ -1649,6 +1707,7 @@ export type CommunitySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   twitchLogin?: boolean
   ownerId?: boolean
   isPublic?: boolean
+  isVerified?: boolean
   createdAt?: boolean
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["community"]>
@@ -1664,6 +1723,7 @@ export type CommunitySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   twitchLogin?: boolean
   ownerId?: boolean
   isPublic?: boolean
+  isVerified?: boolean
   createdAt?: boolean
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["community"]>
@@ -1679,10 +1739,11 @@ export type CommunitySelectScalar = {
   twitchLogin?: boolean
   ownerId?: boolean
   isPublic?: boolean
+  isVerified?: boolean
   createdAt?: boolean
 }
 
-export type CommunityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "iconUrl" | "coverUrl" | "backgroundUrl" | "twitchUserId" | "twitchLogin" | "ownerId" | "isPublic" | "createdAt", ExtArgs["result"]["community"]>
+export type CommunityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "iconUrl" | "coverUrl" | "backgroundUrl" | "twitchUserId" | "twitchLogin" | "ownerId" | "isPublic" | "isVerified" | "createdAt", ExtArgs["result"]["community"]>
 export type CommunityInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   memberships?: boolean | Prisma.Community$membershipsArgs<ExtArgs>
@@ -1724,6 +1785,7 @@ export type $CommunityPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     twitchLogin: string | null
     ownerId: number
     isPublic: boolean
+    isVerified: boolean
     createdAt: Date
   }, ExtArgs["result"]["community"]>
   composites: {}
@@ -2166,6 +2228,7 @@ export interface CommunityFieldRefs {
   readonly twitchLogin: Prisma.FieldRef<"Community", 'String'>
   readonly ownerId: Prisma.FieldRef<"Community", 'Int'>
   readonly isPublic: Prisma.FieldRef<"Community", 'Boolean'>
+  readonly isVerified: Prisma.FieldRef<"Community", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Community", 'DateTime'>
 }
     

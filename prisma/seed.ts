@@ -54,6 +54,7 @@ type SeedCommunity = {
   description: string;
   owner: UserKey;
   isPublic: boolean;
+  isVerified?: boolean;
   members: [UserKey, string?][];
   admins?: UserKey[];
   posts: [UserKey, number, string][];
@@ -88,6 +89,7 @@ const communities: SeedCommunity[] = [
       'Weekly threads for everything airing this season. Hot takes, episode reactions, and what to drop.',
     owner: 'admin',
     isPublic: true,
+    isVerified: true,
     members: [
       ['admin', 'Club President'],
       ['anya'],
@@ -745,6 +747,8 @@ const postComments: Record<string, Record<number, SeedComment[]>> = {
 };
 
 const privateProfiles: Character[] = ['levi', 'mikasa'];
+
+const verifiedProfiles: Character[] = ['luffy', 'gojo'];
 
 const friendships: [UserKey, UserKey, 'accepted' | 'pending'][] = [
   ['admin', 'naruto', 'accepted'],
@@ -2120,6 +2124,7 @@ async function main() {
         coverUrl: `/images/user-covers/${key}.webp`,
         backgroundUrl: `/images/user-backgrounds/${key}.webp`,
         isPublic: !privateProfiles.includes(key as Character),
+        isVerified: verifiedProfiles.includes(key as Character),
         status: key === 'gojo' ? 'busy' : key === 'nami' ? 'idle' : 'online',
         tourCompletedAt: minutesAgo(days(30)),
         checklistDismissedAt: minutesAgo(days(29)),
@@ -2165,6 +2170,7 @@ async function main() {
         backgroundUrl: communityImage('backgrounds', community.name),
         ownerId: userIds[community.owner],
         isPublic: community.isPublic,
+        isVerified: community.isVerified ?? false,
         createdAt: minutesAgo(days(14)),
         memberships: {
           create: community.members.map(([key, nickname], index) => {

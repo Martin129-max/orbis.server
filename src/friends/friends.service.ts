@@ -17,6 +17,7 @@ export type FriendUser = {
   username: string;
   name: string | null;
   avatarUrl: string | null;
+  isVerified: boolean;
 };
 
 export type Friend = FriendUser & {
@@ -37,6 +38,7 @@ const person = {
     username: true,
     name: true,
     avatarUrl: true,
+    isVerified: true,
     appearOffline: true,
     status: true,
   },
@@ -77,6 +79,7 @@ export class FriendsService {
         username: other.username,
         name: other.name,
         avatarUrl: other.avatarUrl,
+        isVerified: other.isVerified,
       };
 
       if (friendship.status === 'accepted') {
@@ -113,7 +116,13 @@ export class FriendsService {
         ],
       },
       take: 50,
-      select: { id: true, username: true, name: true, avatarUrl: true },
+      select: {
+        id: true,
+        username: true,
+        name: true,
+        avatarUrl: true,
+        isVerified: true,
+      },
     });
 
     const needle = q.toLowerCase();

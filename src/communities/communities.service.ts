@@ -15,6 +15,7 @@ import { Community as CommunityModel } from '../../prisma/generated/client';
 import { StorageService } from '../storage/storage.service';
 import { PresenceGateway, PresenceStatus } from '../friends/presence.gateway';
 import { NextStream, TwitchLiveService } from '../friends/twitch-live.service';
+import { isHeadAdmin } from '../users/head-admin';
 
 export type CommunityMember = {
   userId: number;
@@ -22,6 +23,7 @@ export type CommunityMember = {
   name: string | null;
   avatarUrl: string | null;
   coverUrl: string | null;
+  isVerified: boolean;
   online: boolean;
   status: PresenceStatus;
   playing: string | null;
@@ -66,6 +68,7 @@ export type CommunitySearchResult = {
   description: string | null;
   iconUrl: string | null;
   coverUrl: string | null;
+  isVerified: boolean;
   memberCount: number;
   joined: boolean;
   members: Person[];
@@ -137,7 +140,7 @@ export class CommunitiesService {
   async findPublic(): Promise<
     Pick<
       CommunitySearchResult,
-      'id' | 'name' | 'iconUrl' | 'coverUrl' | 'memberCount'
+      'id' | 'name' | 'iconUrl' | 'coverUrl' | 'isVerified' | 'memberCount'
     >[]
   > {
     const communities = await this.prisma.community.findMany({
@@ -149,6 +152,7 @@ export class CommunitiesService {
         name: true,
         iconUrl: true,
         coverUrl: true,
+        isVerified: true,
         _count: { select: { memberships: true } },
       },
     });
@@ -176,6 +180,7 @@ export class CommunitiesService {
         description: true,
         iconUrl: true,
         coverUrl: true,
+        isVerified: true,
         _count: { select: { memberships: true } },
         memberships: { where: { userId }, select: { userId: true } },
       },
@@ -215,7 +220,16 @@ export class CommunitiesService {
 
     return communities.map(
       (
-        { id, name, description, iconUrl, coverUrl, _count, memberships },
+        {
+          id,
+          name,
+          description,
+          iconUrl,
+          coverUrl,
+          isVerified,
+          _count,
+          memberships,
+        },
         index,
       ) => {
         const mutuals = friendMemberships
@@ -227,6 +241,7 @@ export class CommunitiesService {
           description,
           iconUrl,
           coverUrl,
+          isVerified,
           memberCount: _count.memberships,
           joined: memberships.length > 0,
           members: previews[index].map(({ user }) => user),
@@ -496,6 +511,7 @@ export class CommunitiesService {
                 name: true,
                 avatarUrl: true,
                 coverUrl: true,
+                isVerified: true,
                 appearOffline: true,
                 status: true,
               },
@@ -517,6 +533,7 @@ export class CommunitiesService {
           name: user.name,
           avatarUrl: user.avatarUrl,
           coverUrl: user.coverUrl,
+          isVerified: user.isVerified,
           online: !user.appearOffline && this.presence.isOnline(user.id),
           status: this.presence.statusOf(user.id, user),
           playing: this.presence.playingOf(user.id, user),
@@ -616,6 +633,37 @@ export class CommunitiesService {
     });
 
     return { ...community, role };
+  }
+
+  async setVerified(
+    headAdminId: number,
+    communityId: number,
+    isVerified: boolean,
+  ): Promise<{ isVerified: boolean }> {
+    const headAdmin = await this.prisma.user.findUnique({
+      where: { id: headAdminId },
+      select: { email: true },
+    });
+    if (!headAdmin || !isHeadAdmin(headAdmin.email)) {
+      throw new ForbiddenException(
+        'Only the head admin can verify communities',
+      );
+    }
+
+    const community =
+      communityId >= 1 && communityId <= MAX_INT
+        ? await this.prisma.community.findUnique({
+            where: { id: communityId },
+            select: { id: true },
+          })
+        : null;
+    if (!community) throw new NotFoundException('Community not found');
+
+    await this.prisma.community.update({
+      where: { id: communityId },
+      data: { isVerified },
+    });
+    return { isVerified };
   }
 
   async updateImage(

@@ -36,6 +36,7 @@ describe('Public landing communities', () => {
         name: 'Reading club',
         iconUrl: null,
         coverUrl: null,
+        isVerified: true,
         _count: { memberships: 3 },
       },
     ]);
@@ -49,6 +50,7 @@ describe('Public landing communities', () => {
         name: 'Reading club',
         iconUrl: null,
         coverUrl: null,
+        isVerified: true,
         memberCount: 3,
       },
     ]);
@@ -61,6 +63,7 @@ describe('Public landing communities', () => {
         name: true,
         iconUrl: true,
         coverUrl: true,
+        isVerified: true,
         _count: { select: { memberships: true } },
       },
     });

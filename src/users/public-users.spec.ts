@@ -10,6 +10,7 @@ const user = (
   name: null,
   avatarUrl: null,
   coverUrl: null,
+  isVerified: false,
   appearOffline,
   activity,
 });

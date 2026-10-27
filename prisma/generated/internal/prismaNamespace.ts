@@ -2478,6 +2478,7 @@ export const CommunityScalarFieldEnum = {
   twitchLogin: 'twitchLogin',
   ownerId: 'ownerId',
   isPublic: 'isPublic',
+  isVerified: 'isVerified',
   createdAt: 'createdAt'
 } as const
 
@@ -2826,6 +2827,7 @@ export const UserScalarFieldEnum = {
   status: 'status',
   isPublic: 'isPublic',
   isAdmin: 'isAdmin',
+  isVerified: 'isVerified',
   tourCompletedAt: 'tourCompletedAt',
   checklistDismissedAt: 'checklistDismissedAt',
   completedTours: 'completedTours',

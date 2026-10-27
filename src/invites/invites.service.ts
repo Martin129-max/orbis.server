@@ -50,6 +50,7 @@ export type InvitePreview = {
     coverUrl: string | null;
     backgroundUrl: string | null;
     isPublic: boolean;
+    isVerified: boolean;
     memberCount: number;
   };
 };
@@ -225,6 +226,7 @@ export class InvitesService {
             coverUrl: true,
             backgroundUrl: true,
             isPublic: true,
+            isVerified: true,
             _count: { select: { memberships: true } },
           },
         },

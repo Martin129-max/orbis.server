@@ -34,6 +34,7 @@ export type PublicProfile = {
   backgroundUrl: string | null;
   isAdmin: boolean;
   isHeadAdmin: boolean;
+  isVerified: boolean;
   isPublic: boolean;
   restricted: boolean;
   createdAt: Date;
@@ -47,6 +48,7 @@ export type PublicProfile = {
     name: string;
     iconUrl: string | null;
     coverUrl: string | null;
+    isVerified: boolean;
     memberCount: number;
     isOwner: boolean;
   }[];
@@ -56,6 +58,7 @@ export type PublicProfile = {
     name: string | null;
     avatarUrl: string | null;
     coverUrl: string | null;
+    isVerified: boolean;
     online: boolean;
     status: PresenceStatus;
     playing: string | null;
@@ -114,6 +117,7 @@ export type PublicUserSummary = {
   name: string | null;
   avatarUrl: string | null;
   coverUrl: string | null;
+  isVerified: boolean;
   online: boolean;
   activity: number;
 };
@@ -290,6 +294,7 @@ export class UsersService {
         name: true,
         avatarUrl: true,
         coverUrl: true,
+        isVerified: true,
         appearOffline: true,
         _count: {
           select: { posts: recent, threads: recent, comments: recent },
@@ -331,6 +336,7 @@ export class UsersService {
         backgroundUrl: true,
         email: true,
         isAdmin: true,
+        isVerified: true,
         appearOffline: true,
         status: true,
         isPublic: true,
@@ -344,6 +350,7 @@ export class UsersService {
                 name: true,
                 iconUrl: true,
                 coverUrl: true,
+                isVerified: true,
                 ownerId: true,
                 isPublic: true,
                 _count: { select: { memberships: true } },
@@ -370,6 +377,7 @@ export class UsersService {
         backgroundUrl: null,
         isAdmin: user.isAdmin || headAdmin,
         isHeadAdmin: headAdmin,
+        isVerified: user.isVerified,
         isPublic: false,
         restricted: true,
         appearOffline: true,
@@ -391,6 +399,7 @@ export class UsersService {
         name: true,
         avatarUrl: true,
         coverUrl: true,
+        isVerified: true,
         appearOffline: true,
         status: true,
       },
@@ -448,6 +457,7 @@ export class UsersService {
           name: friend.name,
           avatarUrl: friend.avatarUrl,
           coverUrl: friend.coverUrl,
+          isVerified: friend.isVerified,
           appearOffline: friend.appearOffline,
           status: friend.status,
         };
@@ -468,6 +478,7 @@ export class UsersService {
           name: community.name,
           iconUrl: community.iconUrl,
           coverUrl: community.coverUrl,
+          isVerified: community.isVerified,
           memberCount: community._count.memberships,
           isOwner: community.ownerId === id,
         })),
@@ -503,6 +514,32 @@ export class UsersService {
       data: { isAdmin },
     });
     return { isAdmin };
+  }
+
+  async setVerified(
+    headAdminId: number,
+    username: string,
+    isVerified: boolean,
+  ): Promise<{ isVerified: boolean }> {
+    const headAdmin = await this.prisma.user.findUnique({
+      where: { id: headAdminId },
+      select: { email: true },
+    });
+    if (!headAdmin || !isHeadAdmin(headAdmin.email)) {
+      throw new ForbiddenException('Only the head admin can verify profiles');
+    }
+
+    const user = await this.prisma.user.findUnique({
+      where: { username: normalizeUsername(username) },
+      select: { id: true },
+    });
+    if (!user) throw new NotFoundException('User not found');
+
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: { isVerified },
+    });
+    return { isVerified };
   }
 
   async onboarding(id: number): Promise<Onboarding> {
