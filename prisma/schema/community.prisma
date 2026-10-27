@@ -7,6 +7,8 @@ model Community {
   backgroundUrl String?
   twitchUserId  String?
   twitchLogin   String?
+  discordGuildId   String?
+  discordGuildName String?
   ownerId       Int
   isPublic      Boolean      @default(false)
   isVerified    Boolean      @default(false)

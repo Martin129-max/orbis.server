@@ -2190,7 +2190,12 @@ async function main() {
     if (community.name === 'Seasonal Anime Club') {
       await prisma.community.update({
         where: { id: created.id },
-        data: { twitchUserId: '300000001', twitchLogin: 'seasonalanimeclub' },
+        data: {
+          twitchUserId: '300000001',
+          twitchLogin: 'seasonalanimeclub',
+          discordGuildId: '300000000000000001',
+          discordGuildName: 'Seasonal Anime Club',
+        },
       });
       const alphabet =
         'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

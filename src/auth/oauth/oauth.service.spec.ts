@@ -35,7 +35,11 @@ describe('OAuthService', () => {
     generateToken: jest.fn((id: number) => ({ access_token: `token-${id}` })),
   };
   const presence = { stopLive: jest.fn() };
-  const communities = { assertCanManage: jest.fn(), connectTwitch: jest.fn() };
+  const communities = {
+    assertCanManage: jest.fn(),
+    connectTwitch: jest.fn(),
+    connectDiscord: jest.fn(),
+  };
   const storage = { uploadImage: jest.fn(), delete: jest.fn() };
   const service = new OAuthService(
     prisma as unknown as PrismaService,
@@ -321,10 +325,124 @@ describe('OAuthService', () => {
     expect(result).toEqual({ linked: 'twitch', communityId: 12 });
   });
 
-  it('only lets communities connect Twitch', async () => {
-    await expect(
-      service.communityAuthorizeUrl(5, 'discord', 12, NONCE),
-    ).rejects.toThrow(BadRequestException);
+  describe('Discord servers for communities', () => {
+    const guilds = [
+      { id: '900', name: 'Seasonal Club', icon: 'abc', owner: true, permissions: '0' },
+      { id: '901', name: 'Mod Team', icon: null, owner: false, permissions: '32' },
+      { id: '902', name: 'Admins', icon: null, owner: false, permissions: '8' },
+      { id: '903', name: 'Just a member', icon: null, owner: false, permissions: '1024' },
+    ];
+
+    function discordWithServers(servers: unknown[] = guilds) {
+      discordUser();
+      fetchMock.mockResolvedValueOnce({ ok: true, json: async () => servers });
+    }
+
+    async function connectCommunity(viewer = 5) {
+      const url = await service.communityAuthorizeUrl(5, 'discord', 12, NONCE);
+      const state = new URL(url).searchParams.get('state')!;
+      return service.complete('discord', { code: 'code', state, nonce: NONCE }, viewer);
+    }
+
+    async function serverToken() {
+      discordWithServers();
+      const result = await connectCommunity();
+      if (!('servers' in result) || !result.servers) throw new Error('Expected servers');
+      return result.servers.token;
+    }
+
+    it('asks Discord for the server list only when connecting a community', async () => {
+      const community = new URL(await service.communityAuthorizeUrl(5, 'discord', 12, NONCE));
+      const login = new URL(service.authorizeUrl('discord', NONCE, null));
+
+      expect(community.searchParams.get('scope')).toBe('identify guilds');
+      expect(login.searchParams.get('scope')).toBe('identify email');
+      expect(communities.assertCanManage).toHaveBeenCalledWith(5, 12);
+    });
+
+    it('offers only the servers the admin owns or manages', async () => {
+      discordWithServers();
+
+      const result = await connectCommunity();
+
+      expect(result).toEqual({
+        linked: 'discord',
+        communityId: 12,
+        servers: {
+          token: expect.any(String),
+          options: [
+            {
+              id: '900',
+              name: 'Seasonal Club',
+              iconUrl: 'https://cdn.discordapp.com/icons/900/abc.png?size=64',
+            },
+            { id: '901', name: 'Mod Team', iconUrl: null },
+            { id: '902', name: 'Admins', iconUrl: null },
+          ],
+        },
+      });
+      expect(fetchMock).toHaveBeenLastCalledWith(
+        'https://discord.com/api/users/@me/guilds',
+        expect.anything(),
+      );
+      expect(communities.connectDiscord).not.toHaveBeenCalled();
+    });
+
+    it('explains when the admin manages no servers', async () => {
+      discordWithServers([guilds[3]]);
+
+      await expect(connectCommunity()).rejects.toThrow(BadRequestException);
+    });
+
+    it('connects the server the admin picks', async () => {
+      const token = await serverToken();
+      communities.connectDiscord.mockResolvedValueOnce({
+        online: 42,
+        inviteUrl: 'https://discord.com/invite/abc',
+      });
+
+      await expect(service.connectDiscordServer(5, token, '901')).resolves.toEqual({
+        communityId: 12,
+        name: 'Mod Team',
+        online: 42,
+        inviteUrl: 'https://discord.com/invite/abc',
+      });
+      expect(communities.connectDiscord).toHaveBeenCalledWith(5, 12, {
+        id: '901',
+        name: 'Mod Team',
+      });
+    });
+
+    it('refuses a server that wasn’t offered', async () => {
+      const token = await serverToken();
+
+      await expect(service.connectDiscordServer(5, token, '903')).rejects.toThrow(
+        BadRequestException,
+      );
+      expect(communities.connectDiscord).not.toHaveBeenCalled();
+    });
+
+    it('refuses a pick from another account', async () => {
+      const token = await serverToken();
+
+      await expect(service.connectDiscordServer(6, token, '900')).rejects.toThrow(
+        ForbiddenException,
+      );
+      expect(communities.connectDiscord).not.toHaveBeenCalled();
+    });
+
+    it('refuses a server list it didn’t make', async () => {
+      const forged = new JwtService({ secret: 'other' }).sign({
+        uid: 5,
+        communityId: 12,
+        servers: [{ id: '903', name: 'Just a member' }],
+      });
+
+      await expect(service.connectDiscordServer(5, forged, '903')).rejects.toThrow(
+        BadRequestException,
+      );
+      expect(communities.connectDiscord).not.toHaveBeenCalled();
+    });
   });
 
   describe('profile pictures', () => {

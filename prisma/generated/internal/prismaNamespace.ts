@@ -2476,6 +2476,8 @@ export const CommunityScalarFieldEnum = {
   backgroundUrl: 'backgroundUrl',
   twitchUserId: 'twitchUserId',
   twitchLogin: 'twitchLogin',
+  discordGuildId: 'discordGuildId',
+  discordGuildName: 'discordGuildName',
   ownerId: 'ownerId',
   isPublic: 'isPublic',
   isVerified: 'isVerified',

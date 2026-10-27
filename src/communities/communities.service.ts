@@ -16,6 +16,7 @@ import { StorageService } from '../storage/storage.service';
 import { PresenceGateway, PresenceStatus } from '../friends/presence.gateway';
 import { NextStream, TwitchLiveService } from '../friends/twitch-live.service';
 import { isHeadAdmin } from '../users/head-admin';
+import { DiscordWidget, discordWidget } from './discord-widget';
 
 export type CommunityMember = {
   userId: number;
@@ -38,6 +39,7 @@ export type CommunityWithRole = CommunityModel & {
   memberCount?: number;
   live?: boolean;
   nextStream?: NextStream | null;
+  discord?: DiscordWidget | null;
   showLibraryUpdates?: boolean;
 };
 
@@ -326,6 +328,27 @@ export class CommunitiesService {
     });
   }
 
+  async connectDiscord(
+    userId: number,
+    communityId: number,
+    server: { id: string; name: string },
+  ): Promise<DiscordWidget> {
+    await this.requireRole(userId, communityId, 'admin');
+    await this.prisma.community.update({
+      where: { id: communityId },
+      data: { discordGuildId: server.id, discordGuildName: server.name },
+    });
+    return discordWidget(server.id);
+  }
+
+  async disconnectDiscord(userId: number, communityId: number) {
+    await this.requireRole(userId, communityId, 'admin');
+    await this.prisma.community.update({
+      where: { id: communityId },
+      data: { discordGuildId: null, discordGuildName: null },
+    });
+  }
+
   async disconnectTwitch(userId: number, communityId: number) {
     await this.requireRole(userId, communityId, 'admin');
     await this.prisma.community.update({
@@ -567,14 +590,17 @@ export class CommunitiesService {
     if (!community || (!role && !community.isPublic)) return null;
 
     const { _count, ...rest } = community;
+    const [nextStream, discord] = await Promise.all([
+      rest.twitchUserId ? this.twitch.nextStream(rest.twitchUserId) : null,
+      rest.discordGuildId ? discordWidget(rest.discordGuildId) : null,
+    ]);
     return {
       ...rest,
       role,
       memberCount: _count.memberships,
       live: this.presence.isCommunityLive(id),
-      nextStream: rest.twitchUserId
-        ? await this.twitch.nextStream(rest.twitchUserId)
-        : null,
+      nextStream,
+      discord,
       ...(role && { showLibraryUpdates: membership?.showLibraryUpdates }),
     };
   }

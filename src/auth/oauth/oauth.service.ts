@@ -18,16 +18,23 @@ import { StorageService } from '../../storage/storage.service';
 import { normalizeUsername, USERNAME_PATTERN } from '../../users/username';
 import { AuthService } from '../auth.service';
 import {
+  DiscordServer,
+  discordServers,
   OAUTH_TIMEOUT_MS,
   OAuthProfile,
   oauthProviders,
 } from './oauth-providers';
+import { DiscordWidget } from '../../communities/discord-widget';
 
 export type OAuthResult =
   | { access_token: string }
   | { signup: { token: string; username: string } }
   | { linked: AuthProvider; avatar?: { url: string; token: string } }
-  | { linked: AuthProvider; communityId: number };
+  | {
+      linked: AuthProvider;
+      communityId: number;
+      servers?: { token: string; options: DiscordServer[] };
+    };
 
 export type OAuthConnections = {
   hasPassword: boolean;
@@ -60,9 +67,16 @@ type AvatarClaims = {
   url: string;
 };
 
+type ServerClaims = {
+  uid: number;
+  communityId: number;
+  servers: { id: string; name: string }[];
+};
+
 const EXPIRED = 'That sign-in link expired. Please try again.';
 const SIGNUP_EXPIRED = 'That sign-up expired. Please start again';
 const AVATAR_EXPIRED = 'That picture offer expired. Connect again to get it';
+const SERVERS_EXPIRED = 'That Discord connection expired. Connect again';
 const NONCE_PATTERN = /^[A-Za-z0-9_-]{16,128}$/;
 
 function stateSecret() {
@@ -75,6 +89,10 @@ function signupSecret() {
 
 function avatarSecret() {
   return `${process.env.JWT_SECRET}:oauth-avatar`;
+}
+
+function serversSecret() {
+  return `${process.env.JWT_SECRET}:oauth-discord-servers`;
 }
 
 function redirectUri(provider: AuthProvider) {
@@ -125,7 +143,10 @@ export class OAuthService {
       client_id: config.clientId()!,
       redirect_uri: redirectUri(provider),
       response_type: 'code',
-      scope: config.scope,
+      scope:
+        communityId !== null
+          ? (config.communityScope ?? config.scope)
+          : config.scope,
       state,
     });
     return `${config.authorizeUrl}?${params}`;
@@ -137,8 +158,10 @@ export class OAuthService {
     communityId: number,
     nonce: string,
   ) {
-    if (provider !== 'twitch') {
-      throw new BadRequestException('Communities can only connect Twitch');
+    if (provider !== 'twitch' && provider !== 'discord') {
+      throw new BadRequestException(
+        'Communities can only connect Twitch or Discord',
+      );
     }
     await this.communities.assertCanManage(userId, communityId);
     return this.authorizeUrl(provider, nonce, userId, communityId);
@@ -150,13 +173,24 @@ export class OAuthService {
     viewerId: number,
   ): Promise<OAuthResult> {
     const claims = this.verifyState(provider, state, nonce);
-    const profile = await this.fetchProfile(provider, code);
+    const { profile, accessToken } = await this.fetchProfile(provider, code);
 
     if (typeof claims.communityId === 'number') {
       if (claims.uid !== viewerId) {
         throw new ForbiddenException(
           'Log in to the account you’re connecting, then try again.',
         );
+      }
+      if (provider === 'discord') {
+        return {
+          linked: provider,
+          communityId: claims.communityId,
+          servers: await this.serverChoice(
+            viewerId,
+            claims.communityId,
+            accessToken,
+          ),
+        };
       }
       await this.communities.connectTwitch(viewerId, claims.communityId, {
         id: profile.id,
@@ -252,6 +286,35 @@ export class OAuthService {
       if (isUniqueViolation(error)) throw taken();
       throw error;
     }
+  }
+
+  async connectDiscordServer(
+    userId: number,
+    token: string,
+    serverId: string,
+  ): Promise<{ communityId: number; name: string } & DiscordWidget> {
+    let claims: ServerClaims;
+    try {
+      claims = this.jwt.verify<ServerClaims>(token, { secret: serversSecret() });
+    } catch {
+      throw new BadRequestException(SERVERS_EXPIRED);
+    }
+    if (claims.uid !== userId) {
+      throw new ForbiddenException(
+        'Log in to the account you’re connecting, then try again.',
+      );
+    }
+    const server = claims.servers.find(({ id }) => id === serverId);
+    if (!server) {
+      throw new BadRequestException('Pick one of the servers you manage');
+    }
+
+    const widget = await this.communities.connectDiscord(
+      userId,
+      claims.communityId,
+      server,
+    );
+    return { communityId: claims.communityId, name: server.name, ...widget };
   }
 
   async useLinkedAvatar(
@@ -391,7 +454,10 @@ export class OAuthService {
       });
       if (!response.ok) throw new Error(`Token request failed with ${response.status}`);
       const { access_token: accessToken } = await response.json();
-      return await config.profile(accessToken, clientId);
+      return {
+        profile: await config.profile(accessToken, clientId),
+        accessToken: String(accessToken),
+      };
     } catch {
       throw new BadGatewayException(
         `Couldn’t finish logging in with ${config.label}. Please try again.`,
@@ -439,6 +505,41 @@ export class OAuthService {
     }
 
     return null;
+  }
+
+  private async serverChoice(
+    userId: number,
+    communityId: number,
+    accessToken: string,
+  ) {
+    await this.communities.assertCanManage(userId, communityId);
+
+    let options: DiscordServer[];
+    try {
+      options = await discordServers(accessToken);
+    } catch {
+      throw new BadGatewayException(
+        'Couldn’t get your Discord servers. Please try again.',
+      );
+    }
+    if (options.length === 0) {
+      throw new BadRequestException(
+        'You don’t manage any Discord servers. You need the Manage Server permission to connect one',
+      );
+    }
+
+    const claims: ServerClaims = {
+      uid: userId,
+      communityId,
+      servers: options.map(({ id, name }) => ({ id, name })),
+    };
+    return {
+      token: this.jwt.sign(claims, {
+        secret: serversSecret(),
+        expiresIn: '30m',
+      }),
+      options,
+    };
   }
 
   private async avatarOffer(userId: number, url: string | null) {

@@ -16,8 +16,14 @@ type ProviderConfig = {
   authorizeUrl: string;
   tokenUrl: string;
   scope: string;
+  communityScope?: string;
   profile: (accessToken: string, clientId: string) => Promise<OAuthProfile>;
 };
+
+export type DiscordServer = { id: string; name: string; iconUrl: string | null };
+
+const MANAGE_SERVER = BigInt(0x20);
+const ADMINISTRATOR = BigInt(0x8);
 
 export const OAUTH_TIMEOUT_MS = 10_000;
 
@@ -38,6 +44,7 @@ export const oauthProviders: Record<AuthProvider, ProviderConfig> = {
     authorizeUrl: 'https://discord.com/oauth2/authorize',
     tokenUrl: 'https://discord.com/api/oauth2/token',
     scope: 'identify email',
+    communityScope: 'identify guilds',
     profile: async (accessToken) => {
       const user = await getJson('https://discord.com/api/users/@me', {
         Authorization: `Bearer ${accessToken}`,
@@ -84,3 +91,29 @@ export const oauthProviders: Record<AuthProvider, ProviderConfig> = {
     },
   },
 };
+
+export async function discordServers(
+  accessToken: string,
+): Promise<DiscordServer[]> {
+  const guilds = await getJson('https://discord.com/api/users/@me/guilds', {
+    Authorization: `Bearer ${accessToken}`,
+  });
+  if (!Array.isArray(guilds)) throw new Error('Discord returned no servers');
+
+  return guilds
+    .filter((guild) => {
+      const permissions = BigInt(guild.permissions ?? 0);
+      return (
+        guild.owner === true ||
+        (permissions & MANAGE_SERVER) !== BigInt(0) ||
+        (permissions & ADMINISTRATOR) !== BigInt(0)
+      );
+    })
+    .map((guild) => ({
+      id: String(guild.id),
+      name: String(guild.name),
+      iconUrl: guild.icon
+        ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png?size=64`
+        : null,
+    }));
+}

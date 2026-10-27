@@ -254,6 +254,16 @@ export class CommunitiesController {
     return this.communitiesService.disconnectTwitch(req.user.userId, communityId);
   }
 
+  @Delete(':communityId/discord')
+  @UseGuards(CommunityMemberGuard)
+  @HttpCode(204)
+  disconnectDiscord(
+    @Req() req,
+    @Param('communityId', ParseIntPipe) communityId: number,
+  ): Promise<void> {
+    return this.communitiesService.disconnectDiscord(req.user.userId, communityId);
+  }
+
   @Delete(':communityId')
   @UseGuards(CommunityMemberGuard)
   @HttpCode(204)

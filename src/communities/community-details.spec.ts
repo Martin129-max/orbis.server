@@ -38,6 +38,7 @@ describe('Community details', () => {
       memberCount: 3,
       live: false,
       nextStream: null,
+      discord: null,
     });
     expect(twitch.nextStream).not.toHaveBeenCalled();
   });
