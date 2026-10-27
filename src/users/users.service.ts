@@ -21,7 +21,7 @@ import { normalizeUsername } from './username';
 import { isHeadAdmin } from './head-admin';
 import { StorageService } from '../storage/storage.service';
 import { canViewProfile } from '../posts/wall-access';
-import type { PresenceStatus } from '../friends/presence.gateway';
+import { PresenceGateway, PresenceStatus } from '../friends/presence.gateway';
 
 export type PublicUser = Omit<UserModel, 'password'>;
 
@@ -186,6 +186,7 @@ export class UsersService {
   constructor(
     private prisma: PrismaService,
     private storage: StorageService,
+    private presence: PresenceGateway,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<PublicUser> {
@@ -539,6 +540,17 @@ export class UsersService {
       where: { id: user.id },
       data: { isVerified },
     });
+
+    const friendships = await this.prisma.friendship.findMany({
+      where: { OR: [{ requesterId: user.id }, { addresseeId: user.id }] },
+      select: { requesterId: true, addresseeId: true },
+    });
+    const friendIds = friendships.map(({ requesterId, addresseeId }) =>
+      requesterId === user.id ? addresseeId : requesterId,
+    );
+    if (friendIds.length > 0) {
+      this.presence.notify(friendIds, 'friends:changed');
+    }
     return { isVerified };
   }
 

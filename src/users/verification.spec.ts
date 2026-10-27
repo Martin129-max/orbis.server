@@ -13,10 +13,13 @@ describe('Verification', () => {
   const prisma = {
     user: { findUnique: jest.fn(), update: jest.fn() },
     community: { findUnique: jest.fn(), update: jest.fn() },
+    friendship: { findMany: jest.fn() },
   };
+  const presence = { notify: jest.fn() };
   const users = new UsersService(
     prisma as unknown as PrismaService,
     {} as StorageService,
+    presence as unknown as PresenceGateway,
   );
   const communities = new CommunitiesService(
     prisma as unknown as PrismaService,
@@ -31,6 +34,7 @@ describe('Verification', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    prisma.friendship.findMany.mockResolvedValue([]);
     process.env.HEAD_ADMIN = HEAD_ADMIN;
   });
 
@@ -68,6 +72,32 @@ describe('Verification', () => {
         where: { id: 7 },
         data: { isVerified: false },
       });
+    });
+
+    it('tells friends and pending requests to reload their friends list', async () => {
+      signedIn(HEAD_ADMIN);
+      prisma.user.findUnique.mockResolvedValueOnce({ id: 7 });
+      prisma.friendship.findMany.mockResolvedValueOnce([
+        { requesterId: 7, addresseeId: 2 },
+        { requesterId: 5, addresseeId: 7 },
+      ]);
+
+      await users.setVerified(1, 'luffy', true);
+
+      expect(prisma.friendship.findMany).toHaveBeenCalledWith({
+        where: { OR: [{ requesterId: 7 }, { addresseeId: 7 }] },
+        select: { requesterId: true, addresseeId: true },
+      });
+      expect(presence.notify).toHaveBeenCalledWith([2, 5], 'friends:changed');
+    });
+
+    it('sends nothing when the profile has no friends', async () => {
+      signedIn(HEAD_ADMIN);
+      prisma.user.findUnique.mockResolvedValueOnce({ id: 7 });
+
+      await users.setVerified(1, 'luffy', true);
+
+      expect(presence.notify).not.toHaveBeenCalled();
     });
 
     it('refuses site admins who are not the head admin', async () => {

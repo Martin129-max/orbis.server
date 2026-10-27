@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from './users.service';
 import { PrismaService } from '../prisma.service';
 import { StorageService } from '../storage/storage.service';
+import { PresenceGateway } from '../friends/presence.gateway';
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -12,6 +13,7 @@ describe('UsersService', () => {
         UsersService,
         { provide: PrismaService, useValue: {} },
         { provide: StorageService, useValue: {} },
+        { provide: PresenceGateway, useValue: {} },
       ],
     }).compile();
 
@@ -28,6 +30,7 @@ describe('Saving preferences', () => {
   const service = new UsersService(
     { user: { update } } as unknown as PrismaService,
     {} as StorageService,
+    {} as PresenceGateway,
   );
 
   it('remembers when someone turns off update notes', async () => {
