@@ -89,6 +89,11 @@ export type Onboarding = {
     feedback: boolean;
     library: boolean;
   };
+  used: {
+    steam: boolean;
+    connections: boolean;
+    folders: boolean;
+  };
 };
 
 export type Profile = Pick<
@@ -564,6 +569,9 @@ export class UsersService {
       friendships,
       reports,
       libraryEntries,
+      steamAccounts,
+      oauthAccounts,
+      folders,
     ] = await Promise.all([
       this.prisma.user.findUniqueOrThrow({
         where: { id },
@@ -585,6 +593,9 @@ export class UsersService {
       }),
       this.prisma.report.count({ where: { authorId: id } }),
       this.prisma.libraryEntry.count({ where: { userId: id } }),
+      this.prisma.steamAccount.count({ where: { userId: id } }),
+      this.prisma.oAuthAccount.count({ where: { userId: id } }),
+      this.prisma.railFolder.count({ where: { userId: id } }),
     ]);
 
     return {
@@ -599,6 +610,11 @@ export class UsersService {
         friend: friendships > 0,
         feedback: reports > 0,
         library: libraryEntries > 0,
+      },
+      used: {
+        steam: steamAccounts > 0,
+        connections: oauthAccounts > 0,
+        folders: folders > 0,
       },
     };
   }

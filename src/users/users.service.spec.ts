@@ -54,3 +54,45 @@ describe('Saving preferences', () => {
     expect(profile).toMatchObject({ showChangelog: false });
   });
 });
+
+describe('Onboarding', () => {
+  const count = (value: number) => ({ count: jest.fn().mockResolvedValue(value) });
+  const prisma = {
+    user: {
+      findUniqueOrThrow: jest.fn().mockResolvedValue({
+        avatarUrl: null,
+        tourCompletedAt: new Date(),
+        checklistDismissedAt: null,
+        completedTours: [],
+      }),
+    },
+    membership: count(1),
+    post: count(0),
+    thread: count(0),
+    comment: count(0),
+    friendship: count(0),
+    report: count(0),
+    libraryEntry: count(0),
+    steamAccount: count(1),
+    oAuthAccount: count(0),
+    railFolder: count(2),
+  };
+  const service = new UsersService(
+    prisma as unknown as PrismaService,
+    {} as StorageService,
+    {} as PresenceGateway,
+  );
+
+  it('says which features someone already uses, so tips can skip them', async () => {
+    const onboarding = await service.onboarding(1);
+
+    expect(onboarding.used).toEqual({
+      steam: true,
+      connections: false,
+      folders: true,
+    });
+    expect(prisma.steamAccount.count).toHaveBeenCalledWith({ where: { userId: 1 } });
+    expect(prisma.oAuthAccount.count).toHaveBeenCalledWith({ where: { userId: 1 } });
+    expect(prisma.railFolder.count).toHaveBeenCalledWith({ where: { userId: 1 } });
+  });
+});
