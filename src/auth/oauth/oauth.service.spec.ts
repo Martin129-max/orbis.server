@@ -8,7 +8,9 @@ import { Prisma } from '../../../prisma/generated/client';
 import { PrismaService } from '../../prisma.service';
 import { CommunitiesService } from '../../communities/communities.service';
 import { PresenceGateway } from '../../friends/presence.gateway';
+import { StorageService } from '../../storage/storage.service';
 import { AuthService } from '../auth.service';
+import { oauthProviders } from './oauth-providers';
 import { OAuthService } from './oauth.service';
 
 const NONCE = 'nonce-0123456789abcdef';
@@ -25,6 +27,7 @@ describe('OAuthService', () => {
       findFirst: jest.fn(),
       findUnique: jest.fn(),
       create: jest.fn(),
+      updateMany: jest.fn(),
     },
   };
   const jwt = new JwtService({ secret: 'test-secret' });
@@ -33,12 +36,14 @@ describe('OAuthService', () => {
   };
   const presence = { stopLive: jest.fn() };
   const communities = { assertCanManage: jest.fn(), connectTwitch: jest.fn() };
+  const storage = { uploadImage: jest.fn(), delete: jest.fn() };
   const service = new OAuthService(
     prisma as unknown as PrismaService,
     jwt,
     auth as unknown as AuthService,
     presence as unknown as PresenceGateway,
     communities as unknown as CommunitiesService,
+    storage as unknown as StorageService,
   );
   const fetchMock = jest.fn();
 
@@ -132,8 +137,8 @@ describe('OAuthService', () => {
     expect(prisma.user.create).not.toHaveBeenCalled();
   });
 
-  async function startSignup() {
-    discordUser();
+  async function startSignup(overrides: Record<string, unknown> = {}) {
+    discordUser(overrides);
     const result = await service.complete(
       'discord',
       { code: 'code', state: stateFor(null), nonce: NONCE },
@@ -320,5 +325,163 @@ describe('OAuthService', () => {
     await expect(
       service.communityAuthorizeUrl(5, 'discord', 12, NONCE),
     ).rejects.toThrow(BadRequestException);
+  });
+
+  describe('profile pictures', () => {
+    const DISCORD_PICTURE = 'https://cdn.discordapp.com/avatars/42/abc.png?size=512';
+    const STORED = 'https://files.test/avatars/new.webp';
+
+    beforeEach(() => {
+      storage.uploadImage.mockResolvedValue({ key: 'avatars/new.webp', url: STORED });
+      prisma.user.updateMany.mockResolvedValue({ count: 1 });
+    });
+
+    function picture(ok = true) {
+      fetchMock.mockResolvedValueOnce(
+        ok
+          ? { ok: true, arrayBuffer: async () => new ArrayBuffer(4) }
+          : { ok: false, status: 404 },
+      );
+    }
+
+    function connect() {
+      discordUser({ avatar: 'abc' });
+      return service.complete(
+        'discord',
+        { code: 'code', state: stateFor(5), nonce: NONCE },
+        5,
+      );
+    }
+
+    async function offer() {
+      prisma.user.findUnique.mockResolvedValueOnce({ avatarUrl: null });
+      const result = await connect();
+      if (!('avatar' in result) || !result.avatar) {
+        throw new Error('Expected a picture offer');
+      }
+      return result.avatar.token;
+    }
+
+    it('copies the Discord picture onto a new account', async () => {
+      const { token } = await startSignup({ avatar: 'abc' });
+      prisma.user.create.mockResolvedValueOnce({ id: 9, email: 'naruto@anime.test' });
+      picture();
+
+      await expect(service.finishSignup(token, 'hokage')).resolves.toEqual({
+        access_token: 'token-9',
+      });
+      expect(fetchMock).toHaveBeenLastCalledWith(DISCORD_PICTURE, expect.anything());
+      expect(storage.uploadImage).toHaveBeenCalledWith(expect.any(Buffer), 'avatars', 384);
+      expect(prisma.user.updateMany).toHaveBeenCalledWith({
+        where: { id: 9, avatarUrl: null },
+        data: { avatarUrl: STORED },
+      });
+    });
+
+    it('still creates the account when the picture can’t be fetched', async () => {
+      const { token } = await startSignup({ avatar: 'abc' });
+      prisma.user.create.mockResolvedValueOnce({ id: 9, email: 'naruto@anime.test' });
+      picture(false);
+
+      await expect(service.finishSignup(token, 'hokage')).resolves.toEqual({
+        access_token: 'token-9',
+      });
+      expect(storage.uploadImage).not.toHaveBeenCalled();
+      expect(prisma.user.updateMany).not.toHaveBeenCalled();
+    });
+
+    it('skips Discord’s default picture', async () => {
+      const { token } = await startSignup({ avatar: null });
+      prisma.user.create.mockResolvedValueOnce({ id: 9, email: 'naruto@anime.test' });
+
+      await service.finishSignup(token, 'hokage');
+
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+      expect(storage.uploadImage).not.toHaveBeenCalled();
+    });
+
+    it('skips Twitch’s default picture and keeps a custom one', async () => {
+      const twitchUser = (image: string) =>
+        fetchMock.mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            data: [{ id: '77', login: 'seasonalclub', profile_image_url: image }],
+          }),
+        });
+
+      twitchUser('https://static-cdn.jtvnw.net/user-default-pictures-uv/x-profile_image-300x300.png');
+      await expect(oauthProviders.twitch.profile('token', 'client')).resolves.toMatchObject({
+        avatarUrl: null,
+      });
+
+      twitchUser('https://static-cdn.jtvnw.net/jtv_user_pictures/me-profile_image-300x300.png');
+      await expect(oauthProviders.twitch.profile('token', 'client')).resolves.toMatchObject({
+        avatarUrl: 'https://static-cdn.jtvnw.net/jtv_user_pictures/me-profile_image-300x300.png',
+      });
+    });
+
+    it('offers the picture when connecting to an account without one', async () => {
+      prisma.user.findUnique.mockResolvedValueOnce({ avatarUrl: null });
+
+      await expect(connect()).resolves.toEqual({
+        linked: 'discord',
+        avatar: { url: DISCORD_PICTURE, token: expect.any(String) },
+      });
+      expect(storage.uploadImage).not.toHaveBeenCalled();
+    });
+
+    it('doesn’t offer it when the account already has a picture', async () => {
+      prisma.user.findUnique.mockResolvedValueOnce({ avatarUrl: 'https://files.test/mine.webp' });
+
+      await expect(connect()).resolves.toEqual({ linked: 'discord' });
+    });
+
+    it('uses the offered picture once the person confirms', async () => {
+      const token = await offer();
+      prisma.user.findUnique.mockResolvedValueOnce({ avatarUrl: null });
+      picture();
+
+      await expect(service.useLinkedAvatar(5, token)).resolves.toEqual({ avatarUrl: STORED });
+      expect(fetchMock).toHaveBeenLastCalledWith(DISCORD_PICTURE, expect.anything());
+      expect(prisma.user.updateMany).toHaveBeenCalledWith({
+        where: { id: 5, avatarUrl: null },
+        data: { avatarUrl: STORED },
+      });
+    });
+
+    it('refuses an offer made for another account', async () => {
+      const token = await offer();
+
+      await expect(service.useLinkedAvatar(6, token)).rejects.toThrow(ForbiddenException);
+      expect(storage.uploadImage).not.toHaveBeenCalled();
+    });
+
+    it('never replaces a picture set since the offer', async () => {
+      const token = await offer();
+      prisma.user.findUnique.mockResolvedValueOnce({ avatarUrl: 'https://files.test/mine.webp' });
+
+      await expect(service.useLinkedAvatar(5, token)).rejects.toThrow(ConflictException);
+      expect(storage.uploadImage).not.toHaveBeenCalled();
+    });
+
+    it('removes the copy when another picture lands first', async () => {
+      const token = await offer();
+      prisma.user.findUnique.mockResolvedValueOnce({ avatarUrl: null });
+      prisma.user.updateMany.mockResolvedValueOnce({ count: 0 });
+      picture();
+
+      await expect(service.useLinkedAvatar(5, token)).rejects.toThrow(ConflictException);
+      expect(storage.delete).toHaveBeenCalledWith('avatars/new.webp');
+    });
+
+    it('rejects an offer it didn’t make', async () => {
+      const forged = new JwtService({ secret: 'other' }).sign({
+        uid: 5,
+        url: 'https://example.test/picture.png',
+      });
+
+      await expect(service.useLinkedAvatar(5, forged)).rejects.toThrow(BadRequestException);
+      expect(fetchMock).not.toHaveBeenCalled();
+    });
   });
 });

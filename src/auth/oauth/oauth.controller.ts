@@ -19,6 +19,7 @@ import { AllowGuest } from '../allow-guest';
 import { JwtAuthGuard } from '../jwt.guard';
 import { CompleteOAuthDto } from './dto/complete-oauth.dto';
 import { FinishOAuthSignupDto } from './dto/finish-oauth-signup.dto';
+import { UseLinkedAvatarDto } from './dto/use-linked-avatar.dto';
 import { UpdateConnectionDto } from './dto/update-connection.dto';
 import { OAuthConnections, OAuthResult, OAuthService } from './oauth.service';
 
@@ -104,6 +105,16 @@ export class OAuthController {
   @Post('signup')
   finishSignup(@Body() { token, username }: FinishOAuthSignupDto) {
     return this.oauth.finishSignup(token, username);
+  }
+
+  @RateLimit(10, MINUTE)
+  @Post('avatar')
+  @UseGuards(JwtAuthGuard)
+  useLinkedAvatar(
+    @Req() req,
+    @Body() { token }: UseLinkedAvatarDto,
+  ): Promise<{ avatarUrl: string }> {
+    return this.oauth.useLinkedAvatar(req.user.userId, token);
   }
 
   @RateLimit(10, MINUTE)

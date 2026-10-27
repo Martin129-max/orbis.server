@@ -14,6 +14,7 @@ import { webUrl } from '../../common/web-url';
 import { CommunitiesService } from '../../communities/communities.service';
 import { PresenceGateway } from '../../friends/presence.gateway';
 import { PrismaService } from '../../prisma.service';
+import { StorageService } from '../../storage/storage.service';
 import { normalizeUsername, USERNAME_PATTERN } from '../../users/username';
 import { AuthService } from '../auth.service';
 import {
@@ -25,7 +26,7 @@ import {
 export type OAuthResult =
   | { access_token: string }
   | { signup: { token: string; username: string } }
-  | { linked: AuthProvider }
+  | { linked: AuthProvider; avatar?: { url: string; token: string } }
   | { linked: AuthProvider; communityId: number };
 
 export type OAuthConnections = {
@@ -51,10 +52,17 @@ type SignupClaims = {
   username: string;
   displayName: string | null;
   email: string;
+  avatarUrl?: string | null;
+};
+
+type AvatarClaims = {
+  uid: number;
+  url: string;
 };
 
 const EXPIRED = 'That sign-in link expired. Please try again.';
 const SIGNUP_EXPIRED = 'That sign-up expired. Please start again';
+const AVATAR_EXPIRED = 'That picture offer expired. Connect again to get it';
 const NONCE_PATTERN = /^[A-Za-z0-9_-]{16,128}$/;
 
 function stateSecret() {
@@ -63,6 +71,10 @@ function stateSecret() {
 
 function signupSecret() {
   return `${process.env.JWT_SECRET}:oauth-signup`;
+}
+
+function avatarSecret() {
+  return `${process.env.JWT_SECRET}:oauth-avatar`;
 }
 
 function redirectUri(provider: AuthProvider) {
@@ -84,6 +96,7 @@ export class OAuthService {
     private auth: AuthService,
     private presence: PresenceGateway,
     private communities: CommunitiesService,
+    private storage: StorageService,
   ) {}
 
   enabled(): AuthProvider[] {
@@ -159,7 +172,8 @@ export class OAuthService {
         );
       }
       await this.link(claims.uid, provider, profile);
-      return { linked: provider };
+      const avatar = await this.avatarOffer(claims.uid, profile.avatarUrl);
+      return avatar ? { linked: provider, avatar } : { linked: provider };
     }
 
     const user = await this.existingUser(provider, profile);
@@ -171,6 +185,7 @@ export class OAuthService {
       username: profile.username,
       displayName: profile.displayName,
       email: profile.email!,
+      avatarUrl: profile.avatarUrl,
     };
     return {
       signup: {
@@ -190,13 +205,14 @@ export class OAuthService {
     } catch {
       throw new BadRequestException(SIGNUP_EXPIRED);
     }
-    const { provider, id, displayName, email } = claims;
+    const { provider, id, displayName, email, avatarUrl = null } = claims;
     const profile: OAuthProfile = {
       id,
       username: claims.username,
       displayName,
       email,
       emailVerified: true,
+      avatarUrl,
     };
 
     const existing = await this.existingUser(provider, profile);
@@ -229,11 +245,48 @@ export class OAuthService {
         },
         select: { id: true, email: true },
       });
+      if (avatarUrl)
+        await this.importAvatar(user.id, avatarUrl).catch(() => null);
       return this.auth.generateToken(user.id, user.email);
     } catch (error) {
       if (isUniqueViolation(error)) throw taken();
       throw error;
     }
+  }
+
+  async useLinkedAvatar(
+    userId: number,
+    token: string,
+  ): Promise<{ avatarUrl: string }> {
+    let claims: AvatarClaims;
+    try {
+      claims = this.jwt.verify<AvatarClaims>(token, { secret: avatarSecret() });
+    } catch {
+      throw new BadRequestException(AVATAR_EXPIRED);
+    }
+    if (claims.uid !== userId) {
+      throw new ForbiddenException('That picture is for a different account');
+    }
+
+    const taken = () =>
+      new ConflictException('You already have a profile picture');
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { avatarUrl: true },
+    });
+    if (!user) throw new NotFoundException('User not found');
+    if (user.avatarUrl) throw taken();
+
+    let avatarUrl: string | null;
+    try {
+      avatarUrl = await this.importAvatar(userId, claims.url);
+    } catch {
+      throw new BadGatewayException(
+        'Couldn’t get that picture. Try uploading it instead',
+      );
+    }
+    if (!avatarUrl) throw taken();
+    return { avatarUrl };
   }
 
   async connections(userId: number): Promise<OAuthConnections> {
@@ -385,6 +438,47 @@ export class OAuthService {
       return existing;
     }
 
+    return null;
+  }
+
+  private async avatarOffer(userId: number, url: string | null) {
+    if (!url) return null;
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { avatarUrl: true },
+    });
+    if (!user || user.avatarUrl) return null;
+
+    const claims: AvatarClaims = { uid: userId, url };
+    return {
+      url,
+      token: this.jwt.sign(claims, {
+        secret: avatarSecret(),
+        expiresIn: '30m',
+      }),
+    };
+  }
+
+  private async importAvatar(userId: number, url: string) {
+    const response = await fetch(url, {
+      signal: AbortSignal.timeout(OAUTH_TIMEOUT_MS),
+    });
+    if (!response.ok) {
+      throw new Error(`Picture request failed with ${response.status}`);
+    }
+
+    const stored = await this.storage.uploadImage(
+      Buffer.from(await response.arrayBuffer()),
+      'avatars',
+      384,
+    );
+    const { count } = await this.prisma.user.updateMany({
+      where: { id: userId, avatarUrl: null },
+      data: { avatarUrl: stored.url },
+    });
+    if (count > 0) return stored.url;
+
+    await this.storage.delete(stored.key);
     return null;
   }
 
