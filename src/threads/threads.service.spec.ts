@@ -2,6 +2,7 @@ import { ThreadsService } from './threads.service';
 import { PrismaService } from '../prisma.service';
 import { VotesService } from '../votes/votes.service';
 import { NotificationsService } from '../notifications/notifications.service';
+import { DiscordChannelService } from '../discord-channel/discord-channel.service';
 
 jest.mock('../common/rich-text', () => ({ sanitizeRichText: jest.fn() }));
 
@@ -34,6 +35,7 @@ describe('ThreadsService.create', () => {
     prisma as unknown as PrismaService,
     {} as VotesService,
     notifications as unknown as NotificationsService,
+    { threadCreated: jest.fn() } as unknown as DiscordChannelService,
   );
   const sanitize = jest.requireMock('../common/rich-text')
     .sanitizeRichText as jest.Mock;

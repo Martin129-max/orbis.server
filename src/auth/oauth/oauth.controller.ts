@@ -83,6 +83,7 @@ export class OAuthController {
     @Param('provider', provider) name: AuthProvider,
     @Query('communityId', ParseIntPipe) communityId: number,
     @Query('nonce') nonce = '',
+    @Query('target') target?: string,
   ) {
     return {
       url: await this.oauth.communityAuthorizeUrl(
@@ -90,6 +91,7 @@ export class OAuthController {
         name,
         communityId,
         nonce,
+        target === 'channel',
       ),
     };
   }

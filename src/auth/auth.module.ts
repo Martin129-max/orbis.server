@@ -13,6 +13,7 @@ import { PrismaService } from '../prisma.service';
 import { StorageModule } from '../storage/storage.module';
 import { PresenceModule } from '../friends/presence.module';
 import { CommunitiesModule } from '../communities/communities.module';
+import { DiscordChannelModule } from '../discord-channel/discord-channel.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { CommunitiesModule } from '../communities/communities.module';
     StorageModule,
     PresenceModule,
     CommunitiesModule,
+    DiscordChannelModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '7d' },

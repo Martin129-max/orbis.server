@@ -57,6 +57,8 @@ export const ModelName = {
   Role: 'Role',
   MembershipRole: 'MembershipRole',
   Invite: 'Invite',
+  DiscordChannel: 'DiscordChannel',
+  DiscordMessage: 'DiscordMessage',
   Post: 'Post',
   Thread: 'Thread',
   Comment: 'Comment',
@@ -175,6 +177,37 @@ export const InviteScalarFieldEnum = {
 } as const
 
 export type InviteScalarFieldEnum = (typeof InviteScalarFieldEnum)[keyof typeof InviteScalarFieldEnum]
+
+
+export const DiscordChannelScalarFieldEnum = {
+  communityId: 'communityId',
+  webhookId: 'webhookId',
+  webhookToken: 'webhookToken',
+  guildId: 'guildId',
+  guildName: 'guildName',
+  channelId: 'channelId',
+  isForum: 'isForum',
+  sendPosts: 'sendPosts',
+  sendThreads: 'sendThreads',
+  sendLibrary: 'sendLibrary',
+  lostAt: 'lostAt',
+  createdAt: 'createdAt'
+} as const
+
+export type DiscordChannelScalarFieldEnum = (typeof DiscordChannelScalarFieldEnum)[keyof typeof DiscordChannelScalarFieldEnum]
+
+
+export const DiscordMessageScalarFieldEnum = {
+  id: 'id',
+  communityId: 'communityId',
+  targetType: 'targetType',
+  targetId: 'targetId',
+  messageId: 'messageId',
+  threadId: 'threadId',
+  createdAt: 'createdAt'
+} as const
+
+export type DiscordMessageScalarFieldEnum = (typeof DiscordMessageScalarFieldEnum)[keyof typeof DiscordMessageScalarFieldEnum]
 
 
 export const PostScalarFieldEnum = {

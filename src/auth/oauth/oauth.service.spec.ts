@@ -1,4 +1,5 @@
 import {
+  BadGatewayException,
   BadRequestException,
   ConflictException,
   ForbiddenException,
@@ -9,6 +10,7 @@ import { PrismaService } from '../../prisma.service';
 import { CommunitiesService } from '../../communities/communities.service';
 import { PresenceGateway } from '../../friends/presence.gateway';
 import { StorageService } from '../../storage/storage.service';
+import { DiscordChannelService } from '../../discord-channel/discord-channel.service';
 import { AuthService } from '../auth.service';
 import { oauthProviders } from './oauth-providers';
 import { OAuthService } from './oauth.service';
@@ -29,6 +31,7 @@ describe('OAuthService', () => {
       create: jest.fn(),
       updateMany: jest.fn(),
     },
+    community: { findUnique: jest.fn() },
   };
   const jwt = new JwtService({ secret: 'test-secret' });
   const auth = {
@@ -41,6 +44,7 @@ describe('OAuthService', () => {
     connectDiscord: jest.fn(),
   };
   const storage = { uploadImage: jest.fn(), delete: jest.fn() };
+  const discordChannel = { connect: jest.fn() };
   const service = new OAuthService(
     prisma as unknown as PrismaService,
     jwt,
@@ -48,6 +52,7 @@ describe('OAuthService', () => {
     presence as unknown as PresenceGateway,
     communities as unknown as CommunitiesService,
     storage as unknown as StorageService,
+    discordChannel as unknown as DiscordChannelService,
   );
   const fetchMock = jest.fn();
 
@@ -476,6 +481,110 @@ describe('OAuthService', () => {
         BadRequestException,
       );
       expect(communities.connectDiscord).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Discord channels', () => {
+    beforeEach(() => {
+      prisma.community.findUnique.mockResolvedValue({ isPublic: true });
+    });
+
+    const webhook = {
+      id: '111',
+      token: 'hook-token',
+      guild_id: '900',
+      channel_id: '66',
+      name: 'Orbis',
+    };
+
+    function discordWithWebhook(hook: unknown = webhook) {
+      fetchMock
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({ access_token: 'discord-token', webhook: hook }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({ id: '42', username: 'naruto', verified: true }),
+        });
+    }
+
+    function discordServer() {
+      fetchMock.mockResolvedValueOnce({
+        ok: true,
+        json: async () => [{ id: '900', name: 'Seasonal Club' }],
+      });
+    }
+
+    async function connectChannel(viewer = 5) {
+      const url = await service.communityAuthorizeUrl(
+        5,
+        'discord',
+        12,
+        NONCE,
+        true,
+      );
+      const state = new URL(url).searchParams.get('state')!;
+      return service.complete(
+        'discord',
+        { code: 'code', state, nonce: NONCE },
+        viewer,
+      );
+    }
+
+    it('asks Discord to add a webhook to a channel the admin picks', async () => {
+      const url = new URL(
+        await service.communityAuthorizeUrl(5, 'discord', 12, NONCE, true),
+      );
+
+      expect(url.searchParams.get('scope')).toBe(
+        'identify guilds webhook.incoming',
+      );
+      expect(communities.assertCanManage).toHaveBeenCalledWith(5, 12);
+    });
+
+    it('won’t connect a channel to a private community', async () => {
+      prisma.community.findUnique.mockResolvedValue({ isPublic: false });
+
+      await expect(
+        service.communityAuthorizeUrl(5, 'discord', 12, NONCE, true),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('only connects Discord channels', async () => {
+      await expect(
+        service.communityAuthorizeUrl(5, 'twitch', 12, NONCE, true),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('connects the channel Discord added the webhook to', async () => {
+      discordWithWebhook();
+      discordServer();
+
+      const result = await connectChannel();
+
+      expect(result).toEqual({ linked: 'discord', communityId: 12 });
+      expect(discordChannel.connect).toHaveBeenCalledWith(
+        5,
+        12,
+        { id: '111', token: 'hook-token', guildId: '900', channelId: '66' },
+        'Seasonal Club',
+      );
+      expect(communities.connectDiscord).not.toHaveBeenCalled();
+    });
+
+    it('explains when Discord didn’t add a webhook', async () => {
+      discordWithWebhook(null);
+
+      await expect(connectChannel()).rejects.toThrow(BadGatewayException);
+      expect(discordChannel.connect).not.toHaveBeenCalled();
+    });
+
+    it('connects only for the admin who started it', async () => {
+      discordWithWebhook();
+
+      await expect(connectChannel(6)).rejects.toThrow(ForbiddenException);
+      expect(discordChannel.connect).not.toHaveBeenCalled();
     });
   });
 

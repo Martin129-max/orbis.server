@@ -51,6 +51,36 @@ export class PostsController {
     return this.postsService.searchCommunity(req.user.userId, communityId, q);
   }
 
+  @Get('activities/:activityId')
+  @AllowGuest()
+  @UseGuards(CommunityViewerGuard)
+  findActivity(
+    @Req() req,
+    @Param('communityId', ParseIntPipe) communityId: number,
+    @Param('activityId', ParseIntPipe) activityId: number,
+  ) {
+    return this.postsService.findActivityInCommunity(
+      req.user.userId,
+      communityId,
+      activityId,
+    );
+  }
+
+  @Get(':postId')
+  @AllowGuest()
+  @UseGuards(CommunityViewerGuard)
+  findOne(
+    @Req() req,
+    @Param('communityId', ParseIntPipe) communityId: number,
+    @Param('postId', ParseIntPipe) postId: number,
+  ) {
+    return this.postsService.findOneInCommunity(
+      req.user.userId,
+      communityId,
+      postId,
+    );
+  }
+
   @RateLimit(10, MINUTE)
   @Post()
   @UseGuards(CommunityMemberGuard)

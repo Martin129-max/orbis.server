@@ -10,9 +10,15 @@ import { PrismaService } from '../prisma.service';
 import { ThreadsModule } from '../threads/threads.module';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { LikesModule } from '../likes/likes.module';
+import { DiscordChannelModule } from '../discord-channel/discord-channel.module';
 
 @Module({
-  imports: [ThreadsModule, NotificationsModule, LikesModule],
+  imports: [
+    ThreadsModule,
+    NotificationsModule,
+    LikesModule,
+    DiscordChannelModule,
+  ],
   controllers: [
     PostsController,
     FeedController,

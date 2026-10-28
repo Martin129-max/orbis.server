@@ -17,6 +17,7 @@ import { PresenceGateway, PresenceStatus } from '../friends/presence.gateway';
 import { NextStream, TwitchLiveService } from '../friends/twitch-live.service';
 import { isHeadAdmin } from '../users/head-admin';
 import { DiscordWidget, discordWidget } from './discord-widget';
+import { deleteWebhook } from '../discord-channel/discord-webhook';
 
 export type CommunityMember = {
   userId: number;
@@ -750,9 +751,19 @@ export class CommunitiesService {
 
   async remove(userId: number, communityId: number): Promise<void> {
     await this.requireRole(userId, communityId, 'owner');
+    const channel = await this.prisma.discordChannel.findUnique({
+      where: { communityId },
+      select: { webhookId: true, webhookToken: true },
+    });
     const community = await this.prisma.community.delete({
       where: { id: communityId },
     });
+    if (channel) {
+      await deleteWebhook({
+        id: channel.webhookId,
+        token: channel.webhookToken,
+      }).catch(() => {});
+    }
     await this.deleteStoredImage(community.iconUrl);
     await this.deleteStoredImage(community.coverUrl);
     await this.deleteStoredImage(community.backgroundUrl);

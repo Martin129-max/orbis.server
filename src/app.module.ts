@@ -27,6 +27,7 @@ import { ModerationModule } from './moderation/moderation.module';
 import { MessagesModule } from './messages/messages.module';
 import { LinksModule } from './links/links.module';
 import { ClipsModule } from './clips/clips.module';
+import { DiscordChannelModule } from './discord-channel/discord-channel.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaService } from './prisma.service';
@@ -57,6 +58,7 @@ import { PrismaService } from './prisma.service';
     MessagesModule,
     LinksModule,
     ClipsModule,
+    DiscordChannelModule,
   ],
   controllers: [AppController],
   providers: [

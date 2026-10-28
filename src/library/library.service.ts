@@ -16,6 +16,7 @@ import { UpdateLibraryEntryDto } from './dto/update-library-entry.dto';
 import { getMedia, Media, searchMedia } from './library-api';
 import { nsfwEntries, showsNsfw } from '../users/nsfw';
 import { loadSteamLinks, SteamLink } from '../steam/steam-links';
+import { DiscordChannelService } from '../discord-channel/discord-channel.service';
 
 const PROGRESS_MERGE_WINDOW = 5 * 60 * 1000;
 
@@ -62,7 +63,10 @@ const toResult = (media: Media) => ({
 
 @Injectable()
 export class LibraryService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private discordChannel: DiscordChannelService,
+  ) {}
 
   async search(userId: number, q?: string) {
     const query = q?.trim() ?? '';
@@ -201,6 +205,7 @@ export class LibraryService {
         },
         select: entrySelect,
       });
+      this.discordChannel.entryChanged(entry.id);
       return await this.toView(userId, entry);
     } catch (e) {
       if (
@@ -220,7 +225,13 @@ export class LibraryService {
   ): Promise<LibraryEntryView> {
     const entry = await this.prisma.libraryEntry.findFirst({
       where: { id, userId },
-      select: { status: true, progress: true, total: true, mediaType: true },
+      select: {
+        status: true,
+        progress: true,
+        total: true,
+        mediaType: true,
+        isPublic: true,
+      },
     });
     if (!entry) throw new NotFoundException('Library entry not found');
 
@@ -270,6 +281,10 @@ export class LibraryService {
         updated.progress,
       );
     }
+    this.discordChannel.entryChanged(
+      id,
+      isPublic !== undefined && isPublic !== entry.isPublic,
+    );
     return this.toView(userId, updated);
   }
 
@@ -336,6 +351,7 @@ export class LibraryService {
       }),
       this.prisma.libraryActivity.deleteMany({ where: { id: { in: ids } } }),
     ]);
+    void this.discordChannel.activitiesDeleted(ids);
   }
 
   private async ownEntry(userId: number, id: number) {

@@ -22,6 +22,7 @@ model Community {
   comments      Comment[]
   votes         Vote[]
   invites       Invite[]
+  discordChannel DiscordChannel?
 
   @@index([ownerId])
 }
@@ -96,4 +97,35 @@ model Invite {
 
   @@index([communityId])
   @@index([creatorId])
+}
+
+model DiscordChannel {
+  communityId  Int              @id
+  webhookId    String
+  webhookToken String
+  guildId      String
+  guildName    String?
+  channelId    String
+  isForum      Boolean          @default(false)
+  sendPosts    Boolean          @default(true)
+  sendThreads  Boolean          @default(true)
+  sendLibrary  Boolean          @default(true)
+  lostAt       DateTime?
+  createdAt    DateTime         @default(now())
+  community    Community        @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  messages     DiscordMessage[]
+}
+
+model DiscordMessage {
+  id          Int             @id @default(autoincrement())
+  communityId Int
+  targetType  CommentableType
+  targetId    Int
+  messageId   String
+  threadId    String?
+  createdAt   DateTime        @default(now())
+  channel     DiscordChannel  @relation(fields: [communityId], references: [communityId], onDelete: Cascade)
+
+  @@unique([communityId, targetType, targetId])
+  @@index([targetType, targetId])
 }

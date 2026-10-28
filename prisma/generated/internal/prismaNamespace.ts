@@ -390,6 +390,8 @@ export const ModelName = {
   Role: 'Role',
   MembershipRole: 'MembershipRole',
   Invite: 'Invite',
+  DiscordChannel: 'DiscordChannel',
+  DiscordMessage: 'DiscordMessage',
   Post: 'Post',
   Thread: 'Thread',
   Comment: 'Comment',
@@ -426,7 +428,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "community" | "membership" | "railFolder" | "role" | "membershipRole" | "invite" | "post" | "thread" | "comment" | "vote" | "like" | "friendship" | "libraryEntry" | "libraryActivity" | "conversation" | "conversationMember" | "message" | "messageReaction" | "notification" | "report" | "reportComment" | "contentReport" | "setting" | "steamAccount" | "steamGame" | "user" | "oAuthAccount"
+    modelProps: "community" | "membership" | "railFolder" | "role" | "membershipRole" | "invite" | "discordChannel" | "discordMessage" | "post" | "thread" | "comment" | "vote" | "like" | "friendship" | "libraryEntry" | "libraryActivity" | "conversation" | "conversationMember" | "message" | "messageReaction" | "notification" | "report" | "reportComment" | "contentReport" | "setting" | "steamAccount" | "steamGame" | "user" | "oAuthAccount"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -871,6 +873,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.InviteCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.InviteCountAggregateOutputType> | number
+        }
+      }
+    }
+    DiscordChannel: {
+      payload: Prisma.$DiscordChannelPayload<ExtArgs>
+      fields: Prisma.DiscordChannelFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DiscordChannelFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordChannelPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DiscordChannelFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordChannelPayload>
+        }
+        findFirst: {
+          args: Prisma.DiscordChannelFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordChannelPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DiscordChannelFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordChannelPayload>
+        }
+        findMany: {
+          args: Prisma.DiscordChannelFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordChannelPayload>[]
+        }
+        create: {
+          args: Prisma.DiscordChannelCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordChannelPayload>
+        }
+        createMany: {
+          args: Prisma.DiscordChannelCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DiscordChannelCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordChannelPayload>[]
+        }
+        delete: {
+          args: Prisma.DiscordChannelDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordChannelPayload>
+        }
+        update: {
+          args: Prisma.DiscordChannelUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordChannelPayload>
+        }
+        deleteMany: {
+          args: Prisma.DiscordChannelDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DiscordChannelUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DiscordChannelUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordChannelPayload>[]
+        }
+        upsert: {
+          args: Prisma.DiscordChannelUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordChannelPayload>
+        }
+        aggregate: {
+          args: Prisma.DiscordChannelAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDiscordChannel>
+        }
+        groupBy: {
+          args: Prisma.DiscordChannelGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DiscordChannelGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DiscordChannelCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DiscordChannelCountAggregateOutputType> | number
+        }
+      }
+    }
+    DiscordMessage: {
+      payload: Prisma.$DiscordMessagePayload<ExtArgs>
+      fields: Prisma.DiscordMessageFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DiscordMessageFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordMessagePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DiscordMessageFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordMessagePayload>
+        }
+        findFirst: {
+          args: Prisma.DiscordMessageFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordMessagePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DiscordMessageFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordMessagePayload>
+        }
+        findMany: {
+          args: Prisma.DiscordMessageFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordMessagePayload>[]
+        }
+        create: {
+          args: Prisma.DiscordMessageCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordMessagePayload>
+        }
+        createMany: {
+          args: Prisma.DiscordMessageCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DiscordMessageCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordMessagePayload>[]
+        }
+        delete: {
+          args: Prisma.DiscordMessageDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordMessagePayload>
+        }
+        update: {
+          args: Prisma.DiscordMessageUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordMessagePayload>
+        }
+        deleteMany: {
+          args: Prisma.DiscordMessageDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DiscordMessageUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DiscordMessageUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordMessagePayload>[]
+        }
+        upsert: {
+          args: Prisma.DiscordMessageUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordMessagePayload>
+        }
+        aggregate: {
+          args: Prisma.DiscordMessageAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDiscordMessage>
+        }
+        groupBy: {
+          args: Prisma.DiscordMessageGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DiscordMessageGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DiscordMessageCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DiscordMessageCountAggregateOutputType> | number
         }
       }
     }
@@ -2548,6 +2698,37 @@ export const InviteScalarFieldEnum = {
 export type InviteScalarFieldEnum = (typeof InviteScalarFieldEnum)[keyof typeof InviteScalarFieldEnum]
 
 
+export const DiscordChannelScalarFieldEnum = {
+  communityId: 'communityId',
+  webhookId: 'webhookId',
+  webhookToken: 'webhookToken',
+  guildId: 'guildId',
+  guildName: 'guildName',
+  channelId: 'channelId',
+  isForum: 'isForum',
+  sendPosts: 'sendPosts',
+  sendThreads: 'sendThreads',
+  sendLibrary: 'sendLibrary',
+  lostAt: 'lostAt',
+  createdAt: 'createdAt'
+} as const
+
+export type DiscordChannelScalarFieldEnum = (typeof DiscordChannelScalarFieldEnum)[keyof typeof DiscordChannelScalarFieldEnum]
+
+
+export const DiscordMessageScalarFieldEnum = {
+  id: 'id',
+  communityId: 'communityId',
+  targetType: 'targetType',
+  targetId: 'targetId',
+  messageId: 'messageId',
+  threadId: 'threadId',
+  createdAt: 'createdAt'
+} as const
+
+export type DiscordMessageScalarFieldEnum = (typeof DiscordMessageScalarFieldEnum)[keyof typeof DiscordMessageScalarFieldEnum]
+
+
 export const PostScalarFieldEnum = {
   id: 'id',
   communityId: 'communityId',
@@ -2979,20 +3160,6 @@ export type ListBigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMod
 
 
 /**
- * Reference to a field of type 'MediaType'
- */
-export type EnumMediaTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MediaType'>
-    
-
-
-/**
- * Reference to a field of type 'MediaType[]'
- */
-export type ListEnumMediaTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MediaType[]'>
-    
-
-
-/**
  * Reference to a field of type 'CommentableType'
  */
 export type EnumCommentableTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CommentableType'>
@@ -3003,6 +3170,20 @@ export type EnumCommentableTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$
  * Reference to a field of type 'CommentableType[]'
  */
 export type ListEnumCommentableTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CommentableType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'MediaType'
+ */
+export type EnumMediaTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MediaType'>
+    
+
+
+/**
+ * Reference to a field of type 'MediaType[]'
+ */
+export type ListEnumMediaTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MediaType[]'>
     
 
 
@@ -3300,6 +3481,8 @@ export type GlobalOmitConfig = {
   role?: Prisma.RoleOmit
   membershipRole?: Prisma.MembershipRoleOmit
   invite?: Prisma.InviteOmit
+  discordChannel?: Prisma.DiscordChannelOmit
+  discordMessage?: Prisma.DiscordMessageOmit
   post?: Prisma.PostOmit
   thread?: Prisma.ThreadOmit
   comment?: Prisma.CommentOmit

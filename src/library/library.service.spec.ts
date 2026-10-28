@@ -3,8 +3,14 @@ import { LibraryService } from './library.service';
 import { getMedia, type Media } from './library-api';
 import { AddLibraryEntryDto } from './dto/add-library-entry.dto';
 import { PrismaService } from '../prisma.service';
+import { DiscordChannelService } from '../discord-channel/discord-channel.service';
 
 jest.mock('./library-api', () => ({ getMedia: jest.fn() }));
+
+const discordChannel = {
+  entryChanged: jest.fn(),
+  activitiesDeleted: jest.fn(),
+} as unknown as DiscordChannelService;
 
 const media: Media = {
   id: 'anime:1',
@@ -21,11 +27,14 @@ describe('Adding library progress', () => {
   const create = jest.fn();
   const findUser = jest.fn();
   const findSteamGame = jest.fn().mockResolvedValue(null);
-  const service = new LibraryService({
-    libraryEntry: { create },
-    user: { findUnique: findUser },
-    steamGame: { findFirst: findSteamGame },
-  } as unknown as PrismaService);
+  const service = new LibraryService(
+    {
+      libraryEntry: { create },
+      user: { findUnique: findUser },
+      steamGame: { findFirst: findSteamGame },
+    } as unknown as PrismaService,
+    discordChannel,
+  );
   beforeEach(() => {
     jest.clearAllMocks();
     findUser.mockResolvedValue({ showNsfw: false });
@@ -139,10 +148,13 @@ describe('Adding library progress', () => {
 describe('Listing the library', () => {
   const findMany = jest.fn().mockResolvedValue([]);
   const findUser = jest.fn();
-  const service = new LibraryService({
-    libraryEntry: { findMany },
-    user: { findUnique: findUser },
-  } as unknown as PrismaService);
+  const service = new LibraryService(
+    {
+      libraryEntry: { findMany },
+      user: { findUnique: findUser },
+    } as unknown as PrismaService,
+    discordChannel,
+  );
 
   beforeEach(() => jest.clearAllMocks());
 
@@ -176,12 +188,15 @@ describe('Adding 18+ titles', () => {
   const findSteamGame = jest.fn().mockResolvedValue(null);
   const steamGames = jest.fn().mockResolvedValue([]);
   const steamAccounts = jest.fn().mockResolvedValue([]);
-  const service = new LibraryService({
-    libraryEntry: { create },
-    user: { findUnique: findUser },
-    steamGame: { findFirst: findSteamGame, findMany: steamGames },
-    steamAccount: { findMany: steamAccounts },
-  } as unknown as PrismaService);
+  const service = new LibraryService(
+    {
+      libraryEntry: { create },
+      user: { findUnique: findUser },
+      steamGame: { findFirst: findSteamGame, findMany: steamGames },
+      steamAccount: { findMany: steamAccounts },
+    } as unknown as PrismaService,
+    discordChannel,
+  );
 
   beforeEach(() => jest.clearAllMocks());
 

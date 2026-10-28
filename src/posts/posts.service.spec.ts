@@ -1,9 +1,14 @@
-import { BadRequestException, ForbiddenException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { PrismaService } from '../prisma.service';
 import { ThreadsService } from '../threads/threads.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { LikesService } from '../likes/likes.service';
+import { DiscordChannelService } from '../discord-channel/discord-channel.service';
 
 jest.mock('../common/rich-text', () => ({ sanitizeRichText: jest.fn() }));
 
@@ -56,6 +61,7 @@ describe('Feed content filters', () => {
     threads as unknown as ThreadsService,
     {} as NotificationsService,
     likes as unknown as LikesService,
+    {} as DiscordChannelService,
   );
 
   beforeEach(() => {
@@ -324,6 +330,7 @@ describe('Creating posts with a link card', () => {
     {} as ThreadsService,
     {} as NotificationsService,
     {} as LikesService,
+    { postCreated: jest.fn() } as unknown as DiscordChannelService,
   );
   const sanitize = jest.requireMock('../common/rich-text')
     .sanitizeRichText as jest.Mock;
@@ -365,5 +372,74 @@ describe('Creating posts with a link card', () => {
       service.create(3, 1, { content: '<p></p>' }),
     ).rejects.toBeInstanceOf(BadRequestException);
     expect(create).not.toHaveBeenCalled();
+  });
+});
+
+describe('Opening a post or library update from a link', () => {
+  const prisma = {
+    post: { findFirst: jest.fn() },
+    libraryActivity: { findFirst: jest.fn() },
+    contentReport: { findMany: jest.fn().mockResolvedValue([]) },
+    user: { findUnique: jest.fn().mockResolvedValue({ showNsfw: false }) },
+    membership: { findMany: jest.fn().mockResolvedValue([]) },
+    steamGame: { findMany: jest.fn().mockResolvedValue([]) },
+    steamAccount: { findMany: jest.fn().mockResolvedValue([]) },
+  };
+  const likes = { likedBy: jest.fn().mockResolvedValue(new Set()) };
+  const service = new PostsService(
+    prisma as unknown as PrismaService,
+    {} as ThreadsService,
+    {} as NotificationsService,
+    likes as unknown as LikesService,
+    {} as DiscordChannelService,
+  );
+
+  it('finds a visible post in that community', async () => {
+    prisma.post.findFirst.mockResolvedValue({ ...post, communityId: 7 });
+
+    const item = await service.findOneInCommunity(1, 7, 1);
+
+    expect(item).toMatchObject({ type: 'post', id: 1 });
+    expect(prisma.post.findFirst).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          id: 1,
+          communityId: 7,
+          AND: expect.any(Array),
+        }),
+      }),
+    );
+  });
+
+  it('says a hidden or missing post isn’t there', async () => {
+    prisma.post.findFirst.mockResolvedValue(null);
+
+    await expect(service.findOneInCommunity(1, 7, 1)).rejects.toBeInstanceOf(
+      NotFoundException,
+    );
+  });
+
+  it('only finds public library updates shared with the community', async () => {
+    prisma.libraryActivity.findFirst.mockResolvedValue(activity);
+
+    const item = await service.findActivityInCommunity(1, 7, 3);
+
+    expect(item).toMatchObject({ type: 'activity', id: 3 });
+    expect(prisma.libraryActivity.findFirst).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: {
+          id: 3,
+          entry: {
+            isPublic: true,
+            isAdult: false,
+            user: {
+              memberships: {
+                some: { communityId: 7, showLibraryUpdates: true },
+              },
+            },
+          },
+        },
+      }),
+    );
   });
 });

@@ -16,6 +16,7 @@ import { VotesService } from '../votes/votes.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { loadNicknames } from '../communities/nicknames';
 import { CreateThreadDto } from './dto/create-thread.dto';
+import { DiscordChannelService } from '../discord-channel/discord-channel.service';
 
 export const threadInclude = { author, community: communitySummary } as const;
 
@@ -35,6 +36,7 @@ export class ThreadsService {
     private prisma: PrismaService,
     private votes: VotesService,
     private notifications: NotificationsService,
+    private discordChannel: DiscordChannelService,
   ) {}
 
   async withMyVotes(
@@ -146,6 +148,7 @@ export class ThreadsService {
       message: `mentioned you in the thread “${thread.title}”`,
       link: `/communities/${communityId}?tab=forum`,
     });
+    void this.discordChannel.threadCreated(thread.id);
     const [created] = await this.withNicknames([
       { ...thread, type: 'thread', myVote: 1 },
     ]);

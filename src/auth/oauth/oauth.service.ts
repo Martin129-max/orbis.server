@@ -19,12 +19,18 @@ import { normalizeUsername, USERNAME_PATTERN } from '../../users/username';
 import { AuthService } from '../auth.service';
 import {
   DiscordServer,
+  discordServerName,
   discordServers,
   OAUTH_TIMEOUT_MS,
   OAuthProfile,
   oauthProviders,
 } from './oauth-providers';
 import { DiscordWidget } from '../../communities/discord-widget';
+import {
+  DiscordChannelService,
+  IncomingWebhook,
+  PRIVATE_COMMUNITY,
+} from '../../discord-channel/discord-channel.service';
 
 export type OAuthResult =
   | { access_token: string }
@@ -52,6 +58,7 @@ type StateClaims = {
   nonce: string;
   uid: number | null;
   communityId?: number | null;
+  channel?: boolean;
 };
 
 type SignupClaims = {
@@ -100,6 +107,21 @@ function redirectUri(provider: AuthProvider) {
   return `${webUrl()}/auth/${provider}/callback`;
 }
 
+function incomingWebhook(webhook: unknown): IncomingWebhook | null {
+  if (!webhook || typeof webhook !== 'object') return null;
+  const fields = webhook as Record<string, unknown>;
+  const values = [fields.id, fields.token, fields.guild_id, fields.channel_id];
+  if (!values.every((value) => typeof value === 'string' && value)) {
+    return null;
+  }
+  return {
+    id: String(fields.id),
+    token: String(fields.token),
+    guildId: String(fields.guild_id),
+    channelId: String(fields.channel_id),
+  };
+}
+
 function isUniqueViolation(error: unknown) {
   return (
     error instanceof Prisma.PrismaClientKnownRequestError &&
@@ -116,6 +138,7 @@ export class OAuthService {
     private presence: PresenceGateway,
     private communities: CommunitiesService,
     private storage: StorageService,
+    private discordChannel: DiscordChannelService,
   ) {}
 
   enabled(): AuthProvider[] {
@@ -131,11 +154,18 @@ export class OAuthService {
     nonce: string,
     uid: number | null,
     communityId: number | null = null,
+    channel = false,
   ) {
     const config = this.configured(provider);
     if (!NONCE_PATTERN.test(nonce)) throw new BadRequestException(EXPIRED);
 
-    const claims: StateClaims = { provider, nonce, uid, communityId };
+    const claims: StateClaims = {
+      provider,
+      nonce,
+      uid,
+      communityId,
+      ...(channel && { channel }),
+    };
     const state = this.jwt.sign(claims, {
       secret: stateSecret(),
       expiresIn: '10m',
@@ -145,9 +175,11 @@ export class OAuthService {
       redirect_uri: redirectUri(provider),
       response_type: 'code',
       scope:
-        communityId !== null
-          ? (config.communityScope ?? config.scope)
-          : config.scope,
+        channel && config.channelScope
+          ? config.channelScope
+          : communityId !== null
+            ? (config.communityScope ?? config.scope)
+            : config.scope,
       state,
     });
     return `${config.authorizeUrl}?${params}`;
@@ -158,14 +190,27 @@ export class OAuthService {
     provider: AuthProvider,
     communityId: number,
     nonce: string,
+    channel = false,
   ) {
     if (provider !== 'twitch' && provider !== 'discord') {
       throw new BadRequestException(
         'Communities can only connect Twitch or Discord',
       );
     }
+    if (channel && provider !== 'discord') {
+      throw new BadRequestException('Only Discord channels can be connected');
+    }
     await this.communities.assertCanManage(userId, communityId);
-    return this.authorizeUrl(provider, nonce, userId, communityId);
+    if (channel) {
+      const community = await this.prisma.community.findUnique({
+        where: { id: communityId },
+        select: { isPublic: true },
+      });
+      if (!community?.isPublic) {
+        throw new BadRequestException(PRIVATE_COMMUNITY);
+      }
+    }
+    return this.authorizeUrl(provider, nonce, userId, communityId, channel);
   }
 
   async complete(
@@ -174,13 +219,25 @@ export class OAuthService {
     viewerId: number,
   ): Promise<OAuthResult> {
     const claims = this.verifyState(provider, state, nonce);
-    const { profile, accessToken } = await this.fetchProfile(provider, code);
+    const { profile, accessToken, webhook } = await this.fetchProfile(
+      provider,
+      code,
+    );
 
     if (typeof claims.communityId === 'number') {
       if (claims.uid !== viewerId) {
         throw new ForbiddenException(
           'Log in to the account you’re connecting, then try again.',
         );
+      }
+      if (provider === 'discord' && claims.channel) {
+        await this.connectChannel(
+          viewerId,
+          claims.communityId,
+          accessToken,
+          webhook,
+        );
+        return { linked: provider, communityId: claims.communityId };
       }
       if (provider === 'discord') {
         return {
@@ -463,10 +520,11 @@ export class OAuthService {
         signal: AbortSignal.timeout(OAUTH_TIMEOUT_MS),
       });
       if (!response.ok) throw new Error(`Token request failed with ${response.status}`);
-      const { access_token: accessToken } = await response.json();
+      const { access_token: accessToken, webhook } = await response.json();
       return {
         profile: await config.profile(accessToken, clientId),
         accessToken: String(accessToken),
+        webhook: incomingWebhook(webhook),
       };
     } catch {
       throw new BadGatewayException(
@@ -520,6 +578,24 @@ export class OAuthService {
     }
 
     return null;
+  }
+
+  private async connectChannel(
+    userId: number,
+    communityId: number,
+    accessToken: string,
+    webhook: IncomingWebhook | null,
+  ) {
+    if (!webhook) {
+      throw new BadGatewayException(
+        'Discord didn’t set up the channel. Please try again.',
+      );
+    }
+    const serverName = await discordServerName(
+      accessToken,
+      webhook.guildId,
+    ).catch(() => null);
+    await this.discordChannel.connect(userId, communityId, webhook, serverName);
   }
 
   private async serverChoice(

@@ -34,6 +34,7 @@ import { reportedBy, visibleTo } from '../moderation/visibility';
 import { loadNicknames } from '../communities/nicknames';
 import { nsfwEntries, showsNsfw } from '../users/nsfw';
 import { loadSteamLinks, SteamLink } from '../steam/steam-links';
+import { DiscordChannelService } from '../discord-channel/discord-channel.service';
 
 const postInclude = {
   author,
@@ -236,6 +237,7 @@ export class PostsService {
     private threads: ThreadsService,
     private notifications: NotificationsService,
     private likes: LikesService,
+    private discordChannel: DiscordChannelService,
   ) {}
 
   private async withMentions(body: CreatePostDto, authorId: number) {
@@ -373,6 +375,57 @@ export class PostsService {
       items: await this.engage(viewerId, page),
       nextCursor: nextCursor(merged, page),
     };
+  }
+
+  async findOneInCommunity(
+    viewerId: number,
+    communityId: number,
+    postId: number,
+  ): Promise<FeedItem> {
+    if (postId < 1 || postId > MAX_INT) {
+      throw new NotFoundException('Post not found');
+    }
+    const reported = await reportedBy(this.prisma, viewerId);
+    const post = await this.prisma.post.findFirst({
+      where: {
+        id: postId,
+        communityId,
+        ...visibleTo(viewerId, reported.post),
+      },
+      include: postInclude,
+    });
+    if (!post) throw new NotFoundException('Post not found');
+
+    const [item] = await this.engage(viewerId, [{ ...post, type: 'post' }]);
+    return item;
+  }
+
+  async findActivityInCommunity(
+    viewerId: number,
+    communityId: number,
+    activityId: number,
+  ): Promise<FeedItem> {
+    if (activityId < 1 || activityId > MAX_INT) {
+      throw new NotFoundException('Library update not found');
+    }
+    const nsfw = nsfwEntries(await showsNsfw(this.prisma, viewerId));
+    const activity = await this.prisma.libraryActivity.findFirst({
+      where: {
+        id: activityId,
+        entry: {
+          isPublic: true,
+          ...nsfw,
+          user: {
+            memberships: { some: { communityId, showLibraryUpdates: true } },
+          },
+        },
+      },
+      include: activityInclude,
+    });
+    if (!activity) throw new NotFoundException('Library update not found');
+
+    const [item] = await this.engage(viewerId, [toActivity(activity)]);
+    return item;
   }
 
   async searchCommunity(
@@ -793,6 +846,7 @@ export class PostsService {
       message: 'mentioned you in a post',
       link: `/communities/${communityId}`,
     });
+    void this.discordChannel.postCreated(post.id);
     const withNickname = await loadNicknames(this.prisma, [
       { communityId, userId: authorId },
     ]);

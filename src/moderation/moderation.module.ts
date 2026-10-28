@@ -4,9 +4,10 @@ import { ModerationService } from './moderation.service';
 import { SiteAdminGuard } from '../admin/site-admin.guard';
 import { PrismaService } from '../prisma.service';
 import { ReportsModule } from '../reports/reports.module';
+import { DiscordChannelModule } from '../discord-channel/discord-channel.module';
 
 @Module({
-  imports: [ReportsModule],
+  imports: [ReportsModule, DiscordChannelModule],
   controllers: [ModerationController],
   providers: [ModerationService, SiteAdminGuard, PrismaService],
 })

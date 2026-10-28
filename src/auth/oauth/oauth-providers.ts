@@ -17,6 +17,7 @@ type ProviderConfig = {
   tokenUrl: string;
   scope: string;
   communityScope?: string;
+  channelScope?: string;
   profile: (accessToken: string, clientId: string) => Promise<OAuthProfile>;
 };
 
@@ -45,6 +46,7 @@ export const oauthProviders: Record<AuthProvider, ProviderConfig> = {
     tokenUrl: 'https://discord.com/api/oauth2/token',
     scope: 'identify email',
     communityScope: 'identify guilds',
+    channelScope: 'identify guilds webhook.incoming',
     profile: async (accessToken) => {
       const user = await getJson('https://discord.com/api/users/@me', {
         Authorization: `Bearer ${accessToken}`,
@@ -91,6 +93,18 @@ export const oauthProviders: Record<AuthProvider, ProviderConfig> = {
     },
   },
 };
+
+export async function discordServerName(
+  accessToken: string,
+  serverId: string,
+): Promise<string | null> {
+  const guilds = await getJson('https://discord.com/api/users/@me/guilds', {
+    Authorization: `Bearer ${accessToken}`,
+  });
+  if (!Array.isArray(guilds)) return null;
+  const guild = guilds.find(({ id }) => String(id) === serverId);
+  return guild ? String(guild.name) : null;
+}
 
 export async function discordServers(
   accessToken: string,
