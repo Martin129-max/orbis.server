@@ -58,9 +58,12 @@ export class OAuthController {
   updateConnection(
     @Req() req,
     @Param('provider', provider) name: AuthProvider,
-    @Body() { showLive }: UpdateConnectionDto,
+    @Body() { showLive, showClips }: UpdateConnectionDto,
   ): Promise<void> {
-    return this.oauth.setShowLive(req.user.userId, name, showLive);
+    return this.oauth.updateConnection(req.user.userId, name, {
+      showLive,
+      showClips,
+    });
   }
 
   @RateLimit(30, MINUTE)

@@ -303,7 +303,7 @@ describe('OAuthService', () => {
   it('hides a live stream right away when showing it is turned off', async () => {
     prisma.oAuthAccount.updateMany.mockResolvedValueOnce({ count: 1 });
 
-    await service.setShowLive(5, 'twitch', false);
+    await service.updateConnection(5, 'twitch', { showLive: false });
 
     expect(prisma.oAuthAccount.updateMany).toHaveBeenCalledWith({
       where: { userId: 5, provider: 'twitch' },
@@ -312,10 +312,22 @@ describe('OAuthService', () => {
     expect(presence.stopLive).toHaveBeenCalledWith(5);
   });
 
+  it('hides Twitch clips without touching the live badge', async () => {
+    prisma.oAuthAccount.updateMany.mockResolvedValueOnce({ count: 1 });
+
+    await service.updateConnection(5, 'twitch', { showClips: false });
+
+    expect(prisma.oAuthAccount.updateMany).toHaveBeenCalledWith({
+      where: { userId: 5, provider: 'twitch' },
+      data: { showClips: false },
+    });
+    expect(presence.stopLive).not.toHaveBeenCalled();
+  });
+
   it('only lets Twitch show when you’re live', async () => {
-    await expect(service.setShowLive(5, 'discord', true)).rejects.toThrow(
-      BadRequestException,
-    );
+    await expect(
+      service.updateConnection(5, 'discord', { showLive: true }),
+    ).rejects.toThrow(BadRequestException);
   });
 
   it('connects a Twitch channel to a community for its admins', async () => {

@@ -37,6 +37,7 @@ export type PublicProfile = {
   isVerified: boolean;
   isPublic: boolean;
   restricted: boolean;
+  hasClips: boolean;
   createdAt: Date;
   online: boolean;
   status: PresenceStatus;
@@ -349,6 +350,10 @@ export class UsersService {
         status: true,
         isPublic: true,
         createdAt: true,
+        oauthAccounts: {
+          where: { provider: 'twitch', showClips: true },
+          select: { id: true },
+        },
         memberships: {
           orderBy: { joinedAt: 'asc' },
           select: {
@@ -388,6 +393,7 @@ export class UsersService {
         isVerified: user.isVerified,
         isPublic: false,
         restricted: true,
+        hasClips: false,
         appearOffline: true,
         status: 'online',
         createdAt: user.createdAt,
@@ -448,13 +454,14 @@ export class UsersService {
       library.map((entry) => ({ userId: user.id, appId: entry.steamAppId })),
     );
 
-    const { memberships, id, email, ...rest } = user;
+    const { memberships, id, email, oauthAccounts, ...rest } = user;
     const headAdmin = isHeadAdmin(email);
     return {
       ...rest,
       isAdmin: rest.isAdmin || headAdmin,
       isHeadAdmin: headAdmin,
       restricted: false,
+      hasClips: oauthAccounts.length > 0,
       userId: id,
       friendCount: friendships.length,
       friends: friendships.map(({ requester, addressee }) => {

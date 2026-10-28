@@ -477,6 +477,7 @@ export const OAuthAccountScalarFieldEnum = {
   providerAccountId: 'providerAccountId',
   username: 'username',
   showLive: 'showLive',
+  showClips: 'showClips',
   createdAt: 'createdAt'
 } as const
 

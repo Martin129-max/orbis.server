@@ -42,6 +42,7 @@ export type OAuthConnections = {
     provider: AuthProvider;
     username: string;
     showLive: boolean;
+    showClips: boolean;
     connectedAt: Date;
   }[];
 };
@@ -364,6 +365,7 @@ export class OAuthService {
             provider: true,
             username: true,
             showLive: true,
+            showClips: true,
             createdAt: true,
           },
         },
@@ -374,10 +376,11 @@ export class OAuthService {
     return {
       hasPassword: user.password !== null,
       connections: user.oauthAccounts.map(
-        ({ provider, username, showLive, createdAt }) => ({
+        ({ provider, username, showLive, showClips, createdAt }) => ({
           provider,
           username,
           showLive,
+          showClips,
           connectedAt: createdAt,
         }),
       ),
@@ -402,16 +405,22 @@ export class OAuthService {
     if (provider === 'twitch') await this.presence.stopLive(userId);
   }
 
-  async setShowLive(userId: number, provider: AuthProvider, showLive: boolean) {
+  async updateConnection(
+    userId: number,
+    provider: AuthProvider,
+    { showLive, showClips }: { showLive?: boolean; showClips?: boolean },
+  ) {
     if (provider !== 'twitch') {
-      throw new BadRequestException('Only Twitch can show when you’re live');
+      throw new BadRequestException(
+        'Only Twitch can show when you’re live and your clips',
+      );
     }
     const { count } = await this.prisma.oAuthAccount.updateMany({
       where: { userId, provider },
-      data: { showLive },
+      data: { showLive, showClips },
     });
     if (count === 0) throw new NotFoundException('Twitch isn’t connected');
-    if (!showLive) await this.presence.stopLive(userId);
+    if (showLive === false) await this.presence.stopLive(userId);
   }
 
   private configured(provider: AuthProvider) {

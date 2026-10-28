@@ -26,6 +26,7 @@ import { AdminModule } from './admin/admin.module';
 import { ModerationModule } from './moderation/moderation.module';
 import { MessagesModule } from './messages/messages.module';
 import { LinksModule } from './links/links.module';
+import { ClipsModule } from './clips/clips.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaService } from './prisma.service';
@@ -55,6 +56,7 @@ import { PrismaService } from './prisma.service';
     ModerationModule,
     MessagesModule,
     LinksModule,
+    ClipsModule,
   ],
   controllers: [AppController],
   providers: [

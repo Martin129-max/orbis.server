@@ -75,6 +75,7 @@ model OAuthAccount {
   providerAccountId String
   username          String
   showLive          Boolean      @default(true)
+  showClips         Boolean      @default(true)
   createdAt         DateTime     @default(now())
   user              User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
