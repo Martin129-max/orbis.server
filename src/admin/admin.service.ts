@@ -16,6 +16,7 @@ export type DirectoryUser = {
   username: string;
   name: string | null;
   email: string;
+  emailVerifiedAt: Date | null;
   avatarUrl: string | null;
   coverUrl: string | null;
   isAdmin: boolean;
@@ -66,6 +67,7 @@ export class AdminService {
           username: true,
           name: true,
           email: true,
+          emailVerifiedAt: true,
           avatarUrl: true,
           coverUrl: true,
           isAdmin: true,
