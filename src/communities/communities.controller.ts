@@ -29,6 +29,7 @@ import { CreateCommunityDto } from './dto/create-community.dto';
 import { UpdateRailLayoutDto } from './dto/update-rail-layout.dto';
 import { SearchCommunitiesDto } from './dto/search-communities.dto';
 import { UpdateCommunityDto } from './dto/update-community.dto';
+import { UpdateLibraryUpdatesDto } from './dto/update-library-updates.dto';
 import { UpdateNicknameDto } from './dto/update-nickname.dto';
 import { CommunityMemberGuard } from './community-member.guard';
 import { CommunityViewerGuard } from './community-viewer.guard';
@@ -82,6 +83,11 @@ export class CommunitiesController {
     return this.communitiesService.railLayout(req.user.userId);
   }
 
+  @Get('discord-setup')
+  unfinishedDiscord(@Req() req) {
+    return this.communitiesService.unfinishedDiscord(req.user.userId);
+  }
+
   @Put('layout')
   updateRailLayout(
     @Req() req,
@@ -132,6 +138,30 @@ export class CommunitiesController {
     );
   }
 
+  @Put(':communityId/verified')
+  verify(
+    @Req() req,
+    @Param('communityId', ParseIntPipe) communityId: number,
+  ): Promise<{ isVerified: boolean }> {
+    return this.communitiesService.setVerified(
+      req.user.userId,
+      communityId,
+      true,
+    );
+  }
+
+  @Delete(':communityId/verified')
+  unverify(
+    @Req() req,
+    @Param('communityId', ParseIntPipe) communityId: number,
+  ): Promise<{ isVerified: boolean }> {
+    return this.communitiesService.setVerified(
+      req.user.userId,
+      communityId,
+      false,
+    );
+  }
+
   @RateLimit(20, MINUTE)
   @Patch(':communityId/nickname')
   @UseGuards(CommunityMemberGuard)
@@ -144,6 +174,21 @@ export class CommunitiesController {
       req.user.userId,
       communityId,
       nickname ?? null,
+    );
+  }
+
+  @RateLimit(20, MINUTE)
+  @Patch(':communityId/library-updates')
+  @UseGuards(CommunityMemberGuard)
+  setShowLibraryUpdates(
+    @Req() req,
+    @Param('communityId', ParseIntPipe) communityId: number,
+    @Body() { show }: UpdateLibraryUpdatesDto,
+  ): Promise<{ showLibraryUpdates: boolean }> {
+    return this.communitiesService.setShowLibraryUpdates(
+      req.user.userId,
+      communityId,
+      show,
     );
   }
 
@@ -212,6 +257,16 @@ export class CommunitiesController {
     @Param('communityId', ParseIntPipe) communityId: number,
   ): Promise<void> {
     return this.communitiesService.disconnectTwitch(req.user.userId, communityId);
+  }
+
+  @Delete(':communityId/discord')
+  @UseGuards(CommunityMemberGuard)
+  @HttpCode(204)
+  disconnectDiscord(
+    @Req() req,
+    @Param('communityId', ParseIntPipe) communityId: number,
+  ): Promise<void> {
+    return this.communitiesService.disconnectDiscord(req.user.userId, communityId);
   }
 
   @Delete(':communityId')

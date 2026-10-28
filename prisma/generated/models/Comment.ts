@@ -55,6 +55,8 @@ export type CommentMinAggregateOutputType = {
   linkUrl: string | null
   score: number | null
   hiddenAt: Date | null
+  editedAt: Date | null
+  deletedAt: Date | null
   createdAt: Date | null
 }
 
@@ -69,6 +71,8 @@ export type CommentMaxAggregateOutputType = {
   linkUrl: string | null
   score: number | null
   hiddenAt: Date | null
+  editedAt: Date | null
+  deletedAt: Date | null
   createdAt: Date | null
 }
 
@@ -83,6 +87,8 @@ export type CommentCountAggregateOutputType = {
   linkUrl: number
   score: number
   hiddenAt: number
+  editedAt: number
+  deletedAt: number
   createdAt: number
   _all: number
 }
@@ -117,6 +123,8 @@ export type CommentMinAggregateInputType = {
   linkUrl?: true
   score?: true
   hiddenAt?: true
+  editedAt?: true
+  deletedAt?: true
   createdAt?: true
 }
 
@@ -131,6 +139,8 @@ export type CommentMaxAggregateInputType = {
   linkUrl?: true
   score?: true
   hiddenAt?: true
+  editedAt?: true
+  deletedAt?: true
   createdAt?: true
 }
 
@@ -145,6 +155,8 @@ export type CommentCountAggregateInputType = {
   linkUrl?: true
   score?: true
   hiddenAt?: true
+  editedAt?: true
+  deletedAt?: true
   createdAt?: true
   _all?: true
 }
@@ -246,6 +258,8 @@ export type CommentGroupByOutputType = {
   linkUrl: string | null
   score: number
   hiddenAt: Date | null
+  editedAt: Date | null
+  deletedAt: Date | null
   createdAt: Date
   _count: CommentCountAggregateOutputType | null
   _avg: CommentAvgAggregateOutputType | null
@@ -283,6 +297,8 @@ export type CommentWhereInput = {
   linkUrl?: Prisma.StringNullableFilter<"Comment"> | string | null
   score?: Prisma.IntFilter<"Comment"> | number
   hiddenAt?: Prisma.DateTimeNullableFilter<"Comment"> | Date | string | null
+  editedAt?: Prisma.DateTimeNullableFilter<"Comment"> | Date | string | null
+  deletedAt?: Prisma.DateTimeNullableFilter<"Comment"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Comment"> | Date | string
   community?: Prisma.XOR<Prisma.CommunityNullableScalarRelationFilter, Prisma.CommunityWhereInput> | null
   author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -301,6 +317,8 @@ export type CommentOrderByWithRelationInput = {
   linkUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   score?: Prisma.SortOrder
   hiddenAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  editedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   community?: Prisma.CommunityOrderByWithRelationInput
   author?: Prisma.UserOrderByWithRelationInput
@@ -322,6 +340,8 @@ export type CommentWhereUniqueInput = Prisma.AtLeast<{
   linkUrl?: Prisma.StringNullableFilter<"Comment"> | string | null
   score?: Prisma.IntFilter<"Comment"> | number
   hiddenAt?: Prisma.DateTimeNullableFilter<"Comment"> | Date | string | null
+  editedAt?: Prisma.DateTimeNullableFilter<"Comment"> | Date | string | null
+  deletedAt?: Prisma.DateTimeNullableFilter<"Comment"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Comment"> | Date | string
   community?: Prisma.XOR<Prisma.CommunityNullableScalarRelationFilter, Prisma.CommunityWhereInput> | null
   author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -340,6 +360,8 @@ export type CommentOrderByWithAggregationInput = {
   linkUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   score?: Prisma.SortOrder
   hiddenAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  editedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.CommentCountOrderByAggregateInput
   _avg?: Prisma.CommentAvgOrderByAggregateInput
@@ -362,6 +384,8 @@ export type CommentScalarWhereWithAggregatesInput = {
   linkUrl?: Prisma.StringNullableWithAggregatesFilter<"Comment"> | string | null
   score?: Prisma.IntWithAggregatesFilter<"Comment"> | number
   hiddenAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Comment"> | Date | string | null
+  editedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Comment"> | Date | string | null
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Comment"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Comment"> | Date | string
 }
 
@@ -372,6 +396,8 @@ export type CommentCreateInput = {
   linkUrl?: string | null
   score?: number
   hiddenAt?: Date | string | null
+  editedAt?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   community?: Prisma.CommunityCreateNestedOneWithoutCommentsInput
   author: Prisma.UserCreateNestedOneWithoutCommentsInput
@@ -390,6 +416,8 @@ export type CommentUncheckedCreateInput = {
   linkUrl?: string | null
   score?: number
   hiddenAt?: Date | string | null
+  editedAt?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   replies?: Prisma.CommentUncheckedCreateNestedManyWithoutParentInput
 }
@@ -401,6 +429,8 @@ export type CommentUpdateInput = {
   linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   score?: Prisma.IntFieldUpdateOperationsInput | number
   hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  editedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   community?: Prisma.CommunityUpdateOneWithoutCommentsNestedInput
   author?: Prisma.UserUpdateOneRequiredWithoutCommentsNestedInput
@@ -419,6 +449,8 @@ export type CommentUncheckedUpdateInput = {
   linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   score?: Prisma.IntFieldUpdateOperationsInput | number
   hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  editedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   replies?: Prisma.CommentUncheckedUpdateManyWithoutParentNestedInput
 }
@@ -434,6 +466,8 @@ export type CommentCreateManyInput = {
   linkUrl?: string | null
   score?: number
   hiddenAt?: Date | string | null
+  editedAt?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -444,6 +478,8 @@ export type CommentUpdateManyMutationInput = {
   linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   score?: Prisma.IntFieldUpdateOperationsInput | number
   hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  editedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -458,6 +494,8 @@ export type CommentUncheckedUpdateManyInput = {
   linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   score?: Prisma.IntFieldUpdateOperationsInput | number
   hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  editedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -487,6 +525,8 @@ export type CommentCountOrderByAggregateInput = {
   linkUrl?: Prisma.SortOrder
   score?: Prisma.SortOrder
   hiddenAt?: Prisma.SortOrder
+  editedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -510,6 +550,8 @@ export type CommentMaxOrderByAggregateInput = {
   linkUrl?: Prisma.SortOrder
   score?: Prisma.SortOrder
   hiddenAt?: Prisma.SortOrder
+  editedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -524,6 +566,8 @@ export type CommentMinOrderByAggregateInput = {
   linkUrl?: Prisma.SortOrder
   score?: Prisma.SortOrder
   hiddenAt?: Prisma.SortOrder
+  editedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -596,10 +640,6 @@ export type CommentUncheckedCreateNestedManyWithoutParentInput = {
   connectOrCreate?: Prisma.CommentCreateOrConnectWithoutParentInput | Prisma.CommentCreateOrConnectWithoutParentInput[]
   createMany?: Prisma.CommentCreateManyParentInputEnvelope
   connect?: Prisma.CommentWhereUniqueInput | Prisma.CommentWhereUniqueInput[]
-}
-
-export type EnumCommentableTypeFieldUpdateOperationsInput = {
-  set?: $Enums.CommentableType
 }
 
 export type CommentUpdateOneWithoutRepliesNestedInput = {
@@ -689,6 +729,8 @@ export type CommentCreateWithoutCommunityInput = {
   linkUrl?: string | null
   score?: number
   hiddenAt?: Date | string | null
+  editedAt?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   author: Prisma.UserCreateNestedOneWithoutCommentsInput
   parent?: Prisma.CommentCreateNestedOneWithoutRepliesInput
@@ -705,6 +747,8 @@ export type CommentUncheckedCreateWithoutCommunityInput = {
   linkUrl?: string | null
   score?: number
   hiddenAt?: Date | string | null
+  editedAt?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   replies?: Prisma.CommentUncheckedCreateNestedManyWithoutParentInput
 }
@@ -749,6 +793,8 @@ export type CommentScalarWhereInput = {
   linkUrl?: Prisma.StringNullableFilter<"Comment"> | string | null
   score?: Prisma.IntFilter<"Comment"> | number
   hiddenAt?: Prisma.DateTimeNullableFilter<"Comment"> | Date | string | null
+  editedAt?: Prisma.DateTimeNullableFilter<"Comment"> | Date | string | null
+  deletedAt?: Prisma.DateTimeNullableFilter<"Comment"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Comment"> | Date | string
 }
 
@@ -759,6 +805,8 @@ export type CommentCreateWithoutRepliesInput = {
   linkUrl?: string | null
   score?: number
   hiddenAt?: Date | string | null
+  editedAt?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   community?: Prisma.CommunityCreateNestedOneWithoutCommentsInput
   author: Prisma.UserCreateNestedOneWithoutCommentsInput
@@ -776,6 +824,8 @@ export type CommentUncheckedCreateWithoutRepliesInput = {
   linkUrl?: string | null
   score?: number
   hiddenAt?: Date | string | null
+  editedAt?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -791,6 +841,8 @@ export type CommentCreateWithoutParentInput = {
   linkUrl?: string | null
   score?: number
   hiddenAt?: Date | string | null
+  editedAt?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   community?: Prisma.CommunityCreateNestedOneWithoutCommentsInput
   author: Prisma.UserCreateNestedOneWithoutCommentsInput
@@ -807,6 +859,8 @@ export type CommentUncheckedCreateWithoutParentInput = {
   linkUrl?: string | null
   score?: number
   hiddenAt?: Date | string | null
+  editedAt?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   replies?: Prisma.CommentUncheckedCreateNestedManyWithoutParentInput
 }
@@ -839,6 +893,8 @@ export type CommentUpdateWithoutRepliesInput = {
   linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   score?: Prisma.IntFieldUpdateOperationsInput | number
   hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  editedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   community?: Prisma.CommunityUpdateOneWithoutCommentsNestedInput
   author?: Prisma.UserUpdateOneRequiredWithoutCommentsNestedInput
@@ -856,6 +912,8 @@ export type CommentUncheckedUpdateWithoutRepliesInput = {
   linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   score?: Prisma.IntFieldUpdateOperationsInput | number
   hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  editedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -882,6 +940,8 @@ export type CommentCreateWithoutAuthorInput = {
   linkUrl?: string | null
   score?: number
   hiddenAt?: Date | string | null
+  editedAt?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   community?: Prisma.CommunityCreateNestedOneWithoutCommentsInput
   parent?: Prisma.CommentCreateNestedOneWithoutRepliesInput
@@ -898,6 +958,8 @@ export type CommentUncheckedCreateWithoutAuthorInput = {
   linkUrl?: string | null
   score?: number
   hiddenAt?: Date | string | null
+  editedAt?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   replies?: Prisma.CommentUncheckedCreateNestedManyWithoutParentInput
 }
@@ -938,6 +1000,8 @@ export type CommentCreateManyCommunityInput = {
   linkUrl?: string | null
   score?: number
   hiddenAt?: Date | string | null
+  editedAt?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -948,6 +1012,8 @@ export type CommentUpdateWithoutCommunityInput = {
   linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   score?: Prisma.IntFieldUpdateOperationsInput | number
   hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  editedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   author?: Prisma.UserUpdateOneRequiredWithoutCommentsNestedInput
   parent?: Prisma.CommentUpdateOneWithoutRepliesNestedInput
@@ -964,6 +1030,8 @@ export type CommentUncheckedUpdateWithoutCommunityInput = {
   linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   score?: Prisma.IntFieldUpdateOperationsInput | number
   hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  editedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   replies?: Prisma.CommentUncheckedUpdateManyWithoutParentNestedInput
 }
@@ -978,6 +1046,8 @@ export type CommentUncheckedUpdateManyWithoutCommunityInput = {
   linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   score?: Prisma.IntFieldUpdateOperationsInput | number
   hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  editedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -991,6 +1061,8 @@ export type CommentCreateManyParentInput = {
   linkUrl?: string | null
   score?: number
   hiddenAt?: Date | string | null
+  editedAt?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -1001,6 +1073,8 @@ export type CommentUpdateWithoutParentInput = {
   linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   score?: Prisma.IntFieldUpdateOperationsInput | number
   hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  editedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   community?: Prisma.CommunityUpdateOneWithoutCommentsNestedInput
   author?: Prisma.UserUpdateOneRequiredWithoutCommentsNestedInput
@@ -1017,6 +1091,8 @@ export type CommentUncheckedUpdateWithoutParentInput = {
   linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   score?: Prisma.IntFieldUpdateOperationsInput | number
   hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  editedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   replies?: Prisma.CommentUncheckedUpdateManyWithoutParentNestedInput
 }
@@ -1031,6 +1107,8 @@ export type CommentUncheckedUpdateManyWithoutParentInput = {
   linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   score?: Prisma.IntFieldUpdateOperationsInput | number
   hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  editedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -1044,6 +1122,8 @@ export type CommentCreateManyAuthorInput = {
   linkUrl?: string | null
   score?: number
   hiddenAt?: Date | string | null
+  editedAt?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -1054,6 +1134,8 @@ export type CommentUpdateWithoutAuthorInput = {
   linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   score?: Prisma.IntFieldUpdateOperationsInput | number
   hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  editedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   community?: Prisma.CommunityUpdateOneWithoutCommentsNestedInput
   parent?: Prisma.CommentUpdateOneWithoutRepliesNestedInput
@@ -1070,6 +1152,8 @@ export type CommentUncheckedUpdateWithoutAuthorInput = {
   linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   score?: Prisma.IntFieldUpdateOperationsInput | number
   hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  editedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   replies?: Prisma.CommentUncheckedUpdateManyWithoutParentNestedInput
 }
@@ -1084,6 +1168,8 @@ export type CommentUncheckedUpdateManyWithoutAuthorInput = {
   linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   score?: Prisma.IntFieldUpdateOperationsInput | number
   hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  editedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -1129,6 +1215,8 @@ export type CommentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   linkUrl?: boolean
   score?: boolean
   hiddenAt?: boolean
+  editedAt?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   community?: boolean | Prisma.Comment$communityArgs<ExtArgs>
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1148,6 +1236,8 @@ export type CommentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   linkUrl?: boolean
   score?: boolean
   hiddenAt?: boolean
+  editedAt?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   community?: boolean | Prisma.Comment$communityArgs<ExtArgs>
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1165,6 +1255,8 @@ export type CommentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   linkUrl?: boolean
   score?: boolean
   hiddenAt?: boolean
+  editedAt?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   community?: boolean | Prisma.Comment$communityArgs<ExtArgs>
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1182,10 +1274,12 @@ export type CommentSelectScalar = {
   linkUrl?: boolean
   score?: boolean
   hiddenAt?: boolean
+  editedAt?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
 }
 
-export type CommentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "communityId" | "commentableType" | "commentableId" | "parentId" | "authorId" | "content" | "linkUrl" | "score" | "hiddenAt" | "createdAt", ExtArgs["result"]["comment"]>
+export type CommentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "communityId" | "commentableType" | "commentableId" | "parentId" | "authorId" | "content" | "linkUrl" | "score" | "hiddenAt" | "editedAt" | "deletedAt" | "createdAt", ExtArgs["result"]["comment"]>
 export type CommentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   community?: boolean | Prisma.Comment$communityArgs<ExtArgs>
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1223,6 +1317,8 @@ export type $CommentPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     linkUrl: string | null
     score: number
     hiddenAt: Date | null
+    editedAt: Date | null
+    deletedAt: Date | null
     createdAt: Date
   }, ExtArgs["result"]["comment"]>
   composites: {}
@@ -1661,6 +1757,8 @@ export interface CommentFieldRefs {
   readonly linkUrl: Prisma.FieldRef<"Comment", 'String'>
   readonly score: Prisma.FieldRef<"Comment", 'Int'>
   readonly hiddenAt: Prisma.FieldRef<"Comment", 'DateTime'>
+  readonly editedAt: Prisma.FieldRef<"Comment", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"Comment", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Comment", 'DateTime'>
 }
     

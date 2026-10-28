@@ -68,6 +68,16 @@ export type MembershipRole = Prisma.MembershipRoleModel
  */
 export type Invite = Prisma.InviteModel
 /**
+ * Model DiscordChannel
+ * 
+ */
+export type DiscordChannel = Prisma.DiscordChannelModel
+/**
+ * Model DiscordMessage
+ * 
+ */
+export type DiscordMessage = Prisma.DiscordMessageModel
+/**
  * Model Post
  * 
  */

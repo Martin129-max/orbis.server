@@ -1,4 +1,5 @@
 import {
+  BadGatewayException,
   Injectable,
   Logger,
   OnModuleDestroy,
@@ -17,11 +18,39 @@ const SCHEDULE_TTL_MS = 10 * 60_000;
 const SCHEDULE_RETRY_MS = 60_000;
 const SCHEDULE_TIMEOUT_MS = 3_000;
 const SCHEDULE_SEGMENTS = 10;
+const CLIPS_PAGE_SIZE = 24;
+const CLIPS_TTL_MS = 5 * 60_000;
+const CLIPS_CACHE_LIMIT = 500;
 
 export type NextStream = {
   startsAt: string;
   endsAt: string | null;
   title: string | null;
+  channel: string | null;
+};
+
+export type Clip = {
+  id: string;
+  title: string;
+  url: string;
+  thumbnailUrl: string;
+  viewCount: number;
+  duration: number;
+  creatorName: string;
+  createdAt: string;
+};
+
+export type ClipPage = { items: Clip[]; nextCursor: string | null };
+
+type HelixClip = {
+  id: string;
+  title: string;
+  url: string;
+  thumbnail_url: string;
+  view_count: number;
+  duration: number;
+  creator_name: string;
+  created_at: string;
 };
 
 type ScheduleSegment = {
@@ -40,6 +69,7 @@ export class TwitchLiveService implements OnModuleInit, OnModuleDestroy {
     string,
     { value: NextStream | null; expiresAt: number }
   >();
+  private clipPages = new Map<string, { value: ClipPage; expiresAt: number }>();
 
   constructor(
     private prisma: PrismaService,
@@ -65,7 +95,7 @@ export class TwitchLiveService implements OnModuleInit, OnModuleDestroy {
           select: { userId: true, providerAccountId: true },
         }),
         this.prisma.community.findMany({
-          where: { twitchUserId: { not: null } },
+          where: { twitchUserId: { not: null }, showTwitchLive: true },
           select: { id: true, twitchUserId: true },
         }),
       ]);
@@ -134,6 +164,72 @@ export class TwitchLiveService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
+  async clips(broadcasterId: string, cursor?: string): Promise<ClipPage> {
+    const key = `${broadcasterId}:${cursor ?? ''}`;
+    const cached = this.clipPages.get(key);
+    if (cached && cached.expiresAt > Date.now()) return cached.value;
+
+    const credentials = this.credentials();
+    if (!credentials) return { items: [], nextCursor: null };
+
+    const params = new URLSearchParams({
+      broadcaster_id: broadcasterId,
+      first: String(CLIPS_PAGE_SIZE),
+    });
+    if (cursor) params.set('after', cursor);
+
+    let response: Response;
+    try {
+      response = await fetch(`https://api.twitch.tv/helix/clips?${params}`, {
+        headers: {
+          Authorization: `Bearer ${await this.token(credentials)}`,
+          'Client-Id': credentials.clientId,
+        },
+        signal: AbortSignal.timeout(OAUTH_TIMEOUT_MS),
+      });
+    } catch (error) {
+      this.logger.warn(`Twitch clips failed: ${(error as Error).message}`);
+      throw new BadGatewayException(
+        'Couldn’t load clips from Twitch. Please try again.',
+      );
+    }
+    if (response.status === 401) this.appToken = null;
+    if (!response.ok) {
+      this.logger.warn(`Twitch clips failed with ${response.status}`);
+      throw new BadGatewayException(
+        'Couldn’t load clips from Twitch. Please try again.',
+      );
+    }
+
+    const { data, pagination } = (await response.json()) as {
+      data: HelixClip[];
+      pagination?: { cursor?: string };
+    };
+    const value: ClipPage = {
+      items: data.map((clip) => ({
+        id: clip.id,
+        title: clip.title,
+        url: clip.url,
+        thumbnailUrl: clip.thumbnail_url,
+        viewCount: clip.view_count,
+        duration: clip.duration,
+        creatorName: clip.creator_name,
+        createdAt: clip.created_at,
+      })),
+      nextCursor:
+        data.length === CLIPS_PAGE_SIZE ? (pagination?.cursor ?? null) : null,
+    };
+
+    if (this.clipPages.size >= CLIPS_CACHE_LIMIT) {
+      for (const [entry, page] of this.clipPages) {
+        if (page.expiresAt <= Date.now()) this.clipPages.delete(entry);
+      }
+      if (this.clipPages.size >= CLIPS_CACHE_LIMIT) this.clipPages.clear();
+    }
+    this.clipPages.set(key, { value, expiresAt: Date.now() + CLIPS_TTL_MS });
+    return value;
+  }
+
   private async schedule(
     broadcasterId: string,
     credentials: { clientId: string; clientSecret: string },
@@ -160,6 +256,7 @@ export class TwitchLiveService implements OnModuleInit, OnModuleDestroy {
 
     const { data } = (await response.json()) as {
       data: {
+        broadcaster_name?: string;
         segments: ScheduleSegment[] | null;
         vacation: { start_time: string; end_time: string } | null;
       };
@@ -178,6 +275,7 @@ export class TwitchLiveService implements OnModuleInit, OnModuleDestroy {
           startsAt: next.start_time,
           endsAt: next.end_time ?? null,
           title: next.title || null,
+          channel: data.broadcaster_name || null,
         }
       : null;
   }

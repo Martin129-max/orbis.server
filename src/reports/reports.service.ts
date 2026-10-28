@@ -65,6 +65,7 @@ function toAdminReport<T extends { _count: { comments: number } }>({
 }
 
 const NOTE_PREVIEW = 140;
+const SEARCH_LIMIT = 20;
 
 function preview(note: string) {
   return note.length > NOTE_PREVIEW
@@ -328,6 +329,31 @@ export class ReportsService {
     const reports = await this.prisma.report.findMany({
       where: { hiddenAt: hidden ? { not: null } : null },
       orderBy: hidden ? { hiddenAt: 'desc' } : { createdAt: 'desc' },
+      select: adminReportSelect,
+    });
+    return reports.map(toAdminReport);
+  }
+
+  async search(userId: number, rawQuery: string) {
+    const query = rawQuery.trim().slice(0, 100);
+    if (query.length < 2) return [];
+    await this.requireAdmin(userId);
+
+    const contains = { contains: query, mode: 'insensitive' as const };
+    const ticket = query.replace(/^#/, '');
+    const id = /^\d{1,9}$/.test(ticket) ? Number(ticket) : null;
+    const reports = await this.prisma.report.findMany({
+      where: {
+        OR: [
+          ...(id ? [{ id }] : []),
+          { message: contains },
+          { resolutionNote: contains },
+          { author: { username: contains } },
+          { author: { name: contains } },
+        ],
+      },
+      orderBy: { createdAt: 'desc' },
+      take: SEARCH_LIMIT,
       select: adminReportSelect,
     });
     return reports.map(toAdminReport);

@@ -62,6 +62,12 @@ export class ReportsController {
     return this.reportsService.admins(req.user.userId);
   }
 
+  @RateLimit(60, MINUTE)
+  @Get('search')
+  search(@Req() req, @Query('q') q = '') {
+    return this.reportsService.search(req.user.userId, q);
+  }
+
   @Get(':id')
   findOne(@Req() req, @Param('id', ParseIntPipe) id: number) {
     return this.reportsService.findOne(req.user.userId, id);

@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
+import { ConfirmedEmailGuard } from './auth/confirmed-email.guard';
 import { ThrottlerModule } from '@nestjs/throttler';
 import {
   AppThrottlerGuard,
@@ -25,6 +26,8 @@ import { AdminModule } from './admin/admin.module';
 import { ModerationModule } from './moderation/moderation.module';
 import { MessagesModule } from './messages/messages.module';
 import { LinksModule } from './links/links.module';
+import { ClipsModule } from './clips/clips.module';
+import { DiscordChannelModule } from './discord-channel/discord-channel.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaService } from './prisma.service';
@@ -54,12 +57,15 @@ import { PrismaService } from './prisma.service';
     ModerationModule,
     MessagesModule,
     LinksModule,
+    ClipsModule,
+    DiscordChannelModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
     PrismaService,
     { provide: APP_GUARD, useClass: AppThrottlerGuard },
+    { provide: APP_GUARD, useClass: ConfirmedEmailGuard },
   ],
 })
 export class AppModule {}

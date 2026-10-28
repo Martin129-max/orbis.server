@@ -4,6 +4,7 @@ import { PassportModule } from '@nestjs/passport';
 
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
+import { EmailConfirmationService } from './email-confirmation.service';
 import { JwtStrategy } from './jwt.strategy';
 import { OAuthController } from './oauth/oauth.controller';
 import { OAuthService } from './oauth/oauth.service';
@@ -12,6 +13,7 @@ import { PrismaService } from '../prisma.service';
 import { StorageModule } from '../storage/storage.module';
 import { PresenceModule } from '../friends/presence.module';
 import { CommunitiesModule } from '../communities/communities.module';
+import { DiscordChannelModule } from '../discord-channel/discord-channel.module';
 
 @Module({
   imports: [
@@ -19,6 +21,7 @@ import { CommunitiesModule } from '../communities/communities.module';
     StorageModule,
     PresenceModule,
     CommunitiesModule,
+    DiscordChannelModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '7d' },
@@ -26,6 +29,7 @@ import { CommunitiesModule } from '../communities/communities.module';
   ],
   providers: [
     AuthService,
+    EmailConfirmationService,
     OAuthService,
     JwtStrategy,
     UsersService,

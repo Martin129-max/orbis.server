@@ -54,6 +54,7 @@ type SeedCommunity = {
   description: string;
   owner: UserKey;
   isPublic: boolean;
+  isVerified?: boolean;
   members: [UserKey, string?][];
   admins?: UserKey[];
   posts: [UserKey, number, string][];
@@ -88,6 +89,7 @@ const communities: SeedCommunity[] = [
       'Weekly threads for everything airing this season. Hot takes, episode reactions, and what to drop.',
     owner: 'admin',
     isPublic: true,
+    isVerified: true,
     members: [
       ['admin', 'Club President'],
       ['anya'],
@@ -107,7 +109,7 @@ const communities: SeedCommunity[] = [
       [
         'anya',
         days(2) + hours(5),
-        `<p>Anya watched a spy anime with Papa. Anya already knew the ending. Anya did not say anything. <em>Heh.</em></p>`,
+        `<p>Anya watched a spy anime with Papa. Anya already knew the ending. Anya did not say anything. <em>Heh.</em></p><p><a href="/users/admin" class="mention">@admin</a>, can the club watch it next?</p>`,
       ],
       [
         'spike',
@@ -155,7 +157,7 @@ const communities: SeedCommunity[] = [
       [
         'sakura',
         days(3) + hours(2),
-        `<p>Naruto, you said "your treat" last time and I paid. Again.</p>`,
+        `<p><a href="/users/naruto" class="mention">@naruto</a>, you said "your treat" last time and I paid. Again.</p>`,
       ],
       ['sasuke', days(2), `<p>Hn.</p>`],
       [
@@ -745,6 +747,8 @@ const postComments: Record<string, Record<number, SeedComment[]>> = {
 };
 
 const privateProfiles: Character[] = ['levi', 'mikasa'];
+
+const verifiedProfiles: Character[] = ['luffy', 'gojo'];
 
 const friendships: [UserKey, UserKey, 'accepted' | 'pending'][] = [
   ['admin', 'naruto', 'accepted'],
@@ -1503,9 +1507,11 @@ async function createNotifications() {
       select: {
         id: true,
         authorId: true,
+        communityId: true,
         wallUserId: true,
         mediaType: true,
         mediaSourceId: true,
+        content: true,
         createdAt: true,
         wallUser: { select: { username: true } },
       },
@@ -1553,6 +1559,26 @@ async function createNotifications() {
   );
 
   for (const post of posts) {
+    const mentions = post.content.matchAll(
+      /<a href="\/users\/(\w+)" class="mention">/g,
+    );
+    for (const [, username] of mentions) {
+      const userId = userIds[username as UserKey];
+      if (!userId || userId === post.authorId) continue;
+      notifications.push({
+        userId,
+        actorId: post.authorId,
+        type: 'mention',
+        message: 'mentioned you in a post',
+        link: post.wallUser
+          ? `/users/${post.wallUser.username}`
+          : post.mediaType
+            ? `/library/${post.mediaType}/${post.mediaSourceId}`
+            : `/communities/${post.communityId}`,
+        createdAt: post.createdAt,
+        readAt: readAt(post.createdAt),
+      });
+    }
     if (post.wallUser && post.wallUserId !== post.authorId) {
       notifications.push({
         userId: post.wallUserId!,
@@ -2075,6 +2101,7 @@ async function main() {
       checklistDismissedAt: minutesAgo(days(29)),
       completedTours: PAGE_TOURS,
       password: await bcrypt.hash('123456', 10),
+      emailVerifiedAt: minutesAgo(days(30)),
       createdAt: minutesAgo(days(30)),
     },
   });
@@ -2105,6 +2132,7 @@ async function main() {
       coverUrl: '/images/user-covers/user.webp',
       backgroundUrl: '/images/user-backgrounds/user.webp',
       password: await bcrypt.hash('123456', 10),
+      emailVerifiedAt: minutesAgo(days(2)),
       createdAt: minutesAgo(days(2)),
     },
   });
@@ -2120,11 +2148,13 @@ async function main() {
         coverUrl: `/images/user-covers/${key}.webp`,
         backgroundUrl: `/images/user-backgrounds/${key}.webp`,
         isPublic: !privateProfiles.includes(key as Character),
+        isVerified: verifiedProfiles.includes(key as Character),
         status: key === 'gojo' ? 'busy' : key === 'nami' ? 'idle' : 'online',
         tourCompletedAt: minutesAgo(days(30)),
         checklistDismissedAt: minutesAgo(days(29)),
         completedTours: PAGE_TOURS,
         password: characterPassword,
+        emailVerifiedAt: minutesAgo(days(30)),
         createdAt: minutesAgo(days(30)),
       },
     });
@@ -2165,6 +2195,7 @@ async function main() {
         backgroundUrl: communityImage('backgrounds', community.name),
         ownerId: userIds[community.owner],
         isPublic: community.isPublic,
+        isVerified: community.isVerified ?? false,
         createdAt: minutesAgo(days(14)),
         memberships: {
           create: community.members.map(([key, nickname], index) => {
@@ -2184,7 +2215,18 @@ async function main() {
     if (community.name === 'Seasonal Anime Club') {
       await prisma.community.update({
         where: { id: created.id },
-        data: { twitchUserId: '300000001', twitchLogin: 'seasonalanimeclub' },
+        data: {
+          twitchUserId: '300000001',
+          twitchLogin: 'seasonalanimeclub',
+          discordGuildId: '300000000000000001',
+          discordGuildName: 'Seasonal Anime Club',
+          links: {
+            x: 'https://x.com/seasonalanimeclub',
+            youtube: 'https://www.youtube.com/@seasonalanimeclub',
+            kick: 'https://kick.com/seasonalanimeclub',
+            reddit: 'https://www.reddit.com/r/seasonalanimeclub',
+          },
+        },
       });
       const alphabet =
         'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

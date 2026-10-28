@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { FeedController } from './feed.controller';
-import { PostsController } from './posts.controller';
+import { PostController, PostsController } from './posts.controller';
 import { UserPostsController } from './user-posts.controller';
 import { MediaPostsController } from './media-posts.controller';
 import { PostsService } from './posts.service';
@@ -10,11 +10,18 @@ import { PrismaService } from '../prisma.service';
 import { ThreadsModule } from '../threads/threads.module';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { LikesModule } from '../likes/likes.module';
+import { DiscordChannelModule } from '../discord-channel/discord-channel.module';
 
 @Module({
-  imports: [ThreadsModule, NotificationsModule, LikesModule],
+  imports: [
+    ThreadsModule,
+    NotificationsModule,
+    LikesModule,
+    DiscordChannelModule,
+  ],
   controllers: [
     PostsController,
+    PostController,
     FeedController,
     UserPostsController,
     MediaPostsController,

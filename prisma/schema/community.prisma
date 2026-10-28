@@ -7,8 +7,16 @@ model Community {
   backgroundUrl String?
   twitchUserId  String?
   twitchLogin   String?
+  showTwitchLive    Boolean @default(true)
+  showTwitchClips   Boolean @default(true)
+  discordGuildId   String?
+  discordGuildName String?
+  showDiscordOnline Boolean @default(true)
+  showDiscordInvite Boolean @default(true)
+  links         Json         @default("{}")
   ownerId       Int
   isPublic      Boolean      @default(false)
+  isVerified    Boolean      @default(false)
   createdAt     DateTime     @default(now())
   owner         User         @relation(fields: [ownerId], references: [id])
   memberships   Membership[]
@@ -18,21 +26,23 @@ model Community {
   comments      Comment[]
   votes         Vote[]
   invites       Invite[]
+  discordChannel DiscordChannel?
 
   @@index([ownerId])
 }
 
 model Membership {
-  userId      Int
-  communityId Int
-  nickname    String?
-  position    Int              @default(0)
-  folderId    Int?
-  joinedAt    DateTime         @default(now())
-  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  community   Community        @relation(fields: [communityId], references: [id], onDelete: Cascade)
-  folder      RailFolder?      @relation(fields: [folderId], references: [id], onDelete: SetNull)
-  roles       MembershipRole[]
+  userId             Int
+  communityId        Int
+  nickname           String?
+  showLibraryUpdates Boolean          @default(true)
+  position           Int              @default(0)
+  folderId           Int?
+  joinedAt           DateTime         @default(now())
+  user               User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  community          Community        @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  folder             RailFolder?      @relation(fields: [folderId], references: [id], onDelete: SetNull)
+  roles              MembershipRole[]
 
   @@id([userId, communityId])
   @@index([communityId])
@@ -91,4 +101,35 @@ model Invite {
 
   @@index([communityId])
   @@index([creatorId])
+}
+
+model DiscordChannel {
+  communityId  Int              @id
+  webhookId    String
+  webhookToken String
+  guildId      String
+  guildName    String?
+  channelId    String
+  isForum      Boolean          @default(false)
+  sendPosts    Boolean          @default(true)
+  sendThreads  Boolean          @default(true)
+  sendLibrary  Boolean          @default(true)
+  lostAt       DateTime?
+  createdAt    DateTime         @default(now())
+  community    Community        @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  messages     DiscordMessage[]
+}
+
+model DiscordMessage {
+  id          Int             @id @default(autoincrement())
+  communityId Int
+  targetType  CommentableType
+  targetId    Int
+  messageId   String
+  threadId    String?
+  createdAt   DateTime        @default(now())
+  channel     DiscordChannel  @relation(fields: [communityId], references: [communityId], onDelete: Cascade)
+
+  @@unique([communityId, targetType, targetId])
+  @@index([targetType, targetId])
 }

@@ -57,6 +57,8 @@ export const ModelName = {
   Role: 'Role',
   MembershipRole: 'MembershipRole',
   Invite: 'Invite',
+  DiscordChannel: 'DiscordChannel',
+  DiscordMessage: 'DiscordMessage',
   Post: 'Post',
   Thread: 'Thread',
   Comment: 'Comment',
@@ -105,8 +107,16 @@ export const CommunityScalarFieldEnum = {
   backgroundUrl: 'backgroundUrl',
   twitchUserId: 'twitchUserId',
   twitchLogin: 'twitchLogin',
+  showTwitchLive: 'showTwitchLive',
+  showTwitchClips: 'showTwitchClips',
+  discordGuildId: 'discordGuildId',
+  discordGuildName: 'discordGuildName',
+  showDiscordOnline: 'showDiscordOnline',
+  showDiscordInvite: 'showDiscordInvite',
+  links: 'links',
   ownerId: 'ownerId',
   isPublic: 'isPublic',
+  isVerified: 'isVerified',
   createdAt: 'createdAt'
 } as const
 
@@ -117,6 +127,7 @@ export const MembershipScalarFieldEnum = {
   userId: 'userId',
   communityId: 'communityId',
   nickname: 'nickname',
+  showLibraryUpdates: 'showLibraryUpdates',
   position: 'position',
   folderId: 'folderId',
   joinedAt: 'joinedAt'
@@ -172,6 +183,37 @@ export const InviteScalarFieldEnum = {
 export type InviteScalarFieldEnum = (typeof InviteScalarFieldEnum)[keyof typeof InviteScalarFieldEnum]
 
 
+export const DiscordChannelScalarFieldEnum = {
+  communityId: 'communityId',
+  webhookId: 'webhookId',
+  webhookToken: 'webhookToken',
+  guildId: 'guildId',
+  guildName: 'guildName',
+  channelId: 'channelId',
+  isForum: 'isForum',
+  sendPosts: 'sendPosts',
+  sendThreads: 'sendThreads',
+  sendLibrary: 'sendLibrary',
+  lostAt: 'lostAt',
+  createdAt: 'createdAt'
+} as const
+
+export type DiscordChannelScalarFieldEnum = (typeof DiscordChannelScalarFieldEnum)[keyof typeof DiscordChannelScalarFieldEnum]
+
+
+export const DiscordMessageScalarFieldEnum = {
+  id: 'id',
+  communityId: 'communityId',
+  targetType: 'targetType',
+  targetId: 'targetId',
+  messageId: 'messageId',
+  threadId: 'threadId',
+  createdAt: 'createdAt'
+} as const
+
+export type DiscordMessageScalarFieldEnum = (typeof DiscordMessageScalarFieldEnum)[keyof typeof DiscordMessageScalarFieldEnum]
+
+
 export const PostScalarFieldEnum = {
   id: 'id',
   communityId: 'communityId',
@@ -184,6 +226,7 @@ export const PostScalarFieldEnum = {
   commentCount: 'commentCount',
   likeCount: 'likeCount',
   hiddenAt: 'hiddenAt',
+  editedAt: 'editedAt',
   createdAt: 'createdAt'
 } as const
 
@@ -200,6 +243,7 @@ export const ThreadScalarFieldEnum = {
   score: 'score',
   commentCount: 'commentCount',
   hiddenAt: 'hiddenAt',
+  editedAt: 'editedAt',
   createdAt: 'createdAt'
 } as const
 
@@ -217,6 +261,8 @@ export const CommentScalarFieldEnum = {
   linkUrl: 'linkUrl',
   score: 'score',
   hiddenAt: 'hiddenAt',
+  editedAt: 'editedAt',
+  deletedAt: 'deletedAt',
   createdAt: 'createdAt'
 } as const
 
@@ -447,12 +493,15 @@ export const UserScalarFieldEnum = {
   coverUrl: 'coverUrl',
   backgroundUrl: 'backgroundUrl',
   password: 'password',
+  emailVerifiedAt: 'emailVerifiedAt',
   theme: 'theme',
   appearOffline: 'appearOffline',
   showNsfw: 'showNsfw',
+  showChangelog: 'showChangelog',
   status: 'status',
   isPublic: 'isPublic',
   isAdmin: 'isAdmin',
+  isVerified: 'isVerified',
   tourCompletedAt: 'tourCompletedAt',
   checklistDismissedAt: 'checklistDismissedAt',
   completedTours: 'completedTours',
@@ -469,6 +518,7 @@ export const OAuthAccountScalarFieldEnum = {
   providerAccountId: 'providerAccountId',
   username: 'username',
   showLive: 'showLive',
+  showClips: 'showClips',
   createdAt: 'createdAt'
 } as const
 
@@ -483,12 +533,28 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const JsonNullValueInput = {
+  JsonNull: 'JsonNull'
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
 export const QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const JsonNullValueFilter = {
+  DbNull: 'DbNull',
+  JsonNull: 'JsonNull',
+  AnyNull: 'AnyNull'
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
 export const NullsOrder = {

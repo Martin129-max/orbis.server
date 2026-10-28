@@ -14,19 +14,33 @@ import { webUrl } from '../../common/web-url';
 import { CommunitiesService } from '../../communities/communities.service';
 import { PresenceGateway } from '../../friends/presence.gateway';
 import { PrismaService } from '../../prisma.service';
+import { StorageService } from '../../storage/storage.service';
 import { normalizeUsername, USERNAME_PATTERN } from '../../users/username';
 import { AuthService } from '../auth.service';
 import {
+  DiscordServer,
+  discordServerName,
+  discordServers,
   OAUTH_TIMEOUT_MS,
   OAuthProfile,
   oauthProviders,
 } from './oauth-providers';
+import { DiscordWidget } from '../../communities/discord-widget';
+import {
+  DiscordChannelService,
+  IncomingWebhook,
+  PRIVATE_COMMUNITY,
+} from '../../discord-channel/discord-channel.service';
 
 export type OAuthResult =
   | { access_token: string }
   | { signup: { token: string; username: string; avatarUrl: string | null } }
-  | { linked: AuthProvider }
-  | { linked: AuthProvider; communityId: number };
+  | { linked: AuthProvider; avatar?: { url: string; token: string } }
+  | {
+      linked: AuthProvider;
+      communityId: number;
+      servers?: { token: string; options: DiscordServer[] };
+    };
 
 export type OAuthConnections = {
   hasPassword: boolean;
@@ -34,6 +48,7 @@ export type OAuthConnections = {
     provider: AuthProvider;
     username: string;
     showLive: boolean;
+    showClips: boolean;
     connectedAt: Date;
   }[];
 };
@@ -44,6 +59,7 @@ type StateClaims = {
   uid: number | null;
   client: 'web' | 'mobile';
   communityId?: number | null;
+  channel?: boolean;
 };
 
 type SignupClaims = {
@@ -52,11 +68,24 @@ type SignupClaims = {
   username: string;
   displayName: string | null;
   email: string;
-  avatarUrl: string | null;
+  avatarUrl?: string | null;
+};
+
+type AvatarClaims = {
+  uid: number;
+  url: string;
+};
+
+type ServerClaims = {
+  uid: number;
+  communityId: number;
+  servers: { id: string; name: string }[];
 };
 
 const EXPIRED = 'That sign-in link expired. Please try again.';
 const SIGNUP_EXPIRED = 'That sign-up expired. Please start again';
+const AVATAR_EXPIRED = 'That picture offer expired. Connect again to get it';
+const SERVERS_EXPIRED = 'That Discord connection expired. Connect again';
 const NONCE_PATTERN = /^[A-Za-z0-9_-]{16,128}$/;
 
 function stateSecret() {
@@ -67,8 +96,31 @@ function signupSecret() {
   return `${process.env.JWT_SECRET}:oauth-signup`;
 }
 
+function avatarSecret() {
+  return `${process.env.JWT_SECRET}:oauth-avatar`;
+}
+
+function serversSecret() {
+  return `${process.env.JWT_SECRET}:oauth-discord-servers`;
+}
+
 function redirectUri(provider: AuthProvider) {
   return `${webUrl()}/auth/${provider}/callback`;
+}
+
+function incomingWebhook(webhook: unknown): IncomingWebhook | null {
+  if (!webhook || typeof webhook !== 'object') return null;
+  const fields = webhook as Record<string, unknown>;
+  const values = [fields.id, fields.token, fields.guild_id, fields.channel_id];
+  if (!values.every((value) => typeof value === 'string' && value)) {
+    return null;
+  }
+  return {
+    id: String(fields.id),
+    token: String(fields.token),
+    guildId: String(fields.guild_id),
+    channelId: String(fields.channel_id),
+  };
 }
 
 function isUniqueViolation(error: unknown) {
@@ -86,6 +138,8 @@ export class OAuthService {
     private auth: AuthService,
     private presence: PresenceGateway,
     private communities: CommunitiesService,
+    private storage: StorageService,
+    private discordChannel: DiscordChannelService,
   ) {}
 
   enabled(): AuthProvider[] {
@@ -102,11 +156,19 @@ export class OAuthService {
     uid: number | null,
     communityId: number | null = null,
     client: 'web' | 'mobile' = 'web',
+    channel = false,
   ) {
     const config = this.configured(provider);
     if (!NONCE_PATTERN.test(nonce)) throw new BadRequestException(EXPIRED);
 
-    const claims: StateClaims = { provider, nonce, uid, communityId, client };
+    const claims: StateClaims = {
+      provider,
+      nonce,
+      uid,
+      communityId,
+      client,
+      ...(channel && { channel }),
+    };
     const state = this.jwt.sign(claims, {
       secret: stateSecret(),
       expiresIn: '10m',
@@ -115,7 +177,12 @@ export class OAuthService {
       client_id: config.clientId()!,
       redirect_uri: redirectUri(provider),
       response_type: 'code',
-      scope: config.scope,
+      scope:
+        channel && config.channelScope
+          ? config.channelScope
+          : communityId !== null
+            ? (config.communityScope ?? config.scope)
+            : config.scope,
       state,
     });
     return `${config.authorizeUrl}?${params}`;
@@ -126,12 +193,34 @@ export class OAuthService {
     provider: AuthProvider,
     communityId: number,
     nonce: string,
+    channel = false,
   ) {
-    if (provider !== 'twitch') {
-      throw new BadRequestException('Communities can only connect Twitch');
+    if (provider !== 'twitch' && provider !== 'discord') {
+      throw new BadRequestException(
+        'Communities can only connect Twitch or Discord',
+      );
+    }
+    if (channel && provider !== 'discord') {
+      throw new BadRequestException('Only Discord channels can be connected');
     }
     await this.communities.assertCanManage(userId, communityId);
-    return this.authorizeUrl(provider, nonce, userId, communityId);
+    if (channel) {
+      const community = await this.prisma.community.findUnique({
+        where: { id: communityId },
+        select: { isPublic: true },
+      });
+      if (!community?.isPublic) {
+        throw new BadRequestException(PRIVATE_COMMUNITY);
+      }
+    }
+    return this.authorizeUrl(
+      provider,
+      nonce,
+      userId,
+      communityId,
+      'web',
+      channel,
+    );
   }
 
   async complete(
@@ -140,13 +229,36 @@ export class OAuthService {
     viewerId: number,
   ): Promise<OAuthResult> {
     const claims = this.verifyState(provider, state, nonce);
-    const profile = await this.fetchProfile(provider, code);
+    const { profile, accessToken, webhook } = await this.fetchProfile(
+      provider,
+      code,
+    );
 
     if (typeof claims.communityId === 'number') {
       if (claims.uid !== viewerId) {
         throw new ForbiddenException(
           'Log in to the account you’re connecting, then try again.',
         );
+      }
+      if (provider === 'discord' && claims.channel) {
+        await this.connectChannel(
+          viewerId,
+          claims.communityId,
+          accessToken,
+          webhook,
+        );
+        return { linked: provider, communityId: claims.communityId };
+      }
+      if (provider === 'discord') {
+        return {
+          linked: provider,
+          communityId: claims.communityId,
+          servers: await this.serverChoice(
+            viewerId,
+            claims.communityId,
+            accessToken,
+          ),
+        };
       }
       await this.communities.connectTwitch(viewerId, claims.communityId, {
         id: profile.id,
@@ -162,7 +274,8 @@ export class OAuthService {
         );
       }
       await this.link(claims.uid, provider, profile);
-      return { linked: provider };
+      const avatar = await this.avatarOffer(claims.uid, profile.avatarUrl);
+      return avatar ? { linked: provider, avatar } : { linked: provider };
     }
 
     const user = await this.existingUser(provider, profile);
@@ -199,14 +312,14 @@ export class OAuthService {
     } catch {
       throw new BadRequestException(SIGNUP_EXPIRED);
     }
-    const { provider, id, displayName, email } = claims;
+    const { provider, id, displayName, email, avatarUrl = null } = claims;
     const profile: OAuthProfile = {
       id,
       username: claims.username,
       displayName,
       email,
       emailVerified: true,
-      avatarUrl: claims.avatarUrl,
+      avatarUrl,
     };
 
     const existing = await this.existingUser(provider, profile);
@@ -227,9 +340,10 @@ export class OAuthService {
       const user = await this.prisma.user.create({
         data: {
           email,
+          emailVerifiedAt: new Date(),
           username: normalized,
           name: displayName,
-          avatarUrl: useProviderAvatar ? claims.avatarUrl : null,
+          avatarUrl: useProviderAvatar ? avatarUrl : null,
           oauthAccounts: {
             create: {
               provider,
@@ -240,11 +354,79 @@ export class OAuthService {
         },
         select: { id: true, email: true },
       });
+      if (useProviderAvatar && avatarUrl)
+        await this.importAvatar(user.id, avatarUrl).catch(() => null);
       return this.auth.generateToken(user.id, user.email);
     } catch (error) {
       if (isUniqueViolation(error)) throw taken();
       throw error;
     }
+  }
+
+  async connectDiscordServer(
+    userId: number,
+    token: string,
+    serverId: string,
+  ): Promise<{ communityId: number; name: string } & DiscordWidget> {
+    let claims: ServerClaims;
+    try {
+      claims = this.jwt.verify<ServerClaims>(token, {
+        secret: serversSecret(),
+      });
+    } catch {
+      throw new BadRequestException(SERVERS_EXPIRED);
+    }
+    if (claims.uid !== userId) {
+      throw new ForbiddenException(
+        'Log in to the account you’re connecting, then try again.',
+      );
+    }
+    const server = claims.servers.find(({ id }) => id === serverId);
+    if (!server) {
+      throw new BadRequestException('Pick one of the servers you manage');
+    }
+
+    const widget = await this.communities.connectDiscord(
+      userId,
+      claims.communityId,
+      server,
+    );
+    return { communityId: claims.communityId, name: server.name, ...widget };
+  }
+
+  async useLinkedAvatar(
+    userId: number,
+    token: string,
+  ): Promise<{ avatarUrl: string }> {
+    let claims: AvatarClaims;
+    try {
+      claims = this.jwt.verify<AvatarClaims>(token, { secret: avatarSecret() });
+    } catch {
+      throw new BadRequestException(AVATAR_EXPIRED);
+    }
+    if (claims.uid !== userId) {
+      throw new ForbiddenException('That picture is for a different account');
+    }
+
+    const taken = () =>
+      new ConflictException('You already have a profile picture');
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { avatarUrl: true },
+    });
+    if (!user) throw new NotFoundException('User not found');
+    if (user.avatarUrl) throw taken();
+
+    let avatarUrl: string | null;
+    try {
+      avatarUrl = await this.importAvatar(userId, claims.url);
+    } catch {
+      throw new BadGatewayException(
+        'Couldn’t get that picture. Try uploading it instead',
+      );
+    }
+    if (!avatarUrl) throw taken();
+    return { avatarUrl };
   }
 
   async connections(userId: number): Promise<OAuthConnections> {
@@ -258,6 +440,7 @@ export class OAuthService {
             provider: true,
             username: true,
             showLive: true,
+            showClips: true,
             createdAt: true,
           },
         },
@@ -268,10 +451,11 @@ export class OAuthService {
     return {
       hasPassword: user.password !== null,
       connections: user.oauthAccounts.map(
-        ({ provider, username, showLive, createdAt }) => ({
+        ({ provider, username, showLive, showClips, createdAt }) => ({
           provider,
           username,
           showLive,
+          showClips,
           connectedAt: createdAt,
         }),
       ),
@@ -296,16 +480,22 @@ export class OAuthService {
     if (provider === 'twitch') await this.presence.stopLive(userId);
   }
 
-  async setShowLive(userId: number, provider: AuthProvider, showLive: boolean) {
+  async updateConnection(
+    userId: number,
+    provider: AuthProvider,
+    { showLive, showClips }: { showLive?: boolean; showClips?: boolean },
+  ) {
     if (provider !== 'twitch') {
-      throw new BadRequestException('Only Twitch can show when you’re live');
+      throw new BadRequestException(
+        'Only Twitch can show when you’re live and your clips',
+      );
     }
     const { count } = await this.prisma.oAuthAccount.updateMany({
       where: { userId, provider },
-      data: { showLive },
+      data: { showLive, showClips },
     });
     if (count === 0) throw new NotFoundException('Twitch isn’t connected');
-    if (!showLive) await this.presence.stopLive(userId);
+    if (showLive === false) await this.presence.stopLive(userId);
   }
 
   private configured(provider: AuthProvider) {
@@ -349,8 +539,12 @@ export class OAuthService {
       });
       if (!response.ok)
         throw new Error(`Token request failed with ${response.status}`);
-      const { access_token: accessToken } = await response.json();
-      return await config.profile(accessToken, clientId);
+      const { access_token: accessToken, webhook } = await response.json();
+      return {
+        profile: await config.profile(accessToken, clientId),
+        accessToken: String(accessToken),
+        webhook: incomingWebhook(webhook),
+      };
     } catch {
       throw new BadGatewayException(
         `Couldn’t finish logging in with ${config.label}. Please try again.`,
@@ -381,9 +575,14 @@ export class OAuthService {
     };
     const existing = await this.prisma.user.findFirst({
       where: { email: { equals: profile.email, mode: 'insensitive' } },
-      select: { id: true, email: true },
+      select: { id: true, email: true, emailVerifiedAt: true },
     });
     if (existing) {
+      if (!existing.emailVerifiedAt) {
+        throw new ConflictException(
+          `An Orbis account already uses this email. Log in with your password, then connect ${label} in Settings`,
+        );
+      }
       try {
         await this.prisma.oAuthAccount.create({
           data: { ...account, userId: existing.id },
@@ -394,9 +593,103 @@ export class OAuthService {
           `This Orbis account is connected to a different ${label} account.`,
         );
       }
-      return existing;
+      return { id: existing.id, email: existing.email };
     }
 
+    return null;
+  }
+
+  private async connectChannel(
+    userId: number,
+    communityId: number,
+    accessToken: string,
+    webhook: IncomingWebhook | null,
+  ) {
+    if (!webhook) {
+      throw new BadGatewayException(
+        'Discord didn’t set up the channel. Please try again.',
+      );
+    }
+    const serverName = await discordServerName(
+      accessToken,
+      webhook.guildId,
+    ).catch(() => null);
+    await this.discordChannel.connect(userId, communityId, webhook, serverName);
+  }
+
+  private async serverChoice(
+    userId: number,
+    communityId: number,
+    accessToken: string,
+  ) {
+    await this.communities.assertCanManage(userId, communityId);
+
+    let options: DiscordServer[];
+    try {
+      options = await discordServers(accessToken);
+    } catch {
+      throw new BadGatewayException(
+        'Couldn’t get your Discord servers. Please try again.',
+      );
+    }
+    if (options.length === 0) {
+      throw new BadRequestException(
+        'You don’t manage any Discord servers. You need the Manage Server permission to connect one',
+      );
+    }
+
+    const claims: ServerClaims = {
+      uid: userId,
+      communityId,
+      servers: options.map(({ id, name }) => ({ id, name })),
+    };
+    return {
+      token: this.jwt.sign(claims, {
+        secret: serversSecret(),
+        expiresIn: '30m',
+      }),
+      options,
+    };
+  }
+
+  private async avatarOffer(userId: number, url: string | null) {
+    if (!url) return null;
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { avatarUrl: true },
+    });
+    if (!user || user.avatarUrl) return null;
+
+    const claims: AvatarClaims = { uid: userId, url };
+    return {
+      url,
+      token: this.jwt.sign(claims, {
+        secret: avatarSecret(),
+        expiresIn: '30m',
+      }),
+    };
+  }
+
+  private async importAvatar(userId: number, url: string) {
+    const response = await fetch(url, {
+      signal: AbortSignal.timeout(OAUTH_TIMEOUT_MS),
+    });
+    if (!response.ok) {
+      throw new Error(`Picture request failed with ${response.status}`);
+    }
+
+    const stored = await this.storage.uploadImage(
+      Buffer.from(await response.arrayBuffer()),
+      'avatars',
+      384,
+    );
+    const { count } = await this.prisma.user.updateMany({
+      where: { id: userId, avatarUrl: null },
+      data: { avatarUrl: stored.url },
+    });
+    if (count > 0) return stored.url;
+
+    await this.storage.delete(stored.key);
     return null;
   }
 

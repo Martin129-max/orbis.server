@@ -43,6 +43,7 @@ export type OAuthAccountMinAggregateOutputType = {
   providerAccountId: string | null
   username: string | null
   showLive: boolean | null
+  showClips: boolean | null
   createdAt: Date | null
 }
 
@@ -53,6 +54,7 @@ export type OAuthAccountMaxAggregateOutputType = {
   providerAccountId: string | null
   username: string | null
   showLive: boolean | null
+  showClips: boolean | null
   createdAt: Date | null
 }
 
@@ -63,6 +65,7 @@ export type OAuthAccountCountAggregateOutputType = {
   providerAccountId: number
   username: number
   showLive: number
+  showClips: number
   createdAt: number
   _all: number
 }
@@ -85,6 +88,7 @@ export type OAuthAccountMinAggregateInputType = {
   providerAccountId?: true
   username?: true
   showLive?: true
+  showClips?: true
   createdAt?: true
 }
 
@@ -95,6 +99,7 @@ export type OAuthAccountMaxAggregateInputType = {
   providerAccountId?: true
   username?: true
   showLive?: true
+  showClips?: true
   createdAt?: true
 }
 
@@ -105,6 +110,7 @@ export type OAuthAccountCountAggregateInputType = {
   providerAccountId?: true
   username?: true
   showLive?: true
+  showClips?: true
   createdAt?: true
   _all?: true
 }
@@ -202,6 +208,7 @@ export type OAuthAccountGroupByOutputType = {
   providerAccountId: string
   username: string
   showLive: boolean
+  showClips: boolean
   createdAt: Date
   _count: OAuthAccountCountAggregateOutputType | null
   _avg: OAuthAccountAvgAggregateOutputType | null
@@ -235,6 +242,7 @@ export type OAuthAccountWhereInput = {
   providerAccountId?: Prisma.StringFilter<"OAuthAccount"> | string
   username?: Prisma.StringFilter<"OAuthAccount"> | string
   showLive?: Prisma.BoolFilter<"OAuthAccount"> | boolean
+  showClips?: Prisma.BoolFilter<"OAuthAccount"> | boolean
   createdAt?: Prisma.DateTimeFilter<"OAuthAccount"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
@@ -246,6 +254,7 @@ export type OAuthAccountOrderByWithRelationInput = {
   providerAccountId?: Prisma.SortOrder
   username?: Prisma.SortOrder
   showLive?: Prisma.SortOrder
+  showClips?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
 }
@@ -262,6 +271,7 @@ export type OAuthAccountWhereUniqueInput = Prisma.AtLeast<{
   providerAccountId?: Prisma.StringFilter<"OAuthAccount"> | string
   username?: Prisma.StringFilter<"OAuthAccount"> | string
   showLive?: Prisma.BoolFilter<"OAuthAccount"> | boolean
+  showClips?: Prisma.BoolFilter<"OAuthAccount"> | boolean
   createdAt?: Prisma.DateTimeFilter<"OAuthAccount"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id" | "provider_providerAccountId" | "userId_provider">
@@ -273,6 +283,7 @@ export type OAuthAccountOrderByWithAggregationInput = {
   providerAccountId?: Prisma.SortOrder
   username?: Prisma.SortOrder
   showLive?: Prisma.SortOrder
+  showClips?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.OAuthAccountCountOrderByAggregateInput
   _avg?: Prisma.OAuthAccountAvgOrderByAggregateInput
@@ -291,6 +302,7 @@ export type OAuthAccountScalarWhereWithAggregatesInput = {
   providerAccountId?: Prisma.StringWithAggregatesFilter<"OAuthAccount"> | string
   username?: Prisma.StringWithAggregatesFilter<"OAuthAccount"> | string
   showLive?: Prisma.BoolWithAggregatesFilter<"OAuthAccount"> | boolean
+  showClips?: Prisma.BoolWithAggregatesFilter<"OAuthAccount"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"OAuthAccount"> | Date | string
 }
 
@@ -299,6 +311,7 @@ export type OAuthAccountCreateInput = {
   providerAccountId: string
   username: string
   showLive?: boolean
+  showClips?: boolean
   createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutOauthAccountsInput
 }
@@ -310,6 +323,7 @@ export type OAuthAccountUncheckedCreateInput = {
   providerAccountId: string
   username: string
   showLive?: boolean
+  showClips?: boolean
   createdAt?: Date | string
 }
 
@@ -318,6 +332,7 @@ export type OAuthAccountUpdateInput = {
   providerAccountId?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
   showLive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showClips?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutOauthAccountsNestedInput
 }
@@ -329,6 +344,7 @@ export type OAuthAccountUncheckedUpdateInput = {
   providerAccountId?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
   showLive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showClips?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -339,6 +355,7 @@ export type OAuthAccountCreateManyInput = {
   providerAccountId: string
   username: string
   showLive?: boolean
+  showClips?: boolean
   createdAt?: Date | string
 }
 
@@ -347,6 +364,7 @@ export type OAuthAccountUpdateManyMutationInput = {
   providerAccountId?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
   showLive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showClips?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -357,6 +375,7 @@ export type OAuthAccountUncheckedUpdateManyInput = {
   providerAccountId?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
   showLive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showClips?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -387,6 +406,7 @@ export type OAuthAccountCountOrderByAggregateInput = {
   providerAccountId?: Prisma.SortOrder
   username?: Prisma.SortOrder
   showLive?: Prisma.SortOrder
+  showClips?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -402,6 +422,7 @@ export type OAuthAccountMaxOrderByAggregateInput = {
   providerAccountId?: Prisma.SortOrder
   username?: Prisma.SortOrder
   showLive?: Prisma.SortOrder
+  showClips?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -412,6 +433,7 @@ export type OAuthAccountMinOrderByAggregateInput = {
   providerAccountId?: Prisma.SortOrder
   username?: Prisma.SortOrder
   showLive?: Prisma.SortOrder
+  showClips?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -471,6 +493,7 @@ export type OAuthAccountCreateWithoutUserInput = {
   providerAccountId: string
   username: string
   showLive?: boolean
+  showClips?: boolean
   createdAt?: Date | string
 }
 
@@ -480,6 +503,7 @@ export type OAuthAccountUncheckedCreateWithoutUserInput = {
   providerAccountId: string
   username: string
   showLive?: boolean
+  showClips?: boolean
   createdAt?: Date | string
 }
 
@@ -519,6 +543,7 @@ export type OAuthAccountScalarWhereInput = {
   providerAccountId?: Prisma.StringFilter<"OAuthAccount"> | string
   username?: Prisma.StringFilter<"OAuthAccount"> | string
   showLive?: Prisma.BoolFilter<"OAuthAccount"> | boolean
+  showClips?: Prisma.BoolFilter<"OAuthAccount"> | boolean
   createdAt?: Prisma.DateTimeFilter<"OAuthAccount"> | Date | string
 }
 
@@ -528,6 +553,7 @@ export type OAuthAccountCreateManyUserInput = {
   providerAccountId: string
   username: string
   showLive?: boolean
+  showClips?: boolean
   createdAt?: Date | string
 }
 
@@ -536,6 +562,7 @@ export type OAuthAccountUpdateWithoutUserInput = {
   providerAccountId?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
   showLive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showClips?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -545,6 +572,7 @@ export type OAuthAccountUncheckedUpdateWithoutUserInput = {
   providerAccountId?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
   showLive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showClips?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -554,6 +582,7 @@ export type OAuthAccountUncheckedUpdateManyWithoutUserInput = {
   providerAccountId?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
   showLive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showClips?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -566,6 +595,7 @@ export type OAuthAccountSelect<ExtArgs extends runtime.Types.Extensions.Internal
   providerAccountId?: boolean
   username?: boolean
   showLive?: boolean
+  showClips?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["oAuthAccount"]>
@@ -577,6 +607,7 @@ export type OAuthAccountSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   providerAccountId?: boolean
   username?: boolean
   showLive?: boolean
+  showClips?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["oAuthAccount"]>
@@ -588,6 +619,7 @@ export type OAuthAccountSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   providerAccountId?: boolean
   username?: boolean
   showLive?: boolean
+  showClips?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["oAuthAccount"]>
@@ -599,10 +631,11 @@ export type OAuthAccountSelectScalar = {
   providerAccountId?: boolean
   username?: boolean
   showLive?: boolean
+  showClips?: boolean
   createdAt?: boolean
 }
 
-export type OAuthAccountOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "provider" | "providerAccountId" | "username" | "showLive" | "createdAt", ExtArgs["result"]["oAuthAccount"]>
+export type OAuthAccountOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "provider" | "providerAccountId" | "username" | "showLive" | "showClips" | "createdAt", ExtArgs["result"]["oAuthAccount"]>
 export type OAuthAccountInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -625,6 +658,7 @@ export type $OAuthAccountPayload<ExtArgs extends runtime.Types.Extensions.Intern
     providerAccountId: string
     username: string
     showLive: boolean
+    showClips: boolean
     createdAt: Date
   }, ExtArgs["result"]["oAuthAccount"]>
   composites: {}
@@ -1056,6 +1090,7 @@ export interface OAuthAccountFieldRefs {
   readonly providerAccountId: Prisma.FieldRef<"OAuthAccount", 'String'>
   readonly username: Prisma.FieldRef<"OAuthAccount", 'String'>
   readonly showLive: Prisma.FieldRef<"OAuthAccount", 'Boolean'>
+  readonly showClips: Prisma.FieldRef<"OAuthAccount", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"OAuthAccount", 'DateTime'>
 }
     

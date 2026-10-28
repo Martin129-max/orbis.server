@@ -2,6 +2,11 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { InvitesService } from './invites.service';
 import { PrismaService } from '../prisma.service';
 import { CommunitiesService } from '../communities/communities.service';
+import { buildInviteCard } from './invite-card';
+
+jest.mock('./invite-card', () => ({
+  buildInviteCard: jest.fn().mockResolvedValue(new Uint8Array([1])),
+}));
 
 describe('InvitesService permanent invites', () => {
   const invite = {
@@ -11,7 +16,8 @@ describe('InvitesService permanent invites', () => {
     delete: jest.fn(),
     fields: { maxUses: 'maxUses' },
   };
-  const prisma = { invite };
+  const community = { findUnique: jest.fn() };
+  const prisma = { invite, community };
   const communities = { roleOf: jest.fn() };
   const service = new InvitesService(
     prisma as unknown as PrismaService,
@@ -95,5 +101,38 @@ describe('InvitesService permanent invites', () => {
     );
     const where = invite.findFirst.mock.calls[0][0].where;
     expect(where.AND).toEqual(expect.arrayContaining([{ disabledAt: null }]));
+  });
+
+  it('builds the invite card with the member’s permanent QR', async () => {
+    const previousWebUrl = process.env.WEB_URL;
+    process.env.WEB_URL = 'https://orbis.example.com';
+    invite.findFirst.mockResolvedValue({ code: 'qr', disabledAt: null });
+    community.findUnique.mockResolvedValue({
+      name: 'Anime Club',
+      iconUrl: null,
+      coverUrl: 'https://media.example.com/cover.webp',
+      backgroundUrl: null,
+    });
+
+    await service.card(1, 3);
+
+    expect(community.findUnique.mock.calls[0][0].where).toEqual({ id: 3 });
+    expect(buildInviteCard).toHaveBeenCalledWith({
+      name: 'Anime Club',
+      iconUrl: null,
+      coverUrl: 'https://media.example.com/cover.webp',
+      backgroundUrl: null,
+      qrUrl: 'https://orbis.example.com/qr/qr',
+    });
+    process.env.WEB_URL = previousWebUrl;
+  });
+
+  it('refuses to build the card while the QR is off', async () => {
+    invite.findFirst.mockResolvedValue({ code: 'qr', disabledAt: new Date() });
+
+    await expect(service.card(1, 3)).rejects.toBeInstanceOf(
+      BadRequestException,
+    );
+    expect(buildInviteCard).not.toHaveBeenCalled();
   });
 });

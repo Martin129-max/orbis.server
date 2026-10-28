@@ -15,6 +15,9 @@ import { Community as CommunityModel } from '../../prisma/generated/client';
 import { StorageService } from '../storage/storage.service';
 import { PresenceGateway, PresenceStatus } from '../friends/presence.gateway';
 import { NextStream, TwitchLiveService } from '../friends/twitch-live.service';
+import { isHeadAdmin } from '../users/head-admin';
+import { DiscordWidget, discordWidget } from './discord-widget';
+import { deleteWebhook } from '../discord-channel/discord-webhook';
 
 export type CommunityMember = {
   userId: number;
@@ -22,6 +25,7 @@ export type CommunityMember = {
   name: string | null;
   avatarUrl: string | null;
   coverUrl: string | null;
+  isVerified: boolean;
   online: boolean;
   status: PresenceStatus;
   playing: string | null;
@@ -36,6 +40,8 @@ export type CommunityWithRole = CommunityModel & {
   memberCount?: number;
   live?: boolean;
   nextStream?: NextStream | null;
+  discord?: DiscordWidget | null;
+  showLibraryUpdates?: boolean;
 };
 
 const roleRank: Record<CommunityRole, number> = {
@@ -65,6 +71,7 @@ export type CommunitySearchResult = {
   description: string | null;
   iconUrl: string | null;
   coverUrl: string | null;
+  isVerified: boolean;
   memberCount: number;
   joined: boolean;
   members: Person[];
@@ -136,7 +143,7 @@ export class CommunitiesService {
   async findPublic(): Promise<
     Pick<
       CommunitySearchResult,
-      'id' | 'name' | 'iconUrl' | 'coverUrl' | 'memberCount'
+      'id' | 'name' | 'iconUrl' | 'coverUrl' | 'isVerified' | 'memberCount'
     >[]
   > {
     const communities = await this.prisma.community.findMany({
@@ -148,6 +155,7 @@ export class CommunitiesService {
         name: true,
         iconUrl: true,
         coverUrl: true,
+        isVerified: true,
         _count: { select: { memberships: true } },
       },
     });
@@ -175,6 +183,7 @@ export class CommunitiesService {
         description: true,
         iconUrl: true,
         coverUrl: true,
+        isVerified: true,
         _count: { select: { memberships: true } },
         memberships: { where: { userId }, select: { userId: true } },
       },
@@ -214,7 +223,16 @@ export class CommunitiesService {
 
     return communities.map(
       (
-        { id, name, description, iconUrl, coverUrl, _count, memberships },
+        {
+          id,
+          name,
+          description,
+          iconUrl,
+          coverUrl,
+          isVerified,
+          _count,
+          memberships,
+        },
         index,
       ) => {
         const mutuals = friendMemberships
@@ -226,6 +244,7 @@ export class CommunitiesService {
           description,
           iconUrl,
           coverUrl,
+          isVerified,
           memberCount: _count.memberships,
           joined: memberships.length > 0,
           members: previews[index].map(({ user }) => user),
@@ -270,7 +289,8 @@ export class CommunitiesService {
 
     return memberships.map(({ community }) => ({
       ...community,
-      live: this.presence.isCommunityLive(community.id),
+      live:
+        community.showTwitchLive && this.presence.isCommunityLive(community.id),
     }));
   }
 
@@ -279,6 +299,18 @@ export class CommunitiesService {
       where: { userId_communityId: { userId, communityId } },
       data: { nickname: nickname?.trim() || null },
       select: { nickname: true },
+    });
+  }
+
+  setShowLibraryUpdates(
+    userId: number,
+    communityId: number,
+    showLibraryUpdates: boolean,
+  ) {
+    return this.prisma.membership.update({
+      where: { userId_communityId: { userId, communityId } },
+      data: { showLibraryUpdates },
+      select: { showLibraryUpdates: true },
     });
   }
 
@@ -295,6 +327,61 @@ export class CommunitiesService {
     await this.prisma.community.update({
       where: { id: communityId },
       data: { twitchUserId: channel.id, twitchLogin: channel.login },
+    });
+  }
+
+  async connectDiscord(
+    userId: number,
+    communityId: number,
+    server: { id: string; name: string },
+  ): Promise<DiscordWidget> {
+    await this.requireRole(userId, communityId, 'admin');
+    await this.prisma.community.update({
+      where: { id: communityId },
+      data: { discordGuildId: server.id, discordGuildName: server.name },
+    });
+    return discordWidget(server.id);
+  }
+
+  async unfinishedDiscord(
+    userId: number,
+  ): Promise<{ id: number; name: string; discordGuildName: string | null }[]> {
+    const memberships = await this.prisma.membership.findMany({
+      where: { userId, community: { discordGuildId: { not: null } } },
+      select: {
+        community: {
+          select: {
+            id: true,
+            name: true,
+            discordGuildId: true,
+            discordGuildName: true,
+          },
+        },
+      },
+    });
+
+    const unfinished = await Promise.all(
+      memberships.map(async ({ community }) => {
+        const role = await this.roleOf(userId, community.id);
+        if (role !== 'owner' && role !== 'admin') return null;
+        const { online } = await discordWidget(community.discordGuildId!);
+        if (online !== null) return null;
+        return {
+          id: community.id,
+          name: community.name,
+          discordGuildName: community.discordGuildName,
+        };
+      }),
+    );
+
+    return unfinished.filter((community) => community !== null);
+  }
+
+  async disconnectDiscord(userId: number, communityId: number) {
+    await this.requireRole(userId, communityId, 'admin');
+    await this.prisma.community.update({
+      where: { id: communityId },
+      data: { discordGuildId: null, discordGuildName: null },
     });
   }
 
@@ -483,6 +570,7 @@ export class CommunitiesService {
                 name: true,
                 avatarUrl: true,
                 coverUrl: true,
+                isVerified: true,
                 appearOffline: true,
                 status: true,
               },
@@ -504,6 +592,7 @@ export class CommunitiesService {
           name: user.name,
           avatarUrl: user.avatarUrl,
           coverUrl: user.coverUrl,
+          isVerified: user.isVerified,
           online: !user.appearOffline && this.presence.isOnline(user.id),
           status: this.presence.statusOf(user.id, user),
           playing: this.presence.playingOf(user.id, user),
@@ -523,24 +612,40 @@ export class CommunitiesService {
   }
 
   async findOne(userId: number, id: number): Promise<CommunityWithRole | null> {
-    const [community, role] = await Promise.all([
+    const [community, role, membership] = await Promise.all([
       this.prisma.community.findUnique({
         where: { id },
         include: { _count: { select: { memberships: true } } },
       }),
       this.roleOf(userId, id),
+      this.prisma.membership.findUnique({
+        where: { userId_communityId: { userId, communityId: id } },
+        select: { showLibraryUpdates: true },
+      }),
     ]);
     if (!community || (!role && !community.isPublic)) return null;
 
     const { _count, ...rest } = community;
+    const showLive = rest.showTwitchLive && rest.twitchUserId;
+    const [nextStream, discord] = await Promise.all([
+      showLive ? this.twitch.nextStream(rest.twitchUserId!) : null,
+      rest.discordGuildId ? discordWidget(rest.discordGuildId) : null,
+    ]);
+    const manages = role === 'owner' || role === 'admin';
     return {
       ...rest,
       role,
       memberCount: _count.memberships,
-      live: this.presence.isCommunityLive(id),
-      nextStream: rest.twitchUserId
-        ? await this.twitch.nextStream(rest.twitchUserId)
-        : null,
+      live: Boolean(showLive) && this.presence.isCommunityLive(id),
+      nextStream,
+      discord:
+        discord && !manages
+          ? {
+              online: rest.showDiscordOnline ? discord.online : null,
+              inviteUrl: rest.showDiscordInvite ? discord.inviteUrl : null,
+            }
+          : discord,
+      ...(role && { showLibraryUpdates: membership?.showLibraryUpdates }),
     };
   }
 
@@ -584,7 +689,16 @@ export class CommunitiesService {
   async update(
     userId: number,
     communityId: number,
-    { name, isPublic, description }: UpdateCommunityDto,
+    {
+      name,
+      isPublic,
+      description,
+      links,
+      showTwitchLive,
+      showTwitchClips,
+      showDiscordOnline,
+      showDiscordInvite,
+    }: UpdateCommunityDto,
   ): Promise<CommunityWithRole> {
     const role = await this.requireRole(userId, communityId, 'admin');
     const community = await this.prisma.community.update({
@@ -594,10 +708,49 @@ export class CommunitiesService {
         isPublic,
         description:
           description === undefined ? undefined : description.trim() || null,
+        links: links && { ...links },
+        showTwitchLive,
+        showTwitchClips,
+        showDiscordOnline,
+        showDiscordInvite,
       },
     });
+    if (showTwitchLive === false) {
+      await this.presence.stopCommunityLive(communityId);
+    }
 
     return { ...community, role };
+  }
+
+  async setVerified(
+    headAdminId: number,
+    communityId: number,
+    isVerified: boolean,
+  ): Promise<{ isVerified: boolean }> {
+    const headAdmin = await this.prisma.user.findUnique({
+      where: { id: headAdminId },
+      select: { email: true },
+    });
+    if (!headAdmin || !isHeadAdmin(headAdmin.email)) {
+      throw new ForbiddenException(
+        'Only the head admin can verify communities',
+      );
+    }
+
+    const community =
+      communityId >= 1 && communityId <= MAX_INT
+        ? await this.prisma.community.findUnique({
+            where: { id: communityId },
+            select: { id: true },
+          })
+        : null;
+    if (!community) throw new NotFoundException('Community not found');
+
+    await this.prisma.community.update({
+      where: { id: communityId },
+      data: { isVerified },
+    });
+    return { isVerified };
   }
 
   async updateImage(
@@ -623,9 +776,19 @@ export class CommunitiesService {
 
   async remove(userId: number, communityId: number): Promise<void> {
     await this.requireRole(userId, communityId, 'owner');
+    const channel = await this.prisma.discordChannel.findUnique({
+      where: { communityId },
+      select: { webhookId: true, webhookToken: true },
+    });
     const community = await this.prisma.community.delete({
       where: { id: communityId },
     });
+    if (channel) {
+      await deleteWebhook({
+        id: channel.webhookId,
+        token: channel.webhookToken,
+      }).catch(() => {});
+    }
     await this.deleteStoredImage(community.iconUrl);
     await this.deleteStoredImage(community.coverUrl);
     await this.deleteStoredImage(community.backgroundUrl);

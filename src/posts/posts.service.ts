@@ -16,6 +16,12 @@ import { author, communitySummary } from '../common/author';
 import { PAGE_SIZE, Page } from '../common/pagination';
 import { sanitizeRichText } from '../common/rich-text';
 import {
+  linkedMentions,
+  notifyMentions,
+  resolveMentions,
+  unlinkMentions,
+} from '../common/mentions';
+import {
   ThreadSummary,
   ThreadsService,
   threadInclude,
@@ -33,6 +39,9 @@ import { reportedBy, visibleTo } from '../moderation/visibility';
 import { loadNicknames } from '../communities/nicknames';
 import { nsfwEntries, showsNsfw } from '../users/nsfw';
 import { loadSteamLinks, SteamLink } from '../steam/steam-links';
+import { DiscordChannelService } from '../discord-channel/discord-channel.service';
+import { managedCommunities } from '../communities/managed-communities';
+import { discussionCleanup } from '../comments/discussion-cleanup';
 
 const postInclude = {
   author,
@@ -66,7 +75,8 @@ type RawPost = Prisma.PostGetPayload<{
   include: typeof postInclude;
 }> & { type: 'post' };
 
-export type PostItem = RawPost & Engagement & { liked: boolean };
+export type PostItem = RawPost &
+  Engagement & { liked: boolean; canDelete: boolean };
 
 const activityInclude = {
   entry: {
@@ -122,6 +132,21 @@ type FeedCursor = { createdAt: Date; rank: number; id: number };
 const newestFirst = [{ createdAt: 'desc' as const }, { id: 'desc' as const }];
 
 const SEARCH_LIMIT = 8;
+
+function inMyCommunities(userId: number) {
+  return { community: { memberships: { some: { userId } } } };
+}
+
+function homePosts(userId: number) {
+  return {
+    OR: [
+      inMyCommunities(userId),
+      { wallUserId: userId },
+      { authorId: userId, communityId: null, mediaType: null },
+      { wallUser: friendsOf(userId) },
+    ],
+  };
+}
 
 function visibleCommunity(viewerId: number) {
   return {
@@ -220,7 +245,18 @@ export class PostsService {
     private threads: ThreadsService,
     private notifications: NotificationsService,
     private likes: LikesService,
+    private discordChannel: DiscordChannelService,
   ) {}
+
+  private async withMentions(body: CreatePostDto, authorId: number) {
+    const { content, linkUrl } = postBody(body);
+    const { html, mentioned } = await resolveMentions(
+      this.prisma,
+      content,
+      authorId,
+    );
+    return { data: { content: html, linkUrl }, mentioned };
+  }
 
   private async engage(
     viewerId: number,
@@ -242,6 +278,7 @@ export class PostsService {
                     commentableType: item.type,
                     commentableId: item.id,
                     parentId: null,
+                    deletedAt: null,
                     ...visibleTo(viewerId, reported.comment),
                   },
                   orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
@@ -262,6 +299,12 @@ export class PostsService {
           ({ id }) => ({ communityId: communityOf(item), userId: id }),
         ),
       ),
+    );
+
+    const managed = await managedCommunities(
+      this.prisma,
+      viewerId,
+      items.map(communityOf),
     );
 
     const steamOf = await loadSteamLinks(
@@ -288,7 +331,11 @@ export class PostsService {
         const steam = steamOf(item.author.id, item.steamAppId);
         return { ...item, author, liked, previewComments, steam };
       }
-      return { ...item, author, liked, previewComments };
+      const canDelete =
+        item.author.id === viewerId ||
+        item.wallUserId === viewerId ||
+        (item.communityId !== null && managed.has(item.communityId));
+      return { ...item, author, liked, previewComments, canDelete };
     });
   }
 
@@ -303,7 +350,7 @@ export class PostsService {
     const reported = await reportedBy(this.prisma, viewerId);
     const nsfw = nsfwEntries(await showsNsfw(this.prisma, viewerId));
 
-    const [posts, activities] = await Promise.all([
+    const [posts, threads, activities] = await Promise.all([
       excluded.has('post')
         ? []
         : this.prisma.post.findMany({
@@ -316,6 +363,18 @@ export class PostsService {
             take: PAGE_SIZE + 1,
             include: postInclude,
           }),
+      excluded.has('thread')
+        ? []
+        : this.prisma.thread.findMany({
+            where: {
+              communityId,
+              ...olderThan(cursor, RANK.thread),
+              ...visibleTo(viewerId, reported.thread),
+            },
+            orderBy: newestFirst,
+            take: PAGE_SIZE + 1,
+            include: threadInclude,
+          }),
       excluded.has('activity')
         ? []
         : this.prisma.libraryActivity.findMany({
@@ -323,7 +382,11 @@ export class PostsService {
               entry: {
                 isPublic: true,
                 ...nsfw,
-                user: { memberships: { some: { communityId } } },
+                user: {
+                  memberships: {
+                    some: { communityId, showLibraryUpdates: true },
+                  },
+                },
               },
               ...olderThan(cursor, RANK.activity),
             },
@@ -335,14 +398,79 @@ export class PostsService {
 
     const merged = [
       ...posts.map((post) => ({ ...post, type: 'post' as const })),
+      ...threads.map((thread) => ({ ...thread, type: 'thread' as const })),
       ...activities.map(toActivity),
     ].sort(compareFeedItems);
     const page = merged.slice(0, PAGE_SIZE);
+    const voted = new Map(
+      (
+        await this.threads.withMyVotes(
+          viewerId,
+          page.flatMap((item) => (item.type === 'thread' ? [item] : [])),
+        )
+      ).map((thread) => [thread.id, thread]),
+    );
 
     return {
-      items: await this.engage(viewerId, page),
+      items: await this.engage(
+        viewerId,
+        page.map((item) =>
+          item.type === 'thread' ? voted.get(item.id)! : item,
+        ),
+      ),
       nextCursor: nextCursor(merged, page),
     };
+  }
+
+  async findOneInCommunity(
+    viewerId: number,
+    communityId: number,
+    postId: number,
+  ): Promise<FeedItem> {
+    if (postId < 1 || postId > MAX_INT) {
+      throw new NotFoundException('Post not found');
+    }
+    const reported = await reportedBy(this.prisma, viewerId);
+    const post = await this.prisma.post.findFirst({
+      where: {
+        id: postId,
+        communityId,
+        ...visibleTo(viewerId, reported.post),
+      },
+      include: postInclude,
+    });
+    if (!post) throw new NotFoundException('Post not found');
+
+    const [item] = await this.engage(viewerId, [{ ...post, type: 'post' }]);
+    return item;
+  }
+
+  async findActivityInCommunity(
+    viewerId: number,
+    communityId: number,
+    activityId: number,
+  ): Promise<FeedItem> {
+    if (activityId < 1 || activityId > MAX_INT) {
+      throw new NotFoundException('Library update not found');
+    }
+    const nsfw = nsfwEntries(await showsNsfw(this.prisma, viewerId));
+    const activity = await this.prisma.libraryActivity.findFirst({
+      where: {
+        id: activityId,
+        entry: {
+          isPublic: true,
+          ...nsfw,
+          user: {
+            memberships: { some: { communityId, showLibraryUpdates: true } },
+          },
+        },
+      },
+      include: activityInclude,
+    });
+    if (!activity) throw new NotFoundException('Library update not found');
+
+    const [item] = await this.engage(viewerId, [toActivity(activity)]);
+    return item;
   }
 
   async searchCommunity(
@@ -388,6 +516,47 @@ export class PostsService {
     ]);
   }
 
+  async searchFeed(viewerId: number, rawQuery: string): Promise<FeedItem[]> {
+    const query = rawQuery.trim().slice(0, 100);
+    if (query.length < 2) return [];
+
+    const reported = await reportedBy(this.prisma, viewerId);
+    const contains = { contains: query, mode: 'insensitive' as const };
+    const [threads, posts] = await Promise.all([
+      this.prisma.thread.findMany({
+        where: {
+          ...inMyCommunities(viewerId),
+          OR: [{ title: contains }, { content: contains }],
+          ...visibleTo(viewerId, reported.thread),
+        },
+        orderBy: newestFirst,
+        take: SEARCH_LIMIT,
+        include: threadInclude,
+      }),
+      this.prisma.post.findMany({
+        where: {
+          AND: [
+            homePosts(viewerId),
+            { content: contains },
+            visibleTo(viewerId, reported.post),
+          ],
+        },
+        orderBy: newestFirst,
+        take: SEARCH_LIMIT,
+        include: postInclude,
+      }),
+    ]);
+
+    const voted = await this.threads.withMyVotes(
+      viewerId,
+      threads.map((thread) => ({ ...thread, type: 'thread' as const })),
+    );
+    return this.engage(viewerId, [
+      ...voted,
+      ...posts.map((post) => ({ ...post, type: 'post' as const })),
+    ]);
+  }
+
   async findForMember(
     userId: number,
     rawCursor?: string,
@@ -395,7 +564,6 @@ export class PostsService {
   ): Promise<Page<FeedItem>> {
     const cursor = parseFeedCursor(rawCursor);
     const excluded = excludedTypes(exclude);
-    const member = { community: { memberships: { some: { userId } } } };
     const reported = await reportedBy(this.prisma, userId);
     const nsfw = nsfwEntries(await showsNsfw(this.prisma, userId));
 
@@ -405,14 +573,7 @@ export class PostsService {
         : this.prisma.post.findMany({
             where: {
               AND: [
-                {
-                  OR: [
-                    member,
-                    { wallUserId: userId },
-                    { authorId: userId, communityId: null, mediaType: null },
-                    { wallUser: friendsOf(userId) },
-                  ],
-                },
+                homePosts(userId),
                 olderThan(cursor, RANK.post),
                 visibleTo(userId, reported.post),
               ],
@@ -425,7 +586,7 @@ export class PostsService {
         ? []
         : this.prisma.thread.findMany({
             where: {
-              ...member,
+              ...inMyCommunities(userId),
               ...olderThan(cursor, RANK.thread),
               ...visibleTo(userId, reported.thread),
             },
@@ -442,7 +603,10 @@ export class PostsService {
                 ...nsfw,
                 user: {
                   memberships: {
-                    some: { community: { memberships: { some: { userId } } } },
+                    some: {
+                      showLibraryUpdates: true,
+                      community: { memberships: { some: { userId } } },
+                    },
                   },
                 },
               },
@@ -622,20 +786,36 @@ export class PostsService {
     if (!owner) throw new NotFoundException('User not found');
     await requireWallAccess(this.prisma, authorId, owner.id);
 
+    const { data, mentioned } = await this.withMentions(body, authorId);
     const post = await this.prisma.post.create({
-      data: { wallUserId: owner.id, authorId, ...postBody(body) },
+      data: { wallUserId: owner.id, authorId, ...data },
       include: postInclude,
     });
+    const link = `/users/${owner.username}`;
     await this.notifications.notify([
       {
         userId: owner.id,
         actorId: authorId,
         type: 'wall_post',
         message: 'posted on your wall',
-        link: `/users/${owner.username}`,
+        link,
       },
     ]);
-    return { ...post, type: 'post', liked: false, previewComments: [] };
+    await notifyMentions(this.prisma, this.notifications, {
+      mentioned,
+      authorId,
+      place: { communityId: null, wallUserId: owner.id },
+      message: 'mentioned you in a post',
+      link,
+      alreadyNotified: [owner.id],
+    });
+    return {
+      ...post,
+      type: 'post',
+      liked: false,
+      previewComments: [],
+      canDelete: true,
+    };
   }
 
   async findForMedia(
@@ -685,11 +865,25 @@ export class PostsService {
       await showsNsfw(this.prisma, authorId),
     );
 
+    const { data, mentioned } = await this.withMentions(body, authorId);
     const post = await this.prisma.post.create({
-      data: { mediaType, mediaSourceId, authorId, ...postBody(body) },
+      data: { mediaType, mediaSourceId, authorId, ...data },
       include: postInclude,
     });
-    return { ...post, type: 'post', liked: false, previewComments: [] };
+    await notifyMentions(this.prisma, this.notifications, {
+      mentioned,
+      authorId,
+      place: { communityId: null, wallUserId: null },
+      message: 'mentioned you in a post',
+      link: `/library/${mediaType}/${mediaSourceId}`,
+    });
+    return {
+      ...post,
+      type: 'post',
+      liked: false,
+      previewComments: [],
+      canDelete: true,
+    };
   }
 
   async create(
@@ -697,10 +891,19 @@ export class PostsService {
     authorId: number,
     body: CreatePostDto,
   ): Promise<PostItem> {
+    const { data, mentioned } = await this.withMentions(body, authorId);
     const post = await this.prisma.post.create({
-      data: { communityId, authorId, ...postBody(body) },
+      data: { communityId, authorId, ...data },
       include: postInclude,
     });
+    await notifyMentions(this.prisma, this.notifications, {
+      mentioned,
+      authorId,
+      place: { communityId, wallUserId: null },
+      message: 'mentioned you in a post',
+      link: `/communities/${communityId}`,
+    });
+    void this.discordChannel.postCreated(post.id);
     const withNickname = await loadNicknames(this.prisma, [
       { communityId, userId: authorId },
     ]);
@@ -710,6 +913,81 @@ export class PostsService {
       type: 'post',
       liked: false,
       previewComments: [],
+      canDelete: true,
     };
+  }
+
+  async update(
+    userId: number,
+    postId: number,
+    body: CreatePostDto,
+  ): Promise<FeedItem> {
+    const post = await this.prisma.post.findUnique({
+      where: { id: postId },
+      select: {
+        authorId: true,
+        content: true,
+        communityId: true,
+        wallUserId: true,
+        mediaType: true,
+        mediaSourceId: true,
+        wallUser: { select: { username: true } },
+      },
+    });
+    if (!post) throw new NotFoundException('Post not found');
+    if (post.authorId !== userId) {
+      throw new ForbiddenException('You can only edit your own posts');
+    }
+
+    const { data, mentioned } = await this.withMentions(
+      { ...body, content: unlinkMentions(body.content) },
+      userId,
+    );
+    const updated = await this.prisma.post.update({
+      where: { id: postId },
+      data: { ...data, editedAt: new Date() },
+      include: postInclude,
+    });
+
+    const previously = linkedMentions(post.content);
+    await notifyMentions(this.prisma, this.notifications, {
+      mentioned: mentioned.filter(
+        ({ username }) => !previously.has(username.toLowerCase()),
+      ),
+      authorId: userId,
+      place: { communityId: post.communityId, wallUserId: post.wallUserId },
+      message: 'mentioned you in a post',
+      link: post.mediaType
+        ? `/library/${post.mediaType}/${post.mediaSourceId}`
+        : post.wallUser
+          ? `/users/${post.wallUser.username}`
+          : `/communities/${post.communityId}`,
+    });
+    void this.discordChannel.contentEdited('post', postId);
+
+    const [item] = await this.engage(userId, [{ ...updated, type: 'post' }]);
+    return item;
+  }
+
+  async remove(userId: number, postId: number) {
+    const post = await this.prisma.post.findUnique({
+      where: { id: postId },
+      select: { authorId: true, communityId: true, wallUserId: true },
+    });
+    if (!post) throw new NotFoundException('Post not found');
+    const allowed =
+      post.authorId === userId ||
+      post.wallUserId === userId ||
+      (await managedCommunities(this.prisma, userId, [post.communityId])).size >
+        0;
+    if (!allowed) {
+      throw new ForbiddenException('You can’t delete this post');
+    }
+
+    await this.prisma.$transaction([
+      ...(await discussionCleanup(this.prisma, 'post', [postId])),
+      this.prisma.post.delete({ where: { id: postId } }),
+    ]);
+    void this.discordChannel.contentDeleted('post', postId);
   }
 }

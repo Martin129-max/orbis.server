@@ -7,6 +7,7 @@ import {
 import { PrismaService } from '../prisma.service';
 import { author } from '../common/author';
 import { ReportsService } from '../reports/reports.service';
+import { DiscordChannelService } from '../discord-channel/discord-channel.service';
 import { isHeadAdmin } from '../users/head-admin';
 import { ACTIVITY_COLOR } from '../reports/discord';
 import {
@@ -81,6 +82,7 @@ export class ModerationService {
   constructor(
     private prisma: PrismaService,
     private reports: ReportsService,
+    private discordChannel: DiscordChannelService,
   ) {}
 
   private async postLink(post: {
@@ -355,10 +357,21 @@ export class ModerationService {
   }
 
   private async setHidden(type: Hideable, id: number, hiddenAt: Date | null) {
-    const args = { where: { id }, data: { hiddenAt } };
-    if (type === 'post') await this.prisma.post.updateMany(args);
-    else if (type === 'thread') await this.prisma.thread.updateMany(args);
-    else await this.prisma.comment.updateMany(args);
+    const args = {
+      where: { id, hiddenAt: hiddenAt ? null : { not: null } },
+      data: { hiddenAt },
+    };
+    if (type === 'comment') {
+      await this.prisma.comment.updateMany(args);
+      return;
+    }
+    const { count } =
+      type === 'post'
+        ? await this.prisma.post.updateMany(args)
+        : await this.prisma.thread.updateMany(args);
+    if (count > 0) {
+      void this.discordChannel.hiddenChanged(type, id, hiddenAt !== null);
+    }
   }
 
   private async hideContext(type: Hideable, id: number) {

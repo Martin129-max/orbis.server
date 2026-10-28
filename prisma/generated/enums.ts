@@ -79,7 +79,8 @@ export const NotificationType = {
   report_status: 'report_status',
   report_assigned: 'report_assigned',
   report_comment: 'report_comment',
-  wall_post: 'wall_post'
+  wall_post: 'wall_post',
+  mention: 'mention'
 } as const
 
 export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]

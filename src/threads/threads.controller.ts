@@ -1,9 +1,12 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  HttpCode,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Query,
   Req,
@@ -31,8 +34,15 @@ export class CommunityThreadsController {
     @Param('communityId', ParseIntPipe) communityId: number,
     @Query('sort') sort?: string,
     @Query('cursor', new ParseIntPipe({ optional: true })) cursor?: number,
+    @Query('range') range?: string,
   ): Promise<Page<ThreadSummary>> {
-    return this.threadsService.list(req.user.userId, communityId, sort, cursor);
+    return this.threadsService.list(
+      req.user.userId,
+      communityId,
+      sort,
+      cursor,
+      range,
+    );
   }
 
   @RateLimit(10, MINUTE)
@@ -63,5 +73,29 @@ export class ThreadsController {
     @Param('threadId', ParseIntPipe) threadId: number,
   ): Promise<ThreadSummary> {
     return this.threadsService.findOne(req.user.userId, threadId);
+  }
+
+  @RateLimit(30, MINUTE)
+  @Patch(':threadId')
+  update(
+    @Req() req,
+    @Param('threadId', ParseIntPipe) threadId: number,
+    @Body() updateThreadDto: CreateThreadDto,
+  ): Promise<ThreadSummary> {
+    return this.threadsService.update(
+      req.user.userId,
+      threadId,
+      updateThreadDto,
+    );
+  }
+
+  @RateLimit(30, MINUTE)
+  @Delete(':threadId')
+  @HttpCode(204)
+  remove(
+    @Req() req,
+    @Param('threadId', ParseIntPipe) threadId: number,
+  ): Promise<void> {
+    return this.threadsService.remove(req.user.userId, threadId);
   }
 }

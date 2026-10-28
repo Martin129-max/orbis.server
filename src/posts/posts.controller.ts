@@ -1,9 +1,12 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  HttpCode,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Query,
   Req,
@@ -51,6 +54,36 @@ export class PostsController {
     return this.postsService.searchCommunity(req.user.userId, communityId, q);
   }
 
+  @Get('activities/:activityId')
+  @AllowGuest()
+  @UseGuards(CommunityViewerGuard)
+  findActivity(
+    @Req() req,
+    @Param('communityId', ParseIntPipe) communityId: number,
+    @Param('activityId', ParseIntPipe) activityId: number,
+  ) {
+    return this.postsService.findActivityInCommunity(
+      req.user.userId,
+      communityId,
+      activityId,
+    );
+  }
+
+  @Get(':postId')
+  @AllowGuest()
+  @UseGuards(CommunityViewerGuard)
+  findOne(
+    @Req() req,
+    @Param('communityId', ParseIntPipe) communityId: number,
+    @Param('postId', ParseIntPipe) postId: number,
+  ) {
+    return this.postsService.findOneInCommunity(
+      req.user.userId,
+      communityId,
+      postId,
+    );
+  }
+
   @RateLimit(10, MINUTE)
   @Post()
   @UseGuards(CommunityMemberGuard)
@@ -64,5 +97,31 @@ export class PostsController {
       req.user.userId,
       createPostDto,
     );
+  }
+}
+
+@Controller('posts')
+@UseGuards(JwtAuthGuard)
+export class PostController {
+  constructor(private readonly postsService: PostsService) {}
+
+  @RateLimit(30, MINUTE)
+  @Patch(':postId')
+  update(
+    @Req() req,
+    @Param('postId', ParseIntPipe) postId: number,
+    @Body() updatePostDto: CreatePostDto,
+  ) {
+    return this.postsService.update(req.user.userId, postId, updatePostDto);
+  }
+
+  @RateLimit(30, MINUTE)
+  @Delete(':postId')
+  @HttpCode(204)
+  remove(
+    @Req() req,
+    @Param('postId', ParseIntPipe) postId: number,
+  ): Promise<void> {
+    return this.postsService.remove(req.user.userId, postId);
   }
 }

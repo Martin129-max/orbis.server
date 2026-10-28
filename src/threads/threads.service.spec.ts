@@ -1,6 +1,8 @@
 import { ThreadsService } from './threads.service';
 import { PrismaService } from '../prisma.service';
 import { VotesService } from '../votes/votes.service';
+import { NotificationsService } from '../notifications/notifications.service';
+import { DiscordChannelService } from '../discord-channel/discord-channel.service';
 
 jest.mock('../common/rich-text', () => ({ sanitizeRichText: jest.fn() }));
 
@@ -18,20 +20,57 @@ describe('ThreadsService.create', () => {
   }));
   const voteCreate = jest.fn();
   const membershipFind = jest.fn().mockResolvedValue([]);
+  const userFind = jest.fn();
+  const communityFind = jest.fn();
   const prisma = {
     thread: { create },
     vote: { create: voteCreate },
     membership: { findMany: membershipFind },
+    user: { findMany: userFind },
+    community: { findUnique: communityFind },
     $transaction: jest.fn((run) => run(prisma)),
   };
+  const notifications = { notify: jest.fn() };
   const service = new ThreadsService(
     prisma as unknown as PrismaService,
     {} as VotesService,
+    notifications as unknown as NotificationsService,
+    { threadCreated: jest.fn() } as unknown as DiscordChannelService,
   );
   const sanitize = jest.requireMock('../common/rich-text')
     .sanitizeRichText as jest.Mock;
 
   beforeEach(() => jest.clearAllMocks());
+
+  it('links and notifies members mentioned in the thread', async () => {
+    sanitize.mockReturnValue({
+      html: '<p>Watch party, @Naruto and @outsider?</p>',
+      empty: false,
+    });
+    userFind.mockResolvedValue([
+      { id: 5, username: 'naruto' },
+      { id: 6, username: 'outsider' },
+    ]);
+    communityFind.mockResolvedValue({
+      isPublic: false,
+      memberships: [{ userId: 5 }],
+    });
+
+    await service.create(1, 3, { title: 'Friday', content: 'x' });
+
+    expect(create.mock.calls[0][0].data.content).toBe(
+      '<p>Watch party, <a href="/users/naruto" class="mention">@Naruto</a> and <a href="/users/outsider" class="mention">@outsider</a>?</p>',
+    );
+    expect(notifications.notify).toHaveBeenCalledWith([
+      {
+        userId: 5,
+        actorId: 1,
+        type: 'mention',
+        message: 'mentioned you in the thread “Friday”',
+        link: '/communities/3?tab=forum',
+      },
+    ]);
+  });
 
   it('starts the thread at 1 with the author’s own upvote', async () => {
     sanitize.mockReturnValue({ html: '', empty: true });

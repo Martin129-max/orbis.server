@@ -16,10 +16,12 @@ export type DirectoryUser = {
   username: string;
   name: string | null;
   email: string;
+  emailVerifiedAt: Date | null;
   avatarUrl: string | null;
   coverUrl: string | null;
   isAdmin: boolean;
   isHeadAdmin: boolean;
+  isVerified: boolean;
   communityCount: number;
   createdAt: Date;
 };
@@ -30,6 +32,7 @@ export type DirectoryCommunity = {
   iconUrl: string | null;
   coverUrl: string | null;
   isPublic: boolean;
+  isVerified: boolean;
   memberCount: number;
   owner: {
     id: number;
@@ -64,9 +67,11 @@ export class AdminService {
           username: true,
           name: true,
           email: true,
+          emailVerifiedAt: true,
           avatarUrl: true,
           coverUrl: true,
           isAdmin: true,
+          isVerified: true,
           createdAt: true,
           _count: { select: { memberships: true } },
         },
@@ -102,6 +107,7 @@ export class AdminService {
           iconUrl: true,
           coverUrl: true,
           isPublic: true,
+          isVerified: true,
           createdAt: true,
           owner: {
             select: { id: true, username: true, name: true, avatarUrl: true },

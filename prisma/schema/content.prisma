@@ -26,6 +26,7 @@ model Post {
   commentCount  Int        @default(0)
   likeCount     Int        @default(0)
   hiddenAt      DateTime?
+  editedAt      DateTime?
   createdAt     DateTime   @default(now())
   community     Community? @relation(fields: [communityId], references: [id], onDelete: Cascade)
   wallUser      User?      @relation("WallPosts", fields: [wallUserId], references: [id], onDelete: Cascade)
@@ -46,6 +47,7 @@ model Thread {
   score        Int       @default(1)
   commentCount Int       @default(0)
   hiddenAt     DateTime?
+  editedAt     DateTime?
   createdAt    DateTime  @default(now())
   community    Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
   author       User      @relation(fields: [authorId], references: [id])
@@ -65,6 +67,8 @@ model Comment {
   linkUrl         String?
   score           Int             @default(1)
   hiddenAt        DateTime?
+  editedAt        DateTime?
+  deletedAt       DateTime?
   createdAt       DateTime        @default(now())
   community       Community?      @relation(fields: [communityId], references: [id], onDelete: Cascade)
   author          User            @relation(fields: [authorId], references: [id])

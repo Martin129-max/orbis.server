@@ -74,6 +74,7 @@ describe('Admin directory', () => {
     expect(query.take).toBe(20);
     expect(query.orderBy).toEqual([{ createdAt: 'desc' }, { id: 'desc' }]);
     expect(query.select.password).toBeUndefined();
+    expect(query.select.emailVerifiedAt).toBe(true);
   });
 
   it('includes private communities with owner and membership counts', async () => {

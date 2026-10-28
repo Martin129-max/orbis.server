@@ -21,7 +21,7 @@ import { normalizeUsername } from './username';
 import { isHeadAdmin } from './head-admin';
 import { StorageService } from '../storage/storage.service';
 import { canViewProfile } from '../posts/wall-access';
-import type { PresenceStatus } from '../friends/presence.gateway';
+import { PresenceGateway, PresenceStatus } from '../friends/presence.gateway';
 
 export type PublicUser = Omit<UserModel, 'password'>;
 
@@ -34,8 +34,10 @@ export type PublicProfile = {
   backgroundUrl: string | null;
   isAdmin: boolean;
   isHeadAdmin: boolean;
+  isVerified: boolean;
   isPublic: boolean;
   restricted: boolean;
+  hasClips: boolean;
   createdAt: Date;
   online: boolean;
   status: PresenceStatus;
@@ -47,6 +49,7 @@ export type PublicProfile = {
     name: string;
     iconUrl: string | null;
     coverUrl: string | null;
+    isVerified: boolean;
     memberCount: number;
     isOwner: boolean;
   }[];
@@ -56,6 +59,7 @@ export type PublicProfile = {
     name: string | null;
     avatarUrl: string | null;
     coverUrl: string | null;
+    isVerified: boolean;
     online: boolean;
     status: PresenceStatus;
     playing: string | null;
@@ -86,6 +90,11 @@ export type Onboarding = {
     feedback: boolean;
     library: boolean;
   };
+  used: {
+    steam: boolean;
+    connections: boolean;
+    folders: boolean;
+  };
 };
 
 export type Profile = Pick<
@@ -100,7 +109,9 @@ export type Profile = Pick<
   | 'status'
   | 'isPublic'
   | 'showNsfw'
+  | 'showChangelog'
   | 'isAdmin'
+  | 'emailVerifiedAt'
   | 'createdAt'
 > & {
   userId: number;
@@ -113,6 +124,7 @@ export type PublicUserSummary = {
   name: string | null;
   avatarUrl: string | null;
   coverUrl: string | null;
+  isVerified: boolean;
   online: boolean;
   activity: number;
 };
@@ -158,7 +170,9 @@ const profile = {
   status: true,
   isPublic: true,
   showNsfw: true,
+  showChangelog: true,
   isAdmin: true,
+  emailVerifiedAt: true,
   createdAt: true,
 } as const;
 
@@ -180,6 +194,7 @@ export class UsersService {
   constructor(
     private prisma: PrismaService,
     private storage: StorageService,
+    private presence: PresenceGateway,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<PublicUser> {
@@ -204,11 +219,18 @@ export class UsersService {
 
   async updatePreferences(
     id: number,
-    { theme, appearOffline, status, isPublic, showNsfw }: UpdatePreferencesDto,
+    {
+      theme,
+      appearOffline,
+      status,
+      isPublic,
+      showNsfw,
+      showChangelog,
+    }: UpdatePreferencesDto,
   ): Promise<Profile> {
     const user = await this.prisma.user.update({
       where: { id },
-      data: { theme, appearOffline, status, isPublic, showNsfw },
+      data: { theme, appearOffline, status, isPublic, showNsfw, showChangelog },
       select: profile,
     });
 
@@ -281,6 +303,7 @@ export class UsersService {
         name: true,
         avatarUrl: true,
         coverUrl: true,
+        isVerified: true,
         appearOffline: true,
         _count: {
           select: { posts: recent, threads: recent, comments: recent },
@@ -322,10 +345,15 @@ export class UsersService {
         backgroundUrl: true,
         email: true,
         isAdmin: true,
+        isVerified: true,
         appearOffline: true,
         status: true,
         isPublic: true,
         createdAt: true,
+        oauthAccounts: {
+          where: { provider: 'twitch', showClips: true },
+          select: { id: true },
+        },
         memberships: {
           orderBy: { joinedAt: 'asc' },
           select: {
@@ -335,6 +363,7 @@ export class UsersService {
                 name: true,
                 iconUrl: true,
                 coverUrl: true,
+                isVerified: true,
                 ownerId: true,
                 isPublic: true,
                 _count: { select: { memberships: true } },
@@ -361,8 +390,10 @@ export class UsersService {
         backgroundUrl: null,
         isAdmin: user.isAdmin || headAdmin,
         isHeadAdmin: headAdmin,
+        isVerified: user.isVerified,
         isPublic: false,
         restricted: true,
+        hasClips: false,
         appearOffline: true,
         status: 'online',
         createdAt: user.createdAt,
@@ -382,6 +413,7 @@ export class UsersService {
         name: true,
         avatarUrl: true,
         coverUrl: true,
+        isVerified: true,
         appearOffline: true,
         status: true,
       },
@@ -422,13 +454,14 @@ export class UsersService {
       library.map((entry) => ({ userId: user.id, appId: entry.steamAppId })),
     );
 
-    const { memberships, id, email, ...rest } = user;
+    const { memberships, id, email, oauthAccounts, ...rest } = user;
     const headAdmin = isHeadAdmin(email);
     return {
       ...rest,
       isAdmin: rest.isAdmin || headAdmin,
       isHeadAdmin: headAdmin,
       restricted: false,
+      hasClips: oauthAccounts.length > 0,
       userId: id,
       friendCount: friendships.length,
       friends: friendships.map(({ requester, addressee }) => {
@@ -439,6 +472,7 @@ export class UsersService {
           name: friend.name,
           avatarUrl: friend.avatarUrl,
           coverUrl: friend.coverUrl,
+          isVerified: friend.isVerified,
           appearOffline: friend.appearOffline,
           status: friend.status,
         };
@@ -459,6 +493,7 @@ export class UsersService {
           name: community.name,
           iconUrl: community.iconUrl,
           coverUrl: community.coverUrl,
+          isVerified: community.isVerified,
           memberCount: community._count.memberships,
           isOwner: community.ownerId === id,
         })),
@@ -496,6 +531,43 @@ export class UsersService {
     return { isAdmin };
   }
 
+  async setVerified(
+    headAdminId: number,
+    username: string,
+    isVerified: boolean,
+  ): Promise<{ isVerified: boolean }> {
+    const headAdmin = await this.prisma.user.findUnique({
+      where: { id: headAdminId },
+      select: { email: true },
+    });
+    if (!headAdmin || !isHeadAdmin(headAdmin.email)) {
+      throw new ForbiddenException('Only the head admin can verify profiles');
+    }
+
+    const user = await this.prisma.user.findUnique({
+      where: { username: normalizeUsername(username) },
+      select: { id: true },
+    });
+    if (!user) throw new NotFoundException('User not found');
+
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: { isVerified },
+    });
+
+    const friendships = await this.prisma.friendship.findMany({
+      where: { OR: [{ requesterId: user.id }, { addresseeId: user.id }] },
+      select: { requesterId: true, addresseeId: true },
+    });
+    const friendIds = friendships.map(({ requesterId, addresseeId }) =>
+      requesterId === user.id ? addresseeId : requesterId,
+    );
+    if (friendIds.length > 0) {
+      this.presence.notify(friendIds, 'friends:changed');
+    }
+    return { isVerified };
+  }
+
   async onboarding(id: number): Promise<Onboarding> {
     const [
       user,
@@ -506,6 +578,9 @@ export class UsersService {
       friendships,
       reports,
       libraryEntries,
+      steamAccounts,
+      oauthAccounts,
+      folders,
     ] = await Promise.all([
       this.prisma.user.findUniqueOrThrow({
         where: { id },
@@ -527,6 +602,9 @@ export class UsersService {
       }),
       this.prisma.report.count({ where: { authorId: id } }),
       this.prisma.libraryEntry.count({ where: { userId: id } }),
+      this.prisma.steamAccount.count({ where: { userId: id } }),
+      this.prisma.oAuthAccount.count({ where: { userId: id } }),
+      this.prisma.railFolder.count({ where: { userId: id } }),
     ]);
 
     return {
@@ -541,6 +619,11 @@ export class UsersService {
         friend: friendships > 0,
         feedback: reports > 0,
         library: libraryEntries > 0,
+      },
+      used: {
+        steam: steamAccounts > 0,
+        connections: oauthAccounts > 0,
+        folders: folders > 0,
       },
     };
   }

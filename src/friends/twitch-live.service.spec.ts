@@ -80,6 +80,10 @@ describe('TwitchLiveService', () => {
 
     expect(presence.updateLive).toHaveBeenCalledWith(new Set());
     expect(presence.updateLiveCommunities).toHaveBeenCalledWith(new Set([12]));
+    expect(prisma.community.findMany).toHaveBeenCalledWith({
+      where: { twitchUserId: { not: null }, showTwitchLive: true },
+      select: { id: true, twitchUserId: true },
+    });
   });
 });
 
@@ -108,6 +112,7 @@ describe('Twitch stream schedule', () => {
       status: 200,
       json: async () => ({
         data: {
+          broadcaster_name: 'BosEriko',
           segments: [
             {
               start_time: '2099-01-01T18:00:00Z',
@@ -140,6 +145,7 @@ describe('Twitch stream schedule', () => {
       startsAt: '2099-01-08T18:00:00Z',
       endsAt: '2099-01-08T20:00:00Z',
       title: 'Watch party',
+      channel: 'BosEriko',
     };
     await expect(service.nextStream('141981764')).resolves.toEqual(expected);
     expect(fetchMock.mock.calls[1][0]).toContain('broadcaster_id=141981764');

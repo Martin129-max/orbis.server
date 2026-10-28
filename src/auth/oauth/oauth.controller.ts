@@ -20,6 +20,8 @@ import { AllowGuest } from '../allow-guest';
 import { JwtAuthGuard } from '../jwt.guard';
 import { CompleteOAuthDto } from './dto/complete-oauth.dto';
 import { FinishOAuthSignupDto } from './dto/finish-oauth-signup.dto';
+import { UseLinkedAvatarDto } from './dto/use-linked-avatar.dto';
+import { ConnectDiscordServerDto } from './dto/connect-discord-server.dto';
 import { UpdateConnectionDto } from './dto/update-connection.dto';
 import { OAuthConnections, OAuthResult, OAuthService } from './oauth.service';
 
@@ -57,9 +59,12 @@ export class OAuthController {
   updateConnection(
     @Req() req,
     @Param('provider', provider) name: AuthProvider,
-    @Body() { showLive }: UpdateConnectionDto,
+    @Body() { showLive, showClips }: UpdateConnectionDto,
   ): Promise<void> {
-    return this.oauth.setShowLive(req.user.userId, name, showLive);
+    return this.oauth.updateConnection(req.user.userId, name, {
+      showLive,
+      showClips,
+    });
   }
 
   @RateLimit(30, MINUTE)
@@ -88,6 +93,7 @@ export class OAuthController {
     @Param('provider', provider) name: AuthProvider,
     @Query('communityId', ParseIntPipe) communityId: number,
     @Query('nonce') nonce = '',
+    @Query('target') target?: string,
   ) {
     return {
       url: await this.oauth.communityAuthorizeUrl(
@@ -95,6 +101,7 @@ export class OAuthController {
         name,
         communityId,
         nonce,
+        target === 'channel',
       ),
     };
   }
@@ -132,6 +139,26 @@ export class OAuthController {
       throw new BadRequestException('Unsupported OAuth client.');
     }
     return value;
+  }
+
+  @RateLimit(10, MINUTE)
+  @Post('community-server')
+  @UseGuards(JwtAuthGuard)
+  connectDiscordServer(
+    @Req() req,
+    @Body() { token, serverId }: ConnectDiscordServerDto,
+  ) {
+    return this.oauth.connectDiscordServer(req.user.userId, token, serverId);
+  }
+
+  @RateLimit(10, MINUTE)
+  @Post('avatar')
+  @UseGuards(JwtAuthGuard)
+  useLinkedAvatar(
+    @Req() req,
+    @Body() { token }: UseLinkedAvatarDto,
+  ): Promise<{ avatarUrl: string }> {
+    return this.oauth.useLinkedAvatar(req.user.userId, token);
   }
 
   @RateLimit(10, MINUTE)
