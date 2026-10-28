@@ -9,6 +9,7 @@ model Community {
   twitchLogin   String?
   discordGuildId   String?
   discordGuildName String?
+  links         Json         @default("{}")
   ownerId       Int
   isPublic      Boolean      @default(false)
   isVerified    Boolean      @default(false)

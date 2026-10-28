@@ -679,7 +679,7 @@ export class CommunitiesService {
   async update(
     userId: number,
     communityId: number,
-    { name, isPublic, description }: UpdateCommunityDto,
+    { name, isPublic, description, links }: UpdateCommunityDto,
   ): Promise<CommunityWithRole> {
     const role = await this.requireRole(userId, communityId, 'admin');
     const community = await this.prisma.community.update({
@@ -689,6 +689,7 @@ export class CommunitiesService {
         isPublic,
         description:
           description === undefined ? undefined : description.trim() || null,
+        links: links && { ...links },
       },
     });
 

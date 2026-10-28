@@ -2195,6 +2195,12 @@ async function main() {
           twitchLogin: 'seasonalanimeclub',
           discordGuildId: '300000000000000001',
           discordGuildName: 'Seasonal Anime Club',
+          links: {
+            x: 'https://x.com/seasonalanimeclub',
+            youtube: 'https://www.youtube.com/@seasonalanimeclub',
+            kick: 'https://kick.com/seasonalanimeclub',
+            reddit: 'https://www.reddit.com/r/seasonalanimeclub',
+          },
         },
       });
       const alphabet =
