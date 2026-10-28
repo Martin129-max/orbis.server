@@ -109,7 +109,7 @@ const communities: SeedCommunity[] = [
       [
         'anya',
         days(2) + hours(5),
-        `<p>Anya watched a spy anime with Papa. Anya already knew the ending. Anya did not say anything. <em>Heh.</em></p>`,
+        `<p>Anya watched a spy anime with Papa. Anya already knew the ending. Anya did not say anything. <em>Heh.</em></p><p><a href="/users/admin" class="mention">@admin</a>, can the club watch it next?</p>`,
       ],
       [
         'spike',
@@ -157,7 +157,7 @@ const communities: SeedCommunity[] = [
       [
         'sakura',
         days(3) + hours(2),
-        `<p>Naruto, you said "your treat" last time and I paid. Again.</p>`,
+        `<p><a href="/users/naruto" class="mention">@naruto</a>, you said "your treat" last time and I paid. Again.</p>`,
       ],
       ['sasuke', days(2), `<p>Hn.</p>`],
       [
@@ -1507,9 +1507,11 @@ async function createNotifications() {
       select: {
         id: true,
         authorId: true,
+        communityId: true,
         wallUserId: true,
         mediaType: true,
         mediaSourceId: true,
+        content: true,
         createdAt: true,
         wallUser: { select: { username: true } },
       },
@@ -1557,6 +1559,26 @@ async function createNotifications() {
   );
 
   for (const post of posts) {
+    const mentions = post.content.matchAll(
+      /<a href="\/users\/(\w+)" class="mention">/g,
+    );
+    for (const [, username] of mentions) {
+      const userId = userIds[username as UserKey];
+      if (!userId || userId === post.authorId) continue;
+      notifications.push({
+        userId,
+        actorId: post.authorId,
+        type: 'mention',
+        message: 'mentioned you in a post',
+        link: post.wallUser
+          ? `/users/${post.wallUser.username}`
+          : post.mediaType
+            ? `/library/${post.mediaType}/${post.mediaSourceId}`
+            : `/communities/${post.communityId}`,
+        createdAt: post.createdAt,
+        readAt: readAt(post.createdAt),
+      });
+    }
     if (post.wallUser && post.wallUserId !== post.authorId) {
       notifications.push({
         userId: post.wallUserId!,

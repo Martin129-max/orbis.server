@@ -8,10 +8,12 @@ import { Prisma } from '../../prisma/generated/client';
 import { author, communitySummary } from '../common/author';
 import { PAGE_SIZE, Page } from '../common/pagination';
 import { sanitizeRichText } from '../common/rich-text';
+import { notifyMentions, resolveMentions } from '../common/mentions';
 import { reportedBy, visibleTo } from '../moderation/visibility';
 import { requireViewAccess } from '../communities/require-membership';
 import { MAX_INT } from '../communities/community-member.guard';
 import { VotesService } from '../votes/votes.service';
+import { NotificationsService } from '../notifications/notifications.service';
 import { loadNicknames } from '../communities/nicknames';
 import { CreateThreadDto } from './dto/create-thread.dto';
 
@@ -32,6 +34,7 @@ export class ThreadsService {
   constructor(
     private prisma: PrismaService,
     private votes: VotesService,
+    private notifications: NotificationsService,
   ) {}
 
   async withMyVotes(
@@ -107,13 +110,18 @@ export class ThreadsService {
     { title, content = '', linkUrl }: CreateThreadDto,
   ): Promise<ThreadSummary> {
     const { html, empty } = sanitizeRichText(content);
+    const { html: linked, mentioned } = await resolveMentions(
+      this.prisma,
+      empty ? '' : html,
+      userId,
+    );
     const thread = await this.prisma.$transaction(async (tx) => {
       const created = await tx.thread.create({
         data: {
           communityId,
           authorId: userId,
           title: title.trim(),
-          content: empty ? '' : html,
+          content: linked,
           linkUrl: linkUrl ?? null,
           score: 1,
         },
@@ -131,6 +139,13 @@ export class ThreadsService {
       return created;
     });
 
+    await notifyMentions(this.prisma, this.notifications, {
+      mentioned,
+      authorId: userId,
+      place: { communityId, wallUserId: null },
+      message: `mentioned you in the thread “${thread.title}”`,
+      link: `/communities/${communityId}?tab=forum`,
+    });
     const [created] = await this.withNicknames([
       { ...thread, type: 'thread', myVote: 1 },
     ]);

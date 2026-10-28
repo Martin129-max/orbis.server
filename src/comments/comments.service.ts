@@ -7,6 +7,11 @@ import { PrismaService } from '../prisma.service';
 import { CommentableType, Prisma } from '../../prisma/generated/client';
 import { author } from '../common/author';
 import { sanitizeRichText } from '../common/rich-text';
+import {
+  MentionedUser,
+  notifyMentions,
+  resolveMentions,
+} from '../common/mentions';
 import { requireViewAccess } from '../communities/require-membership';
 import {
   EngagementTarget,
@@ -128,6 +133,11 @@ export class CommentsService {
     if (empty && !linkUrl) {
       throw new BadRequestException('Comment cannot be empty');
     }
+    const { html: linked, mentioned } = await resolveMentions(
+      this.prisma,
+      empty ? '' : html,
+      userId,
+    );
 
     const increment = { commentCount: { increment: 1 } };
     const comment = await this.prisma.$transaction(async (tx) => {
@@ -138,7 +148,7 @@ export class CommentsService {
           commentableId: id,
           parentId,
           authorId: userId,
-          content: empty ? '' : html,
+          content: linked,
           linkUrl: linkUrl ?? null,
           score: 1,
         },
@@ -161,7 +171,7 @@ export class CommentsService {
       return created;
     });
 
-    await this.notifyCommented(userId, home, parentAuthorId);
+    await this.notifyCommented(userId, home, mentioned, parentAuthorId);
     const withNickname = await loadNicknames(this.prisma, [
       { communityId: home.communityId, userId },
     ]);
@@ -176,6 +186,7 @@ export class CommentsService {
   private async notifyCommented(
     userId: number,
     target: EngagementTarget,
+    mentioned: MentionedUser[],
     parentAuthorId?: number,
   ) {
     const { type, id } = target;
@@ -225,5 +236,27 @@ export class CommentsService {
     }
 
     await this.notifications.notify(notifications);
+    if (mentioned.length === 0) return;
+
+    const activity =
+      type === 'activity'
+        ? await this.prisma.libraryActivity.findUnique({
+            where: { id },
+            select: { entry: { select: { isPublic: true } } },
+          })
+        : null;
+    await notifyMentions(this.prisma, this.notifications, {
+      mentioned,
+      authorId: userId,
+      place: {
+        communityId: target.communityId,
+        wallUserId: target.wallUserId,
+        ...(activity &&
+          !activity.entry.isPublic && { onlyUserId: target.ownerId }),
+      },
+      message: 'mentioned you in a comment',
+      link,
+      alreadyNotified: notifications.map((notification) => notification.userId),
+    });
   }
 }

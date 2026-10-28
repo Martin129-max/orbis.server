@@ -15,6 +15,7 @@ import {
 import { author, communitySummary } from '../common/author';
 import { PAGE_SIZE, Page } from '../common/pagination';
 import { sanitizeRichText } from '../common/rich-text';
+import { notifyMentions, resolveMentions } from '../common/mentions';
 import {
   ThreadSummary,
   ThreadsService,
@@ -236,6 +237,16 @@ export class PostsService {
     private notifications: NotificationsService,
     private likes: LikesService,
   ) {}
+
+  private async withMentions(body: CreatePostDto, authorId: number) {
+    const { content, linkUrl } = postBody(body);
+    const { html, mentioned } = await resolveMentions(
+      this.prisma,
+      content,
+      authorId,
+    );
+    return { data: { content: html, linkUrl }, mentioned };
+  }
 
   private async engage(
     viewerId: number,
@@ -677,19 +688,29 @@ export class PostsService {
     if (!owner) throw new NotFoundException('User not found');
     await requireWallAccess(this.prisma, authorId, owner.id);
 
+    const { data, mentioned } = await this.withMentions(body, authorId);
     const post = await this.prisma.post.create({
-      data: { wallUserId: owner.id, authorId, ...postBody(body) },
+      data: { wallUserId: owner.id, authorId, ...data },
       include: postInclude,
     });
+    const link = `/users/${owner.username}`;
     await this.notifications.notify([
       {
         userId: owner.id,
         actorId: authorId,
         type: 'wall_post',
         message: 'posted on your wall',
-        link: `/users/${owner.username}`,
+        link,
       },
     ]);
+    await notifyMentions(this.prisma, this.notifications, {
+      mentioned,
+      authorId,
+      place: { communityId: null, wallUserId: owner.id },
+      message: 'mentioned you in a post',
+      link,
+      alreadyNotified: [owner.id],
+    });
     return { ...post, type: 'post', liked: false, previewComments: [] };
   }
 
@@ -740,9 +761,17 @@ export class PostsService {
       await showsNsfw(this.prisma, authorId),
     );
 
+    const { data, mentioned } = await this.withMentions(body, authorId);
     const post = await this.prisma.post.create({
-      data: { mediaType, mediaSourceId, authorId, ...postBody(body) },
+      data: { mediaType, mediaSourceId, authorId, ...data },
       include: postInclude,
+    });
+    await notifyMentions(this.prisma, this.notifications, {
+      mentioned,
+      authorId,
+      place: { communityId: null, wallUserId: null },
+      message: 'mentioned you in a post',
+      link: `/library/${mediaType}/${mediaSourceId}`,
     });
     return { ...post, type: 'post', liked: false, previewComments: [] };
   }
@@ -752,9 +781,17 @@ export class PostsService {
     authorId: number,
     body: CreatePostDto,
   ): Promise<PostItem> {
+    const { data, mentioned } = await this.withMentions(body, authorId);
     const post = await this.prisma.post.create({
-      data: { communityId, authorId, ...postBody(body) },
+      data: { communityId, authorId, ...data },
       include: postInclude,
+    });
+    await notifyMentions(this.prisma, this.notifications, {
+      mentioned,
+      authorId,
+      place: { communityId, wallUserId: null },
+      message: 'mentioned you in a post',
+      link: `/communities/${communityId}`,
     });
     const withNickname = await loadNicknames(this.prisma, [
       { communityId, userId: authorId },

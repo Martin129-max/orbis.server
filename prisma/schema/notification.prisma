@@ -8,6 +8,7 @@ enum NotificationType {
   report_assigned
   report_comment
   wall_post
+  mention
 }
 
 model Notification {
