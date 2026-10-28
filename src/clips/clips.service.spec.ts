@@ -22,10 +22,23 @@ describe('ClipsService', () => {
   });
 
   it('loads a community’s clips from its Twitch channel', async () => {
-    prisma.community.findUnique.mockResolvedValue({ twitchUserId: '300' });
+    prisma.community.findUnique.mockResolvedValue({
+      twitchUserId: '300',
+      showTwitchClips: true,
+    });
 
     await expect(service.forCommunity(9, 'next')).resolves.toBe(clips);
     expect(twitch.clips).toHaveBeenCalledWith('300', 'next');
+  });
+
+  it('has no clips when the community turned its Clips tab off', async () => {
+    prisma.community.findUnique.mockResolvedValue({
+      twitchUserId: '300',
+      showTwitchClips: false,
+    });
+
+    await expect(service.forCommunity(9)).rejects.toThrow(NotFoundException);
+    expect(twitch.clips).not.toHaveBeenCalled();
   });
 
   it('has no clips for a community without Twitch', async () => {

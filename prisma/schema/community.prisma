@@ -7,8 +7,12 @@ model Community {
   backgroundUrl String?
   twitchUserId  String?
   twitchLogin   String?
+  showTwitchLive    Boolean @default(true)
+  showTwitchClips   Boolean @default(true)
   discordGuildId   String?
   discordGuildName String?
+  showDiscordOnline Boolean @default(true)
+  showDiscordInvite Boolean @default(true)
   links         Json         @default("{}")
   ownerId       Int
   isPublic      Boolean      @default(false)

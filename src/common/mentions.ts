@@ -31,6 +31,24 @@ function filterText(html: string, filter: (text: string) => string) {
     .join('');
 }
 
+const LINKED_MENTION =
+  /<a\b[^>]*\bhref="\/users\/([a-z0-9_]{3,20})"[^>]*>(@[A-Za-z0-9_]{3,20})<\/a>/gi;
+
+export function unlinkMentions(html: string) {
+  return html.replace(
+    LINKED_MENTION,
+    (_match, _username, text: string) => text,
+  );
+}
+
+export function linkedMentions(html: string) {
+  return new Set(
+    [...html.matchAll(LINKED_MENTION)].map(([, username]) =>
+      username.toLowerCase(),
+    ),
+  );
+}
+
 export function mentionedUsernames(html: string) {
   const found = new Set<string>();
   filterText(html, (text) => {

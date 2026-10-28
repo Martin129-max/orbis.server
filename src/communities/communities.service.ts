@@ -289,7 +289,8 @@ export class CommunitiesService {
 
     return memberships.map(({ community }) => ({
       ...community,
-      live: this.presence.isCommunityLive(community.id),
+      live:
+        community.showTwitchLive && this.presence.isCommunityLive(community.id),
     }));
   }
 
@@ -625,17 +626,25 @@ export class CommunitiesService {
     if (!community || (!role && !community.isPublic)) return null;
 
     const { _count, ...rest } = community;
+    const showLive = rest.showTwitchLive && rest.twitchUserId;
     const [nextStream, discord] = await Promise.all([
-      rest.twitchUserId ? this.twitch.nextStream(rest.twitchUserId) : null,
+      showLive ? this.twitch.nextStream(rest.twitchUserId!) : null,
       rest.discordGuildId ? discordWidget(rest.discordGuildId) : null,
     ]);
+    const manages = role === 'owner' || role === 'admin';
     return {
       ...rest,
       role,
       memberCount: _count.memberships,
-      live: this.presence.isCommunityLive(id),
+      live: Boolean(showLive) && this.presence.isCommunityLive(id),
       nextStream,
-      discord,
+      discord:
+        discord && !manages
+          ? {
+              online: rest.showDiscordOnline ? discord.online : null,
+              inviteUrl: rest.showDiscordInvite ? discord.inviteUrl : null,
+            }
+          : discord,
       ...(role && { showLibraryUpdates: membership?.showLibraryUpdates }),
     };
   }
@@ -680,7 +689,16 @@ export class CommunitiesService {
   async update(
     userId: number,
     communityId: number,
-    { name, isPublic, description, links }: UpdateCommunityDto,
+    {
+      name,
+      isPublic,
+      description,
+      links,
+      showTwitchLive,
+      showTwitchClips,
+      showDiscordOnline,
+      showDiscordInvite,
+    }: UpdateCommunityDto,
   ): Promise<CommunityWithRole> {
     const role = await this.requireRole(userId, communityId, 'admin');
     const community = await this.prisma.community.update({
@@ -691,8 +709,15 @@ export class CommunitiesService {
         description:
           description === undefined ? undefined : description.trim() || null,
         links: links && { ...links },
+        showTwitchLive,
+        showTwitchClips,
+        showDiscordOnline,
+        showDiscordInvite,
       },
     });
+    if (showTwitchLive === false) {
+      await this.presence.stopCommunityLive(communityId);
+    }
 
     return { ...community, role };
   }

@@ -1,8 +1,10 @@
 import {
+  linkedMentions,
   linkMentions,
   mentionedUsernames,
   notifyMentions,
   resolveMentions,
+  unlinkMentions,
 } from './mentions';
 import { PrismaService } from '../prisma.service';
 import { NotificationsService } from '../notifications/notifications.service';
@@ -44,6 +46,16 @@ describe('Mentions', () => {
   it('only notices the first ten people mentioned', () => {
     const names = Array.from({ length: 12 }, (_, i) => `@user${i + 10}`);
     expect(mentionedUsernames(`<p>${names.join(' ')}</p>`)).toHaveLength(10);
+  });
+
+  it('turns saved mentions back into plain text for editing', () => {
+    const saved =
+      '<p>hi <a href="/users/naruto" class="mention">@Naruto</a> and <a target="_blank" href="/users/sasuke" rel="noopener">@sasuke</a> <a href="https://x.com">site</a></p>';
+
+    expect(unlinkMentions(saved)).toBe(
+      '<p>hi @Naruto and @sasuke <a href="https://x.com">site</a></p>',
+    );
+    expect(linkedMentions(saved)).toEqual(new Set(['naruto', 'sasuke']));
   });
 
   it('links mentions of people who exist', () => {

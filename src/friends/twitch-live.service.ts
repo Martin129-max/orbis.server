@@ -26,6 +26,7 @@ export type NextStream = {
   startsAt: string;
   endsAt: string | null;
   title: string | null;
+  channel: string | null;
 };
 
 export type Clip = {
@@ -94,7 +95,7 @@ export class TwitchLiveService implements OnModuleInit, OnModuleDestroy {
           select: { userId: true, providerAccountId: true },
         }),
         this.prisma.community.findMany({
-          where: { twitchUserId: { not: null } },
+          where: { twitchUserId: { not: null }, showTwitchLive: true },
           select: { id: true, twitchUserId: true },
         }),
       ]);
@@ -255,6 +256,7 @@ export class TwitchLiveService implements OnModuleInit, OnModuleDestroy {
 
     const { data } = (await response.json()) as {
       data: {
+        broadcaster_name?: string;
         segments: ScheduleSegment[] | null;
         vacation: { start_time: string; end_time: string } | null;
       };
@@ -273,6 +275,7 @@ export class TwitchLiveService implements OnModuleInit, OnModuleDestroy {
           startsAt: next.start_time,
           endsAt: next.end_time ?? null,
           title: next.title || null,
+          channel: data.broadcaster_name || null,
         }
       : null;
   }

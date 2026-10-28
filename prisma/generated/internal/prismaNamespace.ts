@@ -2626,8 +2626,12 @@ export const CommunityScalarFieldEnum = {
   backgroundUrl: 'backgroundUrl',
   twitchUserId: 'twitchUserId',
   twitchLogin: 'twitchLogin',
+  showTwitchLive: 'showTwitchLive',
+  showTwitchClips: 'showTwitchClips',
   discordGuildId: 'discordGuildId',
   discordGuildName: 'discordGuildName',
+  showDiscordOnline: 'showDiscordOnline',
+  showDiscordInvite: 'showDiscordInvite',
   links: 'links',
   ownerId: 'ownerId',
   isPublic: 'isPublic',
@@ -2741,6 +2745,7 @@ export const PostScalarFieldEnum = {
   commentCount: 'commentCount',
   likeCount: 'likeCount',
   hiddenAt: 'hiddenAt',
+  editedAt: 'editedAt',
   createdAt: 'createdAt'
 } as const
 
@@ -2757,6 +2762,7 @@ export const ThreadScalarFieldEnum = {
   score: 'score',
   commentCount: 'commentCount',
   hiddenAt: 'hiddenAt',
+  editedAt: 'editedAt',
   createdAt: 'createdAt'
 } as const
 
@@ -2774,6 +2780,8 @@ export const CommentScalarFieldEnum = {
   linkUrl: 'linkUrl',
   score: 'score',
   hiddenAt: 'hiddenAt',
+  editedAt: 'editedAt',
+  deletedAt: 'deletedAt',
   createdAt: 'createdAt'
 } as const
 
@@ -3111,6 +3119,13 @@ export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMod
 
 
 /**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+/**
  * Reference to a field of type 'Json'
  */
 export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
@@ -3121,13 +3136,6 @@ export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'J
  * Reference to a field of type 'QueryMode'
  */
 export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
-    
-
-
-/**
- * Reference to a field of type 'Boolean'
- */
-export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 

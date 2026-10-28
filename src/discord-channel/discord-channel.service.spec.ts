@@ -468,6 +468,52 @@ describe('DiscordChannelService', () => {
     });
   });
 
+  it('updates the Discord message when a post is edited', async () => {
+    prisma.discordMessage.findMany.mockResolvedValue([
+      {
+        id: 3,
+        communityId: 7,
+        targetId: 12,
+        messageId: '900',
+        threadId: null,
+        channel: channel(),
+      },
+    ]);
+    prisma.post.findUnique.mockResolvedValue(
+      post({ content: '<p>Edited</p>' }),
+    );
+
+    await service.contentEdited('post', 12);
+
+    expect(editMessage).toHaveBeenCalledWith(
+      { id: '111', token: 'secret-token' },
+      expect.objectContaining({ messageId: '900' }),
+      expect.objectContaining({
+        embeds: [expect.objectContaining({ description: 'Edited' })],
+      }),
+    );
+  });
+
+  it('removes the Discord message when a post is deleted', async () => {
+    prisma.discordMessage.findMany.mockResolvedValue([
+      {
+        id: 3,
+        communityId: 7,
+        targetId: 12,
+        messageId: '900',
+        threadId: null,
+        channel: channel(),
+      },
+    ]);
+
+    await service.contentDeleted('post', 12);
+
+    expect(deleteMessage).toHaveBeenCalled();
+    expect(prisma.discordMessage.deleteMany).toHaveBeenCalledWith({
+      where: { id: { in: [3] } },
+    });
+  });
+
   it('removes the webhook from Discord when disconnecting', async () => {
     prisma.discordChannel.findUnique.mockResolvedValue({
       webhookId: '111',

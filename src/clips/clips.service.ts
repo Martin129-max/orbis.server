@@ -18,10 +18,13 @@ export class ClipsService {
   async forCommunity(communityId: number, cursor?: string): Promise<ClipPage> {
     const community = await this.prisma.community.findUnique({
       where: { id: communityId },
-      select: { twitchUserId: true },
+      select: { twitchUserId: true, showTwitchClips: true },
     });
     if (!community?.twitchUserId) {
       throw new NotFoundException('This community hasn’t connected Twitch');
+    }
+    if (!community.showTwitchClips) {
+      throw new NotFoundException('This community doesn’t show its clips');
     }
     return this.twitch.clips(community.twitchUserId, cursor);
   }

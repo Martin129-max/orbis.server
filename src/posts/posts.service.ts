@@ -15,7 +15,12 @@ import {
 import { author, communitySummary } from '../common/author';
 import { PAGE_SIZE, Page } from '../common/pagination';
 import { sanitizeRichText } from '../common/rich-text';
-import { notifyMentions, resolveMentions } from '../common/mentions';
+import {
+  linkedMentions,
+  notifyMentions,
+  resolveMentions,
+  unlinkMentions,
+} from '../common/mentions';
 import {
   ThreadSummary,
   ThreadsService,
@@ -35,6 +40,8 @@ import { loadNicknames } from '../communities/nicknames';
 import { nsfwEntries, showsNsfw } from '../users/nsfw';
 import { loadSteamLinks, SteamLink } from '../steam/steam-links';
 import { DiscordChannelService } from '../discord-channel/discord-channel.service';
+import { managedCommunities } from '../communities/managed-communities';
+import { discussionCleanup } from '../comments/discussion-cleanup';
 
 const postInclude = {
   author,
@@ -68,7 +75,8 @@ type RawPost = Prisma.PostGetPayload<{
   include: typeof postInclude;
 }> & { type: 'post' };
 
-export type PostItem = RawPost & Engagement & { liked: boolean };
+export type PostItem = RawPost &
+  Engagement & { liked: boolean; canDelete: boolean };
 
 const activityInclude = {
   entry: {
@@ -270,6 +278,7 @@ export class PostsService {
                     commentableType: item.type,
                     commentableId: item.id,
                     parentId: null,
+                    deletedAt: null,
                     ...visibleTo(viewerId, reported.comment),
                   },
                   orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
@@ -290,6 +299,12 @@ export class PostsService {
           ({ id }) => ({ communityId: communityOf(item), userId: id }),
         ),
       ),
+    );
+
+    const managed = await managedCommunities(
+      this.prisma,
+      viewerId,
+      items.map(communityOf),
     );
 
     const steamOf = await loadSteamLinks(
@@ -316,7 +331,11 @@ export class PostsService {
         const steam = steamOf(item.author.id, item.steamAppId);
         return { ...item, author, liked, previewComments, steam };
       }
-      return { ...item, author, liked, previewComments };
+      const canDelete =
+        item.author.id === viewerId ||
+        item.wallUserId === viewerId ||
+        (item.communityId !== null && managed.has(item.communityId));
+      return { ...item, author, liked, previewComments, canDelete };
     });
   }
 
@@ -764,7 +783,13 @@ export class PostsService {
       link,
       alreadyNotified: [owner.id],
     });
-    return { ...post, type: 'post', liked: false, previewComments: [] };
+    return {
+      ...post,
+      type: 'post',
+      liked: false,
+      previewComments: [],
+      canDelete: true,
+    };
   }
 
   async findForMedia(
@@ -826,7 +851,13 @@ export class PostsService {
       message: 'mentioned you in a post',
       link: `/library/${mediaType}/${mediaSourceId}`,
     });
-    return { ...post, type: 'post', liked: false, previewComments: [] };
+    return {
+      ...post,
+      type: 'post',
+      liked: false,
+      previewComments: [],
+      canDelete: true,
+    };
   }
 
   async create(
@@ -856,6 +887,81 @@ export class PostsService {
       type: 'post',
       liked: false,
       previewComments: [],
+      canDelete: true,
     };
+  }
+
+  async update(
+    userId: number,
+    postId: number,
+    body: CreatePostDto,
+  ): Promise<FeedItem> {
+    const post = await this.prisma.post.findUnique({
+      where: { id: postId },
+      select: {
+        authorId: true,
+        content: true,
+        communityId: true,
+        wallUserId: true,
+        mediaType: true,
+        mediaSourceId: true,
+        wallUser: { select: { username: true } },
+      },
+    });
+    if (!post) throw new NotFoundException('Post not found');
+    if (post.authorId !== userId) {
+      throw new ForbiddenException('You can only edit your own posts');
+    }
+
+    const { data, mentioned } = await this.withMentions(
+      { ...body, content: unlinkMentions(body.content) },
+      userId,
+    );
+    const updated = await this.prisma.post.update({
+      where: { id: postId },
+      data: { ...data, editedAt: new Date() },
+      include: postInclude,
+    });
+
+    const previously = linkedMentions(post.content);
+    await notifyMentions(this.prisma, this.notifications, {
+      mentioned: mentioned.filter(
+        ({ username }) => !previously.has(username.toLowerCase()),
+      ),
+      authorId: userId,
+      place: { communityId: post.communityId, wallUserId: post.wallUserId },
+      message: 'mentioned you in a post',
+      link: post.mediaType
+        ? `/library/${post.mediaType}/${post.mediaSourceId}`
+        : post.wallUser
+          ? `/users/${post.wallUser.username}`
+          : `/communities/${post.communityId}`,
+    });
+    void this.discordChannel.contentEdited('post', postId);
+
+    const [item] = await this.engage(userId, [{ ...updated, type: 'post' }]);
+    return item;
+  }
+
+  async remove(userId: number, postId: number) {
+    const post = await this.prisma.post.findUnique({
+      where: { id: postId },
+      select: { authorId: true, communityId: true, wallUserId: true },
+    });
+    if (!post) throw new NotFoundException('Post not found');
+    const allowed =
+      post.authorId === userId ||
+      post.wallUserId === userId ||
+      (await managedCommunities(this.prisma, userId, [post.communityId])).size >
+        0;
+    if (!allowed) {
+      throw new ForbiddenException('You can’t delete this post');
+    }
+
+    await this.prisma.$transaction([
+      ...(await discussionCleanup(this.prisma, 'post', [postId])),
+      this.prisma.post.delete({ where: { id: postId } }),
+    ]);
+    void this.discordChannel.contentDeleted('post', postId);
   }
 }

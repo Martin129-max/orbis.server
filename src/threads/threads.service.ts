@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -8,7 +9,12 @@ import { Prisma } from '../../prisma/generated/client';
 import { author, communitySummary } from '../common/author';
 import { PAGE_SIZE, Page } from '../common/pagination';
 import { sanitizeRichText } from '../common/rich-text';
-import { notifyMentions, resolveMentions } from '../common/mentions';
+import {
+  linkedMentions,
+  notifyMentions,
+  resolveMentions,
+  unlinkMentions,
+} from '../common/mentions';
 import { reportedBy, visibleTo } from '../moderation/visibility';
 import { requireViewAccess } from '../communities/require-membership';
 import { MAX_INT } from '../communities/community-member.guard';
@@ -17,6 +23,8 @@ import { NotificationsService } from '../notifications/notifications.service';
 import { loadNicknames } from '../communities/nicknames';
 import { CreateThreadDto } from './dto/create-thread.dto';
 import { DiscordChannelService } from '../discord-channel/discord-channel.service';
+import { managedCommunities } from '../communities/managed-communities';
+import { discussionCleanup } from '../comments/discussion-cleanup';
 
 export const threadInclude = { author, community: communitySummary } as const;
 
@@ -28,7 +36,11 @@ const MAX_OFFSET = 10000;
 
 type ThreadRow = Prisma.ThreadGetPayload<{ include: typeof threadInclude }>;
 
-export type ThreadSummary = ThreadRow & { type: 'thread'; myVote: number };
+export type ThreadSummary = ThreadRow & {
+  type: 'thread';
+  myVote: number;
+  canDelete: boolean;
+};
 
 @Injectable()
 export class ThreadsService {
@@ -43,15 +55,23 @@ export class ThreadsService {
     userId: number,
     threads: ThreadRow[],
   ): Promise<ThreadSummary[]> {
-    const mine = await this.votes.myVotes(
-      userId,
-      'thread',
-      threads.map(({ id }) => id),
-    );
+    const [mine, managed] = await Promise.all([
+      this.votes.myVotes(
+        userId,
+        'thread',
+        threads.map(({ id }) => id),
+      ),
+      managedCommunities(
+        this.prisma,
+        userId,
+        threads.map(({ communityId }) => communityId),
+      ),
+    ]);
     return threads.map((thread) => ({
       ...thread,
       type: 'thread',
       myVote: mine.get(thread.id) ?? 0,
+      canDelete: thread.authorId === userId || managed.has(thread.communityId),
     }));
   }
 
@@ -150,7 +170,7 @@ export class ThreadsService {
     });
     void this.discordChannel.threadCreated(thread.id);
     const [created] = await this.withNicknames([
-      { ...thread, type: 'thread', myVote: 1 },
+      { ...thread, type: 'thread', myVote: 1, canDelete: true },
     ]);
     return created;
   }
@@ -172,6 +192,76 @@ export class ThreadsService {
       await this.withMyVotes(userId, [thread]),
     );
     return summary;
+  }
+
+  async update(
+    userId: number,
+    threadId: number,
+    { title, content = '', linkUrl }: CreateThreadDto,
+  ): Promise<ThreadSummary> {
+    const thread = await this.prisma.thread.findUnique({
+      where: { id: threadId },
+      select: { authorId: true, content: true, communityId: true },
+    });
+    if (!thread) throw new NotFoundException('Thread not found');
+    if (thread.authorId !== userId) {
+      throw new ForbiddenException('You can only edit your own threads');
+    }
+
+    const { html, empty } = sanitizeRichText(unlinkMentions(content));
+    const { html: linked, mentioned } = await resolveMentions(
+      this.prisma,
+      empty ? '' : html,
+      userId,
+    );
+    const updated = await this.prisma.thread.update({
+      where: { id: threadId },
+      data: {
+        title: title.trim(),
+        content: linked,
+        linkUrl: linkUrl ?? null,
+        editedAt: new Date(),
+      },
+      include: threadInclude,
+    });
+
+    const previously = linkedMentions(thread.content);
+    await notifyMentions(this.prisma, this.notifications, {
+      mentioned: mentioned.filter(
+        ({ username }) => !previously.has(username.toLowerCase()),
+      ),
+      authorId: userId,
+      place: { communityId: thread.communityId, wallUserId: null },
+      message: `mentioned you in the thread “${updated.title}”`,
+      link: `/communities/${thread.communityId}?tab=forum`,
+    });
+    void this.discordChannel.contentEdited('thread', threadId);
+
+    const [summary] = await this.withNicknames(
+      await this.withMyVotes(userId, [updated]),
+    );
+    return summary;
+  }
+
+  async remove(userId: number, threadId: number) {
+    const thread = await this.prisma.thread.findUnique({
+      where: { id: threadId },
+      select: { authorId: true, communityId: true },
+    });
+    if (!thread) throw new NotFoundException('Thread not found');
+    const allowed =
+      thread.authorId === userId ||
+      (await managedCommunities(this.prisma, userId, [thread.communityId]))
+        .size > 0;
+    if (!allowed) {
+      throw new ForbiddenException('You can’t delete this thread');
+    }
+
+    await this.prisma.$transaction([
+      ...(await discussionCleanup(this.prisma, 'thread', [threadId])),
+      this.prisma.thread.delete({ where: { id: threadId } }),
+    ]);
+    void this.discordChannel.contentDeleted('thread', threadId);
   }
 
   private async withNicknames(threads: ThreadSummary[]) {

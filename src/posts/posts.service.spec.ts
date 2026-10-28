@@ -230,7 +230,7 @@ describe('Feed content filters', () => {
 
   it('shows community authors by their nickname there', async () => {
     prisma.post.findMany.mockResolvedValue([{ ...post, communityId: 5 }]);
-    prisma.membership.findMany.mockResolvedValue([
+    prisma.membership.findMany.mockResolvedValueOnce([
       { communityId: 5, userId: person.id, nickname: 'Navigator' },
     ]);
 

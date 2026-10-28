@@ -76,4 +76,20 @@ export class UpdateCommunityDto {
   @ValidateNested()
   @Type(() => CommunityLinksDto)
   links?: CommunityLinksDto;
+
+  @IsOptional()
+  @IsBoolean()
+  showTwitchLive?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  showTwitchClips?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  showDiscordOnline?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  showDiscordInvite?: boolean;
 }

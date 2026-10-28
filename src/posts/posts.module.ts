@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { FeedController } from './feed.controller';
-import { PostsController } from './posts.controller';
+import { PostController, PostsController } from './posts.controller';
 import { UserPostsController } from './user-posts.controller';
 import { MediaPostsController } from './media-posts.controller';
 import { PostsService } from './posts.service';
@@ -21,6 +21,7 @@ import { DiscordChannelModule } from '../discord-channel/discord-channel.module'
   ],
   controllers: [
     PostsController,
+    PostController,
     FeedController,
     UserPostsController,
     MediaPostsController,

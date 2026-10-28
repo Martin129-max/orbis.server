@@ -258,6 +258,42 @@ export class DiscordChannelService implements OnModuleDestroy {
     }
   }
 
+  async contentEdited(type: 'post' | 'thread', id: number) {
+    try {
+      const rows = await this.prisma.discordMessage.findMany({
+        where: { targetType: type, targetId: id },
+        select: rowSelect,
+      });
+      if (rows.length === 0) return;
+      const rendered =
+        type === 'post'
+          ? await this.renderPost(id)
+          : await this.renderThread(id);
+      if (!rendered) return;
+      for (const row of rows) {
+        try {
+          await editMessage(webhookOf(row.channel), row, rendered.message.body);
+        } catch (error) {
+          await this.failed(row.channel, error);
+        }
+      }
+    } catch (error) {
+      this.logger.warn(
+        `Couldn’t update ${type} ${id} on Discord: ${String(error)}`,
+      );
+    }
+  }
+
+  async contentDeleted(type: 'post' | 'thread', id: number) {
+    try {
+      await this.remove(type, [id]);
+    } catch (error) {
+      this.logger.warn(
+        `Couldn’t remove ${type} ${id} from Discord: ${String(error)}`,
+      );
+    }
+  }
+
   async activitiesDeleted(ids: number[]) {
     if (ids.length === 0) return;
     try {
@@ -381,12 +417,11 @@ export class DiscordChannelService implements OnModuleDestroy {
     }
   }
 
-  private async sendPost(postId: number) {
+  private async renderPost(postId: number) {
     const post = await this.prisma.post.findUnique({
       where: { id: postId },
       select: {
         id: true,
-        communityId: true,
         content: true,
         linkUrl: true,
         hiddenAt: true,
@@ -396,29 +431,21 @@ export class DiscordChannelService implements OnModuleDestroy {
       },
     });
     const channel = post?.community?.discordChannel;
-    if (
-      !post ||
-      post.hiddenAt ||
-      !channel?.sendPosts ||
-      channel.lostAt ||
-      !channel.community.isPublic
-    ) {
-      return;
-    }
+    if (!post || !channel) return null;
 
     const withAuthor = await this.withNickname(
       channel.communityId,
       post.author,
     );
-    await this.deliver(
+    return {
       channel,
-      'post',
-      post.id,
-      postMessage({ ...post, author: withAuthor }, channel.community),
-    );
+      hidden: post.hiddenAt !== null,
+      enabled: channel.sendPosts,
+      message: postMessage({ ...post, author: withAuthor }, channel.community),
+    };
   }
 
-  private async sendThread(threadId: number) {
+  private async renderThread(threadId: number) {
     const thread = await this.prisma.thread.findUnique({
       where: { id: threadId },
       select: {
@@ -433,26 +460,50 @@ export class DiscordChannelService implements OnModuleDestroy {
       },
     });
     const channel = thread?.community.discordChannel;
-    if (
-      !thread ||
-      thread.hiddenAt ||
-      !channel?.sendThreads ||
-      channel.lostAt ||
-      !channel.community.isPublic
-    ) {
-      return;
-    }
+    if (!thread || !channel) return null;
 
     const withAuthor = await this.withNickname(
       channel.communityId,
       thread.author,
     );
-    await this.deliver(
+    return {
       channel,
+      hidden: thread.hiddenAt !== null,
+      enabled: channel.sendThreads,
+      message: threadMessage(
+        { ...thread, author: withAuthor },
+        channel.community,
+      ),
+    };
+  }
+
+  private async sendPost(postId: number) {
+    await this.sendRendered('post', postId, await this.renderPost(postId));
+  }
+
+  private async sendThread(threadId: number) {
+    await this.sendRendered(
       'thread',
-      thread.id,
-      threadMessage({ ...thread, author: withAuthor }, channel.community),
+      threadId,
+      await this.renderThread(threadId),
     );
+  }
+
+  private async sendRendered(
+    type: 'post' | 'thread',
+    id: number,
+    rendered: Awaited<ReturnType<DiscordChannelService['renderPost']>>,
+  ) {
+    if (
+      !rendered ||
+      rendered.hidden ||
+      !rendered.enabled ||
+      rendered.channel.lostAt ||
+      !rendered.channel.community.isPublic
+    ) {
+      return;
+    }
+    await this.deliver(rendered.channel, type, id, rendered.message);
   }
 
   private async withNickname(
