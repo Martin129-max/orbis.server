@@ -341,6 +341,40 @@ export class CommunitiesService {
     return discordWidget(server.id);
   }
 
+  async unfinishedDiscord(
+    userId: number,
+  ): Promise<{ id: number; name: string; discordGuildName: string | null }[]> {
+    const memberships = await this.prisma.membership.findMany({
+      where: { userId, community: { discordGuildId: { not: null } } },
+      select: {
+        community: {
+          select: {
+            id: true,
+            name: true,
+            discordGuildId: true,
+            discordGuildName: true,
+          },
+        },
+      },
+    });
+
+    const unfinished = await Promise.all(
+      memberships.map(async ({ community }) => {
+        const role = await this.roleOf(userId, community.id);
+        if (role !== 'owner' && role !== 'admin') return null;
+        const { online } = await discordWidget(community.discordGuildId!);
+        if (online !== null) return null;
+        return {
+          id: community.id,
+          name: community.name,
+          discordGuildName: community.discordGuildName,
+        };
+      }),
+    );
+
+    return unfinished.filter((community) => community !== null);
+  }
+
   async disconnectDiscord(userId: number, communityId: number) {
     await this.requireRole(userId, communityId, 'admin');
     await this.prisma.community.update({

@@ -83,6 +83,11 @@ export class CommunitiesController {
     return this.communitiesService.railLayout(req.user.userId);
   }
 
+  @Get('discord-setup')
+  unfinishedDiscord(@Req() req) {
+    return this.communitiesService.unfinishedDiscord(req.user.userId);
+  }
+
   @Put('layout')
   updateRailLayout(
     @Req() req,
