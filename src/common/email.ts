@@ -28,8 +28,15 @@ async function post(service: string, url: string, init: RequestInit) {
   }
 }
 
+function sender() {
+  const from = (process.env.EMAIL_FROM ?? '')
+    .trim()
+    .replace(/^(["'])(.*)\1$/, '$2');
+  return from.trim() || DEFAULT_FROM;
+}
+
 export async function sendEmail(email: Email) {
-  const from = process.env.EMAIL_FROM || DEFAULT_FROM;
+  const from = sender();
   const key = process.env.RESEND_API_KEY;
   const mailpit = process.env.MAILPIT_URL;
 

@@ -2,12 +2,14 @@ import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { EmailConfirmationService } from './email-confirmation.service';
 import { JwtAuthGuard } from './jwt.guard';
+import { AllowUnconfirmed } from './confirmed-email.guard';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
 import { ConfirmEmailDto } from './dto/confirm-email.dto';
 import { HOUR, MINUTE, RateLimit } from '../common/throttle';
 
 @Controller('auth')
+@AllowUnconfirmed()
 export class AuthController {
   constructor(
     private authService: AuthService,

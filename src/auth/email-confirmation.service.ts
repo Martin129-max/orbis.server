@@ -9,6 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma.service';
 import { sendEmail } from '../common/email';
 import { webUrl } from '../common/web-url';
+import { confirmationEmail } from './confirmation-email';
 
 const LINK_INVALID =
   'This link has expired or isn’t valid anymore. Send yourself a new one from Orbis';
@@ -17,19 +18,6 @@ type ConfirmClaims = { uid: number; email: string };
 
 function confirmSecret() {
   return `${process.env.JWT_SECRET}:email-confirm`;
-}
-
-function confirmationEmail(link: string) {
-  return {
-    subject: 'Confirm your email for Orbis',
-    text: `Welcome to Orbis! Confirm your email by opening this link:\n\n${link}\n\nThe link works for 24 hours. If you didn’t sign up for Orbis, you can ignore this email.`,
-    html: `<div style="font-family:system-ui,sans-serif;font-size:15px;line-height:1.6;color:#1f1f1f;max-width:480px">
-<p>Welcome to Orbis!</p>
-<p>Confirm your email so we know it’s really you.</p>
-<p><a href="${link}" style="display:inline-block;background:#f07357;color:#ffffff;font-weight:600;text-decoration:none;padding:10px 18px;border-radius:8px">Confirm email</a></p>
-<p style="color:#6b6b6b;font-size:13px">The link works for 24 hours. If you didn’t sign up for Orbis, you can ignore this email.</p>
-</div>`,
-  };
 }
 
 @Injectable()

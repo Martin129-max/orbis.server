@@ -10,10 +10,12 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt.guard';
+import { AllowUnconfirmed } from '../auth/confirmed-email.guard';
 import { NotificationsService } from './notifications.service';
 
 @Controller('notifications')
 @UseGuards(JwtAuthGuard)
+@AllowUnconfirmed()
 export class NotificationsController {
   constructor(private readonly notificationsService: NotificationsService) {}
 

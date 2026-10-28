@@ -24,6 +24,7 @@ import {
 import { UpdateOnboardingDto } from './dto/update-onboarding.dto';
 import { UpdatePreferencesDto } from './dto/update-preferences.dto';
 import { JwtAuthGuard } from '../auth/jwt.guard';
+import { AllowUnconfirmed } from '../auth/confirmed-email.guard';
 import { AllowGuest } from '../auth/allow-guest';
 import { PresenceGateway } from '../friends/presence.gateway';
 import { SteamSyncService } from '../library/steam-sync.service';
@@ -47,6 +48,7 @@ export class UsersController {
 
   @Patch('me/preferences')
   @UseGuards(JwtAuthGuard)
+  @AllowUnconfirmed()
   async updatePreferences(
     @Req() req,
     @Body() updatePreferencesDto: UpdatePreferencesDto,
@@ -131,6 +133,7 @@ export class UsersController {
 
   @Patch('me/onboarding')
   @UseGuards(JwtAuthGuard)
+  @AllowUnconfirmed()
   updateOnboarding(
     @Req() req,
     @Body() updateOnboardingDto: UpdateOnboardingDto,

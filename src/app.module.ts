@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
+import { ConfirmedEmailGuard } from './auth/confirmed-email.guard';
 import { ThrottlerModule } from '@nestjs/throttler';
 import {
   AppThrottlerGuard,
@@ -60,6 +61,7 @@ import { PrismaService } from './prisma.service';
     AppService,
     PrismaService,
     { provide: APP_GUARD, useClass: AppThrottlerGuard },
+    { provide: APP_GUARD, useClass: ConfirmedEmailGuard },
   ],
 })
 export class AppModule {}
