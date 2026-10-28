@@ -31,7 +31,7 @@ async function post(service: string, url: string, init: RequestInit) {
 function sender() {
   const from = (process.env.EMAIL_FROM ?? '')
     .trim()
-    .replace(/^(["'])(.*)\1$/, '$2');
+    .replace(/^["'“”‘’](.*)["'“”‘’]$/, '$1');
   return from.trim() || DEFAULT_FROM;
 }
 
@@ -47,6 +47,8 @@ export async function sendEmail(email: Email) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ from, ...email }),
+    }).catch((error: Error) => {
+      throw new Error(`${error.message} (sent from ${JSON.stringify(from)})`);
     });
     return;
   }
