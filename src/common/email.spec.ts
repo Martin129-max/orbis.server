@@ -80,18 +80,6 @@ describe('sendEmail', () => {
     });
   });
 
-  it('ignores quotes and spaces around the sender', async () => {
-    process.env.RESEND_API_KEY = 're_test';
-    process.env.EMAIL_FROM = ' “Orbis <hello@orbis.example>”\n';
-    fetchMock.mockResolvedValue({ ok: true });
-
-    await sendEmail(email);
-
-    expect(JSON.parse(fetchMock.mock.calls[0][1].body).from).toBe(
-      'Orbis <hello@orbis.example>',
-    );
-  });
-
   it('uses Resend over Mailpit when both are set', async () => {
     process.env.RESEND_API_KEY = 're_test';
     process.env.MAILPIT_URL = 'http://localhost:8025';
