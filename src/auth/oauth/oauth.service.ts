@@ -267,6 +267,7 @@ export class OAuthService {
       const user = await this.prisma.user.create({
         data: {
           email,
+          emailVerifiedAt: new Date(),
           username: normalized,
           name: displayName,
           oauthAccounts: {
@@ -488,9 +489,14 @@ export class OAuthService {
     };
     const existing = await this.prisma.user.findFirst({
       where: { email: { equals: profile.email, mode: 'insensitive' } },
-      select: { id: true, email: true },
+      select: { id: true, email: true, emailVerifiedAt: true },
     });
     if (existing) {
+      if (!existing.emailVerifiedAt) {
+        throw new ConflictException(
+          `An Orbis account already uses this email. Log in with your password, then connect ${label} in Settings`,
+        );
+      }
       try {
         await this.prisma.oAuthAccount.create({
           data: { ...account, userId: existing.id },
@@ -501,7 +507,7 @@ export class OAuthService {
           `This Orbis account is connected to a different ${label} account.`,
         );
       }
-      return existing;
+      return { id: existing.id, email: existing.email };
     }
 
     return null;

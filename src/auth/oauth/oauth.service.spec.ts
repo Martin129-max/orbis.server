@@ -103,6 +103,7 @@ describe('OAuthService', () => {
     prisma.user.findFirst.mockResolvedValueOnce({
       id: 7,
       email: 'Naruto@Anime.test',
+      emailVerifiedAt: new Date('2026-10-01T00:00:00Z'),
     });
 
     const result = await service.complete(
@@ -125,6 +126,26 @@ describe('OAuthService', () => {
         userId: 7,
       },
     });
+  });
+
+  it('won’t connect an account whose Orbis email isn’t confirmed', async () => {
+    discordUser();
+    prisma.user.findFirst.mockResolvedValueOnce({
+      id: 7,
+      email: 'naruto@anime.test',
+      emailVerifiedAt: null,
+    });
+
+    await expect(
+      service.complete(
+        'discord',
+        { code: 'code', state: stateFor(null), nonce: NONCE },
+        0,
+      ),
+    ).rejects.toThrow(
+      'An Orbis account already uses this email. Log in with your password, then connect Discord in Settings',
+    );
+    expect(prisma.oAuthAccount.create).not.toHaveBeenCalled();
   });
 
   it('refuses an email the provider hasn’t verified', async () => {
@@ -173,6 +194,7 @@ describe('OAuthService', () => {
       expect.objectContaining({
         data: {
           email: 'naruto@anime.test',
+          emailVerifiedAt: expect.any(Date),
           username: 'hokage_naruto',
           name: 'Naruto',
           oauthAccounts: {

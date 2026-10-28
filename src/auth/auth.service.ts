@@ -7,6 +7,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { normalizeUsername } from '../users/username';
+import { EmailConfirmationService } from './email-confirmation.service';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -14,6 +15,7 @@ export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private emailConfirmation: EmailConfirmationService,
   ) {}
 
   async signup(createUserDto: CreateUserDto) {
@@ -29,6 +31,7 @@ export class AuthService {
     }
 
     const user = await this.usersService.create(createUserDto);
+    this.emailConfirmation.sendInBackground(user);
 
     return this.generateToken(user.id, user.email);
   }

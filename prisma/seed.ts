@@ -2101,6 +2101,7 @@ async function main() {
       checklistDismissedAt: minutesAgo(days(29)),
       completedTours: PAGE_TOURS,
       password: await bcrypt.hash('123456', 10),
+      emailVerifiedAt: minutesAgo(days(30)),
       createdAt: minutesAgo(days(30)),
     },
   });
@@ -2131,6 +2132,7 @@ async function main() {
       coverUrl: '/images/user-covers/user.webp',
       backgroundUrl: '/images/user-backgrounds/user.webp',
       password: await bcrypt.hash('123456', 10),
+      emailVerifiedAt: minutesAgo(days(2)),
       createdAt: minutesAgo(days(2)),
     },
   });
@@ -2152,6 +2154,7 @@ async function main() {
         checklistDismissedAt: minutesAgo(days(29)),
         completedTours: PAGE_TOURS,
         password: characterPassword,
+        emailVerifiedAt: minutesAgo(days(30)),
         createdAt: minutesAgo(days(30)),
       },
     });

@@ -2823,6 +2823,7 @@ export const UserScalarFieldEnum = {
   coverUrl: 'coverUrl',
   backgroundUrl: 'backgroundUrl',
   password: 'password',
+  emailVerifiedAt: 'emailVerifiedAt',
   theme: 'theme',
   appearOffline: 'appearOffline',
   showNsfw: 'showNsfw',

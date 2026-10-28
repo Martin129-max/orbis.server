@@ -110,6 +110,7 @@ export type Profile = Pick<
   | 'showNsfw'
   | 'showChangelog'
   | 'isAdmin'
+  | 'emailVerifiedAt'
   | 'createdAt'
 > & {
   userId: number;
@@ -170,6 +171,7 @@ const profile = {
   showNsfw: true,
   showChangelog: true,
   isAdmin: true,
+  emailVerifiedAt: true,
   createdAt: true,
 } as const;
 

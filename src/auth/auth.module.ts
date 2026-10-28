@@ -4,6 +4,7 @@ import { PassportModule } from '@nestjs/passport';
 
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
+import { EmailConfirmationService } from './email-confirmation.service';
 import { JwtStrategy } from './jwt.strategy';
 import { OAuthController } from './oauth/oauth.controller';
 import { OAuthService } from './oauth/oauth.service';
@@ -26,6 +27,7 @@ import { CommunitiesModule } from '../communities/communities.module';
   ],
   providers: [
     AuthService,
+    EmailConfirmationService,
     OAuthService,
     JwtStrategy,
     UsersService,
