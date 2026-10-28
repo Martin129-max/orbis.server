@@ -56,6 +56,7 @@ describe('OAuthService', () => {
           global_name: 'Naruto',
           email: 'naruto@anime.test',
           verified: true,
+          avatar: 'avatar-hash',
           ...overrides,
         }),
       });
@@ -65,6 +66,22 @@ describe('OAuthService', () => {
     const url = new URL(service.authorizeUrl('discord', nonce, uid));
     return url.searchParams.get('state')!;
   }
+
+  it('marks mobile authorization state without changing the web default', () => {
+    const mobileUrl = new URL(
+      service.authorizeUrl('discord', NONCE, null, null, 'mobile'),
+    );
+    const webUrl = new URL(service.authorizeUrl('discord', NONCE, null));
+    const mobileState = jwt.verify(mobileUrl.searchParams.get('state')!, {
+      secret: 'test-secret:oauth-state',
+    });
+    const webState = jwt.verify(webUrl.searchParams.get('state')!, {
+      secret: 'test-secret:oauth-state',
+    });
+
+    expect(mobileState).toMatchObject({ client: 'mobile', nonce: NONCE });
+    expect(webState).toMatchObject({ client: 'web', nonce: NONCE });
+  });
 
   function uniqueViolation() {
     return new Prisma.PrismaClientKnownRequestError('Unique', {
@@ -147,6 +164,9 @@ describe('OAuthService', () => {
     const signup = await startSignup();
 
     expect(signup.username).toBe('narutouzumaki');
+    expect(signup.avatarUrl).toBe(
+      'https://cdn.discordapp.com/avatars/42/avatar-hash.png?size=256',
+    );
     expect(prisma.user.create).not.toHaveBeenCalled();
   });
 
@@ -166,6 +186,8 @@ describe('OAuthService', () => {
           email: 'naruto@anime.test',
           username: 'hokage_naruto',
           name: 'Naruto',
+          avatarUrl:
+            'https://cdn.discordapp.com/avatars/42/avatar-hash.png?size=256',
           oauthAccounts: {
             create: {
               provider: 'discord',
@@ -174,6 +196,22 @@ describe('OAuthService', () => {
             },
           },
         },
+      }),
+    );
+  });
+
+  it('allows a new account to decline the provider avatar', async () => {
+    const { token } = await startSignup();
+    prisma.user.create.mockResolvedValueOnce({
+      id: 9,
+      email: 'naruto@anime.test',
+    });
+
+    await service.finishSignup(token, 'Hokage_Naruto', false);
+
+    expect(prisma.user.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({ avatarUrl: null }),
       }),
     );
   });
@@ -207,7 +245,11 @@ describe('OAuthService', () => {
     await expect(
       service.complete(
         'discord',
-        { code: 'code', state: stateFor(null), nonce: 'other-0123456789abcdef' },
+        {
+          code: 'code',
+          state: stateFor(null),
+          nonce: 'other-0123456789abcdef',
+        },
         0,
       ),
     ).rejects.toThrow(BadRequestException);
@@ -296,7 +338,9 @@ describe('OAuthService', () => {
       .mockResolvedValueOnce({
         ok: true,
         json: async () => ({
-          data: [{ id: '77', login: 'seasonalclub', display_name: 'Seasonal Club' }],
+          data: [
+            { id: '77', login: 'seasonalclub', display_name: 'Seasonal Club' },
+          ],
         }),
       });
     const url = await service.communityAuthorizeUrl(5, 'twitch', 12, NONCE);

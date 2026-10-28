@@ -6,6 +6,7 @@ export type OAuthProfile = {
   displayName: string | null;
   email: string | null;
   emailVerified: boolean;
+  avatarUrl: string | null;
 };
 
 type ProviderConfig = {
@@ -47,6 +48,10 @@ export const oauthProviders: Record<AuthProvider, ProviderConfig> = {
         displayName: user.global_name ?? null,
         email: user.email ?? null,
         emailVerified: user.verified === true,
+        avatarUrl:
+          typeof user.avatar === 'string'
+            ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=256`
+            : null,
       };
     },
   },
@@ -70,6 +75,10 @@ export const oauthProviders: Record<AuthProvider, ProviderConfig> = {
         displayName: user.display_name ?? null,
         email: user.email ?? null,
         emailVerified: Boolean(user.email),
+        avatarUrl:
+          typeof user.profile_image_url === 'string'
+            ? user.profile_image_url
+            : null,
       };
     },
   },

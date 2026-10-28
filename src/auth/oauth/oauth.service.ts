@@ -24,7 +24,7 @@ import {
 
 export type OAuthResult =
   | { access_token: string }
-  | { signup: { token: string; username: string } }
+  | { signup: { token: string; username: string; avatarUrl: string | null } }
   | { linked: AuthProvider }
   | { linked: AuthProvider; communityId: number };
 
@@ -42,6 +42,7 @@ type StateClaims = {
   provider: AuthProvider;
   nonce: string;
   uid: number | null;
+  client: 'web' | 'mobile';
   communityId?: number | null;
 };
 
@@ -51,6 +52,7 @@ type SignupClaims = {
   username: string;
   displayName: string | null;
   email: string;
+  avatarUrl: string | null;
 };
 
 const EXPIRED = 'That sign-in link expired. Please try again.';
@@ -99,11 +101,12 @@ export class OAuthService {
     nonce: string,
     uid: number | null,
     communityId: number | null = null,
+    client: 'web' | 'mobile' = 'web',
   ) {
     const config = this.configured(provider);
     if (!NONCE_PATTERN.test(nonce)) throw new BadRequestException(EXPIRED);
 
-    const claims: StateClaims = { provider, nonce, uid, communityId };
+    const claims: StateClaims = { provider, nonce, uid, communityId, client };
     const state = this.jwt.sign(claims, {
       secret: stateSecret(),
       expiresIn: '10m',
@@ -171,6 +174,7 @@ export class OAuthService {
       username: profile.username,
       displayName: profile.displayName,
       email: profile.email!,
+      avatarUrl: profile.avatarUrl,
     };
     return {
       signup: {
@@ -179,11 +183,16 @@ export class OAuthService {
           expiresIn: '30m',
         }),
         username: await this.freeUsername(profile.username),
+        avatarUrl: profile.avatarUrl,
       },
     };
   }
 
-  async finishSignup(token: string, username: string) {
+  async finishSignup(
+    token: string,
+    username: string,
+    useProviderAvatar = true,
+  ) {
     let claims: SignupClaims;
     try {
       claims = this.jwt.verify<SignupClaims>(token, { secret: signupSecret() });
@@ -197,6 +206,7 @@ export class OAuthService {
       displayName,
       email,
       emailVerified: true,
+      avatarUrl: claims.avatarUrl,
     };
 
     const existing = await this.existingUser(provider, profile);
@@ -219,6 +229,7 @@ export class OAuthService {
           email,
           username: normalized,
           name: displayName,
+          avatarUrl: useProviderAvatar ? claims.avatarUrl : null,
           oauthAccounts: {
             create: {
               provider,
@@ -336,7 +347,8 @@ export class OAuthService {
         }),
         signal: AbortSignal.timeout(OAUTH_TIMEOUT_MS),
       });
-      if (!response.ok) throw new Error(`Token request failed with ${response.status}`);
+      if (!response.ok)
+        throw new Error(`Token request failed with ${response.status}`);
       const { access_token: accessToken } = await response.json();
       return await config.profile(accessToken, clientId);
     } catch {
@@ -407,7 +419,10 @@ export class OAuthService {
       if (!isUniqueViolation(error)) throw error;
       const owner = await this.prisma.oAuthAccount.findUnique({
         where: {
-          provider_providerAccountId: { provider, providerAccountId: profile.id },
+          provider_providerAccountId: {
+            provider,
+            providerAccountId: profile.id,
+          },
         },
         select: { userId: true },
       });
