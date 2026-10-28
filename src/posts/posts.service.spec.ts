@@ -126,11 +126,27 @@ describe('Feed content filters', () => {
 
   it('filters community feeds before pagination', async () => {
     expect(
-      (await service.findForCommunity(1, 9, undefined, 'activity')).items.map(
-        (item) => item.type,
-      ),
+      (
+        await service.findForCommunity(1, 9, undefined, 'activity,thread')
+      ).items.map((item) => item.type),
     ).toEqual(['post']);
     expect(prisma.libraryActivity.findMany).not.toHaveBeenCalled();
+    expect(prisma.thread.findMany).not.toHaveBeenCalled();
+  });
+
+  it('includes the community’s threads in its feed', async () => {
+    const { items } = await service.findForCommunity(1, 9);
+
+    expect(items.map((item) => item.type)).toEqual([
+      'activity',
+      'thread',
+      'post',
+    ]);
+    expect(prisma.thread.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({ communityId: 9 }),
+      }),
+    );
   });
 
   it('filters profile feeds', async () => {

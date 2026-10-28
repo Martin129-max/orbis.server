@@ -350,7 +350,7 @@ export class PostsService {
     const reported = await reportedBy(this.prisma, viewerId);
     const nsfw = nsfwEntries(await showsNsfw(this.prisma, viewerId));
 
-    const [posts, activities] = await Promise.all([
+    const [posts, threads, activities] = await Promise.all([
       excluded.has('post')
         ? []
         : this.prisma.post.findMany({
@@ -362,6 +362,18 @@ export class PostsService {
             orderBy: newestFirst,
             take: PAGE_SIZE + 1,
             include: postInclude,
+          }),
+      excluded.has('thread')
+        ? []
+        : this.prisma.thread.findMany({
+            where: {
+              communityId,
+              ...olderThan(cursor, RANK.thread),
+              ...visibleTo(viewerId, reported.thread),
+            },
+            orderBy: newestFirst,
+            take: PAGE_SIZE + 1,
+            include: threadInclude,
           }),
       excluded.has('activity')
         ? []
@@ -386,12 +398,26 @@ export class PostsService {
 
     const merged = [
       ...posts.map((post) => ({ ...post, type: 'post' as const })),
+      ...threads.map((thread) => ({ ...thread, type: 'thread' as const })),
       ...activities.map(toActivity),
     ].sort(compareFeedItems);
     const page = merged.slice(0, PAGE_SIZE);
+    const voted = new Map(
+      (
+        await this.threads.withMyVotes(
+          viewerId,
+          page.flatMap((item) => (item.type === 'thread' ? [item] : [])),
+        )
+      ).map((thread) => [thread.id, thread]),
+    );
 
     return {
-      items: await this.engage(viewerId, page),
+      items: await this.engage(
+        viewerId,
+        page.map((item) =>
+          item.type === 'thread' ? voted.get(item.id)! : item,
+        ),
+      ),
       nextCursor: nextCursor(merged, page),
     };
   }

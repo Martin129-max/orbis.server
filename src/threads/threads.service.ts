@@ -32,7 +32,12 @@ export const THREAD_SORTS = ['hot', 'new', 'top'] as const;
 
 export type ThreadSort = (typeof THREAD_SORTS)[number];
 
+const RANGE_DAYS = { day: 1, week: 7, month: 30, year: 365, all: null };
+
+export type ThreadRange = keyof typeof RANGE_DAYS;
+
 const MAX_OFFSET = 10000;
+const DAY = 24 * 60 * 60 * 1000;
 
 type ThreadRow = Prisma.ThreadGetPayload<{ include: typeof threadInclude }>;
 
@@ -80,10 +85,18 @@ export class ThreadsService {
     communityId: number,
     sort: string = 'hot',
     offset = 0,
+    range: string = 'all',
   ): Promise<Page<ThreadSummary>> {
     if (!THREAD_SORTS.includes(sort as ThreadSort)) {
       throw new BadRequestException('sort must be hot, new or top');
     }
+    if (!Object.prototype.hasOwnProperty.call(RANGE_DAYS, range)) {
+      throw new BadRequestException(
+        'range must be day, week, month, year or all',
+      );
+    }
+    const days = RANGE_DAYS[range as ThreadRange];
+    const since = new Date(days === null ? 0 : Date.now() - days * DAY);
     if (offset < 0 || offset > MAX_OFFSET) {
       throw new BadRequestException('Invalid cursor');
     }
@@ -94,6 +107,7 @@ export class ThreadsService {
       const rows = await this.prisma.$queryRaw<{ id: number }[]>`
         SELECT "id" FROM "Thread"
         WHERE "communityId" = ${communityId}
+          AND "createdAt" >= ${since}
           AND ("hiddenAt" IS NULL OR "authorId" = ${userId})
           AND NOT ("id" = ANY(${reported}::int[]))
         ORDER BY ("score" + 1) / power(extract(epoch from (now() - "createdAt")) / 3600 + 2, 1.5) DESC, "id" DESC
@@ -106,7 +120,11 @@ export class ThreadsService {
       threads = rows.flatMap(({ id }) => byId.get(id) ?? []);
     } else {
       threads = await this.prisma.thread.findMany({
-        where: { communityId, ...visibleTo(userId, reported) },
+        where: {
+          communityId,
+          createdAt: { gte: since },
+          ...visibleTo(userId, reported),
+        },
         orderBy:
           sort === 'top'
             ? [{ score: 'desc' }, { createdAt: 'desc' }, { id: 'desc' }]

@@ -34,8 +34,15 @@ export class CommunityThreadsController {
     @Param('communityId', ParseIntPipe) communityId: number,
     @Query('sort') sort?: string,
     @Query('cursor', new ParseIntPipe({ optional: true })) cursor?: number,
+    @Query('range') range?: string,
   ): Promise<Page<ThreadSummary>> {
-    return this.threadsService.list(req.user.userId, communityId, sort, cursor);
+    return this.threadsService.list(
+      req.user.userId,
+      communityId,
+      sort,
+      cursor,
+      range,
+    );
   }
 
   @RateLimit(10, MINUTE)
